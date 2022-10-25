@@ -19,11 +19,11 @@ class Executor implements Registerable
 	/**
 	 * @var Uri
 	 */
-	private $uri;
+	private Uri $uri;
 
 	//------------------------------------------------------------------------------- executeNotWrite
 	/**
-	 * Execute some code given into an URI.
+	 * Execute some code given into a URI.
 	 * Called first before Main::executeController()
 	 *
 	 * @param $uri Uri
@@ -43,7 +43,7 @@ class Executor implements Registerable
 
 	//---------------------------------------------------------------------------------- executeWrite
 	/**
-	 * Execute some code given into an URI.
+	 * Execute some code given into a URI.
 	 *
 	 * Called during default Save_Controller, between the time when object has been modified by the
 	 * form content and the time it is written using Dao.

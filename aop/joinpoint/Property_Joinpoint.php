@@ -20,7 +20,7 @@ abstract class Property_Joinpoint extends Joinpoint
 	/**
 	 * The advice can set this to true in order to stop to definitively disable AOP on this property
 	 * This disables all AOP advices, not only the current one : this is to be used for optimization
-	 * purpose on property you known they need AOP one time only
+	 * purpose on property you know they need AOP one time only
 	 *
 	 * @var boolean
 	 */

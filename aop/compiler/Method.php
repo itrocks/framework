@@ -31,7 +31,9 @@ class Method
 	 * @param $indent      string
 	 * @return string
 	 */
-	private function codeAssembly(array $before_code, $advice_code, array $after_code, $indent)
+	private function codeAssembly(
+		array $before_code, string $advice_code, array $after_code, string $indent
+	) : string
 	{
 		return trim(
 			($before_code ? $indent : '') . join(LF, array_reverse($before_code))
@@ -46,7 +48,7 @@ class Method
 	 * @param $advices     array
 	 * @return string
 	 */
-	public function compile($method_name, array $advices)
+	public function compile(string $method_name, array $advices) : string
 	{
 		$methods = $this->class->getMethods([T_EXTENDS, T_IMPLEMENTS, T_USE]);
 		if (!isset($methods[$method_name])) {
@@ -95,7 +97,7 @@ class Method
 		$count = null;
 
 		// $joinpoint_has_return
-		$joinpoint_has_return = strpos($doc_comment, '@return');
+		$joinpoint_has_return = str_contains($doc_comment, '@return');
 
 		// $pointcut_string
 		if ($is_static) {
@@ -171,7 +173,7 @@ class Method
 								. $i2 . ');';
 							break;
 						case 'around':
-							$process_callback = ($methods[$method_name]->class->name == $this->class->name)
+							$process_callback = ($methods[$method_name]->class->name === $this->class->name)
 								? ($method_name . '_' . $count)
 								: $method_name;
 							$joinpoint_code = $i2 . '$joinpoint_ = new \ITRocks\Framework\AOP\Joinpoint\Around_Method('
@@ -206,7 +208,7 @@ class Method
 					$after_code[] = $advice_code;
 					break;
 				case 'around':
-					$my_prototype = ($advice_number == $advices_count)
+					$my_prototype = ($advice_number === $advices_count)
 						? $prototype
 						: str_replace($method_name, $method_name . '_' . $count , $prototype);
 					$result .= substr($indent, 1) . $my_prototype . substr($i2, 1)

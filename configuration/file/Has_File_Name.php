@@ -11,15 +11,15 @@ trait Has_File_Name
 	/**
 	 * @var string
 	 */
-	public $file_name;
+	public string $file_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Constructor : needs the name of the file
 	 *
-	 * @param $file_name string
+	 * @param $file_name string|null
 	 */
-	public function __construct($file_name = null)
+	public function __construct(string $file_name = null)
 	{
 		if (isset($file_name)) {
 			$this->file_name = $file_name;

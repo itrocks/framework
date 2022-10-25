@@ -90,7 +90,8 @@ class Controller extends List_\Controller implements Has_Selection_Buttons
 	 * @param $class_name string
 	 * @return array
 	 */
-	public function getViewParameters(Parameters $parameters, array $form, $class_name)
+	public function getViewParameters(Parameters $parameters, array $form, string $class_name)
+	: array
 	{
 		/** @noinspection PhpUnhandledExceptionInspection Main set object is not read itself */
 		$this->class = new Reflection_Class($parameters->getMainObject()->element_class_name);

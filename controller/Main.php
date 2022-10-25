@@ -31,7 +31,7 @@ use ITRocks\Framework\View;
 use ITRocks\Framework\View\View_Exception;
 
 /**
- * The main controller is called to run the application, with the URI and get/postvars as parameters
+ * The main controller is called to run the app, with the URI and get/post vars as parameters
  */
 class Main
 {
@@ -40,7 +40,7 @@ class Main
 	/**
 	 * @var Main
 	 */
-	public static $current;
+	public static Main $current;
 
 	//---------------------------------------------------------------------------------- $redirection
 	/**
@@ -53,7 +53,7 @@ class Main
 	 *
 	 * @var string
 	 */
-	private $redirection;
+	private string $redirection;
 
 	//------------------------------------------------------------------------------------ $redirects
 	/**
@@ -63,7 +63,7 @@ class Main
 	 *
 	 * @var string[] key is the '#target', value is the redirection controller call
 	 */
-	private $redirects = [];
+	private array $redirects = [];
 
 	//-------------------------------------------------------------------------------------- $running
 	/**
@@ -74,13 +74,13 @@ class Main
 	 *
 	 * @var boolean
 	 */
-	public $running = true;
+	public bool $running = true;
 
 	//----------------------------------------------------------------------------- $top_core_plugins
 	/**
 	 * @var Plugin[]
 	 */
-	private $top_core_plugins = [];
+	private array $top_core_plugins = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -99,9 +99,9 @@ class Main
 	 * any session opening
 	 *
 	 * @param $plugins array
-	 * @return Main
+	 * @return static
 	 */
-	public function addTopCorePlugins(array $plugins)
+	public function addTopCorePlugins(array $plugins) : static
 	{
 		foreach ($plugins as $plugin) {
 			$this->top_core_plugins[get_class($plugin)] = $plugin;
@@ -137,7 +137,7 @@ class Main
 	 *
 	 * @return static
 	 */
-	public function close()
+	public function close() : static
 	{
 		session_write_close();
 		return $this;
@@ -173,22 +173,6 @@ class Main
 		$this->resetSession(Session::current(new Session()));
 	}
 
-	//--------------------------------------------------------------------------- doExecuteController
-	/**
-	 * TODO HIGH these are patches for json AOP for results catching, to be cleaned up someday
-	 *
-	 * @param $controller  string
-	 * @param $method_name string
-	 * @param $uri         Uri
-	 * @param $post        array
-	 * @param $files       array[]
-	 * @return string
-	 */
-	public function doExecuteController($controller, $method_name, Uri $uri, array $post, array $files)
-	{
-		return $this->executeController($controller, $method_name, $uri, $post, $files);
-	}
-
 	//------------------------------------------------------------------------------- doRunController
 	/**
 	 * Parse URI and run matching controller
@@ -199,9 +183,11 @@ class Main
 	 * @param $get   array   Arguments sent by the caller
 	 * @param $post  array   Posted forms sent by the caller
 	 * @param $files array[] Files sent by the caller
-	 * @return mixed View data returned by the view the controller called
+	 * @return ?string View data returned by the view the controller called
 	 */
-	private function doRunController($uri, array $get = [], array $post = [], array $files = [])
+	private function doRunController(
+		string $uri, array $get = [], array $post = [], array $files = []
+	) : ?string
 	{
 		return $this->runController($uri, $get, $post, $files);
 	}
@@ -216,12 +202,13 @@ class Main
 	 * @param $get         array
 	 * @param $post        array
 	 * @param $files       array[]
-	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
-	 * @return mixed
+	 * @param $sub_feature string|null The sub-feature (used by controllers which call another one)
+	 * @return ?string
 	 */
 	public function doRunControllerStd(
-		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
-	) {
+		string $uri, array $get = [], array $post = [], array $files = [], string $sub_feature = null
+	) : ?string
+	{
 		try {
 			return $this->doRunInnerController($uri, $get, $post, $files, $sub_feature);
 		}
@@ -245,12 +232,13 @@ class Main
 	 * @param $get         array
 	 * @param $post        array
 	 * @param $files       array[]
-	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
-	 * @return mixed
+	 * @param $sub_feature ?string The sub-feature (used by controllers which call another one)
+	 * @return ?string
 	 */
 	public function doRunInnerController(
-		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
-	) {
+		string $uri, array $get = [], array $post = [], array $files = [], string $sub_feature = null
+	) : ?string
+	{
 		$uri                  = new Uri($uri, $get);
 		$uri->controller_name = Builder::className($uri->controller_name);
 		$parameters           = clone $uri->parameters;
@@ -281,9 +269,11 @@ class Main
 	 * @param $uri         Uri
 	 * @param $post        array
 	 * @param $files       array[]
-	 * @return string
+	 * @return ?string
 	 */
-	private function executeController($controller, $method_name, Uri $uri, array $post, array $files)
+	private function executeController(
+		string $controller, string $method_name, Uri $uri, array $post, array $files
+	) : ?string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection is_a => create*/
 		$controller = is_a($controller, Controller::class, true)
@@ -310,7 +300,7 @@ class Main
 	 * @param $output string main controller output, generated by run()
 	 * @return static
 	 */
-	public function flush($output)
+	public function flush(string $output) : static
 	{
 		echo $output;
 		flush();
@@ -321,20 +311,22 @@ class Main
 	/**
 	 * @param $controller_name string the name of the data class which controller we are looking for
 	 * @param $feature_name    string the feature which controller we are looking for
-	 * @param $sub_feature     string if set, the sub feature controller is searched into the feature
+	 * @param $sub_feature     string|null the sub feature controller is searched into the feature
 	 *                         controller namespace
-	 * @return callable
+	 * @return string[] callable
 	 */
-	public function getController($controller_name, $feature_name, $sub_feature = null)
+	public function getController(
+		string $controller_name, string $feature_name, string $sub_feature = null
+	) : array
 	{
 		if (isset($sub_feature)) {
 			[$class, $method] = Getter::get(
-				$controller_name, $feature_name, Names::methodToClass($sub_feature) . '_Controller', 'php'
+				$controller_name, $feature_name, Names::methodToClass($sub_feature) . '_Controller'
 			);
 		}
 
 		if (!isset($class)) {
-			[$class, $method] = Getter::get($controller_name, $feature_name, 'Controller', 'php');
+			[$class, $method] = Getter::get($controller_name, $feature_name);
 		}
 
 		if (!isset($class) || !class_exists($class)) {
@@ -363,7 +355,6 @@ class Main
 	private function includes()
 	{
 		foreach (glob(__DIR__ . '/../functions/*.php') as $file_name) {
-			/** @noinspection PhpIncludeInspection */
 			include_once Include_Filter::file($file_name);
 		}
 	}
@@ -373,15 +364,14 @@ class Main
 	 * Called by the bootstrap only : initialisation of the first main controller
 	 *
 	 * @param $includes string[]
-	 * @return Main $this
+	 * @return static
 	 * @throws Include_Filter\Exception
 	 */
-	public function init(array $includes = [])
+	public function init(array $includes = []) : static
 	{
 		$this->globals();
 		$this->includes();
 		foreach ($includes as $include) {
-			/** @noinspection PhpIncludeInspection */
 			include_once $include;
 		}
 		return $this;
@@ -393,7 +383,7 @@ class Main
 	 *
 	 * @return Configuration
 	 */
-	private function loadConfiguration()
+	private function loadConfiguration() : Configuration
 	{
 		$configurations = new Configurations();
 		$config         = $configurations->getConfigurationFileNameFromComposer();
@@ -408,10 +398,10 @@ class Main
 	//-------------------------------------------------------------------------------------- redirect
 	/**
 	 * @param $uri    string
-	 * @param $target string
-	 * @param $data   mixed
+	 * @param $target string|null
+	 * @param $data   array|string|null
 	 */
-	public function redirect($uri, $target = null, $data = null)
+	public function redirect(string $uri, string $target = null, array|string $data = null)
 	{
 		if (isset($target)) {
 			$this->redirects[$target] = $data ? [$uri, $data] : $uri;
@@ -443,7 +433,7 @@ class Main
 							$register['class_name'], $register['level'], $register['plugin_configuration']
 						);
 					}
-					unset($must_register);
+					$must_register = [];
 				}
 
 				// weaver is not set : keep plugin definition for further registering and activation
@@ -469,7 +459,7 @@ class Main
 	/**
 	 * Initialise a new session, or refresh existing session for update
 	 *
-	 * @param $session Session default is current session
+	 * @param $session Session|null default is current session
 	 */
 	public function resetSession(Session $session = null)
 	{
@@ -479,9 +469,6 @@ class Main
 		$session->plugins = new Manager();
 		$session->plugins->addPlugins('top_core', $this->top_core_plugins);
 		$configuration = $this->loadConfiguration();
-		if (!$configuration) {
-			$this->resetSessionWithoutConfiguration();
-		}
 
 		unset($_SESSION['include_path']);
 		$session->configuration_file_name = $configuration->file_name;
@@ -490,18 +477,6 @@ class Main
 		$session->temporary_directory     = $configuration->temporary_directory;
 		$this->setIncludePath($_SESSION, $configuration->getApplicationClassName());
 		$this->registerPlugins($session->plugins, $configuration);
-	}
-
-	//-------------------------------------------------------------- resetSessionWithoutConfiguration
-	/**
-	 * Without comment there is a bug with with aop
-	 *
-	 * @todo See why
-	 */
-	private function resetSessionWithoutConfiguration()
-	{
-		http_response_code(400);
-		die('Bad Request');
 	}
 
 	//--------------------------------------------------------------------------------- resumeSession
@@ -583,12 +558,13 @@ class Main
 	 * @param $get         array Arguments sent by the caller
 	 * @param $post        array Posted forms sent by the caller
 	 * @param $files       array[] Files sent by the caller
-	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
-	 * @return mixed View data returned by the view the controller called
+	 * @param $sub_feature string|null the sub-feature (used by controllers which call another one)
+	 * @return ?string View data returned by the view the controller called
 	 */
 	public function runController(
-		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
-	) {
+		string $uri, array $get = [], array $post = [], array $files = [], string $sub_feature = null
+	) : ?string
+	{
 		return $this->doRunControllerStd($uri, $get, $post, $files, $sub_feature);
 	}
 
@@ -647,7 +623,7 @@ class Main
 	 * @param $session           array
 	 * @param $application_class string
 	 */
-	private function setIncludePath(array &$session, $application_class)
+	private function setIncludePath(array &$session, string $application_class)
 	{
 		if (isset($session['include_path'])) {
 			set_include_path($session['include_path']);

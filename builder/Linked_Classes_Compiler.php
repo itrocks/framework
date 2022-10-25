@@ -11,7 +11,6 @@ use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Source;
 use ITRocks\Framework\Tools\Namespaces;
-use phpDocumentor\Reflection\Types\Boolean;
 
 /**
  * This compiles child classes that extend classes replaced by built classes :
@@ -37,11 +36,7 @@ class Linked_Classes_Compiler implements ICompiler
 				&& ($parent_class_name = $class->getParentOriginalClassName())
 			) {
 				$replacement_class_name = Builder::className($parent_class_name);
-				if (is_array($replacement_class_name)) {
-					trigger_error('Replacement classes should all be compiled', E_USER_ERROR);
-					//$compiler->addSource($source);
-				}
-				elseif (
+				if (
 					($parent_class_name !== $replacement_class_name)
 					&& (
 						Class_Builder::isBuilt($replacement_class_name)
@@ -58,11 +53,7 @@ class Linked_Classes_Compiler implements ICompiler
 					continue;
 				}
 				$replacement_trait_name = Builder::className($trait_name);
-				if (is_array($replacement_trait_name)) {
-					trigger_error('Replacement traits should all be compiled', E_USER_ERROR);
-					//$compiler->addSource($source);
-				}
-				elseif (
+				if (
 					($trait_name !== $replacement_trait_name)
 					&& (
 						Class_Builder::isBuilt($replacement_trait_name)

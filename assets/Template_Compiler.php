@@ -22,7 +22,7 @@ class Template_Compiler implements Registerable, Updatable
 	/**
 	 * @var Configuration
 	 */
-	public $configuration;
+	public Configuration $configuration;
 
 	//--------------------------------------------------------------------------- $main_template_path
 	/**
@@ -30,7 +30,7 @@ class Template_Compiler implements Registerable, Updatable
 	 *
 	 * @var string
 	 */
-	public $main_template_path;
+	public string $main_template_path;
 
 	//----------------------------------------------------------------------- getCompiledMainTemplate
 	/**
@@ -49,7 +49,7 @@ class Template_Compiler implements Registerable, Updatable
 	/**
 	 * @return string
 	 */
-	protected function getCompiledPath()
+	protected function getCompiledPath() : string
 	{
 		return Include_Filter::getCacheDir() . SL . 'main.html';
 	}
@@ -73,7 +73,7 @@ class Template_Compiler implements Registerable, Updatable
 	 * @see Updatable
 	 * @throws Assets_Exception
 	 */
-	public function update($last_time)
+	public function update(int $last_time)
 	{
 		unlinkIfExists($this->getCompiledPath());
 		$this->configuration      = Configuration::get();

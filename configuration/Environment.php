@@ -24,7 +24,7 @@ abstract class Environment
 	 *
 	 * @return string
 	 */
-	public static function current()
+	public static function current() : string
 	{
 		return Session::current()->environment;
 	}
@@ -33,15 +33,15 @@ abstract class Environment
 	/**
 	 * Calculates the current running file name (complete path)
 	 *
-	 * This is a little bit hard-coded, sorry :)
+	 * This is a bit hard-coded, sorry :)
 	 * This complies to the default way itrocks/deploy / itrocks/platform works
 	 *
 	 * You will find almost the same code into console_script.php's Console::runningFileName()
 	 *
-	 * @return string null if the feature was not launched from the console
+	 * @return ?string null if the feature was not launched from the console
 	 * @see Console::runningFileName
 	 */
-	public static function runningFileName()
+	public static function runningFileName() : ?string
 	{
 		global $argv;
 		$console_uri = $argv[1] ?? null;

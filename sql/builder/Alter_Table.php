@@ -223,7 +223,7 @@ class Alter_Table
 					. " to non-InnoDB $foreign_table table";
 				switch ($notice) {
 					case 'verbose': echo '! ' . $error_message . BRLF; break;
-					case 'warning': trigger_error($error_message, E_USER_NOTICE);
+					case 'warning': trigger_error($error_message);
 				}
 				$orphans_count ++;
 				$do_not_count = true;

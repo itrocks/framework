@@ -135,7 +135,6 @@ class Proxy
 			$this->method = isset($_SERVER['REQUEST_METHOD'])
 				? (($_SERVER['REQUEST_METHOD'] === Http::POST) ? Http::POST : Http::GET)
 				: (empty($_POST) ? Http::GET : Http::POST);
-			/** @noinspection PhpComposerExtensionStubsInspection optional */
 			$this->request_headers = apache_request_headers();
 		}
 	}
@@ -403,7 +402,7 @@ class Proxy
 				if ($this->retry_delay) {
 					usleep($this->retry_delay * 1000);
 				}
-				trigger_error("$this->url : retry $retry of $this->retry_count", E_USER_NOTICE);
+				trigger_error("$this->url : retry $retry of $this->retry_count");
 				$this->request(null, null, null, $retry - 1);
 			}
 			return true;

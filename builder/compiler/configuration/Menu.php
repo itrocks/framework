@@ -6,7 +6,7 @@ use ITRocks\Framework\Component;
 use ITRocks\Framework\PHP\Reflection_Source;
 
 /**
- * menu.php configuration file compiler (menu hot update)
+ * The 'menu.php' configuration file compiler (menu hot update)
  */
 class Menu extends Configuration
 {

@@ -20,7 +20,7 @@ class Writer extends File\Writer
 	 * @param $elements object[]|string[]
 	 * @return integer
 	 */
-	protected function lastObjectKey(array $elements)
+	protected function lastObjectKey(array $elements) : int
 	{
 		end($elements);
 		while (key($elements) && !is_object(current($elements))) {

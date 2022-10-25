@@ -14,10 +14,7 @@ class Content_Title
 	/**
 	 * @var Title
 	 */
-	private $element;
-
-	//-------------------------------------------------------------------------------- COMPONENT_NAME
-	const COMPONENT_NAME = 'content_title';
+	private Title $element;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

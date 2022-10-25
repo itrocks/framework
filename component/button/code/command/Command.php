@@ -12,6 +12,6 @@ interface Command
 	 * @param $object object
 	 * @return mixed
 	 */
-	public function execute($object);
+	public function execute(object $object) : mixed;
 
 }

@@ -40,7 +40,7 @@ class Application
 	 *
 	 * @var Application[]
 	 */
-	public $applications = [];
+	public array $applications = [];
 
 	//--------------------------------------------------------------------------------- $include_path
 	/**
@@ -48,13 +48,13 @@ class Application
 	 *
 	 * @var Include_Path
 	 */
-	public $include_path;
+	public Include_Path $include_path;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string
 	 */
-	public $name;
+	public string $name;
 
 	//----------------------------------------------------------------------------------- $namespaces
 	/**
@@ -62,19 +62,19 @@ class Application
 	 *
 	 * @var string[]
 	 */
-	private $namespaces;
+	private array $namespaces;
 
 	//--------------------------------------------------------------------------------------- $vendor
 	/**
 	 * @var string
 	 */
-	public $vendor;
+	public string $vendor;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $name string Must look like 'Author/Application' : slash is required
 	 */
-	public function __construct($name)
+	public function __construct(string $name)
 	{
 		if (str_contains($name, SL)) {
 			[$this->vendor, $this->name] = explode(SL, $name);
@@ -92,22 +92,22 @@ class Application
 	 */
 	public function __toString() : string
 	{
-		return strval($this->name);
+		return $this->name;
 	}
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current Application
-	 * @return Application
+	 * @param $set_current Application|null
+	 * @return ?Application
 	 */
-	public static function current(Application $set_current = null)
+	public static function current(Application $set_current = null) : ?Application
 	{
 		if ($set_current) {
 			Session::current()->set($set_current, Application::class);
 			return $set_current;
 		}
 		$session = Session::current();
-		if ($session == null) {
+		if (!$session) {
 			$session = new Session();
 		}
 		return $session->get(Application::class);
@@ -117,7 +117,7 @@ class Application
 	/**
 	 * @return string
 	 */
-	public static function getCacheDir()
+	public static function getCacheDir() : string
 	{
 		return __DIR__ . '/../../../cache';
 	}
@@ -149,7 +149,7 @@ class Application
 	 *     ]
 	 *   ]
 	 */
-	public function getClassTreeToArray(array $class_tree, array &$result = [])
+	public function getClassTreeToArray(array $class_tree, array &$result = []) : array
 	{
 		foreach ($class_tree as $class_name => $parents) {
 			foreach (array_keys($parents) as $parent_class_name) {
@@ -190,7 +190,7 @@ class Application
 	 * @return array The classes tree : string[], tree of strings,
 	 *               or [FLAT => $flat, NODES => $notes TREE => $tree]
 	 */
-	public function getClassesTree($flat = false)
+	public function getClassesTree(bool|string|null $flat = false) : array
 	{
 		if (is_string($flat)) {
 			if ($flat === self::FLAT) {
@@ -272,7 +272,7 @@ class Application
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
-	public function getNamespace()
+	public function getNamespace() : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		return (new Reflection_Class($this))->getNamespaceName();
@@ -284,7 +284,7 @@ class Application
 	 *
 	 * @return string[]
 	 */
-	public function getNamespaces()
+	public function getNamespaces() : array
 	{
 		if ($this->namespaces) {
 			return $this->namespaces;
@@ -305,7 +305,7 @@ class Application
 	 * @param $recursive boolean get all parents if true
 	 * @return array[] applications class names : key = class name, value = children class names
 	 */
-	public static function getParentClasses($recursive = false)
+	public static function getParentClasses(bool $recursive = false) : array
 	{
 		/** @noinspection PhpUnhandledExceptionInspection static */
 		$class               = new Reflection_Class(static::class);

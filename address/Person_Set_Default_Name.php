@@ -25,9 +25,10 @@ trait Person_Set_Default_Name
 		$self   = $this;
 		$result = $self->parentToString();
 		if (
-			$result && $self->name
-			&& (strpos($result, $self->name) === false)
-			&& (strpos($self->name, $result) === false)
+			$result
+			&& $self->name
+			&& !str_contains($result, $self->name)
+			&& !str_contains($self->name, $result)
 		) {
 			$result = $self->name . SP . '(' . $result . ')';
 		}
@@ -37,6 +38,8 @@ trait Person_Set_Default_Name
 	//------------------------------------------------------------------------- setDefaultNameIfEmpty
 	/**
 	 * Sets the name to "[$civility] $first_name $last_name" if empty
+	 *
+	 * @noinspection PhpUnused @before_write
 	 */
 	public function setDefaultNameIfEmpty()
 	{

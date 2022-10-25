@@ -26,10 +26,10 @@ class Controller implements Framework\Controller
 	/**
 	 * A crashing controller
 	 *
-	 * @return string;
+	 * @return string
 	 * @throws View_Exception
 	 */
-	public function runCrashing()
+	public function runCrashing() : string
 	{
 		throw new View_Exception(self::CRASHED);
 		/** @noinspection PhpUnreachableStatementInspection This is a test */
@@ -43,15 +43,13 @@ class Controller implements Framework\Controller
 	 * - then a crashing controller
 	 * - at least a working controller
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
-	 * @param $files      array
-	 * @return mixed
+	 * @param $files      array[]
+	 * @return ?string
 	 */
-	public function runMultiple(Parameters $parameters, array $form, array $files)
+	public function runMultiple(Parameters $parameters, array $form, array $files) : ?string
 	{
-		/** @noinspection PhpUnhandledExceptionInspection */
 		return trim(View::run($parameters->getObjects(), $form, $files, Tests::class, self::MULTIPLE));
 	}
 
@@ -59,15 +57,13 @@ class Controller implements Framework\Controller
 	/**
 	 * A working controller : the view returns 'WORKING'
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function runWorking(Parameters $parameters, array $form, array $files)
+	public function runWorking(Parameters $parameters, array $form, array $files) : ?string
 	{
-		/** @noinspection PhpUnhandledExceptionInspection */
 		return trim(View::run($parameters->getObjects(), $form, $files, Tests::class, self::WORKING));
 	}
 

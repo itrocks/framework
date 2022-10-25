@@ -13,7 +13,7 @@ class Plugin
 	 *
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//-------------------------------------------------------------------------------- $configuration
 	/**
@@ -24,7 +24,7 @@ class Plugin
 	 *
 	 * @var string
 	 */
-	public $configuration;
+	public string $configuration;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**

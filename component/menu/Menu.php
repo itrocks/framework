@@ -80,7 +80,7 @@ class Menu implements Configurable
 			$this->blocks              = [];
 			$this->configuration_items = [];
 			foreach ($configuration as $block_key => $items) {
-				if ($block_key == self::TITLE) {
+				if ($block_key === self::TITLE) {
 					$this->constructTitle($items);
 				}
 				else {
@@ -105,7 +105,7 @@ class Menu implements Configurable
 	 *
 	 * @param $class_names string|string[]|object class name(s), can be multiple in one or several
 	 *                      arguments. If string[] : key can be class name, then value is the feature.
-	 *                      If object, will build a configuration to access this object.
+	 *                      If it is an object, will build a configuration to access this object.
 	 * @return string[] key is the URI to call the feature, value if the caption of the menu item
 	 */
 	public static function configurationOf(array|object|string ...$class_names) : array
@@ -156,7 +156,7 @@ class Menu implements Configurable
 		/** @noinspection PhpUnhandledExceptionInspection */
 		$block = Builder::create(Block::class);
 
-		if (substr($block_key, 0, 1) == SL) {
+		if (str_starts_with($block_key, SL)) {
 			$block->title_link = $block_key;
 		}
 		else {
@@ -164,15 +164,15 @@ class Menu implements Configurable
 		}
 
 		foreach ($items as $item_key => $item) {
-			if     ($item_key == self::MODULE) $block->module            = $item;
-			elseif ($item_key == self::TITLE)  $block->title             = $item;
-			elseif ($item_key == self::LINK)   $block->title_link        = $item;
-			elseif ($item_key == self::TARGET) $block->title_link_target = $item;
-			else {
-				$menu_item = $this->constructItem($item_key, $item);
-				if ($menu_item) {
-					$block->items[] = $menu_item;
-				}
+			switch ($item_key) {
+				case self::MODULE: $block->module            = $item; continue 2;
+				case self::TITLE:  $block->title             = $item; continue 2;
+				case self::LINK:   $block->title_link        = $item; continue 2;
+				case self::TARGET: $block->title_link_target = $item; continue 2;
+			}
+			$menu_item = $this->constructItem($item_key, $item);
+			if ($menu_item) {
+				$block->items[] = $menu_item;
 			}
 		}
 		if (!$block->items) {

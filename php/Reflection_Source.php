@@ -452,6 +452,7 @@ class Reflection_Source
 
 					foreach ($matches as $match) {
 						[$class_names, $pos] = $match[2];
+						$class_names = str_replace('$this', 'static', $class_names);
 						if ($class_names[0] === '$') {
 							[$class_names, $pos] = $match[3] ?? ['', $match[2][1]];
 						}

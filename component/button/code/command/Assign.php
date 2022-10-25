@@ -20,23 +20,23 @@ class Assign implements Command
 	/**
 	 * @var string
 	 */
-	private $property_name;
+	private string $property_name;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * @var string
 	 */
-	private $value;
+	private string $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $property_name string
 	 * @param $value         string
 	 */
-	public function __construct($property_name, $value)
+	public function __construct(string $property_name, string $value)
 	{
 		$this->property_name = $property_name;
-		$this->value = $value;
+		$this->value         = $value;
 	}
 
 	//--------------------------------------------------------------------------------------- execute
@@ -45,13 +45,13 @@ class Assign implements Command
 	 * @param $object object
 	 * @return mixed
 	 */
-	public function execute($object)
+	public function execute(object $object) : mixed
 	{
 		if ($object) {
 			// right operand is a string constant
 			if (
-				((substr($this->value, 0 ,1) === Q) && (substr($this->value, -1) === Q))
-				|| ((substr($this->value, 0 ,1) === DQ) && (substr($this->value, -1) === DQ))
+				(str_starts_with($this->value, Q) && str_ends_with($this->value, Q))
+				|| (str_starts_with($this->value, DQ) && str_ends_with($this->value, DQ))
 			) {
 				$value = substr($this->value, 1, -1);
 			}

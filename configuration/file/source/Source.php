@@ -19,38 +19,38 @@ class Source extends File
 	/**
 	 * @var boolean
 	 */
-	public $class_abstract;
+	public bool $class_abstract;
 
 	//-------------------------------------------------------------------------------- $class_extends
 	/**
 	 * @var string
 	 */
-	public $class_extends;
+	public string $class_extends;
 
 	//----------------------------------------------------------------------------- $class_implements
 	/**
 	 * @var string[]
 	 */
-	public $class_implements = [];
+	public array $class_implements = [];
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//----------------------------------------------------------------------------------- $class_type
 	/**
 	 * @values class, interface, trait
 	 * @var string
 	 */
-	public $class_type;
+	public string $class_type;
 
 	//------------------------------------------------------------------------------------ $class_use
 	/**
 	 * @var Class_Use[]|string[]
 	 */
-	public $class_use = [];
+	public array $class_use = [];
 
 	//------------------------------------------------------------------------------------------- add
 	/**
@@ -59,7 +59,7 @@ class Source extends File
 	 *
 	 * @param $class_interfaces_traits string|string[] class, interface(s) and/or trait(s)
 	 */
-	public function add($class_interfaces_traits)
+	public function add(array|string $class_interfaces_traits)
 	{
 		if (is_string($class_interfaces_traits)) {
 			if (interface_exists($class_interfaces_traits) || trait_exists($class_interfaces_traits)) {
@@ -87,9 +87,9 @@ class Source extends File
 	//---------------------------------------------------------------------------------- addInterface
 	/**
 	 * @param $interface string
-	 * @return boolean true if added, false if was already existing
+	 * @return boolean true if added, false if it was already existing
 	 */
-	protected function addInterface($interface)
+	protected function addInterface(string $interface)
 	{
 		if (in_array($interface, $this->class_implements)) {
 			return false;
@@ -112,9 +112,9 @@ class Source extends File
 	//-------------------------------------------------------------------------------------- addTrait
 	/**
 	 * @param $trait string
-	 * @return boolean true if added, false if was already existing
+	 * @return boolean true if added, false if it was already existing
 	 */
-	protected function addTrait($trait)
+	protected function addTrait(string $trait) : bool
 	{
 		foreach ($this->class_use as $class_use) {
 			if ($class_use->trait_name === $trait) {
@@ -141,12 +141,12 @@ class Source extends File
 
 	//------------------------------------------------------------------------------------- addUseFor
 	/**
-	 * Adds an use entry for this class name, if it can be
+	 * Adds a use entry for this class name, if it can be
 	 *
 	 * @param $class_name string
 	 * @param $force      integer
 	 */
-	public function addUseFor($class_name, $force = null)
+	public function addUseFor(string $class_name, int $force = 0)
 	{
 		$this->addUseForClassName($class_name);
 	}
@@ -158,7 +158,7 @@ class Source extends File
 	 * @param $class_extends string
 	 * @return static
 	 */
-	public static function create($class_extends)
+	public static function create(string $class_extends) : static
 	{
 		$namespace = Application::current()->getNamespace();
 		if (str_starts_with($class_extends, $namespace . BS)) {
@@ -168,7 +168,7 @@ class Source extends File
 			);
 		}
 		$class_name = $namespace . BS . Getter::classNameWithoutVendorProject($class_extends);
-		$source = new Source(
+		$source     = new Source(
 			strtolower(str_replace(BS, SL, lLastParse($class_name, BS)))
 			. SL . rLastParse($class_name, BS)
 		);
@@ -181,10 +181,12 @@ class Source extends File
 	//------------------------------------------------------------------------------- defaultFileName
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
+	 * @noinspection PhpDocSignatureInspection $class_name
+	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $class_name
 	 * @param $class_name string Mandatory (default value for compatibility with parent only)
 	 * @return string
 	 */
-	public static function defaultFileName($class_name = null)
+	public static function defaultFileName(string $class_name = null) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class must be valid */
 		return (new Reflection_Class($class_name))->getFileName();
@@ -205,7 +207,7 @@ class Source extends File
 	 *
 	 * @var $class_interfaces_traits string|string[] class, interface(s) and/or trait(s)
 	 */
-	public function remove($class_interfaces_traits)
+	public function remove(array|string $class_interfaces_traits)
 	{
 		if (!is_array($class_interfaces_traits)) {
 			$class_interfaces_traits = [$class_interfaces_traits];
@@ -234,7 +236,7 @@ class Source extends File
 	 * @param $maximum_use_depth integer do not care about use greater than this backslashes counter
 	 * @return string
 	 */
-	public function shortClassNameOf($class_name, $maximum_use_depth = 999)
+	public function shortClassNameOf(string $class_name, int $maximum_use_depth = 999) : string
 	{
 		$final_class_name = parent::shortClassNameOf($class_name, $maximum_use_depth);
 		if (str_contains($final_class_name, BS) && (lLastParse($class_name, BS) === $this->namespace)) {

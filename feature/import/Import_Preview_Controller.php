@@ -31,14 +31,17 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
+	 * @noinspection PhpDocSignatureInspection $class_name, $settings
+	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $class_name
 	 * @param $class_name string object or class name
 	 * @param $parameters array parameters
-	 * @param $settings   Setting\Custom\Set|Import_Settings|null always null (unused)
+	 * @param $settings   Import_Settings&Setting\Custom\Set|null always null (unused)
 	 * @return Button[]
 	 */
 	public function getGeneralButtons(
-		$class_name, array $parameters, Setting\Custom\Set $settings = null
-	) {
+		object|string $class_name, array $parameters, Setting\Custom\Set $settings = null
+	) : array
+	{
 		return [
 			Feature::F_SAVE => new Button(
 				'Save', View::link($class_name, Feature::F_IMPORT, 'preview'),

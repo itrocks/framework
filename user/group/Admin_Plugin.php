@@ -86,7 +86,7 @@ class Admin_Plugin implements Installable, Registerable, Updatable
 	 *
 	 * @param $last_time integer
 	 */
-	public function update($last_time)
+	public function update(int $last_time)
 	{
 		$feature_cache = new Feature_Cache();
 		if ($files = $feature_cache->invalidate($last_time)) {

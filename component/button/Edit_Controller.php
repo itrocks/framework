@@ -20,7 +20,7 @@ class Edit_Controller extends Edit\Controller
 	 * @param $class_name string
 	 * @return string[] property names list
 	 */
-	protected function getPropertiesList($class_name)
+	protected function getPropertiesList(string $class_name) : array
 	{
 		return ['caption', 'class', 'feature', 'target', 'hint', 'conditions', 'code'];
 	}
@@ -32,7 +32,8 @@ class Edit_Controller extends Edit\Controller
 	 * @param $class_name string
 	 * @return array
 	 */
-	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
+	protected function getViewParameters(Parameters $parameters, array $form, string $class_name)
+		: array
 	{
 		$parameters = parent::getViewParameters($parameters, $form, $class_name);
 		$parameters['custom_class_name'] = $parameters[0];
@@ -51,7 +52,7 @@ class Edit_Controller extends Edit\Controller
 				unset($classes["insert-$position"]);
 			}
 		}
-		$parameters['custom_side'] = $side;
+		$parameters['custom_side']           = $side;
 		$parameters["custom_{$side}_button"] = key($classes);
 		return $parameters;
 	}
@@ -74,16 +75,16 @@ class Edit_Controller extends Edit\Controller
 		if (!$button->class && !$button->feature) {
 			$button->class   = 'submit';
 			$button->feature = $parameters->getRawParameter(1);
-			if ($button->feature == Feature::F_EDIT) {
+			if ($button->feature === Feature::F_EDIT) {
 				$button->feature = Feature::F_SAVE;
 				$button->target  = Target::RESPONSES;
 			}
 		}
 
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
-		$edit = View::run($parameters, $form, $files, $class_name, Feature::F_OUTPUT);
-		$include = View::run($parameters, $form, $files, $class_name, 'edit_more');
-		$parser = new Parser($edit);
+		$edit       = View::run($parameters, $form, $files, $class_name, Feature::F_OUTPUT);
+		$include    = View::run($parameters, $form, $files, $class_name, 'edit_more');
+		$parser     = new Parser($edit);
 		$parser->merge('form', trim($include));
 
 		return $parser->buffer;

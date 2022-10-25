@@ -16,13 +16,13 @@ class Config extends File
 	/**
 	 * @var Priority[]|string[]
 	 */
-	public $plugins_by_priority;
+	public array $plugins_by_priority;
 
 	//----------------------------------------------------------------------------------- $start_line
 	/**
 	 * @var string
 	 */
-	public $start_line;
+	public string $start_line;
 
 	//------------------------------------------------------------------------------------- addPlugin
 	/**
@@ -31,7 +31,7 @@ class Config extends File
 	 * @param $configuration  mixed
 	 * @see Framework\Plugin\Priority::const
 	 */
-	public function addPlugin($priority_value, $plugin_name, $configuration)
+	public function addPlugin(string $priority_value, string $plugin_name, mixed $configuration)
 	{
 		$priority = $this->addPriority($priority_value);
 		$priority->addPlugin($plugin_name, $configuration);
@@ -45,7 +45,7 @@ class Config extends File
 	 * @param $priority_value string
 	 * @return Priority
 	 */
-	public function addPriority($priority_value)
+	public function addPriority(string $priority_value) : Priority
 	{
 		$priority = $this->searchPriority($priority_value);
 		if (!$priority) {
@@ -90,7 +90,7 @@ class Config extends File
 	/**
 	 * @param $plugin_name string
 	 */
-	public function removePlugin($plugin_name)
+	public function removePlugin(string $plugin_name)
 	{
 		$recalculate_keys = false;
 		foreach ($this->plugins_by_priority as $key => $priority) {
@@ -107,7 +107,7 @@ class Config extends File
 						&& !($this->plugins_by_priority[$remove_key] instanceof Priority)
 						&& (
 							($this->plugins_by_priority[$remove_key] === '')
-							|| (substr($this->plugins_by_priority[$remove_key], 0, 3) === TAB . '//')
+							|| str_starts_with($this->plugins_by_priority[$remove_key], TAB . '//')
 						)
 					) {
 						unset($this->plugins_by_priority[$remove_key]);
@@ -127,9 +127,9 @@ class Config extends File
 	 * Search a priority
 	 *
 	 * @param $priority_value string
-	 * @return Config\Priority|null
+	 * @return ?Config\Priority
 	 */
-	public function searchPriority($priority_value)
+	public function searchPriority(string $priority_value) : ?Config\Priority
 	{
 		foreach ($this->plugins_by_priority as $priority) {
 			if (($priority instanceof Priority) && ($priority->priority === $priority_value)) {

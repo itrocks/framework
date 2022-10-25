@@ -9,7 +9,7 @@ $(document).ready(function()
 	{
 		const $body   = $('body')
 		const $button = $(this)
-		const random  = Math.random().toString(36).substr(2, 9)
+		const random  = Math.random().toString(36).substring(2, 11)
 		const side    = (($body.hasClass('min-left') === expand) ? 'expand' : 'reduce')
 		const image = app.project_uri + '/itrocks/framework/skins/default/img/menu-24-' + side + '.svg'
 			+ '?' + random

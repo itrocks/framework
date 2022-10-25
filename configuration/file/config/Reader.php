@@ -18,7 +18,7 @@ class Reader extends File\Reader
 	 * @param $line string
 	 * @return boolean
 	 */
-	public function isStartLine($line)
+	public function isStartLine(string $line) : bool
 	{
 		$start = str_starts_with($line, '$config[') && str_ends_with($line, '] = [');
 		if ($start) {

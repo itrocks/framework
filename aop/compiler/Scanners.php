@@ -97,7 +97,10 @@ trait Scanners
 			}
 		}
 		foreach ($class->getProperties([]) as $property) {
-			if (!isset($disable[$property->name]) && strpos($property->getDocComment(), '* @link')) {
+			if (
+				!isset($disable[$property->name])
+				&& str_contains($property->getDocComment(), '* @link')
+			) {
 				$expr = '%'
 					. '\n\s+\*\s+'                           // each line beginning by '* '
 					. '@link\s+'                             // link annotation
@@ -113,7 +116,7 @@ trait Scanners
 						. ' must be All, Collection, DateTime, Map or Object',
 						E_USER_ERROR
 					);
-					$advice = null;
+					//$advice = null;
 				}
 				$properties[$property->name][] = [Handler::READ, $advice];
 			}
@@ -133,14 +136,14 @@ trait Scanners
 	 * @return array
 	 */
 	private function scanForOverrides(
-		$documentation,
+		string $documentation,
 		array $annotations = [
 			Getter_Annotation::ANNOTATION, Link_Annotation::ANNOTATION, 'replaces', 'setter'
 		],
 		array $disable = []
 	) {
 		$overrides = [];
-		if (strpos($documentation, '@override')) {
+		if (str_contains($documentation, '@override')) {
 			$expr = '%'
 				. '\n\s+\*\s+'               // each line beginning by '* '
 				. '@override\s+'             // override annotation

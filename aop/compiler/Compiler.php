@@ -247,7 +247,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	//------------------------------------------------------------------------------- scanForAbstract
 	/**
 	 * Scan weaver for all parent AOP aspects on abstract methods
-	 * - for each methods implemented in the class or its traits
+	 * - for each method implemented in the class or its traits
 	 * - for each parent abstract method of these methods
 	 * - for all the parent chain between the method and its parent
 	 * - if any advice : add it for the current class
@@ -257,17 +257,14 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	 * @param $only_method string Internal use only : the method name we are up-scanning
 	 */
 	private function scanForAbstract(
-		array &$methods, Interfaces\Reflection_Class $class, $only_method = null
+		array &$methods, Interfaces\Reflection_Class $class, string $only_method = ''
 	) {
 		if ($class instanceof Reflection_Class && $class->getParentName()) {
-			$parent_class = $class->getParentClass();
+			$parent_class   = $class->getParentClass();
 			$parent_methods = $parent_class->getMethods([T_EXTENDS, T_IMPLEMENTS]);
 			foreach ($class->getMethods($only_method ? [T_EXTENDS, T_IMPLEMENTS] : [T_USE]) as $method) {
-				if (!$only_method || ($only_method === $method->name)) {
-					if (
-						isset($parent_methods[$method->name])
-						&& $parent_methods[$method->name]->isAbstract()
-					) {
+				if ($only_method === $method->name) {
+					if ($parent_methods[$method->name]->isAbstract() ?? false) {
 						$this->scanForAbstract($methods, $parent_class, $method->name);
 						$joinpoints = $this->weaver->getJoinpoint([$parent_class->name, $method->name]);
 						foreach ($joinpoints as $pointcut) {
@@ -326,13 +323,11 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 					continue;
 				}
 				$property = $class_properties[$match['property_name']];
-				if (isset($extends)) {
-					$property->final_class = $class->name;
-				}
+				$property->final_class = $class->name;
 				if (
-					!strpos($property->getDocComment(), '@getter')
-					&& !strpos($property->getDocComment(), '@link')
-					&& !strpos($property->getDocComment(), '@setter')
+					!str_contains($property->getDocComment(), '@getter')
+					&& !str_contains($property->getDocComment(), '@link')
+					&& !str_contains($property->getDocComment(), '@setter')
 				) {
 					$expr = '%@override\s+' . $match['property_name'] . '\s+.*(@getter|@link|@setter)%';
 					preg_match($expr, $property->class->getDocComment([]), $match2);
@@ -352,7 +347,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	private function scanForMethods(array &$methods, Reflection_Class $class)
 	{
 		foreach ($class->getMethods() as $method) {
-			if (!$method->isAbstract() && ($method->class->name == $class->name)) {
+			if (!$method->isAbstract() && ($method->class->name === $class->name)) {
 				$expr = '%'
 					. '\n\s+\*\s+'                // each line beginning by '* '
 					. '@(after|around|before)\s+' // 1 : aspect type

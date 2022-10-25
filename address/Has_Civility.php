@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Address;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 
@@ -16,9 +17,9 @@ trait Has_Civility
 	//------------------------------------------------------------------------------------- $civility
 	/**
 	 * @link Object
-	 * @var Civility
+	 * @var ?Civility
 	 */
-	public $civility;
+	public ?Civility $civility;
 
 	//-------------------------------------------------------------------------------- initCivilities
 	/**
@@ -31,7 +32,8 @@ trait Has_Civility
 		if (!Dao::count(Civility::class)) {
 			Dao::begin();
 			foreach (['Mr' => 'mister', 'Mrs' => 'mistress'] as $code => $name) {
-				$civility       = new Civility();
+				/** @noinspection PhpUnhandledExceptionInspection class */
+				$civility       = Builder::create(Civility::class);
 				$civility->code = Loc::tr($code);
 				$civility->name = Loc::tr($name);
 				Dao::write($civility);

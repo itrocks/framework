@@ -195,12 +195,15 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
+	 * @noinspection PhpDocSignatureInspection $settings
 	 * @param $object     object|string object or class name
 	 * @param $parameters array parameters
-	 * @param $settings   Setting\Custom\Set|Output_Setting\Set|null
+	 * @param $settings   Setting\Custom\Set&Output_Setting\Set|null
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, array $parameters, Setting\Custom\Set $settings = null)
+	public function getGeneralButtons(
+		object|string $object, array $parameters, Setting\Custom\Set $settings = null
+	) : array
 	{
 		[$close_link, $follows]    = $this->prepareThen($object, $parameters);
 		$buttons[Feature::F_CLOSE] = new Button(
@@ -326,12 +329,12 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	//----------------------------------------------------------------------------- getPropertiesList
 	/**
 	 * @param $class_name string
-	 * @return ?string[] property names list
+	 * @return string[] property names list
 	 */
 	protected function getPropertiesList(
-		/** @noinspection PhpUnusedParameterInspection */ $class_name
-	) {
-		return null;
+		/** @noinspection PhpUnusedParameterInspection */ string $class_name
+	) : array {
+		return [];
 	}
 
 	//---------------------------------------------------------------------------------------- getTab
@@ -365,7 +368,8 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @param $class_name string
 	 * @return array
 	 */
-	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
+	protected function getViewParameters(Parameters $parameters, array $form, string $class_name)
+		: array
 	{
 		$object     = $parameters->getMainObject($class_name);
 		$parameters = $parameters->getObjects();

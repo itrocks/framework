@@ -12,15 +12,15 @@ trait No_General_Buttons
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
-	 * @param $class_name string The context object or class name
+	 * @param $class_name object|string The context object or class name
 	 * @param $parameters array Parameters prepared to the view. 'selection_buttons' to be added
-	 * @param $settings   Setting\Custom\Set
+	 * @param $settings   Setting\Custom\Set|null
 	 * @return Button[]
 	 */
 	public function getGeneralButtons(
-		/** @noinspection PhpUnusedParameterInspection @implements */
-		$class_name, array $parameters, Setting\Custom\Set $settings = null
-	) {
+		object|string $class_name, array $parameters, Setting\Custom\Set $settings = null
+	) : array
+	{
 		return [];
 	}
 

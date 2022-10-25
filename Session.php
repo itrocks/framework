@@ -74,9 +74,9 @@ class Session
 	 *
 	 * Default will be /tmp/Application_Class_Name
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	public $temporary_directory;
+	public ?string $temporary_directory;
 
 	//----------------------------------------------------------------------------------- __serialize
 	/**

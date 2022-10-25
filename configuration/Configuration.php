@@ -36,36 +36,36 @@ class Configuration
 	 *
 	 * @var string
 	 */
-	private $application_class;
+	private string $application_class;
 
 	//--------------------------------------------------------------------------------------- $author
 	/**
 	 * @var string
 	 */
-	private $author;
+	private string $author;
 
 	//--------------------------------------------------------------------------------------- $domain
 	/**
-	 * Domain name (optional) eg for applications that generate dynamic URL or generic emails
+	 * Domain name (optional) e.g. for applications that generate dynamic URL or generic emails
 	 *
 	 * @var string
 	 */
-	public $domain;
+	public string $domain;
 
 	//---------------------------------------------------------------------------------- $environment
 	/**
 	 * @values development, production, test
 	 * @var string
 	 */
-	public $environment;
+	public string $environment;
 
 	//------------------------------------------------------------------------------------ $file_name
 	/**
 	 * Configuration file name, when configuration was loaded from a file
 	 *
-	 * @var string|null
+	 * @var ?string
 	 */
-	public $file_name = null;
+	public ?string $file_name = null;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
@@ -73,19 +73,19 @@ class Configuration
 	 *
 	 * @var string
 	 */
-	private $name;
+	private string $name;
 
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
 	 * @var array
 	 */
-	private $plugins;
+	private array $plugins;
 
 	//-------------------------------------------------------------------------- $temporary_directory
 	/**
-	 * @var string
+	 * @var ?string
 	 */
-	public $temporary_directory;
+	public ?string $temporary_directory;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -96,20 +96,14 @@ class Configuration
 	 * @param $name          string application name
 	 * @param $configuration array recursive configuration array from the config.php file
 	 */
-	public function __construct($name, array $configuration)
+	public function __construct(string $name, array $configuration)
 	{
-		$this->application_class = $configuration[self::APP];
-		$this->author            = $configuration[self::AUTHOR];
-		$this->domain            = isset($configuration[self::DOMAIN])
-			? $configuration[self::DOMAIN]
-			: 'itrocks.org';
-		$this->environment = isset($configuration[self::ENVIRONMENT])
-			? $configuration[self::ENVIRONMENT]
-			: Environment::DEVELOPMENT;
-		$this->name = $name;
-		$this->temporary_directory = isset($configuration[self::TEMPORARY_DIRECTORY])
-			? $configuration[self::TEMPORARY_DIRECTORY]
-			: null;
+		$this->application_class   = $configuration[self::APP];
+		$this->author              = $configuration[self::AUTHOR];
+		$this->domain              = $configuration[self::DOMAIN] ?? 'itrocks.org';
+		$this->environment         = $configuration[self::ENVIRONMENT] ?? Environment::DEVELOPMENT;
+		$this->name                = $name;
+		$this->temporary_directory = $configuration[self::TEMPORARY_DIRECTORY] ?? null;
 		unset($configuration[self::APP]);
 		unset($configuration[self::AUTHOR]);
 		unset($configuration[self::DOMAIN]);
@@ -123,11 +117,11 @@ class Configuration
 	 * @example 'ITRocks\Tests\Application'
 	 * @return string
 	 */
-	public function getApplicationClassName()
+	public function getApplicationClassName() : string
 	{
 		if (!isset($this->application_class)) {
 			$this->application_class
-				= (isset($this->author) ? $this->author : 'ITRocks') . BS . $this->name . BS . 'Application';
+				= ($this->author ?? 'ITRocks') . BS . $this->name . BS . 'Application';
 		}
 		return $this->application_class;
 	}
@@ -139,7 +133,7 @@ class Configuration
 	 * @example 'tests'
 	 * @return string
 	 */
-	public function getApplicationName()
+	public function getApplicationName() : string
 	{
 		return $this->name;
 	}
@@ -148,7 +142,7 @@ class Configuration
 	/**
 	 * @return array
 	 */
-	public function getPlugins()
+	public function getPlugins() : array
 	{
 		return $this->plugins;
 	}

@@ -14,19 +14,19 @@ trait Namespace_White_Lines
 	/**
 	 * @var string[]
 	 */
-	protected $insert_lines;
+	protected array $insert_lines;
 
 	//------------------------------------------------------------------------------- $last_namespace
 	/**
 	 * @var string
 	 */
-	protected $last_namespace;
+	protected string $last_namespace;
 
 	//--------------------------------------------------------------------------------- autoWhiteLine
 	/**
 	 * @param $short_class_name string
 	 */
-	protected function autoWhiteLine($short_class_name)
+	protected function autoWhiteLine(string $short_class_name)
 	{
 		$namespace = lParse($short_class_name, BS);
 		if ($this->last_namespace !== $namespace) {

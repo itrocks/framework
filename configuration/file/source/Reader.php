@@ -19,14 +19,14 @@ class Reader extends File\Reader
 	 *
 	 * @var string
 	 */
-	protected $class_buffer;
+	protected string $class_buffer;
 
 	//------------------------------------------------------------------------------------- isEndLine
 	/**
 	 * @param $line string
 	 * @return boolean
 	 */
-	public function isEndLine($line)
+	public function isEndLine(string $line) : bool
 	{
 		$keyword = lParse(rLastParse($line, TAB, 1, true), SP);
 		return ($line === '}')
@@ -40,7 +40,7 @@ class Reader extends File\Reader
 	 * @param $line string
 	 * @return boolean
 	 */
-	public function isStartLine($line)
+	public function isStartLine(string $line) : bool
 	{
 		$start_line = in_array(lParse($line, SP), ['abstract', 'class', 'interface', 'trait']);
 		if ($start_line) {
@@ -84,7 +84,7 @@ class Reader extends File\Reader
 					}
 					else {
 						trigger_error('Cannot parse class use clause ' . $line, E_USER_ERROR);
-						$parse_char = null;
+						//$parse_char = null;
 					}
 					if ($parse_char) {
 						$use = $this->file->fullClassNameOf(trim(

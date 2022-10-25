@@ -21,16 +21,14 @@ class Drop_Controller implements Feature_Controller
 	/**
 	 * Delete an object
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters array
 	 * - first : the deleted object
 	 * - other parameters are not sent to the delete controller (only as_widget is kept)
-	 * @return mixed
+	 * @return ?string
 	 */
-	private function deleteObject(array $parameters)
+	private function deleteObject(array $parameters) : ?string
 	{
-		$object = array_shift($parameters);
-		/** @noinspection PhpUnhandledExceptionInspection get_class($object) is valid */
+		$object         = array_shift($parameters);
 		$controller_uri = SL . Names::classToUri(get_class($object))
 			. SL . Dao::getObjectIdentifier($object)
 			. SL . Feature::F_DELETE;
@@ -40,9 +38,9 @@ class Drop_Controller implements Feature_Controller
 	//----------------------------------------------------------------------------------- parseAndRun
 	/**
 	 * @param $parameters array
-	 * @return mixed
+	 * @return ?string
 	 */
-	private function parseAndRun(array $parameters)
+	private function parseAndRun(array $parameters) : ?string
 	{
 		$first_parameter = array_shift($parameters);
 		if (is_object($first_parameter)) {
@@ -68,15 +66,16 @@ class Drop_Controller implements Feature_Controller
 	/**
 	 * Remove element(s) of a given class from context
 	 *
-	 * @param $class_name string The element class name
+	 * @param $class_name         string The element class name
 	 * @param $context_class_name string The context class where to remove the element from
-	 * @param $context_feature string The context feature to remove the element from
-	 * @param $parameters mixed[] The elements to be removed, and additional parameters
-	 * @return mixed
+	 * @param $context_feature    string The context feature to remove the element from
+	 * @param $parameters         array The elements to be removed, and additional parameters
+	 * @return ?string
 	 */
 	private function removeElement(
-		$class_name, $context_class_name, $context_feature, array $parameters
-	) {
+		string $class_name, string $context_class_name, string $context_feature, array $parameters
+	) : ?string
+	{
 		$context = substr(View::link($context_class_name, [$context_feature]), 1);
 		return (new Main)->runController(
 			View::link($class_name, Feature::F_REMOVE, [$context]),

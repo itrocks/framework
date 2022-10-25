@@ -19,23 +19,23 @@ class Equals implements Command
 	/**
 	 * @var string
 	 */
-	private $property_name;
+	private string $property_name;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
-	 * @var string
+	 * @var mixed
 	 */
-	private $value;
+	private mixed $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $property_name string
-	 * @param $value         string
+	 * @param $value         mixed
 	 */
-	public function __construct($property_name, $value)
+	public function __construct(string $property_name, mixed $value)
 	{
 		$this->property_name = $property_name;
-		$this->value = $value;
+		$this->value         = $value;
 	}
 
 	//--------------------------------------------------------------------------------------- execute
@@ -44,13 +44,13 @@ class Equals implements Command
 	 * @param $object object
 	 * @return mixed
 	 */
-	public function execute($object)
+	public function execute(object $object) : bool
 	{
 		if ($object) {
 			// right operand is a string constant
 			if (
-				((substr($this->value, 0 ,1) === Q) && (substr($this->value, -1) === Q))
-				|| ((substr($this->value, 0 ,1) === DQ) && (substr($this->value, -1) === DQ))
+				(str_starts_with($this->value, Q) && str_ends_with($this->value, Q))
+				|| (str_starts_with($this->value, DQ) && str_ends_with($this->value, DQ))
 			) {
 				$value = substr($this->value, 1, -1);
 			}

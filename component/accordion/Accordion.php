@@ -6,13 +6,10 @@ use ITRocks\Framework\View\Html\Dom\Element;
 use ITRocks\Framework\View\Html\Template;
 
 /**
- * Class Accordion
+ * Accordion component
  */
 class Accordion
 {
-
-	//-------------------------------------------------------------------------------- COMPONENT_NAME
-	const COMPONENT_NAME = 'accordion';
 
 	//--------------------------------------------------------------------------------- TEMPLATE_PATH
 	const TEMPLATE_PATH = 'itrocks/framework/component/accordion/accordion.html';
@@ -68,12 +65,12 @@ class Accordion
 		string $name, string $input_name, string $input_value, string $input_label = '',
 		array $icon_classes = [], array $contents = []
 	) {
-		$this->name         = $name;
+		$this->contents     = $contents;
+		$this->icon_classes = $icon_classes;
+		$this->input_label  = $input_label;
 		$this->input_name   = $input_name;
 		$this->input_value  = $input_value;
-		$this->input_label  = $input_label;
-		$this->icon_classes = $icon_classes;
-		$this->contents     = $contents;
+		$this->name         = $name;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -86,12 +83,12 @@ class Accordion
 		$template->setParameters(
 			[
 				Parameter::IS_INCLUDED => true,
-				'name'                 => $this->name,
+				'contents'             => $this->contents,
+				'icon_classes'         => $this->icon_classes,
+				'input_label'          => $this->input_label,
 				'input_name'           => $this->input_name,
 				'input_value'          => $this->input_value,
-				'input_label'          => $this->input_label,
-				'icon_classes'         => $this->icon_classes,
-				'contents'             => $this->contents
+				'name'                 => $this->name
 			]
 		);
 		return $template->parse();

@@ -18,7 +18,7 @@ class Element
 	/**
 	 * @var DOMElement
 	 */
-	public $element;
+	public DOMElement $element;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -26,7 +26,7 @@ class Element
 	 * @setter
 	 * @var string
 	 */
-	public $path;
+	public string $path = '';
 
 	//------------------------------------------------------------------------------- $path_attribute
 	/**
@@ -36,7 +36,7 @@ class Element
 	 * @see Element::__construct
 	 * @var string
 	 */
-	private $path_attribute;
+	private string $path_attribute;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -45,7 +45,7 @@ class Element
 	 * @param $element DOMElement
 	 * @param $path    string
 	 */
-	public function __construct($element, $path)
+	public function __construct(DOMElement $element, string $path)
 	{
 		$this->element = $element;
 		switch ($this->element->nodeName) {
@@ -76,16 +76,17 @@ class Element
 	/**
 	 * @return string
 	 */
-	public function getPath()
+	public function getPath() : string
 	{
 		return $this->element->getAttribute($this->path_attribute);
 	}
 
 	//--------------------------------------------------------------------------------------- setPath
 	/**
+	 * @noinspection PhpUnused @setter
 	 * @param $path string
 	 */
-	public function setPath($path)
+	public function setPath(string $path)
 	{
 		$this->element->setAttribute($this->path_attribute, $path);
 	}

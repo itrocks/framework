@@ -12,7 +12,7 @@ use ITRocks\Framework\PHP\Dependency;
  * - On removing trait : if it is a compatibility trait or part of an active compatibility trait,
  *   remove the compatibility trait and place the removed traits back
  *
- * This class is used by Builder and by Source for the traits assembly.
+ * This class is used by Builder and by Source for the trait's assembly.
  * It does not affect the list of installed plugins and so on... only for replacements in files
  */
 class Compatibility_Class
@@ -25,7 +25,7 @@ class Compatibility_Class
 	 * @param $components string[]
 	 * @return string[]
 	 */
-	public function allComponents(array $components)
+	public function allComponents(array $components) : array
 	{
 		$result = [];
 		foreach ($components as $component) {
@@ -47,7 +47,7 @@ class Compatibility_Class
 	 * @param $component string
 	 * @return array [$compatibility_class_name => [$component_class_name => $component_class_name]]
 	 */
-	protected function compatibilities($component)
+	protected function compatibilities(string $component) : array
 	{
 		$compatibilities = [];
 		$dependencies    = Dao::search(
@@ -65,7 +65,7 @@ class Compatibility_Class
 	 * @param $class_name string
 	 * @return string[]
 	 */
-	public function components($class_name)
+	public function components(string $class_name) : array
 	{
 		$components   = [];
 		$dependencies = Dao::search(
@@ -90,7 +90,7 @@ class Compatibility_Class
 	 * @param $components    string[]
 	 * @return array ['add' => $compatibility_component, 'remove' => [$component_name]], empty if not
 	 */
-	public function replace($new_component, array $components)
+	public function replace(string $new_component, array $components) : array
 	{
 		foreach ($this->compatibilities($new_component) as $compatibility_class => $compatibility) {
 			foreach ($compatibility as $component) {

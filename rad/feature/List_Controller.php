@@ -20,15 +20,16 @@ class List_Controller extends List_\Controller
 
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
-	 * @param $class_name    string class name
-	 * @param $parameters    string[] parameters
-	 * @param $list_settings Setting\Custom\Set|List_Setting\Set
+	 * @param $class_name string class name
+	 * @param $parameters string[] parameters
+	 * @param $settings   List_Setting\Set|null
 	 * @return Button[]
 	 */
 	public function getSelectionButtons(
-		$class_name, array $parameters, Setting\Custom\Set $list_settings = null
-	) {
-		$buttons = parent::getSelectionButtons($class_name, $parameters, $list_settings);
+		string $class_name, array $parameters, Setting\Custom\Set $settings = null
+	) : array
+	{
+		$buttons = parent::getSelectionButtons($class_name, $parameters, $settings);
 		return isset($buttons[Feature::F_EXPORT])
 			? [Feature::F_EXPORT => $buttons[Feature::F_EXPORT]]
 			: [];

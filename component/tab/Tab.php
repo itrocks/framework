@@ -104,7 +104,7 @@ class Tab
 
 	//------------------------------------------------------------------------------------------- add
 	/**
-	 * Add content to the tab (eg content is an array, new elements are added)
+	 * Add content to the tab (e.g. content is an array, new elements are added)
 	 *
 	 * @param $content mixed
 	 * @return Tab
@@ -152,6 +152,8 @@ class Tab
 	//-------------------------------------------------------------------------------------------- id
 	/**
 	 * Return a calculated id for the tab, calculated from its title
+	 *
+	 * @return string
 	 */
 	public function id() : string
 	{

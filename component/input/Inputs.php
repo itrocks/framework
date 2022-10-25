@@ -13,6 +13,6 @@ class Inputs
 	/**
 	 * @var Input[]
 	 */
-	public $inputs;
+	public array $inputs;
 
 }

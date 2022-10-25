@@ -78,18 +78,17 @@ class IP implements Configurable, Registerable
 	 *
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
 		foreach ($configuration as $group_name => $group) {
 			foreach ($group as $key => $value) {
 				if (is_array($value)) {
 					$this->{$key}[$group_name] = array_combine($value, $value);
+					continue;
 				}
 				// retro-compatibility with one-group-only configuration (into config.php)
-				else {
-					$this->$group_name = array_combine($group, $group);
-					break;
-				}
+				$this->$group_name = array_combine($group, $group);
+				break;
 			}
 		}
 
@@ -174,7 +173,7 @@ class IP implements Configurable, Registerable
 	private function isIP(string $address) : bool
 	{
 		$address = explode(DOT, $address);
-		return (count($address) == 4)
+		return (count($address) === 4)
 			&& is_numeric($address[0]) && is_numeric($address[1])
 			&& is_numeric($address[2]) && is_numeric($address[3]);
 	}

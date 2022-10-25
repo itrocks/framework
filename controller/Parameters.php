@@ -16,20 +16,17 @@ use ITRocks\Framework\Tools\Set;
 class Parameters
 {
 
-	//-------------------------------------------------------------------------------------- REDIRECT
-	const REDIRECT = 'redirect';
-
 	//-------------------------------------------------------------------------------------- $objects
 	/**
 	 * @var object[] keys are parameters names (ie object class short name)
 	 */
-	private $objects = [];
+	private array $objects = [];
 
 	//----------------------------------------------------------------------------------- $parameters
 	/**
 	 * @var array keys are parameters names (ie object class short name)
 	 */
-	private $parameters = [];
+	private array $parameters = [];
 
 	//------------------------------------------------------------------------------------------ $uri
 	/**
@@ -37,11 +34,11 @@ class Parameters
 	 *
 	 * @var Uri
 	 */
-	public $uri;
+	public Uri $uri;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $uri Uri
+	 * @param $uri Uri|null
 	 */
 	public function __construct(Uri $uri = null)
 	{
@@ -53,9 +50,9 @@ class Parameters
 	 * Adds a parameter without name value
 	 *
 	 * @param $parameter_value mixed
-	 * @return Parameters
+	 * @return $this
 	 */
-	public function addValue($parameter_value)
+	public function addValue(mixed $parameter_value) : static
 	{
 		$this->parameters[] = $parameter_value;
 		return $this;
@@ -68,9 +65,9 @@ class Parameters
 	 * @param $value mixed the searched value
 	 * @return boolean true if found, else false
 	 */
-	public function contains($value)
+	public function contains(mixed $value) : bool
 	{
-		return array_search($value, $this->parameters, true) !== false;
+		return in_array($value, $this->parameters, true);
 	}
 
 	//----------------------------------------------------------------------------------------- count
@@ -79,7 +76,7 @@ class Parameters
 	 *
 	 * @return integer
 	 */
-	public function count()
+	public function count() : int
 	{
 		return count($this->parameters);
 	}
@@ -88,13 +85,13 @@ class Parameters
 	/**
 	 * @return array [$key mixed, $object object]
 	 */
-	protected function firstKeyObject()
+	protected function firstKeyObject() : array
 	{
 		foreach ($this->parameters as $key => $value) {
 			if (is_object($value)) {
 				return [$key, $value];
 			}
-			elseif (ucfirst(substr($key, 0, 1)) && class_exists($key)) {
+			elseif (ctype_upper(substr($key, 0, 1)) && class_exists($key)) {
 				return [$key, Dao::read($value, $key)];
 			}
 		}
@@ -103,9 +100,9 @@ class Parameters
 
 	//----------------------------------------------------------------------------------- firstObject
 	/**
-	 * @return object
+	 * @return ?object
 	 */
-	public function firstObject()
+	public function firstObject() : ?object
 	{
 		[,$value] = $this->firstKeyObject();
 		return $value;
@@ -120,7 +117,7 @@ class Parameters
 	 * of the parameters list.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name           class-string<T>|T|null
+	 * @param $class_name           class-string<T>|null
 	 * @param $search_by_properties string[]
 	 * @return T
 	 * @template T
@@ -128,12 +125,8 @@ class Parameters
 	public function getMainObject(string $class_name = null, array $search_by_properties = [])
 		: object
 	{
-		if (is_object($class_name)) {
-			$default_object = $class_name;
-			$class_name = get_class($class_name);
-		}
 		reset($this->parameters);
-		$object = $this->getObject(key($this->parameters));
+		$object = $this->parameters ? $this->getObject(key($this->parameters)) : null;
 		if (!$object || !is_object($object)) {
 			if ($search_by_properties) {
 				$object = $this->searchMainObject($class_name, $search_by_properties);
@@ -176,10 +169,8 @@ class Parameters
 			$object = $this->objects[$parameter_name];
 		}
 		elseif (is_numeric($this->getRawParameter($parameter_name))) {
-			if ($this->uri->isClassName($parameter_name)) {
-				$class_name = $parameter_name;
-			}
-			if (isset($class_name) && class_exists($class_name)) {
+			$class_name = $this->uri->isClassName($parameter_name) ? $parameter_name : null;
+			if ($class_name && class_exists($class_name)) {
 				// object parameter
 				$object = intval($this->getRawParameter($parameter_name));
 				$object = Mapper\Getter::getObject($object, $class_name);
@@ -188,13 +179,12 @@ class Parameters
 					// This exception will be caught by the main controller : not to be managed by others
 					$this->throwException('The object does not exist anymore');
 				}
-				$this->objects[$parameter_name] = $object;
 			}
 			else {
 				// free parameter
 				$object = $this->getRawParameter($parameter_name);
-				$this->objects[$parameter_name] = $object;
 			}
+			$this->objects[$parameter_name] = $object;
 		}
 		else {
 			// text parameter
@@ -212,7 +202,7 @@ class Parameters
 		}
 		if (empty($object)) {
 			$built_parameter_name = Builder::className($parameter_name);
-			if ($built_parameter_name != $parameter_name) {
+			if ($built_parameter_name !== $parameter_name) {
 				return $this->getObject(Builder::className($parameter_name));
 			}
 		}
@@ -225,7 +215,7 @@ class Parameters
 	 *
 	 * @return array key is the parameter name
 	 */
-	public function getObjects()
+	public function getObjects() : array
 	{
 		$parameters = [];
 		if (!$this->parameters) {
@@ -244,9 +234,9 @@ class Parameters
 	 * @param $parameter_name string
 	 * @return mixed
 	 */
-	public function getRawParameter($parameter_name)
+	public function getRawParameter(string $parameter_name) : mixed
 	{
-		return isset($this->parameters[$parameter_name]) ? $this->parameters[$parameter_name] : null;
+		return $this->parameters[$parameter_name] ?? null;
 	}
 
 	//------------------------------------------------------------------------------ getRawParameters
@@ -255,7 +245,7 @@ class Parameters
 	 *
 	 * @return array key is the parameter name
 	 */
-	public function getRawParameters()
+	public function getRawParameters() : array
 	{
 		return $this->parameters;
 	}
@@ -267,16 +257,16 @@ class Parameters
 	 * This is a shortcut to Selection::readObjects()
 	 *
 	 * If it is a checkboxes selection from the list, returns a list of selected elements.
-	 * If it is from an unique main object, return this main object.
+	 * If it is from a unique main object, return this main object.
 	 *
-	 * If use getSelected in controller,
+	 * If it uses getSelected in controller,
 	 * this controller can be compatible with selection in a form and output/edit form buttons.
 	 *
 	 * @param $form array
 	 * @return object[]
 	 * @see Selection::readObjects
 	 */
-	public function getSelectedObjects(array $form)
+	public function getSelectedObjects(array $form) : array
 	{
 		$selection = new Selection($this, $form);
 		return $selection->readObjects();
@@ -289,7 +279,7 @@ class Parameters
 	 * @param $parameters_without_value_too boolean if true, parameter= will be returned as value
 	 * @return string[]
 	 */
-	public function getUnnamedParameters($parameters_without_value_too = false)
+	public function getUnnamedParameters(bool $parameters_without_value_too = false) : array
 	{
 		if ($parameters_without_value_too) {
 			$parameters = [];
@@ -314,7 +304,7 @@ class Parameters
 	 * @param $in_values_too boolean if true, strict-search into values too
 	 * @return boolean
 	 */
-	public function has($key, $in_values_too = false)
+	public function has(string $key, bool $in_values_too = false) : bool
 	{
 		return isset($this->parameters[$key]) || ($in_values_too && $this->hasValue($key, true));
 	}
@@ -325,7 +315,7 @@ class Parameters
 	 * @param $strict boolean
 	 * @return boolean
 	 */
-	public function hasValue($value, $strict = false)
+	public function hasValue(mixed $value, bool $strict = false) : bool
 	{
 		return in_array($value, $this->parameters, $strict);
 	}
@@ -349,7 +339,7 @@ class Parameters
 	 * @param $key             integer|string
 	 * @param $from_values_too boolean if true, remove from keys and values
 	 */
-	public function remove($key, $from_values_too = false)
+	public function remove(int|string $key, bool $from_values_too = false)
 	{
 		if (isset($this->parameters[$key])) {
 			unset($this->parameters[$key]);
@@ -375,9 +365,9 @@ class Parameters
 	 * Returns the key of the parameter having value $string
 	 *
 	 * @param $value mixed the searched value
-	 * @return integer|string|boolean the name of the found parameter, or false if not found
+	 * @return integer|string|false the name of the found parameter, or false if not found
 	 */
-	public function search($value)
+	public function search(mixed $value) : int|string|false
 	{
 		return array_search($value, $this->parameters);
 	}
@@ -386,9 +376,9 @@ class Parameters
 	/**
 	 * @param $class_name     string
 	 * @param $property_names string[]
-	 * @return object
+	 * @return ?object
 	 */
-	public function searchMainObject($class_name, array $property_names)
+	public function searchMainObject(string $class_name, array $property_names) : ?object
 	{
 		$search = [];
 		foreach ($property_names as $property_name) {
@@ -407,9 +397,9 @@ class Parameters
 	 *
 	 * @param $parameter_name  string
 	 * @param $parameter_value mixed
-	 * @return Parameters
+	 * @return $this
 	 */
-	public function set($parameter_name, $parameter_value)
+	public function set(string $parameter_name, mixed $parameter_value) : static
 	{
 		if (isset($this->objects[$parameter_name])) {
 			$this->objects[$parameter_name] = $parameter_value;
@@ -420,11 +410,11 @@ class Parameters
 
 	//----------------------------------------------------------------------------------------- shift
 	/**
-	 * Returns and remove the first parameter
+	 * Returns and remove the first parameter value
 	 *
 	 * @return mixed
 	 */
-	public function shift()
+	public function shift() : mixed
 	{
 		return array_shift($this->parameters);
 	}
@@ -433,9 +423,9 @@ class Parameters
 	/**
 	 * Returns and remove the first parameter which key is not an integer and value is not an object
 	 *
-	 * @return string[] first element is the name of the parameter, second element is its value
+	 * @return ?string[] first element is the name of the parameter, second element is its value
 	 */
-	public function shiftNamed()
+	public function shiftNamed() : ?array
 	{
 		foreach ($this->parameters as $key => $value) {
 			if (!is_numeric($key) && !is_object($value)) {
@@ -450,9 +440,9 @@ class Parameters
 	/**
 	 * Returns and remove the first parameter which is an object
 	 *
-	 * @return object
+	 * @return ?object
 	 */
-	public function shiftObject()
+	public function shiftObject() : ?object
 	{
 		[$key, $value] = $this->firstKeyObject();
 		if (isset($key)) {
@@ -467,9 +457,9 @@ class Parameters
 	 * Returns and remove the first unnamed parameter
 	 * (which key is an integer and value is not an object)
 	 *
-	 * @return mixed|null
+	 * @return mixed
 	 */
-	public function shiftUnnamed()
+	public function shiftUnnamed() : mixed
 	{
 		foreach ($this->parameters as $key => $value) {
 			if ((is_numeric($key) || ($key === '')) && !is_object($value)) {
@@ -485,23 +475,23 @@ class Parameters
 	 * @param $message string
 	 * @throws Object_Not_Found_Exception
 	 */
-	protected function throwException($message)
+	protected function throwException(string $message)
 	{
 		throw new Object_Not_Found_Exception(Loc::tr($message));
 	}
 
 	//--------------------------------------------------------------------------------------- toArray
 	/**
-	 * @param $parameter array|string
+	 * @param $value array|string
 	 * @return array
 	 */
-	public static function toArray($value)
+	public static function toArray(array|string $value) : array
 	{
 		if (
 			is_string($value)
 			&& (strlen($value) > 2)
-			&& ($value[0] === '[')
-			&& ($value[strlen($value) - 1] === ']')
+			&& str_starts_with($value, '[')
+			&& str_ends_with($value, ']')
 		) {
 			$value = explode(',', substr($value, 1, -1));
 		}
@@ -519,7 +509,7 @@ class Parameters
 	 * @param $shift boolean if true, get elements will be removed from parameters
 	 * @return array
 	 */
-	public function toGet($shift = false)
+	public function toGet(bool $shift = false) : array
 	{
 		$get = [];
 		foreach ($this->parameters as $key => $value) {
@@ -539,7 +529,7 @@ class Parameters
 	 *
 	 * @param $parameter_value mixed
 	 */
-	public function unshift($parameter_value)
+	public function unshift(mixed $parameter_value)
 	{
 		if (is_object($parameter_value)) {
 			$class_name = get_class($parameter_value);
@@ -562,7 +552,7 @@ class Parameters
 	 *
 	 * @param $parameter_value mixed
 	 */
-	public function unshiftUnnamed($parameter_value)
+	public function unshiftUnnamed(mixed $parameter_value)
 	{
 		array_unshift($this->parameters, $parameter_value);
 	}

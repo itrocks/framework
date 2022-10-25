@@ -21,7 +21,8 @@ class Controller extends Edit\Controller
 	 * @param $class_name string
 	 * @return array
 	 */
-	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
+	protected function getViewParameters(Parameters $parameters, array $form, string $class_name)
+		: array
 	{
 		$object     = $parameters->getMainObject($class_name);
 		$duplicator = new Duplicator();

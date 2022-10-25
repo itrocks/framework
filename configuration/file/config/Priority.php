@@ -16,13 +16,13 @@ class Priority
 	/**
 	 * @var Config
 	 */
-	public $config;
+	public Config $config;
 
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
 	 * @var Plugin[]|string[] plugin configuration or free plugin configuration code
 	 */
-	public $plugins = [];
+	public array $plugins = [];
 
 	//------------------------------------------------------------------------------------- $priority
 	/**
@@ -32,7 +32,7 @@ class Priority
 	 * @values Framework\Plugin\Priority::const
 	 * @var string
 	 */
-	public $priority;
+	public string $priority;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -41,7 +41,7 @@ class Priority
 	 * @param $priority string @values Framework\Plugin\Priority::const
 	 * @see Framework\Plugin\Priority::const
 	 */
-	public function __construct($priority)
+	public function __construct(string $priority)
 	{
 		$this->priority = strtolower($priority);
 	}
@@ -54,7 +54,7 @@ class Priority
 	 * @param $configuration mixed
 	 * @return Plugin
 	 */
-	public function addPlugin($plugin_name, $configuration)
+	public function addPlugin(string $plugin_name, mixed $configuration) : Plugin
 	{
 		$plugin = $this->searchPlugin($plugin_name);
 		if (!$plugin) {
@@ -81,7 +81,7 @@ class Priority
 	 *
 	 * @return boolean true if has been emptied, false if the priority still contains plugins
 	 */
-	public function emptyIfNoPluginAnymore()
+	public function emptyIfNoPluginAnymore() : bool
 	{
 		foreach ($this->plugins as $plugin) {
 			if ($plugin instanceof Plugin) {
@@ -97,7 +97,7 @@ class Priority
 	 * @param $plugin_name string
 	 * @return integer
 	 */
-	public function removePlugin($plugin_name)
+	public function removePlugin(string $plugin_name) : int
 	{
 		$removed = 0;
 		foreach ($this->plugins as $plugin_key => $plugin) {
@@ -114,9 +114,9 @@ class Priority
 	 * Search a plugin
 	 *
 	 * @param $plugin_name string plugin class name
-	 * @return Plugin|null
+	 * @return ?Plugin
 	 */
-	public function searchPlugin($plugin_name)
+	public function searchPlugin(string $plugin_name) : ?Plugin
 	{
 		foreach ($this->plugins as $plugin) {
 			if (($plugin instanceof Plugin) && ($plugin->class_name === $plugin_name)) {

@@ -36,7 +36,7 @@ class Update implements Registerable, Updatable
 	 *
 	 * @param $last_time integer
 	 */
-	public function update($last_time)
+	public function update(int $last_time)
 	{
 		/** @var $class_names     string[] */
 		/** @var $feature_classes Keep[] */

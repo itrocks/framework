@@ -404,14 +404,17 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
+	 * @noinspection PhpDocSignatureInspection $class_name, $settings
+	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $class_name
 	 * @param $class_name string The context object or class name
 	 * @param $parameters array Parameters prepared to the view. 'selection_buttons' to be added
-	 * @param $settings   Setting\Custom\Set|List_Setting\Set
+	 * @param $settings   Setting\Custom\Set&List_Setting\Set|null
 	 * @return Button[]
 	 */
 	public function getGeneralButtons(
-		$class_name, array $parameters, Setting\Custom\Set $settings = null
-	) {
+		object|string $class_name, array $parameters, Setting\Custom\Set $settings = null
+	) : array
+	{
 		return [
 			Feature::F_ADD => new Button(
 				'Add',
@@ -503,14 +506,15 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
-	 * @param $class_name    string class name
-	 * @param $parameters    string[] parameters
-	 * @param $list_settings Setting\Custom\Set|List_Setting\Set
+	 * @param $class_name string class name
+	 * @param $parameters string[] parameters
+	 * @param $settings   List_Setting\Set|null
 	 * @return Button[]
 	 */
 	public function getSelectionButtons(
-		$class_name, array $parameters, Setting\Custom\Set $list_settings = null
-	) {
+		string $class_name, array $parameters, List_Setting\Set $settings = null
+	) : array
+	{
 		$layout_model_buttons = (new Buttons_Generator($class_name))->getButtons();
 
 		$buttons = [
@@ -561,7 +565,8 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $class_name string
 	 * @return array
 	 */
-	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
+	protected function getViewParameters(Parameters $parameters, array $form, string $class_name)
+		: array
 	{
 		$load_time             = time();
 		$parameters            = $parameters->getObjects();

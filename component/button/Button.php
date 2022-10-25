@@ -29,7 +29,7 @@ class Button
 
 	//---------------------------------------------------------------------------------------- OBJECT
 	/**
-	 * The button represents an object you can drag'n'drop (eg to trashcan)
+	 * The button represents an object you can drag-and-drop (e.g. to trashcan)
 	 */
 	const OBJECT = 'object';
 
@@ -77,9 +77,9 @@ class Button
 	 * @link Object
 	 * @multiline
 	 * @output string
-	 * @var Code
+	 * @var ?Code
 	 */
-	public $code;
+	public ?Code $code = null;
 
 	//---------------------------------------------------------------------------------------- $color
 	/**
@@ -153,16 +153,16 @@ class Button
 	 *
 	 * @getter
 	 * @user invisible
-	 * @var string
+	 * @var ?string
 	 */
-	public $link;
+	public ?string $link = null;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * @user invisible
-	 * @var object
+	 * @var ?object
 	 */
-	public object $object;
+	public ?object $object = null;
 
 	//---------------------------------------------------------------------------------- $sub_buttons
 	/**
@@ -172,7 +172,7 @@ class Button
 	 * @user invisible
 	 * @var Button[]
 	 */
-	public $sub_buttons;
+	public array $sub_buttons = [];
 
 	//--------------------------------------------------------------------------------------- $target
 	/**
@@ -195,9 +195,9 @@ class Button
 	public function __construct(
 		string $caption = null, string $link = null, string $feature = null, array|string $options = []
 	) {
-		if ($caption != null) $this->caption = $caption;
-		if ($link    != null) $this->link    = $link;
-		if ($feature != null) $this->feature = $feature;
+		if (isset($caption)) $this->caption = $caption;
+		if (isset($link))    $this->link    = $link;
+		if (isset($feature)) $this->feature = $feature;
 		if (!is_array($options)) {
 			$options = [$options];
 		}
@@ -205,7 +205,7 @@ class Button
 			$this->addOption($option, $key);
 		}
 
-		if ($this->feature == Feature::F_CONFIRM) {
+		if ($this->feature === Feature::F_CONFIRM) {
 			$this->cancel_label  = $this->cancel_label  ?: Loc::tr('Cancel');
 			$this->confirm_label = $this->confirm_label ?: Loc::tr('Confirm');
 
@@ -248,11 +248,9 @@ class Button
 			$this->sub_buttons[] = $option;
 		}
 		elseif ($key === self::SUB_BUTTONS) {
-			$this->sub_buttons = is_array($this->sub_buttons)
-				? array_merge($this->sub_buttons, $option)
-				: $option;
+			$this->sub_buttons = array_merge($this->sub_buttons, $option);
 		}
-		elseif (($key === self::CLASS) || (is_numeric($key) && (substr($option, 0, 1) == DOT))) {
+		elseif (($key === self::CLASS) || (is_numeric($key) && str_starts_with($option, DOT))) {
 			$this->class .= (isset($this->class) ? SP : '')
 				. (is_numeric($key) ? substr($option, 1) : $option);
 		}
@@ -293,6 +291,7 @@ class Button
 
 	//--------------------------------------------------------------------------------------- getLink
 	/**
+	 * @noinspection PhpUnused @getter
 	 * @return ?string
 	 */
 	protected function getLink() : ?string
@@ -316,7 +315,7 @@ class Button
 		$this->object = $object;
 		// insert object identifier between the class path and the feature, if missing and if
 		// object class matches the button link
-		if ($identifier = Dao::getObjectIdentifier($object)) {
+		if (Dao::getObjectIdentifier($object)) {
 			$uri = new Uri($this->link);
 			if (
 				isA($object, $uri->controller_name)
@@ -324,7 +323,7 @@ class Button
 			) {
 				$uri->parameters->getMainObject($object);
 				$uri->parameters->shift();
-				if ($uri->feature_name == Feature::F_ADD) {
+				if ($uri->feature_name === Feature::F_ADD) {
 					$uri->feature_name = null;
 				}
 				$this->link = View::link($object, $uri->feature_name, $uri->parameters->getRawParameters());

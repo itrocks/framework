@@ -12,9 +12,6 @@ use ITRocks\Framework\View\Html\Template;
 class Stepper
 {
 
-	//-------------------------------------------------------------------------------- COMPONENT_NAME
-	const COMPONENT_NAME = 'stepper';
-
 	//--------------------------------------------------------------------------------- TEMPLATE_PATH
 	const TEMPLATE_PATH = 'itrocks/framework/component/stepper/stepper.html';
 
@@ -44,19 +41,16 @@ class Stepper
 	 * @param $target     string
 	 * @param $data_post  array
 	 * @param $current    boolean
-	 * @return self
+	 * @return static
 	 */
 	public function addStep(
 		int $sort_order, string $caption, string $link = '', string $css_class = '',
-		string $target = Target::MAIN,
-		array $data_post = [], bool $current = false
-	) : self
+		string $target = Target::MAIN, array $data_post = [], bool $current = false
+	) : static
 	{
-		$step          = new Step(
-			$sort_order, $caption, link: $link, target: $target, css_class: $css_class, data_post:
-			$data_post, current: $current,
+		$this->steps[] = new Step(
+			$sort_order, $caption, $link, $target, $css_class, $data_post, $current
 		);
-		$this->steps[] = $step;
 		return $this;
 	}
 

@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Builder;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Main;
-use ITRocks\Framework\Controller\Needs_Main;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP;
 use ITRocks\Framework\PHP\Compiler\More_Sources;
@@ -15,14 +14,8 @@ use ITRocks\Framework\Session;
 /**
  * Built classes compiler
  */
-class Compiler implements ICompiler, Needs_Main
+class Compiler implements ICompiler
 {
-
-	//------------------------------------------------------------------------------ $main_controller
-	/**
-	 * @var $main_controller Main
-	 */
-	private Main $main_controller;
 
 	//--------------------------------------------------------------------------------------- compile
 	/**
@@ -284,15 +277,6 @@ class Compiler implements ICompiler, Needs_Main
 		// add classes of globally added/removed plugins
 		$this->moreSourcesAddNewPlugins($more_sources, $old_levels, $new_levels);
 		$this->moreSourcesAddRemovedPlugins($more_sources, $old_levels, $new_levels);
-	}
-
-	//----------------------------------------------------------------------------- setMainController
-	/**
-	 * @param $main_controller Main
-	 */
-	public function setMainController(Main $main_controller)
-	{
-		$this->main_controller = $main_controller;
 	}
 
 }

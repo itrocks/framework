@@ -91,12 +91,14 @@ class Locale implements Configurable, Registerable, Updatable
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current Locale
-	 * @return Locale
+	 * @param $set_current ?Locale
+	 * @return ?static
 	 */
-	public static function current(Locale $set_current = null)
+	public static function current(Locale $set_current = null) : ?static
 	{
-		return self::pCurrent($set_current);
+		/** @var $locale ?Locale */
+		$locale = self::pCurrent($set_current);
+		return $locale;
 	}
 
 	//-------------------------------------------------------------------------------- methodToLocale
@@ -352,7 +354,7 @@ class Locale implements Configurable, Registerable, Updatable
 	/**
 	 * @param $last_time integer
 	 */
-	public function update($last_time)
+	public function update(int $last_time)
 	{
 		// too slow to be executed on development environment
 		// TODO bring it back when there will not be bad translation entries anymore

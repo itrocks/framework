@@ -13,7 +13,7 @@ class Input
 	 *
 	 * @var boolean
 	 */
-	public $is_multiple;
+	public bool $is_multiple = false;
 
 	//---------------------------------------------------------------------------------------- $label
 	/**
@@ -21,7 +21,7 @@ class Input
 	 *
 	 * @var string
 	 */
-	public $label;
+	public string $label = '';
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
@@ -29,7 +29,7 @@ class Input
 	 *
 	 * @var string
 	 */
-	public $name;
+	public string $name = '';
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -37,7 +37,7 @@ class Input
 	 *
 	 * @var string
 	 */
-	public $type;
+	public string $type = '';
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
@@ -45,18 +45,19 @@ class Input
 	 *
 	 * @var string
 	 */
-	public $value;
+	public string $value = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name        string Name of the input
-	 * @param $label       string Label of the input
-	 * @param $type        string Type of the input
-	 * @param $is_multiple boolean If the input is multi-rows
-	 * @param $value       string
+	 * @param $name        string|null Name of the input
+	 * @param $label       string|null Label of the input
+	 * @param $type        string|null Type of the input
+	 * @param $is_multiple boolean|null If the input is multi-rows
+	 * @param $value       string|null
 	 */
 	public function __construct(
-		$name = null, $label = null, $type = null, $is_multiple = false, $value = null
+		string $name = null, string $label = null, string $type = null, bool $is_multiple = null,
+		string $value = null
 	) {
 		if (isset($is_multiple)) $this->is_multiple = $is_multiple;
 		if (isset($label))       $this->label       = $label;
@@ -70,19 +71,13 @@ class Input
 	 * Builds a new collection of inputs
 	 *
 	 * @param $inputs_arrays array[] each array is a set of arguments for Input's constructor
-	 * @return Input[]
+	 * @return static[]
 	 */
-	public static function newCollection(array $inputs_arrays)
+	public static function newCollection(array $inputs_arrays) : array
 	{
 		$inputs = [];
 		foreach ($inputs_arrays as $array) {
-			switch (count($array)) {
-				case 1: $inputs[] = new Input($array[0]); break;
-				case 2: $inputs[] = new Input($array[0], $array[1]); break;
-				case 3: $inputs[] = new Input($array[0], $array[1], $array[2]); break;
-				case 4: $inputs[] = new Input($array[0], $array[1], $array[2], $array[3]); break;
-				case 5: $inputs[] = new Input($array[0], $array[1], $array[2], $array[3], $array[4]); break;
-			}
+			$inputs[] = new static(...$array);
 		}
 		return $inputs;
 	}

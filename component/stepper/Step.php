@@ -21,6 +21,7 @@ class Step
 
 	//-------------------------------------------------------------------------------------- $current
 	public bool $current = false;
+
 	//------------------------------------------------------------------------------------ $data_post
 	public array $data_post = [];
 
@@ -38,8 +39,8 @@ class Step
 
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct(
-		int $sort_order, string $caption, string $link = '', string $target = Target::MAIN, string $css_class = '',
-		array $data_post = [], $current = false
+		int $sort_order, string $caption, string $link = '', string $target = Target::MAIN,
+		string $css_class = '', array $data_post = [], bool $current = false
 	) {
 		$this->sort_order = $sort_order;
 		$this->caption   = $caption;
@@ -52,13 +53,14 @@ class Step
 
 	//----------------------------------------------------------------------------------- getCssClass
 	/**
+	 * @noinspection PhpUnused html templates
 	 * @return string
 	 */
 	public function getCssClass() : string
 	{
-		return $this->css_class . SP .
-			($this->is_done ? 'step-done' : '') . SP .
-			($this->current ? 'step-active' : '');
+		return $this->css_class
+			. SP . ($this->is_done ? 'step-done' : '')
+			. SP . ($this->current ? 'step-active' : '');
 	}
 
 }

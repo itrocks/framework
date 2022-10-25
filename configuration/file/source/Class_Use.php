@@ -13,7 +13,7 @@ class Class_Use
 	 *
 	 * @var string
 	 */
-	public $rules;
+	public string $rules;
 
 	//----------------------------------------------------------------------------------- $trait_name
 	/**
@@ -21,14 +21,14 @@ class Class_Use
 	 *
 	 * @var string
 	 */
-	public $trait_name;
+	public string $trait_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $trait_name string
-	 * @param $rules      string
+	 * @param $trait_name string|null
+	 * @param $rules      string|null
 	 */
-	public function __construct($trait_name = null ,$rules = null)
+	public function __construct(string $trait_name = null, string $rules = null)
 	{
 		if (isset($trait_name)) {
 			$this->trait_name = $trait_name;

@@ -21,7 +21,7 @@ abstract class Getter
 	 * Returns the name of the class, without the beginning 'Vendor\Project\'
 	 *
 	 * Applies with :
-	 * - Vendor\Project\ itrocks sub projects
+	 * - Vendor\Project\ itrocks sub-projects
 	 * - Vendor\ itrocks core projects
 	 *
 	 * @example
@@ -41,7 +41,7 @@ abstract class Getter
 		if (!substr_count($class_name, BS)) {
 			return $class_name;
 		}
-		if (substr_count($class_name, BS) == 1) {
+		if (substr_count($class_name, BS) === 1) {
 			$without = substr($class_name, strpos($class_name, BS) + 1);
 		}
 		else {
@@ -75,7 +75,7 @@ abstract class Getter
 	 * @param $base_class   string The base name for the class, ie 'ITRocks\Framework\User'
 	 * @param $feature_name string The name of the feature, ie 'list'
 	 * @param $suffix       string Class suffix, ie 'Controller', 'View'
-	 * @param $extension    string File extension, ie 'php', 'html'
+	 * @param $extension    string File extension, e.g. 'php', 'html'
 	 * @param $class_form   boolean true to use 'Feature_Class' naming instead of 'featureClass'
 	 * @return string[] [$class, $method]
 	 */
@@ -117,7 +117,7 @@ abstract class Getter
 			$namespace = Namespaces::of($application_class);
 
 			// for the controller class and its parents
-			foreach ($classes as $full_class_name => $short_class_name) {
+			foreach ($classes as $short_class_name) {
 				$class_name = $namespace . BS . $short_class_name;
 				$path       = strtolower(str_replace(BS, SL, $class_name));
 				if (isset($GLOBALS['D'])) {
@@ -384,13 +384,13 @@ abstract class Getter
 
 			// Looking for default controller for each application
 			if (empty($class) && $suffix) {
-				// $suffix == 'Html_View' => $sub = 'View/Html', $suffix = 'View'
+				// $suffix === 'Html_View' => $sub = 'View/Html', $suffix = 'View'
 				if (str_contains($suffix, '_')) {
 					$elements = explode('_', $suffix);
 					$sub      = join(SL, array_reverse($elements));
 					$suffix   = end($elements);
 				}
-				// $suffix == 'Controller' => $sub = 'Controller', $suffix = 'Controller'
+				// $suffix === 'Controller' => $sub = 'Controller', $suffix = 'Controller'
 				else {
 					$sub = $suffix;
 				}
@@ -416,7 +416,7 @@ abstract class Getter
 
 		}
 
-		$result = [isset($class) ? $class : null, $method];
+		$result = [$class ?? null, $method];
 		if (isset($GLOBALS['D'])) {
 			static::debug(strtoupper($suffix ?: $extension), $result[0], $result[1], $extension, 'FOUND');
 		}

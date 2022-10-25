@@ -34,7 +34,7 @@ class Builder implements Activable
 	 *
 	 * @var boolean
 	 */
-	public $build = true;
+	public bool $build = true;
 
 	//--------------------------------------------------------------------------------- $compositions
 	/**
@@ -44,15 +44,15 @@ class Builder implements Activable
 	 *
 	 * @var array[]
 	 */
-	private $compositions = [];
+	private array $compositions = [];
 
 	//-------------------------------------------------------------------------------------- $enabled
 	/**
-	 * Set this to false to force disabling of class names replacements features
+	 * Set this to false in order to force disabling of class names replacements features
 	 *
 	 * @var boolean
 	 */
-	public $enabled = true;
+	public bool $enabled = true;
 
 	//--------------------------------------------------------------------------------- $replacements
 	/**
@@ -66,12 +66,12 @@ class Builder implements Activable
 	 *
 	 * @var array[]|string[]
 	 */
-	private $replacements = [];
+	private array $replacements = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $replacements string[]|array[] key is parent class name associated to replacement class
-	 *        values can be a class name or a string[] of interfaces and traits to add to the class
+	 * @param $replacements string[]|array[]|null key is parent class name associated to replacement
+	 *   class values can be a class name or a string[] of interfaces and traits to add to the class
 	 */
 	public function __construct(array $replacements = null)
 	{
@@ -106,10 +106,11 @@ class Builder implements Activable
 
 	//------------------------------------------------------------------------------------- className
 	/**
-	 * @param $class_name string
-	 * @return string
+	 * @param $class_name class-string<T>
+	 * @return class-string<T>
+	 * @template T
 	 */
-	public static function className($class_name)
+	public static function className(string $class_name) : string
 	{
 		return self::current()->replacementClassName($class_name);
 	}
@@ -134,18 +135,20 @@ class Builder implements Activable
 	 * Create a clone of the object, using a built class if needed
 	 *
 	 * @param $object            object
-	 * @param $class_name        class-string<T> the new object will use the matching built class
+	 * @param $class_name        ?class-string<T> the new object will use the matching built class
 	 *                           this class name must inherit from the object's class
-	 * @param $properties_values array some properties values for the cloned object
+	 * @param $properties_values array some properties value for the cloned object
 	 * @param $same_identifier   boolean
 	 * @return T
 	 * @template T
 	 * @throws ReflectionException
 	 */
 	public static function createClone(
-		$object, $class_name = null, array $properties_values = [], $same_identifier = true
-	) {
-		$class_name = self::className($class_name);
+		object $object, string $class_name = null, array $properties_values = [],
+		bool $same_identifier = true
+	) : object
+	{
+		$class_name        = self::className($class_name);
 		$source_class_name = get_class($object);
 		if (!isset($class_name)) {
 			$class_name = self::className($source_class_name);
@@ -176,12 +179,10 @@ class Builder implements Activable
 						$property = $properties[rtrim($property_name, '_')];
 						if (Link_Annotation::of($property)->isCollection()) {
 							$element_class_from = $property->getType()->getElementTypeAsString();
-							$property = $destination_class->getProperty($property->name);
-							if ($property) {
-								$element_class_to = $property->getType()->getElementTypeAsString();
-								if ($element_class_to != $element_class_from) {
-									$clone_collection[substr($property_name, 0, -1)] = $element_class_to;
-								}
+							$property           = $destination_class->getProperty($property->name);
+							$element_class_to   = $property->getType()->getElementTypeAsString();
+							if ($element_class_to != $element_class_from) {
+								$clone_collection[substr($property_name, 0, -1)] = $element_class_to;
 							}
 						}
 					}
@@ -230,10 +231,10 @@ class Builder implements Activable
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current Builder
+	 * @param $set_current Builder|null
 	 * @return static
 	 */
-	public static function current(Builder $set_current = null)
+	public static function current(Builder $set_current = null) : static
 	{
 		return self::dCurrent($set_current);
 	}
@@ -302,12 +303,9 @@ class Builder implements Activable
 	 * @param $array array
 	 * @return array|object
 	 */
-	public static function fromSubArray(array $array)
+	public static function fromSubArray(array $array) : array|object
 	{
-		if (
-			isset($array[Store_Annotation::JSON_CLASS])
-			|| isset($array[Store_Annotation::JSON_CLASS_DEPRECATED])
-		) {
+		if (isset($array[Store_Annotation::JSON_CLASS])) {
 			return Getter::schemaDecode($array);
 		}
 		foreach ($array as $key => $value) {
@@ -325,11 +323,9 @@ class Builder implements Activable
 	 * @param $class_name string
 	 * @return string|string[]
 	 */
-	public function getComposition($class_name)
+	public function getComposition(string $class_name) : array|string
 	{
-		return isset($this->compositions[$class_name]) ? $this->compositions[$class_name] : (
-			isset($this->replacements[$class_name]) ? $this->replacements[$class_name] : $class_name
-		);
+		return $this->compositions[$class_name] ?? ($this->replacements[$class_name] ?? $class_name);
 	}
 
 	//------------------------------------------------------------------------------- getCompositions
@@ -338,59 +334,9 @@ class Builder implements Activable
 	 *
 	 * @return array[]|string[]
 	 */
-	public function getCompositions()
+	public function getCompositions() : array
 	{
 		return array_merge($this->replacements, $this->compositions);
-	}
-
-	//--------------------------------------------------------------------------------------- isBuilt
-	/**
-	 * Returns true if class name is a built class name
-	 *
-	 * A built class has a namespace beginning with 'Vendor\Application\Built\'
-	 *
-	 * TODO HIGHEST remove it soon : it is not used anywhere anymore
-	 *
-	 * @deprecated use directly Class_Builder::isBuilt()
-	 * @param $class_name string
-	 * @return boolean
-	 */
-	public static function isBuilt($class_name)
-	{
-		return Class_Builder::isBuilt($class_name);
-	}
-
-	//----------------------------------------------------------------------------------- isObjectSet
-	/**
-	 * Returns true if any property of $object is set and different than its default value
-	 *
-	 * TODO LOW see if it is not a duplicate of Null_Object::isNull or something like that
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object object
-	 * @return boolean
-	 */
-	public static function isObjectSet($object)
-	{
-		$result = false;
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		$class    = new Reflection_Class($object);
-		$defaults = $class->getDefaultProperties([T_EXTENDS]);
-		foreach ($class->getProperties() as $property) if (!$property->isStatic()) {
-			/** @noinspection PhpUnhandledExceptionInspection $property comes from $object */
-			$value = $property->getValue($object);
-			if (isset($value)) {
-				$default = $defaults[$property->name] ?? ($property->getType()->getDefaultValue());
-				if (is_object($value) && !self::isObjectSet($value)) {
-					$value = null;
-				}
-				if ($value != $default) {
-					$result = true;
-					break;
-				}
-			}
-		}
-		return $result;
 	}
 
 	//------------------------------------------------------------------------------------ isReplaced
@@ -399,7 +345,7 @@ class Builder implements Activable
 	 * @param $strict     boolean if true, the replacement class must be already built
 	 * @return boolean
 	 */
-	public function isReplaced($class_name, $strict = false)
+	public function isReplaced(string $class_name, bool $strict = false) : bool
 	{
 		if (!isset($this->replacements[$class_name])) {
 			return false;
@@ -421,7 +367,7 @@ class Builder implements Activable
 	 * @param $class_name string
 	 * @return boolean
 	 */
-	public function isReplacement($class_name)
+	public function isReplacement(string $class_name) : bool
 	{
 		return in_array($class_name, $this->replacements, true);
 	}
@@ -430,10 +376,11 @@ class Builder implements Activable
 	/**
 	 * Return a new instance of given $class_name, using replacement class if exist
 	 *
-	 * @param $class_name string may be short or full class name
-	 * @return object
+	 * @param $class_name class-string<T> may be short or full class name
+	 * @return T
+	 * @template T
 	 */
-	public function newInstance($class_name)
+	public function newInstance(string $class_name) : object
 	{
 		$class_name = $this->replacementClassName($class_name);
 		return new $class_name();
@@ -443,51 +390,30 @@ class Builder implements Activable
 	/**
 	 * Return a new instance of given $class_name, using replacement class if exist
 	 *
-	 * @param $class_name string may be short or full class name
+	 * @param $class_name class-string<T> may be short or full class name
 	 * @param $args       array
-	 * @return object
+	 * @return T
+	 * @template T
 	 * @throws ReflectionException
 	 */
-	public function newInstanceArgs($class_name, array $args)
+	public function newInstanceArgs(string $class_name, array $args) : object
 	{
 		$class_name = $this->replacementClassName($class_name);
 		return (new ReflectionClass($class_name))->newInstanceArgs($args);
-	}
-
-	//------------------------------------------------------------------------- onMethodReturnedValue
-	/**
-	 * @deprecated
-	 * @param $result string
-	 * @return string
-	 */
-	public function onMethodReturnedValue($result)
-	{
-		return $this->replacementClassName($result);
-	}
-
-	//------------------------------------------------------------------------- onMethodWithClassName
-	/**
-	 * @deprecated
-	 * @param $class_name string
-	 */
-	public function onMethodWithClassName(&$class_name)
-	{
-		$class_name = $this->replacementClassName($class_name);
 	}
 
 	//-------------------------------------------------------------------------- replacementClassName
 	/**
 	 * Gets replacement class name for a parent class name or a list of traits to implement
 	 *
-	 * @param $class_name string can be short or full class name
-	 * @return string
+	 * @param $class_name class-string<T> can be short or full class name
+	 * @return class-string<T>
+	 * @template T
 	 */
-	private function replacementClassName($class_name)
+	private function replacementClassName(string $class_name) : string
 	{
 		if ($this->enabled) {
-			$result = isset($this->replacements[$class_name])
-				? $this->replacements[$class_name]
-				: $class_name;
+			$result = $this->replacements[$class_name] ?? $class_name;
 			if (is_array($result)) {
 				if ($this->build) {
 					$this->compositions[$class_name] = $result;
@@ -523,14 +449,17 @@ class Builder implements Activable
 	 *
 	 * Returns the hole replacement class name as you can set it back at will
 	 *
-	 * @param $class_name             string
-	 * @param $replacement_class_name string|string[]null if null, the replacement class is removed.
-	 *        string value for a replacement class, string[] for a list of interfaces and traits.
-	 * @return string|null old replacement class name
+	 * @param $class_name             class-string<T>
+	 * @param $replacement_class_name class-string<T>|class-string<T>[]|null if null, the replacement
+	 *        class is removed. string value for a replacement class, string[] for a list of
+	 *        interfaces and traits.
+	 * @return ?class-string<T> old replacement class name
+	 * @template T
 	 */
-	public function setReplacement($class_name, $replacement_class_name)
+	public function setReplacement(string $class_name, array|string|null $replacement_class_name)
+	: ?string
 	{
-		$result = isset($this->replacements[$class_name]) ? $this->replacements[$class_name] : null;
+		$result = $this->replacements[$class_name] ?? null;
 		if (!isset($replacement_class_name)) {
 			unset($this->compositions[$class_name]);
 			unset($this->replacements[$class_name]);
@@ -545,12 +474,13 @@ class Builder implements Activable
 	/**
 	 * Gets source class name for a replacement class name
 	 *
-	 * @param $class_name string|null
+	 * @param $class_name class-string<T>|null
 	 * @param $built      boolean if true, $class_name can be a built class : it will go to parent
-	 * @return string
+	 * @return class-string<T>
+	 * @template T
 	 * @todo LOW should never be called with null, but it happens
 	 */
-	public function sourceClassName(string $class_name = null, $built = false)
+	public function sourceClassName(string $class_name = null, bool $built = false) : string
 	{
 		while ($built && Class_Builder::isBuilt($class_name)) {
 			$class_name = get_parent_class($class_name);

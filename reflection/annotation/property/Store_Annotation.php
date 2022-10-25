@@ -43,14 +43,6 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	 */
 	const JSON_CLASS = '__class';
 
-	//------------------------------------------------------------------------- JSON_CLASS_DEPRECATED
-	/**
-	 * Keep this as long as there are stored objects using _class into databases
-	 *
-	 * @deprecated The internal key to store the name of the class into the json structure
-	 */
-	const JSON_CLASS_DEPRECATED = '_class';
-
 	//-------------------------------------------------------------------------------- JSON_CONSTRUCT
 	/**
 	 * The internal key to store the parameter(s) to send to the constructor of the class

@@ -461,10 +461,6 @@ abstract class Getter
 			$class_name = $stored_array[Store_Annotation::JSON_CLASS];
 			unset($stored_array[Store_Annotation::JSON_CLASS]);
 		}
-		elseif (isset($stored_array[Store_Annotation::JSON_CLASS_DEPRECATED])) {
-			$class_name = $stored_array[Store_Annotation::JSON_CLASS_DEPRECATED];
-			unset($stored_array[Store_Annotation::JSON_CLASS_DEPRECATED]);
-		}
 		elseif ($property && $property->getType()->isClass()) {
 			$class_name = $property->getType()->getElementTypeAsString();
 		}

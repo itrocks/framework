@@ -11,20 +11,17 @@ use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 class Button_List
 {
 
-	//-------------------------------------------------------------------------------- COMPONENT_NAME
-	const COMPONENT_NAME = 'button_list';
-
 	//-------------------------------------------------------------------------------------- $buttons
 	/**
 	 * @var Button[]
 	 */
-	public $buttons = [];
+	public array $buttons = [];
 
 	//----------------------------------------------------------------------------------------- $list
 	/**
 	 * @var Unordered
 	 */
-	public $list;
+	public Unordered $list;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -48,7 +45,7 @@ class Button_List
 	 */
 	public function __toString() : string
 	{
-		return strval($this->list);
+		return $this->list;
 	}
 
 	//------------------------------------------------------------------------------------ setButtons

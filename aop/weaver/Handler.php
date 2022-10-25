@@ -18,28 +18,28 @@ class Handler implements IHandler
 	/**
 	 * @var integer
 	 */
-	public $index;
+	public int $index;
 
 	//------------------------------------------------------------------------------------ $joinpoint
 	/**
-	 * @var string[]
+	 * @var string|string[]
 	 */
-	public $joinpoint;
+	public array|string $joinpoint;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * @values self::const
 	 * @var string
 	 */
-	public $type;
+	public string $type;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $type      string
-	 * @param $joinpoint string[]|string
+	 * @param $joinpoint string|string[]
 	 * @param $index     integer
 	 */
-	public function __construct($type, $joinpoint, $index)
+	public function __construct(string $type, array|string $joinpoint, int $index)
 	{
 		$this->index     = $index;
 		$this->joinpoint = $joinpoint;

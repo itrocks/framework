@@ -172,7 +172,7 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 			}
 			// other cases are not tested : valid is the default
 			else {
-				trigger_error('Untested @var type ' . $type->asString(), E_USER_NOTICE);
+				trigger_error('Untested @var type ' . $type->asString());
 				return true;
 			}
 		}

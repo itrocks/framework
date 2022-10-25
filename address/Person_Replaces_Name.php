@@ -20,10 +20,11 @@ trait Person_Replaces_Name
 	/**
 	 * A generic setter for all properties that are a component for $this->name if self is a Has_Name
 	 *
+	 * @noinspection PhpUnused @setter
 	 * @param $property_name string @values civility, first_name, last_name
 	 * @param $value         string
 	 */
-	protected function setNameComponent($property_name, $value)
+	protected function setNameComponent(string $property_name, string $value)
 	{
 		$this->$property_name = $value;
 		$this->setDefaultName();

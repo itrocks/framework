@@ -88,14 +88,13 @@ class Button
 		array $data_post = [], string $color = '', array $additional_classes = [],
 		string $url_app = 'app://'
 	) {
+		$this->additional_classes = $additional_classes;
+		$this->color              = $color ?? static::COLOR_SECONDARY;
 		$this->content            = $content;
+		$this->data_post          = $data_post;
 		$this->hint               = $hint;
 		$this->link               = $link;
 		$this->target             = $target;
-		$this->content            = $content;
-		$this->data_post          = $data_post;
-		$this->color              = $color ?? static::COLOR_SECONDARY;
-		$this->additional_classes = $additional_classes;
 		$this->url_app            = $url_app;
 	}
 

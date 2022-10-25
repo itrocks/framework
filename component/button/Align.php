@@ -8,9 +8,7 @@ class Align
 {
 
 	const CENTER = 'center';
-
-	const LEFT = 'left';
-
-	const RIGHT = 'right';
+	const LEFT   = 'left';
+	const RIGHT  = 'right';
 
 }

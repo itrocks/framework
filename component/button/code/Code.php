@@ -45,15 +45,9 @@ class Code implements Stringable
 	 */
 	public function __construct(string $source = null, string $when = null, string $feature = null)
 	{
-		if (isset($source)) {
-			$this->source = $source;
-		}
-		if (isset($when)) {
-			$this->when = $when;
-		}
-		if (isset($feature)) {
-			$this->feature = $feature;
-		}
+		if (isset($feature)) $this->feature = $feature;
+		if (isset($source))  $this->source  = $source;
+		if (isset($when))    $this->when    = $when;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -87,13 +81,13 @@ class Code implements Stringable
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $source string
+	 * @param $string string
 	 * @return static
 	 */
-	public static function fromString(string $source) : static
+	public static function fromString(string $string) : static
 	{
 		/** @noinspection PhpUnhandledExceptionInspection static */
-		return Builder::create(static::class, [$source]);
+		return Builder::create(static::class, [$string]);
 	}
 
 }

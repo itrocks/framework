@@ -691,7 +691,7 @@ class Compiler extends Cache
 	/**
 	 * @param $last_time integer
 	 */
-	public function update($last_time = 0)
+	public function update(int $last_time = 0)
 	{
 		if (isset($_GET['Z']) && isset($_POST['Z'])) {
 			$last_active            = Include_Filter::$active;

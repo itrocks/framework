@@ -13,13 +13,13 @@ abstract class Reader
 	/**
 	 * @var File
 	 */
-	protected $file;
+	protected File $file;
 
 	//---------------------------------------------------------------------------------------- $lines
 	/**
 	 * @var string[]
 	 */
-	protected $lines;
+	protected array $lines;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -35,7 +35,7 @@ abstract class Reader
 	 * @param $line string
 	 * @return boolean
 	 */
-	public function isEndLine($line)
+	public function isEndLine(string $line) : bool
 	{
 		return ($line === '];');
 	}
@@ -45,7 +45,7 @@ abstract class Reader
 	 * @param $line string
 	 * @return boolean
 	 */
-	public function isStartLine($line)
+	public function isStartLine(string $line) : bool
 	{
 		return ($line === 'return [');
 	}

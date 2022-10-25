@@ -27,8 +27,8 @@ class Weaver implements IWeaver, Plugin
 	/**
 	 * All joinpoints are stored here
 	 *
-	 * @var array array[$function][$index] = [$type, callback $advice)
 	 * @var array array[$class][$method][$index] = [$type, callback $advice]
+	 *            array[$function][$index] = [$type, callback $advice]
 	 */
 	private array $joinpoints = [];
 
@@ -46,7 +46,7 @@ class Weaver implements IWeaver, Plugin
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function afterFunction($joinpoint, $advice) : IHandler
+	public function afterFunction(string $joinpoint, callable $advice) : IHandler
 	{
 		$this->joinpoints[$joinpoint][] = [Handler::AFTER, $advice];
 		return new Handler(Handler::AFTER, $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
@@ -61,17 +61,14 @@ class Weaver implements IWeaver, Plugin
 	 * If set, the value returned by the advice will be the pointcut returned value.
 	 * If not set, the result value passed as argument (that can be modified) will be returned
 	 *
-	 * @param $joinpoint callable the joinpoint defined like a call-back :
+	 * @param $joinpoint string[] the joinpoint defined like a call-back :
 	 *                   ['class_name', 'methodName']
 	 * @param $advice    callable the call-back call of the advice :
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function afterMethod($joinpoint, $advice) : IHandler
+	public function afterMethod(array $joinpoint, callable $advice) : IHandler
 	{
-		if ((is_string($joinpoint) && !str_contains($joinpoint, '::')) || !is_array($joinpoint)) {
-			trigger_error('Joinpoint must be Class::method or [Class, method]', E_USER_ERROR);
-		}
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::AFTER, $advice];
 		return new Handler(
 			Handler::AFTER, $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
@@ -91,11 +88,8 @@ class Weaver implements IWeaver, Plugin
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function aroundFunction($joinpoint, $advice) : IHandler
+	public function aroundFunction(string $joinpoint, callable $advice) : IHandler
 	{
-		if (!is_string($joinpoint)) {
-			trigger_error('Joinpoint must be a function name', E_USER_ERROR);
-		}
 		$this->joinpoints[$joinpoint][] = [Handler::AROUND, $advice];
 		return new Handler(Handler::AROUND, $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
 	}
@@ -108,17 +102,14 @@ class Weaver implements IWeaver, Plugin
 	 * and finally the value returned by the joinpoint method call.
 	 * The value returned by the advice will be the pointcut returned value.
 	 *
-	 * @param $joinpoint callable the joinpoint defined like a call-back :
+	 * @param $joinpoint string[] the joinpoint defined like a call-back :
 	 *                   ['class_name', 'methodName']
 	 * @param $advice    callable the call-back call of the advice :
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function aroundMethod($joinpoint, $advice) : IHandler
+	public function aroundMethod(array $joinpoint, callable $advice) : IHandler
 	{
-		if ((is_string($joinpoint) && !str_contains($joinpoint, '::')) || !is_array($joinpoint)) {
-			trigger_error('Joinpoint must be Class::method or [Class, method]', E_USER_ERROR);
-		}
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::AROUND, $advice];
 		return new Handler(
 			Handler::AROUND, $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
@@ -154,11 +145,8 @@ class Weaver implements IWeaver, Plugin
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function beforeFunction($joinpoint, $advice) : IHandler
+	public function beforeFunction(string $joinpoint, callable $advice) : IHandler
 	{
-		if (!is_string($joinpoint)) {
-			trigger_error('Joinpoint must be a function name', E_USER_ERROR);
-		}
 		$this->joinpoints[$joinpoint][] = [Handler::BEFORE, $advice];
 		return new Handler(Handler::BEFORE, $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
 	}
@@ -171,17 +159,14 @@ class Weaver implements IWeaver, Plugin
 	 * The advice can return a value : if this value is set, the execution of the joinpoint will be
 	 * cancelled and the returned value replaced by this one.
 	 *
-	 * @param $joinpoint callable the joinpoint defined like a call-back :
+	 * @param $joinpoint string[] the joinpoint defined like a call-back :
 	 *                   ['class_name', 'methodName']
 	 * @param $advice    callable the call-back call of the advice :
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function beforeMethod($joinpoint, $advice) : IHandler
+	public function beforeMethod(array $joinpoint, callable $advice) : IHandler
 	{
-		if ((is_string($joinpoint) && !str_contains($joinpoint, '::')) || !is_array($joinpoint)) {
-			trigger_error('Joinpoint must be Class::method or [Class, method]', E_USER_ERROR);
-		}
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::BEFORE, $advice];
 		return new Handler(
 			Handler::BEFORE, $joinpoint, count($this->joinpoints[$joinpoint[0]][$joinpoint[1]]) - 1
@@ -227,7 +212,7 @@ class Weaver implements IWeaver, Plugin
 
 	//------------------------------------------------------------------------------------- dumpArray
 	/**
-	 * Change joinpoints array into a dumped php source [...].
+	 * Change joinpoints array into a dumped php source [...].
 	 * Replaces all objects by current session plugins getters
 	 *
 	 * @param $array array
@@ -235,49 +220,20 @@ class Weaver implements IWeaver, Plugin
 	 */
 	private function dumpArray(array $array) : string
 	{
-		$lf1 = LF . TAB;
-		$lf2 = $lf1 . TAB;
-		$lf3 = $lf2 . TAB;
+		$lf1  = LF . TAB;
+		$lf2  = $lf1 . TAB;
+		$lf3  = $lf2 . TAB;
 		$dump = '[';
 		foreach ($array as $class => $j1) {
 			$dump .= $lf1 . Q . $class . Q . ' => [';
 			foreach ($j1 as $method => $j2) {
 				if (is_numeric($method)) {
-					$joinpoint = $j2;
-					$dump .= $lf2 . '[' . Q . $joinpoint[0] . Q . ', ';
-					if (is_array($advice = $joinpoint[1])) {
-						$dump .= '[';
-						if (is_object($advice[0])) {
-							$dump .= '$plugins->get(' . get_class($advice[0]) . '::class), ';
-						}
-						else {
-							$dump .= $advice[0] . '::class, ';
-						}
-						$dump .= Q . $advice[1] . Q . ']';
-					}
-					else {
-						$dump .= Q . $advice . Q;
-					}
-					$dump .= '],';
+					$this->dumpArrayDetail($dump, $j2, $lf2);
 				}
 				else {
 					$dump .= $lf2 . Q . $method . Q . ' => [';
 					foreach ($j2 as $joinpoint) {
-						$dump .= $lf3 . '[' . Q . $joinpoint[0] . Q . ', ';
-						if (is_array($advice = $joinpoint[1])) {
-							$dump .= '[';
-							if (is_object($advice[0])) {
-								$dump .= '$plugins->get(' . get_class($advice[0]) . '::class), ';
-							}
-							else {
-								$dump .= $advice[0] . '::class, ';
-							}
-							$dump .= Q . $advice[1] . Q . ']';
-						}
-						else {
-							$dump .= Q . $advice . Q;
-						}
-						$dump .= '],';
+						$this->dumpArrayDetail($dump, $joinpoint, $lf3);
 					}
 					$dump .= $lf2 . '],';
 				}
@@ -286,6 +242,31 @@ class Weaver implements IWeaver, Plugin
 		}
 		$dump .= LF . ']';
 		return $dump;
+	}
+
+	//------------------------------------------------------------------------------- dumpArrayDetail
+	/**
+	 * @param string $dump
+	 * @param mixed  $joinpoint
+	 * @param string $lf
+	 */
+	protected function dumpArrayDetail(string &$dump, mixed $joinpoint, string $lf)
+	{
+		$dump .= $lf . '[' . Q . $joinpoint[0] . Q . ', ';
+		if (is_array($advice = $joinpoint[1])) {
+			$dump .= '[';
+			if (is_object($advice[0])) {
+				$dump .= '$plugins->get(' . get_class($advice[0]) . '::class), ';
+			}
+			else {
+				$dump .= $advice[0] . '::class, ';
+			}
+			$dump .= Q . $advice[1] . Q . ']';
+		}
+		else {
+			$dump .= Q . $advice . Q;
+		}
+		$dump .= '],';
 	}
 
 	//----------------------------------------------------------------------------- fileClassesAsText
@@ -311,10 +292,10 @@ class Weaver implements IWeaver, Plugin
 	/**
 	 * Gets existing joinpoints for a class method or property
 	 *
-	 * @param $joinpoint callable A class method or property name
+	 * @param $joinpoint string[] A class + a method or property name
 	 * @return array [$index] = [$type, callback $advice]
 	 */
-	public function getJoinpoint($joinpoint) : array
+	public function getJoinpoint(array $joinpoint) : array
 	{
 		if (isset($this->joinpoints[$joinpoint[0]][$joinpoint[1]])) {
 			return $this->joinpoints[$joinpoint[0]][$joinpoint[1]];
@@ -342,7 +323,7 @@ class Weaver implements IWeaver, Plugin
 	 */
 	public function hasJoinpoints() : bool
 	{
-		return $this->joinpoints ? true : false;
+		return (bool)$this->joinpoints;
 	}
 
 	//-------------------------------------------------------------------------------- loadJoinpoints
@@ -363,7 +344,7 @@ class Weaver implements IWeaver, Plugin
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function readProperty(array $joinpoint, $advice) : IHandler
+	public function readProperty(array $joinpoint, callable $advice) : IHandler
 	{
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::READ, $advice];
 		return new Handler(
@@ -412,7 +393,7 @@ class Weaver implements IWeaver, Plugin
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function writeProperty(array $joinpoint, $advice) : IHandler
+	public function writeProperty(array $joinpoint, callable $advice) : IHandler
 	{
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::WRITE, $advice];
 		return new Handler(

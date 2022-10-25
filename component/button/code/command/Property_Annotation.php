@@ -21,20 +21,20 @@ class Property_Annotation implements Command
 	/**
 	 * @var string
 	 */
-	public $annotate;
+	public string $annotate;
 
 	//-------------------------------------------------------------------------------- $property_name
 	/**
 	 * @var string
 	 */
-	public $property_name;
+	public string $property_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $property_name string
 	 * @param $annotate      string
 	 */
-	public function __construct($property_name, $annotate)
+	public function __construct(string $property_name, string $annotate)
 	{
 		$this->property_name = Names::displayToProperty(Loc::rtr($property_name));
 		$this->annotate      = Loc::rtr($annotate);
@@ -46,7 +46,7 @@ class Property_Annotation implements Command
 	 * @param $object object
 	 * @return boolean
 	 */
-	public function execute($object)
+	public function execute(object $object) : bool
 	{
 		/** @noinspection PhpUnhandledExceptionInspection property must belong to object */
 		$property         = new Reflection_Property($object, $this->property_name);
@@ -54,15 +54,13 @@ class Property_Annotation implements Command
 		$annotation_class = Annotation\Parser::getAnnotationClassName(
 			Reflection_Property::class, $annotate
 		);
-		if ($annotation_class) {
-			/** @noinspection PhpUnhandledExceptionInspection valid annotation class name */
-			/** @var $annotation Mandatory_Annotation */
-			$annotation = Builder::create($annotation_class, [true, $property]);
-			$property->setAnnotation('mandatory', $annotation);
-		}
-		else {
+		if (!$annotation_class) {
 			return false;
 		}
+		/** @noinspection PhpUnhandledExceptionInspection valid annotation class name */
+		/** @var $annotation Mandatory_Annotation */
+		$annotation = Builder::create($annotation_class, [true, $property]);
+		$property->setAnnotation('mandatory', $annotation);
 		return true;
 	}
 

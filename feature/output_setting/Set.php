@@ -195,7 +195,7 @@ class Set extends Setting\Custom\Set
 	 * @param $filter_properties string[] property path
 	 * @return Property[]
 	 */
-	public function initProperties(array $filter_properties = null)
+	public function initProperties(array $filter_properties = []) : array
 	{
 		if (!$this->properties) {
 			$class_name = $this->getClassName();

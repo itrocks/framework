@@ -29,12 +29,15 @@ class Controller extends Output\Controller
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
+	 * @noinspection PhpDocSignatureInspection $settings
 	 * @param $object     object|string object or class name
 	 * @param $parameters array parameters
-	 * @param $settings   Setting\Custom\Set|Output_Setting\Set
+	 * @param $settings   Output_Setting\Set&Setting\Custom\Set|null
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, array $parameters, Setting\Custom\Set $settings = null)
+	public function getGeneralButtons(
+		object|string $object, array $parameters, Setting\Custom\Set $settings = null
+	) : array
 	{
 		[$close_link, $follows] = $this->prepareThen(
 			$object,
@@ -83,7 +86,8 @@ class Controller extends Output\Controller
 	 * @param $class_name string
 	 * @return array
 	 */
-	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
+	protected function getViewParameters(Parameters $parameters, array $form, string $class_name)
+		: array
 	{
 		$parameters->set('editing', true);
 		$parameters->set(Feature::FEATURE, Feature::F_EDIT);

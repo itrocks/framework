@@ -18,7 +18,7 @@ class Menu extends File
 	/**
 	 * @var Block[]
 	 */
-	public $blocks;
+	public array $blocks;
 
 	//-------------------------------------------------------------------------------------- addBlock
 	/**
@@ -28,7 +28,7 @@ class Menu extends File
 	 * @param $block_title string
 	 * @return Block
 	 */
-	public function addBlock($block_title)
+	public function addBlock(string $block_title) : Block
 	{
 		$block = $this->searchBlock($block_title);
 		if (!$block) {
@@ -65,7 +65,7 @@ class Menu extends File
 	 * @param $item_caption string
 	 * @return Item
 	 */
-	public function addItem($block, $item_link, $item_caption)
+	public function addItem(Block|string $block, string $item_link, string $item_caption) : Item
 	{
 		if (is_string($block)) {
 			$block = $this->addBlock($block);
@@ -89,7 +89,7 @@ class Menu extends File
 	 * @param $block Block|string
 	 * @param $items string[] string $item_caption[string $item_link]
 	 */
-	public function addItems($block, array $items)
+	public function addItems(Block|string $block, array $items)
 	{
 		if (is_string($block)) {
 			$block = $this->addBlock($block);
@@ -104,7 +104,7 @@ class Menu extends File
 	 * @param $link string
 	 * @return boolean
 	 */
-	public function hasLink($link)
+	public function hasLink(string $link) : bool
 	{
 		foreach ($this->blocks as $block) {
 			foreach ($block->items as $item) {
@@ -161,9 +161,9 @@ class Menu extends File
 	 * Search a menu block
 	 *
 	 * @param $block_title string
-	 * @return Block|null
+	 * @return ?Block
 	 */
-	public function searchBlock($block_title)
+	public function searchBlock(string $block_title) : ?Block
 	{
 		foreach ($this->blocks as $block) {
 			if (($block instanceof Block) && ($block->title === $block_title)) {
@@ -179,9 +179,9 @@ class Menu extends File
 	 *
 	 * @param $block             Block|string
 	 * @param $item_caption_link string item caption or link
-	 * @return Item|null
+	 * @return ?Item
 	 */
-	public function searchItem($block, $item_caption_link)
+	public function searchItem(Block|string $block, string $item_caption_link) : ?Item
 	{
 		if (is_string($block)) {
 			$block = $this->searchBlock($block);

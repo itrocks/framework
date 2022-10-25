@@ -15,7 +15,7 @@ class Priority_Test extends Test
 	 * @return array[]
 	 * @see Priority_Test::testValid()
 	 */
-	public function providerValid()
+	public function providerValid() : array
 	{
 		return [
 			[true, Priority::INCLUDED],
@@ -34,7 +34,7 @@ class Priority_Test extends Test
 	 * @param $expected boolean
 	 * @param $value    string
 	 */
-	public function testValid($expected, $value)
+	public function testValid(bool $expected, string $value)
 	{
 		static::assertEquals($expected, Priority::valid($value));
 	}

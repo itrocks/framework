@@ -23,13 +23,13 @@ class Exhaustive
 	 *
 	 * @return string[][][] three dimensions : list, block, item : if no block title
 	 */
-	protected $exhaustive;
+	protected array $exhaustive;
 
 	//----------------------------------------------------------------------------------------- $menu
 	/**
 	 * @var File\Menu
 	 */
-	public $menu;
+	public File\Menu $menu;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -130,7 +130,7 @@ class Exhaustive
 	/**
 	 * @return string[][][] three dimensions : list, block, item : if no block title
 	 */
-	protected function exhaustiveMenus()
+	protected function exhaustiveMenus() : array
 	{
 		if (!isset($this->exhaustive)) {
 			$lists = [];

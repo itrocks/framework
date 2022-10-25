@@ -13,9 +13,9 @@ class Parser
 	/**
 	 * @param $source string
 	 * @param $condition boolean If true, consider the source is a condition
-	 * @return Command|null null for nop
+	 * @return ?Command null for nop
 	 */
-	public static function parse($source, $condition = false)
+	public static function parse(string $source, bool $condition = false) : ?Command
 	{
 		if (str_contains($source, ':')) {
 			[$property_name, $annotate] = explode(':', $source);
@@ -26,9 +26,7 @@ class Parser
 			if ($condition) {
 				return new Equals(trim($property_name), trim($value));
 			}
-			else {
-				return new Assign(trim($property_name), trim($value));
-			}
+			return new Assign(trim($property_name), trim($value));
 		}
 		elseif ($source && $condition) {
 			return new Equals(trim($source), true);

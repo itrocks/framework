@@ -1,13 +1,29 @@
-<header>
-	<ol class="breadcrumb">
-		<!--back_link-->
-			<li class="back_link"><a href="app://(link)" target="{target}" class="{class}">&nbsp;</a></li>
-		<!--end-->
-		<!--buttons-->
-			<li class="{class}"><a href="app://(link)" target="{target}">|{caption}|</a></li>
-		<!--end-->
-		<li class="current"><a href="#">{title}</a></li>
-	</ol>
-	<h2>{title}</h2>
-	{/setting/custom.html}
-</header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/default/all.css"; </style>
+	<title>Breadcrumb component</title>
+</head>
+<body>
+<!--BEGIN-->
+
+	<header>
+		<ol class="breadcrumb">
+			<!--back_link-->
+				<li class="back_link"><a href="app://(link)" target="{target}" class="{class}">&nbsp;</a></li>
+			<!--end-->
+			<!--buttons-->
+				<li class="{class}"><a href="app://(link)" target="{target}">|{caption}|</a></li>
+			<!--end-->
+			<li class="current"><a href="#">{title}</a></li>
+		</ol>
+		<h2>{title}</h2>
+		{/setting/custom.html}
+	</header>
+
+</body>
+</html>

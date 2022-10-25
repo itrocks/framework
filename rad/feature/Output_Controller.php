@@ -5,6 +5,7 @@ use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Feature\Output;
+use ITRocks\Framework\Feature\Output_Setting;
 use ITRocks\Framework\RAD\Feature;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\View;
@@ -17,12 +18,15 @@ class Output_Controller extends Output\Controller
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
+	 * @noinspection PhpDocSignatureInspection $object, $settings
 	 * @param $object     Feature|string
 	 * @param $parameters array
-	 * @param $settings   Setting\Custom\Set|null
+	 * @param $settings   Output_Setting\Set&Setting\Custom\Set|null
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, array $parameters, Setting\Custom\Set $settings = null)
+	public function getGeneralButtons(
+		object|string $object, array $parameters, Setting\Custom\Set $settings = null
+	) : array
 	{
 		$buttons[Controller\Feature::F_CLOSE]
 			= parent::getGeneralButtons($object, $parameters, $settings)[Controller\Feature::F_CLOSE];

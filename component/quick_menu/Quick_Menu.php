@@ -20,13 +20,13 @@ class Quick_Menu implements Configurable
 	/**
 	 * @var Item[]
 	 */
-	public $items;
+	public array $items = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $configuration mixed
+	 * @param $configuration array|null
 	 */
-	public function __construct($configuration = null)
+	public function __construct(mixed $configuration = null)
 	{
 		if (isset($configuration)) {
 			$this->items = [];

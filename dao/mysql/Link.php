@@ -1136,7 +1136,7 @@ class Link extends Dao\Sql\Link
 	{
 		$this->commit_stack = 0;
 		if (isset($GLOBALS['D'])) {
-			trigger_error('Rollback', E_USER_NOTICE);
+			trigger_error('Rollback');
 			$this->commit_stack_trace = [];
 		}
 		$this->query('ROLLBACK');

@@ -24,11 +24,11 @@ class Class_Builder
 	/**
 	 * $builds stores already built classes
 	 *
-	 * Keys are the name of the class and the most of interfaces / traits names separated by dots
+	 * Keys are the name of the class and most of the interfaces / traits names separated by dots
 	 *
 	 * @var array string[][]
 	 */
-	private static $builds = [];
+	private static array $builds = [];
 
 	//-------------------------------------------------------------------------------------- $sources
 	/**
@@ -36,7 +36,7 @@ class Class_Builder
 	 *
 	 * @var array
 	 */
-	private static $sources = [];
+	private static array $sources = [];
 
 	//----------------------------------------------------------------------------------------- build
 	/**
@@ -45,7 +45,8 @@ class Class_Builder
 	 * @param $get_source        boolean if true, get built [$name, $source] instead of $name
 	 * @return string|string[] the full name of the built class
 	 */
-	public function build($class_name, array $interfaces_traits = [], $get_source = false)
+	public function build(string $class_name, array $interfaces_traits = [], bool $get_source = false)
+		: array|string
 	{
 		$key = join(DOT, $interfaces_traits);
 		if (isset(static::$builds[$class_name][$key])) {
@@ -146,8 +147,10 @@ class Class_Builder
 	 * @return string|string[] generated class name
 	 */
 	protected function buildClass(
-		$class_name, array $interfaces, array $traits, array $annotations, $get_source, $key
-	) {
+		string $class_name, array $interfaces, array $traits, array $annotations, bool $get_source,
+		string $key
+	) : array|string
+	{
 		if (!$traits) {
 			$traits = [0 => []];
 		}
@@ -231,7 +234,7 @@ class Class_Builder
 	 * @param $short_class_name string
 	 * @return string
 	 */
-	protected function buildClassName(&$namespace, &$short_class_name)
+	protected function buildClassName(string $namespace, string $short_class_name) : string
 	{
 		return $namespace . BS . $short_class_name;
 	}
@@ -242,7 +245,7 @@ class Class_Builder
 	 * @param $source     string
 	 */
 	protected function buildClassSource(
-		/** @noinspection PhpUnusedParameterInspection */ $class_name, $source
+		/* @noinspection PhpUnusedParameterInspection */ string $class_name, string $source
 	) {
 		eval($source);
 	}
@@ -255,7 +258,7 @@ class Class_Builder
 	 * @return string ie 'Vendor\Application\Built\ITRocks\Framework\Module\Class_Name'
 	 * @see Class_Builder::sourceClassName()
 	 */
-	public static function builtClassName($class_name)
+	public static function builtClassName(string $class_name) : string
 	{
 		if (static::isBuilt($class_name)) {
 			return $class_name;
@@ -293,11 +296,10 @@ class Class_Builder
 	 * @param $class_name string
 	 * @return boolean
 	 */
-	public static function isBuilt($class_name)
+	public static function isBuilt(string $class_name) : bool
 	{
-		return ($namespace = static::getBuiltNameSpace())
-			? (substr($class_name, 0, strlen($namespace)) === $namespace)
-			: false;
+		return (($namespace = static::getBuiltNameSpace()))
+			&& str_starts_with($class_name, $namespace);
 	}
 
 	//------------------------------------------------------------------------------- sourceClassName
@@ -308,12 +310,12 @@ class Class_Builder
 	 * @return string ie 'ITRocks\Framework\Module\Class_Name'
 	 * @see Class_Builder::builtClassName()
 	 */
-	public static function sourceClassName($class_name)
+	public static function sourceClassName(string $class_name)
 	{
 		if (!static::isBuilt($class_name)) {
 			return $class_name;
 		}
-		if ($namespace = static::getBuiltNameSpace()) {
+		if (static::getBuiltNameSpace()) {
 			// SM: temporarily disable patch #88021 (vendor is part of built class_name)
 			//return str_replace($namespace, '', $class_name);
 			// TODO wait for process of database migration to rollback above. see #88021

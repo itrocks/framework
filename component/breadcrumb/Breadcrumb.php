@@ -10,9 +10,6 @@ use ITRocks\Framework\View\Html\Template;
 class Breadcrumb
 {
 
-	//-------------------------------------------------------------------------------- COMPONENT_NAME
-	const COMPONENT_NAME = 'breadcrumb';
-
 	//--------------------------------------------------------------------------------- TEMPLATE_PATH
 	const TEMPLATE_PATH = 'itrocks/framework/component/breadcrumb/breadcrumb.html';
 
@@ -32,7 +29,7 @@ class Breadcrumb
 	/**
 	 * @var string
 	 */
-	public string $title = "";
+	public string $title = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -44,9 +41,9 @@ class Breadcrumb
 	 */
 	public function __construct(string $title, ?Button $back_link = null, array $buttons = [])
 	{
-		$this->buttons = $buttons;
 		$this->back_link = $back_link;
-		$this->title = $title;
+		$this->buttons   = $buttons;
+		$this->title     = $title;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -59,25 +56,12 @@ class Breadcrumb
 		$template->setParameters(
 			[
 				Parameter::IS_INCLUDED => true,
-				'title'                => $this->title,
+				'back_link'            => $this->back_link,
 				'buttons'              => $this->buttons,
-				'back_link'            => $this->back_link]
+				'title'                => $this->title
+			]
 		);
 		return $template->parse();
-	}
-
-	//------------------------------------------------------------------------------------- addButton
-	public function addButton(string $caption, string $link = '', string $class = '') : self
-	{
-		$this->buttons[] = new Button($caption, $link, null, [Button::CLASS => $class]);
-		return $this;
-	}
-
-	//----------------------------------------------------------------------------------- setBackLink
-	public function setBackLink(string $link = '', string $class = '') : self
-	{
-		$this->back_link = new Button('', $link, null, [Button::CLASS => $class]);
-		return $this;
 	}
 
 }

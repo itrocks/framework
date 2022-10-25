@@ -19,7 +19,7 @@ abstract class File
 	 *
 	 * @var string[]
 	 */
-	public $begin_lines;
+	public array $begin_lines;
 
 	//------------------------------------------------------------------------------------ $end_lines
 	/**
@@ -27,28 +27,28 @@ abstract class File
 	 *
 	 * @var string[]
 	 */
-	public $end_lines;
+	public array $end_lines;
 
 	//------------------------------------------------------------------------------------ $namespace
 	/**
 	 * @var string
 	 */
-	public $namespace;
+	public string $namespace;
 
 	//------------------------------------------------------------------------------------------ $use
 	/**
 	 * @var string[]
 	 */
-	public $use;
+	public array $use;
 
 	//------------------------------------------------------------------------------------- addUseFor
 	/**
-	 * Adds an use entry for this class name, if it can be
+	 * Adds a use entry for this class name, if it can be
 	 *
 	 * @param $class_name string
 	 * @param $force integer
 	 */
-	public function addUseFor($class_name, $force = null)
+	public function addUseFor(string $class_name, int $force = 0)
 	{
 		if ($force) {
 			$use = lParse($class_name, BS, $force);
@@ -66,7 +66,7 @@ abstract class File
 	 *
 	 * @param $use string
 	 */
-	protected function addUseForClassName($use)
+	protected function addUseForClassName(string $use)
 	{
 		while (str_contains($use, BS) && !in_array($use, $this->use) && $this->useConflict($use)) {
 			$use = lParse($use, BS);
@@ -80,12 +80,12 @@ abstract class File
 	/**
 	 * Calculates the name of the default configuration file matching the current configuration class
 	 *
-	 * The $short_file_name is useless most of times : calculated using the name of the current class
+	 * The $short_file_name is usually useless : calculated using the name of the current class
 	 *
 	 * @param $short_file_name string ie 'builder', 'config', 'menu'
 	 * @return string
 	 */
-	public static function defaultFileName($short_file_name = null)
+	public static function defaultFileName(string $short_file_name = '') : string
 	{
 		if (!$short_file_name) {
 			$short_file_name = strtolower(rLastParse(static::class, BS));
@@ -101,10 +101,10 @@ abstract class File
 	 *
 	 * It uses $namespace and $use for namespace completion
 	 *
-	 * @param $class_name string source short class name to cleanup and extend
+	 * @param $class_name string source short class name to clean-up and extend
 	 * @return string resulting full and clean class name
 	 */
-	public function fullClassNameOf($class_name)
+	public function fullClassNameOf(string $class_name) : string
 	{
 		$class_name = lParse(trim($class_name), '::class');
 		return (new Type($class_name))->applyNamespace($this->namespace, $this->use);
@@ -125,7 +125,7 @@ abstract class File
 	 * @param $maximum_use_depth integer do not care about use greater than this backslashes counter
 	 * @return string
 	 */
-	public function shortClassNameOf($class_name, $maximum_use_depth = 999)
+	public function shortClassNameOf(string $class_name, int $maximum_use_depth = 999) : string
 	{
 		if (str_starts_with($class_name, AT)) {
 			return $class_name;
@@ -156,7 +156,7 @@ abstract class File
 	 * @param $use string
 	 * @return boolean true if there is a conflict with another use part
 	 */
-	protected function useConflict($use)
+	protected function useConflict(string $use) : bool
 	{
 		$use_part = rLastParse($use, BS, 1, true);
 		foreach ($this->use as $check_use) {

@@ -52,7 +52,7 @@ class Include_Filter extends php_user_filter
 		$file_name_no_ext = $dot_pos ? substr($file_name, 0, $dot_pos) : $file_name;
 		$basename         = basename($file_name_no_ext);
 		$parent_dir       = dirname($file_name_no_ext);
-		return (strtolower($basename) == basename($parent_dir))
+		return (strtolower($basename) === basename($parent_dir))
 			// case 1 : a/class/name/like/this/This.php => a-class-name-like-This
 			? str_replace(SL, '-', dirname($parent_dir) . SL . $basename)
 			// case 2 : a/class/name/like/This.php => a-class-name-like-This
@@ -71,9 +71,9 @@ class Include_Filter extends php_user_filter
 	 */
 	public static function file(string $file_name, string $path_prefix = '') : string
 	{
-		$path_prefix .= (strlen($path_prefix) && (substr($path_prefix, -1)) != SL) ? SL : '';
+		$path_prefix .= (strlen($path_prefix) && !str_ends_with($path_prefix, SL)) ? SL : '';
 		// if absolute path given
-		if (substr($file_name, 0, 1) === SL) {
+		if (str_starts_with($file_name, SL)) {
 			// if project root file, remove this part
 			if (str_starts_with($file_name, Paths::$project_root)) {
 				$file_name = substr($file_name, strlen(Paths::$project_root) + 1);
@@ -109,7 +109,7 @@ class Include_Filter extends php_user_filter
 	 * @param $closing  boolean
 	 * @return integer
 	 */
-	public function filter($in, $out, &$consumed, bool $closing) : int
+	public function filter(mixed $in, mixed $out, &$consumed, bool $closing) : int
 	{
 		while ($bucket = stream_bucket_make_writeable($in)) {
 			$consumed = $bucket->datalen;

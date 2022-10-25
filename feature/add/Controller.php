@@ -26,13 +26,15 @@ class Controller extends Edit\Controller
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
+	 * @noinspection PhpDocSignatureInspection $settings
 	 * @param $object     object|string object or class name
 	 * @param $parameters array parameters
-	 * @param $settings   Setting\Custom\Set|Output_Setting\Set|null
+	 * @param $settings   Output_Setting\Set&Setting\Custom\Set|null
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, array $parameters, Setting\Custom\Set $settings = null)
-		: array
+	public function getGeneralButtons(
+		object|string $object, array $parameters, Setting\Custom\Set $settings = null
+	) : array
 	{
 		$buttons = parent::getGeneralButtons($object, $parameters, $settings);
 
@@ -62,7 +64,8 @@ class Controller extends Edit\Controller
 	 * @see Edit_Controller::getViewParameters
 	 * @see initializeValues
 	 */
-	protected function getViewParameters(Parameters $parameters, array $form, $class_name) : array
+	protected function getViewParameters(Parameters $parameters, array $form, string $class_name)
+		: array
 	{
 		$object = $parameters->getMainObject($class_name);
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */

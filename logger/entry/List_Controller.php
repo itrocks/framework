@@ -17,14 +17,16 @@ class List_Controller extends List_\Controller
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
+	 * @noinspection PhpDocSignatureInspection $class_name, $settings
 	 * @param $class_name string The context object or class name
 	 * @param $parameters array Parameters prepared to the view. 'selection_buttons' to be added
-	 * @param $settings   Setting\Custom\Set|List_Setting\Set
+	 * @param $settings   List_Setting\Set&Setting\Custom\Set|null
 	 * @return Button[]
 	 */
 	public function getGeneralButtons(
-		$class_name, array $parameters, Setting\Custom\Set $settings = null
-	) {
+		object|string $class_name, array $parameters, Setting\Custom\Set $settings = null
+	) : array
+	{
 		$buttons = parent::getGeneralButtons($class_name, $parameters, $settings);
 		unset($buttons[Feature::F_ADD]);
 		unset($buttons[Feature::F_IMPORT]);
@@ -33,15 +35,16 @@ class List_Controller extends List_\Controller
 
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
-	 * @param $class_name    string class name
-	 * @param $parameters    string[] parameters
-	 * @param $list_settings Setting\Custom\Set|List_Setting\Set
+	 * @param $class_name string class name
+	 * @param $parameters string[] parameters
+	 * @param $settings   List_Setting\Set|null
 	 * @return Button[]
 	 */
 	public function getSelectionButtons(
-		$class_name, array $parameters, Setting\Custom\Set $list_settings = null
-	) {
-		$buttons = parent::getSelectionButtons($class_name, $parameters, $list_settings);
+		string $class_name, array $parameters, List_Setting\Set $settings = null
+	) : array
+	{
+		$buttons = parent::getSelectionButtons($class_name, $parameters, $settings);
 		unset($buttons[Feature::F_DELETE]);
 		unset($buttons[Feature::F_PRINT]);
 		$buttons[File_Export\Controller::FEATURE] = new Button(

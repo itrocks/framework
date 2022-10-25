@@ -21,29 +21,19 @@ class Configuration
 	//--------------------------------------------------------------------------------------- COMMENT
 	const COMMENT = '<!-- Source : %s %s -->' . LF;
 
-	//---------------------------------------------------------------------------------- COMMENT_TYPE
-	/**
-	 * Configuration constructor.
-	 * Uses a pattern factory via static method get()
-	 *
-	 * @param $file_path string
-	 * @see Configuration::get()
-	 */
-	const COMMENT_TYPE = 8;
-
 	//--------------------------------------------------------------------------------- $applications
 	/**
 	 * Child configurations coming from application inheritance
 	 *
 	 * @var static[]
 	 */
-	public $applications = [];
+	public array $applications = [];
 
 	//------------------------------------------------------------------------------------- $excluded
 	/**
 	 * @var Element[]
 	 */
-	public $excluded = [];
+	public array $excluded = [];
 
 	//------------------------------------------------------------------------------------ $file_path
 	/**
@@ -51,7 +41,7 @@ class Configuration
 	 *
 	 * @var string
 	 */
-	public $file_path;
+	public string $file_path = '';
 
 	//---------------------------------------------------------------------------------------- $first
 	/**
@@ -59,7 +49,7 @@ class Configuration
 	 *
 	 * @var Element[]
 	 */
-	public $first = [];
+	public array $first = [];
 
 	//------------------------------------------------------------------------------------- $included
 	/**
@@ -67,7 +57,7 @@ class Configuration
 	 *
 	 * @var Element[]
 	 */
-	public $included = [];
+	public array $included = [];
 
 	//----------------------------------------------------------------------------------------- $last
 	/**
@@ -75,7 +65,7 @@ class Configuration
 	 *
 	 * @var Element[]
 	 */
-	public $last = [];
+	public array $last = [];
 
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
@@ -83,7 +73,7 @@ class Configuration
 	 *
 	 * @var static[]
 	 */
-	public $plugins = [];
+	public array $plugins = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -92,7 +82,7 @@ class Configuration
 	 * @param $file_path string
 	 * @throws Assets_Exception
 	 */
-	protected function __construct($file_path)
+	protected function __construct(string $file_path)
 	{
 		$file_path = $this->checkPath($file_path);
 		if ($file_path) {
@@ -107,7 +97,7 @@ class Configuration
 	 * @param $is_plugin boolean
 	 * @throws Assets_Exception
 	 */
-	public function add($file_path, $is_plugin = true)
+	public function add(string $file_path, bool $is_plugin = true)
 	{
 		$file_path = $this->checkPath($file_path);
 		if ($file_path) {
@@ -129,7 +119,7 @@ class Configuration
 	 * @return string[]
 	 * @see Priority
 	 */
-	private function aggregateElements(array $configurations, $priority, array &$cache)
+	private function aggregateElements(array $configurations, string $priority, array &$cache) : array
 	{
 		$elements = [];
 		foreach ($configurations as $configuration) {
@@ -159,11 +149,11 @@ class Configuration
 	 * @param $path string
 	 * @return string|false path if file exist and is not already imported
 	 */
-	protected function checkPath($path)
+	protected function checkPath(string $path) : string|false
 	{
 		$path = realpath($path);
 		$path = (is_dir($path) ? $path : dirname($path)) . SL . static::ASSETS_FILENAME;
-		return file_exists($path) && (array_search($path, $this->getAllFilePaths()) === false)
+		return (file_exists($path) && !in_array($path, $this->getAllFilePaths()))
 			? $path
 			: false;
 	}
@@ -173,7 +163,7 @@ class Configuration
 	 * @return static
 	 * @throws Assets_Exception
 	 */
-	public static function get()
+	public static function get() : static
 	{
 		$configuration = new static(
 			Names::classToFilePath(get_class(Application::current()))
@@ -182,12 +172,12 @@ class Configuration
 		// Add all applications assets
 		foreach (Application::current()->include_path->getSourceDirectories() as $directory) {
 			$configuration->add(Paths::$project_root . SL . $directory, false);
-		};
+		}
 
 		// Add all loaded plugin
 		foreach (Session::current()->plugins->getAll() as $plugin => $props) {
 			$configuration->add(Names::classToFilePath($plugin));
-		};
+		}
 
 		return $configuration;
 	}
@@ -196,7 +186,7 @@ class Configuration
 	/**
 	 * @return string[]
 	 */
-	public function getAllFilePaths()
+	public function getAllFilePaths() : array
 	{
 		$paths = [$this->file_path];
 		foreach ($this->applications as $configuration) {
@@ -213,7 +203,7 @@ class Configuration
 	 * @param $reverse boolean
 	 * @return Configuration[]
 	 */
-	private function getConfigurations($reverse = false)
+	private function getConfigurations(bool $reverse = false) : array
 	{
 		if ($reverse) {
 			return array_merge($this->plugins, [$this], $this->applications);
@@ -225,14 +215,14 @@ class Configuration
 	/**
 	 * @return string[]
 	 */
-	public function getStringElements()
+	public function getStringElements() : array
 	{
 		$cache = [];
 		foreach ($this->getConfigurations() as $configuration) {
 			foreach ($configuration->excluded as $element) {
 				$element->toRelativePath();
 				$cache[$element->path] = true;
-			};
+			}
 		}
 
 		$first = $this->aggregateElements(

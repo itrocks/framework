@@ -11,6 +11,6 @@ interface Updatable
 	/**
 	 * @param $last_time integer
 	 */
-	public function update($last_time);
+	public function update(int $last_time);
 
 }

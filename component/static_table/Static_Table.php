@@ -9,14 +9,11 @@ use ITRocks\Framework\View\Html\Dom\Table;
 class Static_Table
 {
 
-	//-------------------------------------------------------------------------------- COMPONENT_NAME
-	const COMPONENT_NAME = 'static_table';
-
 	//---------------------------------------------------------------------------------------- $table
 	/**
 	 * @var Table
 	 */
-	public $table;
+	public Table $table;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

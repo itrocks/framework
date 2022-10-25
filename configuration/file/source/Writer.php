@@ -30,7 +30,7 @@ class Writer extends File\Writer
 	 * @param $line string
 	 * @return integer
 	 */
-	protected function lineLength($line)
+	protected function lineLength(string $line) : int
 	{
 		$tab_count = substr_count($line, TAB);
 		return strlen($line) + ($tab_count * (static::TAB_LENGTH - 1));
@@ -38,7 +38,7 @@ class Writer extends File\Writer
 
 	//--------------------------------------------------------------------------- writeClassPrototype
 	/**
-	 * Write class prototype : all lines from 'class Class_Name' to '{'
+	 * Write class prototype : all lines from 'class Class_Name' to '{'.
 	 *
 	 * - Use $file's $class_type, $class_name, $class_extends and $class_implements property values
 	 * - Limit to the MAX_LINE_LENGTH characters limit

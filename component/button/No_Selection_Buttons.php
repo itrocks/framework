@@ -14,13 +14,14 @@ trait No_Selection_Buttons
 	/**
 	 * @param $class_name    string class name
 	 * @param $parameters    string[] parameters
-	 * @param $list_settings Setting\Custom\Set
+	 * @param $list_settings Setting\Custom\Set|null
 	 * @return Button[]
 	 */
 	public function getSelectionButtons(
 		/** @noinspection PhpUnusedParameterInspection @implements */
-		$class_name, array $parameters, Setting\Custom\Set $list_settings = null
-	) {
+		string $class_name, array $parameters, Setting\Custom\Set $list_settings = null
+	) : array
+	{
 		return [];
 	}
 

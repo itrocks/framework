@@ -23,7 +23,7 @@ class Properties
 	/**
 	 * @var string[]
 	 */
-	private static $SETTER_RESERVED = [
+	private const SETTER_RESERVED = [
 		'class_name', 'element_type', 'element_type_name', 'joinpoint', 'object',
 		'property', 'property_name', 'result', 'stored', 'type', 'type_name', 'value'
 	];
@@ -32,7 +32,7 @@ class Properties
 	/**
 	 * @var string[] key is the original method name, value is the 'rename' or 'trait' action
 	 */
-	private $actions;
+	private array $actions;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -51,7 +51,7 @@ class Properties
 	public function compile(array $advices)
 	{
 		$this->actions = [];
-		$methods = [];
+		$methods       = [];
 		if ($this->class->type !== T_TRAIT) {
 			$methods['__construct'] = $this->compileConstruct($advices);
 			if ($methods['__construct']) {
@@ -87,17 +87,19 @@ class Properties
 	 * @param $init          string[]
 	 * @return string
 	 */
-	private function compileAdvice($property_name, $type, $advice, array &$init)
+	private function compileAdvice(
+		string $property_name, string $type, array|string $advice, array &$init
+	) : string
 	{
 		$class_name = $this->class->name;
 
-		/** @var $advice_class_name string */
-		/** @var $advice_method_name string */
+		/** @var $advice_class_name    string */
+		/** @var $advice_method_name   string */
 		/** @var $advice_function_name string */
-		/** @var $advice_parameters string[] */
-		/** @var $advice_string string [$object_, 'methodName'] | 'functionName' */
-		/** @var $advice_has_return boolean */
-		/** @var $is_advice_static boolean */
+		/** @var $advice_parameters    string[] */
+		/** @var $advice_string        string [$object_, 'methodName'] | 'functionName' */
+		/** @var $advice_has_return    boolean */
+		/** @var $is_advice_static     boolean */
 		[
 			$advice_class_name, $advice_method_name, $advice_function_name,
 			$advice_parameters, $advice_string, $advice_has_return, $is_advice_static
@@ -109,7 +111,7 @@ class Properties
 			$advice_parameters_string = '$' . join(', $', array_keys($advice_parameters));
 			if (
 				isset($advice_parameters[$property_name])
-				&& !in_array($property_name, self::$SETTER_RESERVED)
+				&& !in_array($property_name, self::SETTER_RESERVED)
 			) {
 				$advice_parameters_string = str_replace(
 					'$' . $property_name, '$value', $advice_parameters_string
@@ -196,10 +198,10 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileAop(array $advices)
+	private function compileAop(array $advices) : string
 	{
 		$parent_code = '';
-		$begin_code = '
+		$begin_code  = '
 	/** AOP initialization for an object : called by __construct */
 	protected function __aop($init = true)
 	{
@@ -264,7 +266,7 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileConstruct(array $advices)
+	private function compileConstruct(array $advices) : string
 	{
 		// only if at least one property is declared here
 		foreach ($advices as $property_advices) {
@@ -299,14 +301,14 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileDefault(array $advices)
+	private function compileDefault(array $advices) : string
 	{
 		$over = $this->overrideMethod('__default', false);
 		$code = '';
 		foreach ($advices as $property_name => $property_advices) {
 			if (isset($property_advices['default'])) {
 				[$object, $method] = $property_advices['default'];
-				$operator              = ($object === '$this') ? '->' : '::';
+				$operator          = ($object === '$this') ? '->' : '::';
 				$code .= "if (!isset(\$this->$property_name)) {
 			\$this->$property_name = $object$operator$method(
 				new \\ITRocks\\Framework\\Reflection\\Reflection_Property(__CLASS__, '$property_name')
@@ -314,7 +316,7 @@ class Properties
 		}" . LF . TAB . TAB;
 			}
 		}
-		if (!isset($operator) && beginsWith($over['call'], 'parent::')) {
+		if (!isset($operator) && str_starts_with($over['call'], 'parent::')) {
 			return '';
 		}
 		$code .= $over['call'] ?: (
@@ -332,7 +334,7 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileGet(array $advices)
+	private function compileGet(array $advices) : string
 	{
 		$over = $this->overrideMethod('__get', true, $advices);
 		$code = $over['prototype'] . '
@@ -351,7 +353,7 @@ class Properties
 					$code  .= '
 		switch ($property_name) {';
 				}
-				if ($property_advices['replaced'] == 'this') {
+				if ($property_advices['replaced'] === 'this') {
 					$code .= '
 			case ' . Q . $property_name . Q . ': $value =& $this; return $value;';
 				}
@@ -361,7 +363,7 @@ class Properties
 				}
 				if (isset($over['cases'][$property_name])) {
 					unset($over['cases'][$property_name]);
-					if (count($over['cases']) == 1) {
+					if (count($over['cases']) === 1) {
 						$over['cases'] = [];
 					}
 				}
@@ -392,7 +394,7 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileIsset(array $advices)
+	private function compileIsset(array $advices) : string
 	{
 		$over = $this->overrideMethod('__isset');
 		$code = $over['prototype'] . '
@@ -406,7 +408,7 @@ class Properties
 					$code .= '
 		switch ($property_name) {';
 				}
-				if ($property_advices['replaced'] == 'this') {
+				if ($property_advices['replaced'] === 'this') {
 					$code .= '
 			case ' . Q . $property_name . Q . ': return true;';
 				}
@@ -416,7 +418,7 @@ class Properties
 				}
 			}
 		}
-		if (!isset($switch) && beginsWith($over['call'], 'return parent::')) {
+		if (!isset($switch) && str_starts_with($over['call'], 'return parent::')) {
 			return '';
 		}
 		if (isset($switch)) {
@@ -436,7 +438,7 @@ class Properties
 	 * @param $advices       array
 	 * @return string
 	 */
-	private function compileRead($property_name, array $advices)
+	private function compileRead(string $property_name, array $advices) : string
 	{
 		$code = '';
 		$init = [];
@@ -509,7 +511,7 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileSet(array $advices)
+	private function compileSet(array $advices) : string
 	{
 		$over = $this->overrideMethod('__set', true, $advices);
 		$code = $over['prototype'] . '
@@ -528,9 +530,9 @@ class Properties
 					$code .= '
 		switch ($property_name) {';
 				}
-				if ($property_advices['replaced'] == 'this') {
+				if ($property_advices['replaced'] === 'this') {
 					$code .= '
-			case ' . Q . $property_name . Q . ': foreach (get_object_vars($this) as $k => $v) if ($k != \'' . $property_name . '\' && !isset($value->$k)) unset($this->$v); foreach (get_object_vars($value) as $k => $v) $this->$k = $v; return;';
+			case ' . Q . $property_name . Q . ': foreach (get_object_vars($this) as $k => $v) if ($k !== \'' . $property_name . '\' && !isset($value->$k)) unset($this->$v); foreach (get_object_vars($value) as $k => $v) $this->$k = $v; return;';
 				}
 				else {
 					$code .= '
@@ -538,7 +540,7 @@ class Properties
 				}
 				if (isset($over['cases'][$property_name])) {
 					unset($over['cases'][$property_name]);
-					if (count($over['cases']) == 1) {
+					if (count($over['cases']) === 1) {
 						$over['cases'] = [];
 					}
 				}
@@ -557,7 +559,7 @@ class Properties
 			$code .= join('', $over['cases']) . '
 		}';
 		}
-		if (beginsWith($over['call'], 'parent::')) {
+		if (str_starts_with($over['call'], 'parent::')) {
 			if (!isset($switch)) {
 				return '';
 			}
@@ -581,7 +583,7 @@ class Properties
 	 * @param $advices array
 	 * @return string
 	 */
-	private function compileUnset(array $advices)
+	private function compileUnset(array $advices) : string
 	{
 		$over = $this->overrideMethod('__unset');
 		$code = $over['prototype'] . '
@@ -595,7 +597,7 @@ class Properties
 					$code .= '
 		switch ($property_name) {';
 				}
-				if ($property_advices['replaced'] == 'this') {
+				if ($property_advices['replaced'] === 'this') {
 					$code .= '
 			case ' . Q . $property_name . Q . ': trigger_error("You can\'t unset the link property", E_USER_ERROR); return;';
 				}
@@ -605,7 +607,7 @@ class Properties
 				}
 			}
 		}
-		if (!isset($switch) && beginsWith($over['call'], 'parent::')) {
+		if (!isset($switch) && str_starts_with($over['call'], 'parent::')) {
 			return '';
 		}
 		if (isset($switch)) {
@@ -626,10 +628,10 @@ class Properties
 	 *
 	 * @return string
 	 */
-	private function compileWakeup()
+	private function compileWakeup() : string
 	{
 		$over = $this->overrideMethod('__wakeup', false);
-		if (beginsWith($over['call'], 'parent::')) {
+		if (str_starts_with($over['call'], 'parent::')) {
 			return '';
 		}
 		return $over['prototype'] . '
@@ -646,7 +648,7 @@ class Properties
 	 * @param $advices       array
 	 * @return string
 	 */
-	private function compileWrite($property_name, array $advices)
+	private function compileWrite(string $property_name, array $advices) : string
 	{
 		$code = '';
 		$init = [];
@@ -705,7 +707,7 @@ class Properties
 	private function executeActions()
 	{
 		foreach ($this->actions as $method_name => $action) {
-			if ($action == 'rename') {
+			if ($action === 'rename') {
 				$regexp = Reflection_Method::regex($method_name);
 				$this->class->source = $this->class->source->setSource(preg_replace(
 					$regexp,
@@ -713,18 +715,12 @@ class Properties
 					$this->class->source->getSource())
 				);
 			}
-			elseif ($action == 'trait') {
+			elseif ($action === 'trait') {
 				// TODO don't know what has to be done for this case
-				trigger_error(
-					'Don\'t know how to ' . $action . SP . $this->class->name . '::' . $method_name,
-					E_USER_NOTICE
-				);
+				trigger_error("Don't know how to $action {$this->class->name}::$method_name");
 			}
 			else {
-				trigger_error(
-					'Don\'t know how to ' . $action . SP . $this->class->name . '::' . $method_name,
-					E_USER_ERROR
-				);
+				trigger_error("Don't know how to $action {$this->class->name}::$method_name", E_USER_ERROR);
 			}
 		}
 	}
@@ -754,7 +750,9 @@ class Properties
 	 * @param $advices      array
 	 * @return array action (rename, trait), call, Reflection_Method method, prototype
 	 */
-	private function overrideMethod($method_name, $needs_return = true, array $advices = [])
+	private function overrideMethod(
+		string $method_name, bool $needs_return = true, array $advices = []
+	) : array
 	{
 		$over       = [];
 		$parameters = '';
@@ -800,7 +798,7 @@ class Properties
 					$over['prototype'] .= '
 		$property_name = $' . reset($parameters) . ';';
 				}
-				if ((count($parameters) == 2) && (end($parameters) !== 'value')) {
+				if ((count($parameters) === 2) && (end($parameters) !== 'value')) {
 					$over['prototype'] .= '
 		$value = $' . end($parameters) . ';';
 				}
@@ -872,9 +870,9 @@ class Properties
 	 * @param $advices     array
 	 * @return string[]
 	 * @todo this check only getters, links and setters. This should check AOP links too.
-	 * (the parent class has not this method but it has AOP properties)
+	 * (the parent class has not this method, but it has AOP properties)
 	 */
-	private function parentCases($method_name, &$parameters, array $advices)
+	private function parentCases(string $method_name, string &$parameters, array $advices) : array
 	{
 		$cases = [];
 		if (
@@ -882,8 +880,8 @@ class Properties
 			&& ($this->class->type === T_CLASS)
 			&& ($parent = $this->class->getParentClass())
 		) {
-			$annotation = ($method_name == '__get') ? '(getter|link)' : 'setter';
-			$type       = ($method_name == '__get') ? Handler::READ : Handler::WRITE;
+			$annotation = ($method_name === '__get') ? '(getter|link)' : 'setter';
+			$type       = ($method_name === '__get') ? Handler::READ : Handler::WRITE;
 			$overrides  = [];
 			foreach ($this->scanForOverrides(
 				$parent->getDocComment([T_EXTENDS, T_USE]), [substr($method_name, 2) . 'ter']
@@ -893,7 +891,7 @@ class Properties
 			foreach ($parent->getProperties([T_EXTENDS, T_USE], $parent) as $property) {
 				if (!isset($advices[$property->name]['implements'][$type])) {
 					$expr = '%'
-						. '\n\s+\*\s+'               // each line beginnig by '* '
+						. '\n\s+\*\s+'               // each line beginning with '* '
 						. AT . $annotation           // 1 : AOP annotation
 						. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
 						. '(\w+)?)?'                 // 3 : method or function name
@@ -910,15 +908,9 @@ class Properties
 					case '__get':
 						$cases[] = ' return parent::__get($property_name);';
 						break;
-					case '__isset':
-						$cases[] = ' return parent::__isset($property_name);';
-						break;
 					case '__set':
 						$cases[] = ' parent::__set($property_name, $value); return;';
 						$parameters .= ', $value';
-						break;
-					case '__unset':
-						$cases[] = ' parent::__unset($property_name); return;';
 						break;
 					default:
 						$parameters = '';

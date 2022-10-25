@@ -18,7 +18,7 @@ class Uri
 	 *
 	 * @var string
 	 */
-	public $controller_name;
+	public string $controller_name;
 
 	//--------------------------------------------------------------------------------- $feature_name
 	/**
@@ -26,7 +26,7 @@ class Uri
 	 *
 	 * @var string
 	 */
-	public $feature_name;
+	public ?string $feature_name;
 
 	//----------------------------------------------------------------------------------- $parameters
 	/**
@@ -35,7 +35,7 @@ class Uri
 	 * @example URI is '/Order/3/Line/2/output', there will be two parameters : 'Order' with its value 3, and 'Line' with its value 2
 	 * @var Parameters
 	 */
-	public $parameters;
+	public Parameters $parameters;
 
 	//------------------------------------------------------------------------------------------ $uri
 	/**
@@ -43,7 +43,7 @@ class Uri
 	 *
 	 * @var string
 	 */
-	public $uri;
+	public string $uri;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -70,18 +70,6 @@ class Uri
 		return $this->uri;
 	}
 
-	//------------------------------------------------------------------------------------ arrayToUri
-	/**
-	 * Transforms an array to an URI
-	 *
-	 * @param $array string[]
-	 * @return string
-	 */
-	public static function arrayToUri(array $array)
-	{
-		return SL . join(SL, $array);
-	}
-
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @return string current URI string
@@ -100,7 +88,7 @@ class Uri
 	 * @param $parameter string
 	 * @return boolean
 	 */
-	public function isClassName($parameter)
+	public function isClassName(string $parameter) : bool
 	{
 		return $parameter && ctype_upper($parameter[0]) && !str_contains($parameter, DOT);
 	}
@@ -142,7 +130,7 @@ class Uri
 			}
 		}
 		if ($this->isClassName($controller_element)) {
-			$key++;
+			$key ++;
 		}
 		$this->controller_name = join(BS, array_slice($uri, 0, $key));
 		$uri                   = array_splice($uri, $key);
@@ -214,7 +202,7 @@ class Uri
 	 *
 	 * @return string previous uri or default uri ('/')
 	 */
-	public static function previous()
+	public static function previous() : string
 	{
 		$uri      = SL;
 		$referrer = isset($_SERVER['HTTP_REFERER'])
@@ -223,8 +211,8 @@ class Uri
 		if (
 			$referrer
 			&& ($referrer !== SL)
-			&& (substr($referrer, -2) !== '?X')
-			&& (substr($referrer, -4) !== '?X&Z')
+			&& !str_ends_with($referrer, '?X')
+			&& !str_ends_with($referrer, '?X&Z')
 		) {
 			$uri = $referrer;
 		}

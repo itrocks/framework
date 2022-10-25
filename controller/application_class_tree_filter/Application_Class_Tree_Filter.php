@@ -84,7 +84,9 @@ class Application_Class_Tree_Filter
 		$default_application_classes    = [];
 		$do_default_application_classes = false;
 		foreach ($this->classes() as $application_class_name) {
-			if (str_starts_with($class_name, lLastParse($application_class_name, BS . 'Application') . BS)) {
+			if (
+				str_starts_with($class_name, lLastParse($application_class_name, BS . 'Application') . BS)
+			) {
 				$do_default_application_classes = true;
 			}
 			elseif ($do_default_application_classes) {
