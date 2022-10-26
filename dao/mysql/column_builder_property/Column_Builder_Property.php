@@ -35,7 +35,7 @@ trait Column_Builder_Property
 			$property_type = $column->getType();
 			if ($property_type->isInteger()) {
 				$default = is_object($default)
-					? (isset($default->id) ? $default->id : 0)
+					? ($default->id ?? 0)
 					: intval($default);
 			}
 			elseif ($property_type->isFloat()) {
@@ -54,7 +54,7 @@ trait Column_Builder_Property
 				}
 				else {
 					// if @values, then set with a real value
-					// if no @values, the string [] is stored as as text : null default value even if not null
+					// if no @values, the string [] is stored as text : null default value even if not null
 					$default = Values_Annotation::of($property)->value ? '' : null;
 				}
 			}
@@ -154,7 +154,7 @@ trait Column_Builder_Property
 						: 'double';
 				}
 				elseif ($property->getAnnotation('binary')->value) {
-					return static::sqlBlobColumn($max_length);
+					return static::sqlBlobColumn((int)$max_length);
 				}
 				else {
 					$values = self::propertyValues($property);
@@ -218,24 +218,24 @@ trait Column_Builder_Property
 
 	//--------------------------------------------------------------------------------- sqlBlobColumn
 	/**
-	 * @param $max_length \integer
+	 * @param $max_length int
 	 * @return string
 	 */
-	private static function sqlBlobColumn($max_length)
+	private static function sqlBlobColumn(int $max_length) : string
 	{
-		return (isset($max_length) && ($max_length <= 255)) ? 'tinyblob'   : (
-			(isset($max_length) && ($max_length <= 65535))    ? 'blob'       : (
-			(isset($max_length) && ($max_length <= 16777215)) ? 'mediumblob' :
+		return ($max_length && ($max_length <= 255)) ? 'tinyblob'   : (
+			($max_length && ($max_length <= 65535))    ? 'blob'       : (
+			($max_length && ($max_length <= 16777215)) ? 'mediumblob' :
 			'longblob'
 		));
 	}
 
 	//--------------------------------------------------------------------------------- sqlTextColumn
 	/**
-	 * @param $max_length \integer
+	 * @param $max_length int
 	 * @return string
 	 */
-	private static function sqlTextColumn($max_length)
+	private static function sqlTextColumn(int $max_length) : string
 	{
 		return (
 			($max_length <= 3)        ? ('char('    . $max_length . ')') : (

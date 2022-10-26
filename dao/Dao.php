@@ -482,7 +482,7 @@ class Dao implements Configurable
 	 *
 	 * @param $identifier integer|string|T identifier for the object, or an object to re-read
 	 * @param $class_name class-string<T>|null class for read object. Useless if $identifier is object
-	 * @return ?object an object of class objectClass, read from data source, or null if nothing found
+	 * @return ?T an object of class objectClass, read from data source, or null if nothing found
 	 * @see Data_Link::read()
 	 * @template T
 	 */

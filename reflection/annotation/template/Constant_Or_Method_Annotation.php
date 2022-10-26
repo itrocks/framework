@@ -24,12 +24,13 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $value           ?string
+	 * @param $value           bool|string|null
 	 * @param $class_property  Reflection
 	 * @param $annotation_name string
 	 */
-	public function __construct(?string $value, Reflection $class_property, string $annotation_name)
-	{
+	public function __construct(
+		bool|string|null $value, Reflection $class_property, string $annotation_name
+	) {
 		parent::__construct($value, $class_property, $annotation_name);
 		$value = strval($this->value);
 
