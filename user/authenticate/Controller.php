@@ -21,9 +21,9 @@ class Controller implements Feature_Controller
 	//-------------------------------------------------------------------------------------- reserved
 	/**
 	 * @param $uri string
-	 * @return boolean
+	 * @return string
 	 */
-	protected function reserved(string $uri) : bool
+	protected function reserved(string $uri) : string
 	{
 		return (
 			str_starts_with($uri, View::link(User::class, Feature::F_AUTHENTICATE))

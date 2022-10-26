@@ -27,7 +27,7 @@ abstract class Authentication
 
 	//----------------------------------------------------------------------------------- arrayToUser
 	/**
-	 * List all of properties to write in user object for the register
+	 * List properties to write in user object for the register
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $array array The form content
