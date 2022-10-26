@@ -114,15 +114,18 @@ class Link_Table
 
 	//---------------------------------------------------------------------------------- masterColumn
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
 	function masterColumn()
 	{
 		if (!isset($this->master_column)) {
 			$foreign_property_name = Foreign_Annotation::of($this->property)->value;
-			$foreign_property      = $this->property->getType()->asReflectionClass()->getProperty(
-				$foreign_property_name
-			);
+			$class = $this->property->getType()->asReflectionClass();
+			/** @noinspection PhpUnhandledExceptionInspection property_exists */
+			$foreign_property = property_exists($class->name, $foreign_property_name)
+				? $class->getProperty($foreign_property_name)
+				: null;
 			$foreign_link = $foreign_property
 				? Foreignlink_Annotation::of($foreign_property)->value
 				: null;
