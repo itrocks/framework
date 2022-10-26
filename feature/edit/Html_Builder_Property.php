@@ -372,10 +372,11 @@ class Html_Builder_Property extends Html_Builder_Type
 				}
 				$element->setData('sensitive');
 			}
-			if (strlen($this->value) || Password_Annotation::of($this->property)->value) {
+			$length = strlen(strval($this->value));
+			if ($length || Password_Annotation::of($this->property)->value) {
 				$element->setAttribute('type', 'password');
 			}
-			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
+			$element->setAttribute('value', $length ? Password::UNCHANGED : '');
 		}
 		if (
 			!$values
