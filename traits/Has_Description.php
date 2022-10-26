@@ -13,6 +13,6 @@ trait Has_Description
 	 * @multiline
 	 * @var string
 	 */
-	public string $description;
+	public string $description = '';
 
 }

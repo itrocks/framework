@@ -18,11 +18,10 @@ trait Person_Having_Name
 	 */
 	public function setDefaultName()
 	{
-		/** @var $self self|Has_Name */
-		$self = $this;
-		$name = trim($self->first_name . SP . $self->last_name);
-		if (strlen($name)) {
-			$self->name = $name;
+		/** @var $this static|Has_Name */
+		$name = trim($this->first_name . SP . $this->last_name);
+		if ($name !== '') {
+			$this->name = $name;
 		}
 	}
 

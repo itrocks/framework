@@ -14,7 +14,7 @@ trait Has_Number
 	 * @mandatory
 	 * @var string
 	 */
-	public $number;
+	public string $number = '';
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -22,7 +22,7 @@ trait Has_Number
 	 */
 	public function __toString() : string
 	{
-		return strval($this->number);
+		return $this->number;
 	}
 
 }

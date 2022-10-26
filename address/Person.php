@@ -14,13 +14,13 @@ trait Person
 	/**
 	 * @var string
 	 */
-	public string $first_name;
+	public string $first_name = '';
 
 	//------------------------------------------------------------------------------------ $last_name
 	/**
 	 * @var string
 	 */
-	public string $last_name;
+	public string $last_name = '';
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
