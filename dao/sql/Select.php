@@ -11,6 +11,8 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Tools\List_Data;
+use ReflectionException;
+use ReflectionProperty;
 
 /**
  * Manages Select() Dao Link calls : how to call and parse the query
@@ -457,9 +459,20 @@ class Select
 					$this->link->setObjectIdentifier($row[$this->columns[$j]], $result[$i]);
 				}
 				else {
-					$row[$this->columns[$j]]->$property_name = $result[$i];
+					$object = $row[$this->columns[$j]];
+					if (is_null($result[$i])) {
+						try {
+							$property_type = (new ReflectionProperty($object, $property_name))->getType();
+							if ($property_type?->allowsNull() === false) {
+								$result[$i] = '';
+							}
+						}
+						catch (ReflectionException) {
+						}
+					}
+					$object->$property_name = $result[$i];
 				}
-				// may be time consuming, and do we need the real complete object ?
+				// may be time-consuming, and do we need the real complete object ?
 				/*
 				if (
 					in_array($property_name, ['class', 'id'])
