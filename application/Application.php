@@ -62,7 +62,7 @@ class Application
 	 *
 	 * @var string[]
 	 */
-	private array $namespaces;
+	private array $namespaces = [];
 
 	//--------------------------------------------------------------------------------------- $vendor
 	/**
@@ -289,11 +289,10 @@ class Application
 		if ($this->namespaces) {
 			return $this->namespaces;
 		}
-		$namespaces = [];
 		foreach ($this->getClassesTree(true) as $application_class) {
-			$namespaces[] = substr($application_class, 0, strrpos($application_class, BS));
+			$this->namespaces[] = substr($application_class, 0, strrpos($application_class, BS));
 		}
-		return $this->namespaces = $namespaces;
+		return $this->namespaces;
 	}
 
 	//------------------------------------------------------------------------------ getParentClasses

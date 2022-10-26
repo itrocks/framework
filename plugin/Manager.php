@@ -185,7 +185,7 @@ class Manager implements IManager
 				$plugin = Builder::create($class_name, [$serialized]);
 				$plugin->plugin_configuration = $serialized;
 			}
-			// serialized object or configuration or configuration constant
+			// serialized object, or configuration, or configuration constant
 			elseif (is_string($serialized) || is_numeric($serialized)) {
 				if ((method_exists($class_name, '__unserialize'))) {
 					$plugin = unserialize($serialized);
@@ -249,11 +249,11 @@ class Manager implements IManager
 	//---------------------------------------------------------------------------------------- getAll
 	/**
 	 * Get all plugins list
-	 * $tree == false : the key is the plugin class name, the value is a Plugin or string or string[]
-	 * $tree == true : first dimension key is priority level, then come the plugins list
+	 * $tree === false : the key is the plugin class name, the value is Plugin or string, or string[]
+	 * $tree === true : first dimension key is priority level, then come the plugins list
 	 *
 	 * @param $tree boolean If true, return plugins list as a tree where first key is priority level
-	 * @return array plugins list
+	 * @return array Plugins list
 	 */
 	public function getAll(bool $tree = false) : array
 	{

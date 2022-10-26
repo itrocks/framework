@@ -19,7 +19,7 @@ abstract class File
 	 *
 	 * @var string[]
 	 */
-	public array $begin_lines;
+	public array $begin_lines = [];
 
 	//------------------------------------------------------------------------------------ $end_lines
 	/**
@@ -27,19 +27,19 @@ abstract class File
 	 *
 	 * @var string[]
 	 */
-	public array $end_lines;
+	public array $end_lines = [];
 
 	//------------------------------------------------------------------------------------ $namespace
 	/**
-	 * @var string
+	 * @var ?string
 	 */
-	public string $namespace;
+	public ?string $namespace = null;
 
 	//------------------------------------------------------------------------------------------ $use
 	/**
 	 * @var string[]
 	 */
-	public array $use;
+	public array $use = [];
 
 	//------------------------------------------------------------------------------------- addUseFor
 	/**

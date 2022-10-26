@@ -68,7 +68,7 @@ abstract class Writer
 			if (($token_id === T_USE) && !$in_class) {
 				$ignore_next_class = true;
 			}
-			elseif (in_array($token_id, [311, 312, 314])) {
+			elseif ($token_id === T_NAME_QUALIFIED) {
 				$class_name = lParse($token[1], BS);
 				if ($ignore_next_class) {
 					$ignore_next_class = false;

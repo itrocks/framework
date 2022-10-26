@@ -255,10 +255,10 @@ class Class_Builder
 	 * Gets built class name for a source class name
 	 *
 	 * @param $class_name string ie 'ITRocks\Framework\Module\Class_Name'
-	 * @return string ie 'Vendor\Application\Built\ITRocks\Framework\Module\Class_Name'
+	 * @return ?string ie 'Vendor\Application\Built\ITRocks\Framework\Module\Class_Name'
 	 * @see Class_Builder::sourceClassName()
 	 */
-	public static function builtClassName(string $class_name) : string
+	public static function builtClassName(string $class_name) : ?string
 	{
 		if (static::isBuilt($class_name)) {
 			return $class_name;
@@ -269,16 +269,16 @@ class Class_Builder
 			//return $namespace . $class_name;
 			return $namespace . rParse($class_name, BS, 1, true);
 		}
-		return false;
+		return null;
 	}
 
 	//----------------------------------------------------------------------------- getBuiltNameSpace
 	/**
 	 * Returns the prefix namespace for built classes
 	 *
-	 * @return string|null
+	 * @return string
 	 */
-	public static function getBuiltNameSpace()
+	public static function getBuiltNameSpace() : string
 	{
 		static $namespace = null;
 		if (!isset($namespace) && ($application = Application::current())) {
