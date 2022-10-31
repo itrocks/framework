@@ -111,11 +111,11 @@ class Object_To_Write_Array
 	//----------------------------------------------------------------------------------------- $only
 	/**
 	 * Will write only these properties (property names)
-	 * If null, all properties but excluded and @store false will be written
+	 * If empty, all properties but excluded and @store false will be written
 	 *
-	 * @var ?string[]
+	 * @var string[]
 	 */
-	protected ?array $only = null;
+	protected array $only = [];
 
 	//-------------------------------------------------------------------------------------- $options
 	/**
@@ -176,7 +176,7 @@ class Object_To_Write_Array
 		$aop_getter_ignore = Getter::$ignore;
 		foreach ($properties as $property) {
 			if (
-				(!isset($this->only) || in_array($property->name, $this->only, true))
+				(empty($this->only) || in_array($property->name, $this->only, true))
 				&& !$property->isStatic()
 				&& !in_array($property->name, $this->exclude, true)
 				&& !in_array($property->name, $exclude_properties, true)

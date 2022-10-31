@@ -312,19 +312,21 @@ class Select
 	 * - If $object is an array, it keeps and replaces Reflection_Property_Value element by its value
 	 *
 	 * @param $object array|object|null if already an array, nothing will be done
-	 * @return ?array keys are properties paths
+	 * @return array|Dao_Function|null keys are properties paths. Dao_Function objects are ignored and
+	 *                                 simply returned unchanged.
 	 */
-	private function objectToProperties(array|object|null $object) : ?array
+	private function objectToProperties(array|object|null $object) : array|Dao_Function|null
 	{
-		if (is_object($object) && !($object instanceof Dao_Function)) {
-			$id     = $this->link->getObjectIdentifier($object);
-			$object = isset($id) ? ['id' => $id] : get_object_vars($object);
+		if (!$object || ($object instanceof Dao_Function)) {
+			return $object;
 		}
-		elseif (is_array($object)) {
-			foreach ($object as $path => $value) {
-				if ($value instanceof Reflection_Property_Value) {
-					$object[$path] = $value->value();
-				}
+		if (is_object($object)) {
+			$id = $this->link->getObjectIdentifier($object);
+			return isset($id) ? ['id' => $id] : get_object_vars($object);
+		}
+		foreach ($object as $path => $value) {
+			if ($value instanceof Reflection_Property_Value) {
+				$object[$path] = $value->value();
 			}
 		}
 		return $object;
