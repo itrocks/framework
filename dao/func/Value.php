@@ -15,13 +15,13 @@ class Value extends Column
 	/**
 	 * @var mixed
 	 */
-	public $value;
+	public mixed $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value mixed
 	 */
-	public function __construct($value)
+	public function __construct(mixed $value)
 	{
 		$this->value = $value;
 	}
@@ -34,7 +34,7 @@ class Value extends Column
 	 * @param $property_path string escaped sql, name of the column
 	 * @return string
 	 */
-	public function toSql(With_Build_Column $builder, $property_path)
+	public function toSql(With_Build_Column $builder, string $property_path) : string
 	{
 		return (is_null($this->value) ? 'NULL' : Sql\Value::escape($this->value))
 			. $this->aliasSql($builder, $property_path);

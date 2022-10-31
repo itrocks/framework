@@ -23,7 +23,7 @@ trait Component
 	 *
 	 * @var array Reflection_Property[][]
 	 */
-	private static $composite_properties;
+	private static array $composite_properties;
 
 	//--------------------------------------------------------------------------------------- dispose
 	/**
@@ -74,7 +74,7 @@ trait Component
 	 * @param $property_name string The composite property name
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public static function getCompositeProperties($class_name = null, $property_name = null)
+	public static function getCompositeProperties($class_name = null, $property_name = null) : array
 	{
 		// flexible parameters : first parameter can be a property name alone
 		if (is_string($class_name) && !empty($class_name) && !isset($property_name)) {

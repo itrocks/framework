@@ -13,7 +13,7 @@ interface Column extends Field
 	/**
 	 * @return boolean
 	 */
-	public function canBeNull();
+	public function canBeNull() : bool;
 
 	//----------------------------------------------------------------------------------------- equiv
 	/**
@@ -29,7 +29,7 @@ interface Column extends Field
 	 *
 	 * @return mixed
 	 */
-	public function getDefaultValue();
+	public function getDefaultValue() : mixed;
 
 	//--------------------------------------------------------------------------------- getSqlPostfix
 	/**
@@ -37,7 +37,7 @@ interface Column extends Field
 	 *
 	 * @return string
 	 */
-	public function getSqlPostfix();
+	public function getSqlPostfix() : string;
 
 	//------------------------------------------------------------------------------------ getSqlType
 	/**
@@ -45,7 +45,7 @@ interface Column extends Field
 	 *
 	 * @return string
 	 */
-	public function getSqlType();
+	public function getSqlType() : string;
 
 	//----------------------------------------------------------------------------------------- toSql
 	/**
@@ -54,6 +54,6 @@ interface Column extends Field
 	 * @param $primary_key boolean if false, no PRIMARY KEY will be added to columns
 	 * @returns string
 	 */
-	public function toSql($primary_key = true);
+	public function toSql(bool $primary_key = true) : string;
 
 }

@@ -8,6 +8,6 @@ interface Dao_Function
 {
 
 	//------------------------------------------------------------------------------------ __toString
-	public function __toString();
+	public function __toString() : string;
 
 }

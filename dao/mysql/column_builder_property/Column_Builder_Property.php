@@ -29,7 +29,8 @@ trait Column_Builder_Property
 	 */
 	private static function propertyDefaultToMysql(
 		Reflection_Property $property, Column $column
-	) {
+	) : mixed
+	{
 		$default = $property->getDefaultValue('constant');
 		if (isset($default)) {
 			$property_type = $column->getType();
@@ -90,7 +91,8 @@ trait Column_Builder_Property
 	private static function propertyKeyToMysql(
 		/** @noinspection PhpUnusedParameterInspection */
 		Reflection_Property $property
-	) {
+	) : string
+	{
 		// TODO automatic keys on object linked tables
 		return '';
 	}
@@ -102,7 +104,7 @@ trait Column_Builder_Property
 	 * @param $property Reflection_Property
 	 * @return string
 	 */
-	private static function propertyNameToMysql(Reflection_Property $property)
+	private static function propertyNameToMysql(Reflection_Property $property) : string
 	{
 		$type = $property->getType();
 		return ($type->isBasic() || Store_Annotation::of($property)->value)
@@ -115,9 +117,9 @@ trait Column_Builder_Property
 	 * Gets mysql expression for a property that can be null (or not)
 	 *
 	 * @param $property Reflection_Property
-	 * @return string
+	 * @return string @values NO, YES
 	 */
-	private static function propertyNullToMysql(Reflection_Property $property)
+	private static function propertyNullToMysql(Reflection_Property $property) : string
 	{
 		return $property->getAnnotation('null')->value ? 'YES' : 'NO';
 	}
@@ -129,7 +131,7 @@ trait Column_Builder_Property
 	 * @param $property Reflection_Property
 	 * @return string
 	 */
-	private static function propertyTypeToMysql(Reflection_Property $property)
+	private static function propertyTypeToMysql(Reflection_Property $property) : string
 	{
 		$property_type          = $property->getType();
 		$store_annotation_value = Store_Annotation::of($property)->value;
@@ -183,7 +185,7 @@ trait Column_Builder_Property
 				case Type::null:
 				case Type::NULL:
 				case Type::RESOURCE:
-					return null;
+					return '';
 				case Type::BOOLEAN:
 					return 'tinyint(1)';
 				case DateTime::class: case Date_Time::class:

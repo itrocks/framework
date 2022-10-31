@@ -20,7 +20,7 @@ class Spreadsheet_File
 	 *
 	 * @param $data string
 	 */
-	protected function cleanupIncomingData(&$data)
+	protected function cleanupIncomingData(string &$data)
 	{
 		foreach (['…' => '...', ' ' => ' ', '  ' => ' '] as $search => $replace) {
 			while (str_contains($data, $search)) {
@@ -41,9 +41,9 @@ class Spreadsheet_File
 	 * @param $errors    string[]
 	 * @return array three dimensions (worksheet, row, column) array of read data
 	 */
-	public function fileToArray($file_name, array &$errors = [])
+	public function fileToArray(string $file_name, array &$errors = []) : array
 	{
-		if (substr($file_name, -4) === '.csv') {
+		if (str_ends_with($file_name, '.csv')) {
 			$count    = '';
 			$csv_file = $file_name;
 		}
@@ -68,7 +68,7 @@ class Spreadsheet_File
 	 * @param $errors   string[]
 	 * @return array
 	 */
-	public function readCsvFile($csv_file, array &$errors = [])
+	public function readCsvFile(string $csv_file, array &$errors = []) : array
 	{
 		$lines = [];
 		$row   = 0;

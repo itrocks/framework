@@ -17,7 +17,7 @@ class Property implements Where
 	 *
 	 * @var string
 	 */
-	public $prefix;
+	public string $prefix;
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
@@ -25,7 +25,7 @@ class Property implements Where
 	 *
 	 * @var string
 	 */
-	public $property_path;
+	public string $property_path;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -34,7 +34,7 @@ class Property implements Where
 	 * @param $property_path string
 	 * @param $prefix        string
 	 */
-	public function __construct($property_path, $prefix = '')
+	public function __construct(string $property_path, string $prefix = '')
 	{
 		$this->property_path = $property_path;
 		$this->prefix        = $prefix;
@@ -49,7 +49,8 @@ class Property implements Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '')
+		: string
 	{
 		return $builder->buildColumn($this->property_path, $this->prefix);
 	}
@@ -63,7 +64,7 @@ class Property implements Where
 	 * @param $prefix        string column name prefix UNUSED
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '') : string
 	{
 		return $builder->buildWhereColumn($this->property_path, $this->prefix);
 	}

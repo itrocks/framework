@@ -15,7 +15,7 @@ class Property_Add extends Add
 	/**
 	 * @var Reflection_Property
 	 */
-	public $property;
+	public Reflection_Property $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -26,7 +26,8 @@ class Property_Add extends Add
 	 * @param $property  Reflection_Property
 	 */
 	public function __construct(
-		Data_Link $link, $object, $new_value, array &$options, Reflection_Property $property
+		Data_Link $link, object $object, object $new_value, array &$options,
+		Reflection_Property $property
 	) {
 		parent::__construct($link, $object, $new_value, $options);
 		$this->property = $property;

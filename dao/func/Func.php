@@ -10,8 +10,8 @@ use ITRocks\Framework\Dao\Func\Group_By;
 use ITRocks\Framework\Dao\Func\Group_Concat;
 use ITRocks\Framework\Dao\Func\Have_All;
 use ITRocks\Framework\Dao\Func\In;
+use ITRocks\Framework\Dao\Func\In_Select;
 use ITRocks\Framework\Dao\Func\In_Set;
-use ITRocks\Framework\Dao\Func\InSelect;
 use ITRocks\Framework\Dao\Func\Is_Greatest;
 use ITRocks\Framework\Dao\Func\Left;
 use ITRocks\Framework\Dao\Func\Left_Match;
@@ -39,10 +39,10 @@ class Func
 
 	//----------------------------------------------------------------------------------------- andOp
 	/**
-	 * @param $arguments Where[]|mixed
+	 * @param $arguments mixed|Where[]
 	 * @return Logical
 	 */
-	public static function andOp($arguments)
+	public static function andOp(mixed $arguments) : Logical
 	{
 		return new Logical(Logical::AND_OPERATOR, $arguments);
 	}
@@ -51,18 +51,18 @@ class Func
 	/**
 	 * @return Group_By
 	 */
-	public static function average()
+	public static function average() : Group_By
 	{
 		return new Group_By(Group_By::AVERAGE);
 	}
 
 	//--------------------------------------------------------------------------------------- between
 	/**
-	 * @param $from mixed
-	 * @param $to   mixed
+	 * @param $from float|int|string
+	 * @param $to   float|int|string
 	 * @return Range
 	 */
-	public static function between($from, $to)
+	public static function between(float|int|string $from, float|int|string $to) : Range
 	{
 		return new Range($from, $to);
 	}
@@ -70,10 +70,10 @@ class Func
 	//---------------------------------------------------------------------------------------- concat
 	/**
 	 * @param $properties    string[]
-	 * @param $property_path string If set, will return a key to the instantiated Concat object
+	 * @param $property_path string|null If set, will return a key to the instantiated Concat object
 	 * @return Concat|string
 	 */
-	public static function concat(array $properties, $property_path = null)
+	public static function concat(array $properties, string $property_path = null) : Concat|string
 	{
 		return $property_path
 			? Expressions::add($property_path, new Concat($properties))
@@ -84,17 +84,17 @@ class Func
 	/**
 	 * @return Group_By
 	 */
-	public static function count()
+	public static function count() : Group_By
 	{
 		return new Group_By(Group_By::COUNT);
 	}
 
 	//------------------------------------------------------------------------------------------- day
 	/**
-	 * @param $property_path string If set, will return a key to the instantiated Day object
+	 * @param $property_path string|null If set, will return a key to the instantiated Day object
 	 * @return Day|string
 	 */
-	public static function day($property_path = null)
+	public static function day(string $property_path = null) : Day|string
 	{
 		return $property_path
 			? Expressions::add($property_path, new Day())
@@ -105,7 +105,7 @@ class Func
 	/**
 	 * @return Call
 	 */
-	public static function distinct()
+	public static function distinct() : Call
 	{
 		return new Call(Call::DISTINCT);
 	}
@@ -115,7 +115,7 @@ class Func
 	 * @param $value mixed
 	 * @return Comparison
 	 */
-	public static function equal($value)
+	public static function equal(mixed $value) : Comparison
 	{
 		return new Comparison(Comparison::EQUAL, $value);
 	}
@@ -125,7 +125,7 @@ class Func
 	 * @param $value mixed
 	 * @return Comparison
 	 */
-	public static function greater($value)
+	public static function greater(mixed $value) : Comparison
 	{
 		return new Comparison(Comparison::GREATER, $value);
 	}
@@ -135,18 +135,20 @@ class Func
 	 * @param $value mixed
 	 * @return Comparison
 	 */
-	public static function greaterOrEqual($value)
+	public static function greaterOrEqual(mixed $value) : Comparison
 	{
 		return new Comparison(Comparison::GREATER_OR_EQUAL, $value);
 	}
 
 	//----------------------------------------------------------------------------------- groupConcat
 	/**
-	 * @param $property_path string If set, will return a key to the instantiated Group_Concat object
-	 * @param $separator string Separator for the concat @default ,
+	 * @param $property_path string|null If set, will return a key to the instantiated Group_Concat
+	 *                                   object
+	 * @param $separator     string|null Separator for the concat @default ,
 	 * @return Group_Concat|string
 	 */
-	public static function groupConcat($property_path = null, $separator = null)
+	public static function groupConcat(string $property_path = null, string $separator = null)
+		: Group_Concat|string
 	{
 		return $property_path
 			? Expressions::add($property_path, new Group_Concat($separator))
@@ -158,7 +160,7 @@ class Func
 	 * @param $conditions array|Where
 	 * @return Have_All
 	 */
-	public static function haveAll($conditions)
+	public static function haveAll(array|Where $conditions) : Have_All
 	{
 		return new Have_All($conditions);
 	}
@@ -168,27 +170,27 @@ class Func
 	 * @param $values array
 	 * @return In
 	 */
-	public static function in(array $values)
+	public static function in(array $values) : In
 	{
-		return new In($values);
+		return new In($values, true);
 	}
 
 	//-------------------------------------------------------------------------------------- inSelect
 	/**
 	 * @param $select Select
-	 * @return InSelect
+	 * @return In_Select
 	 */
-	public static function inSelect(Select $select)
+	public static function inSelect(Select $select) : In_Select
 	{
-		return new InSelect($select);
+		return new In_Select($select, true);
 	}
 
 	//----------------------------------------------------------------------------------------- inSet
 	/**
-	 * @param $value string
+	 * @param $value string[]
 	 * @return In_Set
 	 */
-	public static function inSet($value)
+	public static function inSet(array $value) : In_Set
 	{
 		return new In_Set($value);
 	}
@@ -198,7 +200,7 @@ class Func
 	 * @param $properties string[]
 	 * @return Is_Greatest
 	 */
-	public static function isGreatest(array $properties)
+	public static function isGreatest(array $properties) : Is_Greatest
 	{
 		return new Is_Greatest($properties);
 	}
@@ -207,7 +209,7 @@ class Func
 	/**
 	 * @return Comparison
 	 */
-	public static function isNotNull()
+	public static function isNotNull() : Comparison
 	{
 		return new Comparison(Comparison::NOT_EQUAL, null);
 	}
@@ -216,18 +218,18 @@ class Func
 	/**
 	 * @return Comparison
 	 */
-	public static function isNull()
+	public static function isNull() : Comparison
 	{
 		return new Comparison(Comparison::EQUAL, null);
 	}
 
 	//------------------------------------------------------------------------------------------ left
 	/**
-	 * @param $property_path string|integer Optional : for use in WHERE clause only
-	 * @param $length        integer
+	 * @param $property_path integer|string Optional : for use in WHERE clause only
+	 * @param $length        integer|null
 	 * @return Left|string
 	 */
-	public static function left($property_path, $length = null)
+	public static function left(int|string $property_path, int $length = null) : Left|string
 	{
 		return isset($length)
 			? Expressions::add($property_path, new Left($length))
@@ -239,9 +241,9 @@ class Func
 	 * @param $value mixed
 	 * @return Left_Match
 	 */
-	public static function leftMatch($value)
+	public static function leftMatch(mixed $value) : Left_Match
 	{
-		return new Left_Match($value);
+		return new Left_Match($value, true);
 	}
 
 	//------------------------------------------------------------------------------------------ less
@@ -249,7 +251,7 @@ class Func
 	 * @param $value mixed
 	 * @return Comparison
 	 */
-	public static function less($value)
+	public static function less(mixed $value) : Comparison
 	{
 		return new Comparison(Comparison::LESS, $value);
 	}
@@ -259,7 +261,7 @@ class Func
 	 * @param $value mixed
 	 * @return Comparison
 	 */
-	public static function lessOrEqual($value)
+	public static function lessOrEqual(mixed $value) : Comparison
 	{
 		return new Comparison(Comparison::LESS_OR_EQUAL, $value);
 	}
@@ -269,7 +271,7 @@ class Func
 	 * @param $value mixed
 	 * @return Comparison
 	 */
-	public static function like($value)
+	public static function like(mixed $value) : Comparison
 	{
 		return new Comparison(Comparison::LIKE, $value);
 	}
@@ -278,7 +280,7 @@ class Func
 	/**
 	 * @return Group_By
 	 */
-	public static function max()
+	public static function max() : Group_By
 	{
 		return new Group_By(Group_By::MAX);
 	}
@@ -287,17 +289,17 @@ class Func
 	/**
 	 * @return Group_By
 	 */
-	public static function min()
+	public static function min() : Group_By
 	{
 		return new Group_By(Group_By::MIN);
 	}
 
 	//----------------------------------------------------------------------------------------- month
 	/**
-	 * @param $property_path string If set, will return a key to the instantiated Month object
+	 * @param $property_path string|null If set, will return a key to the instantiated Month object
 	 * @return Month|string
 	 */
-	public static function month($property_path = null)
+	public static function month(string $property_path = null) : Month|string
 	{
 		return $property_path
 			? Expressions::add($property_path, new Month())
@@ -306,13 +308,13 @@ class Func
 
 	//------------------------------------------------------------------------------------ notBetween
 	/**
-	 * @param $from mixed
-	 * @param $to   mixed
+	 * @param $from float|int|string
+	 * @param $to   float|int|string
 	 * @return Range
 	 */
-	public static function notBetween($from, $to)
+	public static function notBetween(float|int|string $from, float|int|string $to) : Range
 	{
-		return new Range($from, $to, true);
+		return new Range($from, $to, false);
 	}
 
 	//-------------------------------------------------------------------------------------- notEqual
@@ -320,7 +322,7 @@ class Func
 	 * @param $value mixed
 	 * @return Comparison
 	 */
-	public static function notEqual($value)
+	public static function notEqual(mixed $value) : Comparison
 	{
 		return new Comparison(Comparison::NOT_EQUAL, $value);
 	}
@@ -330,17 +332,17 @@ class Func
 	 * @param $values array
 	 * @return In
 	 */
-	public static function notIn(array $values)
+	public static function notIn(array $values) : In
 	{
-		return new In($values, true);
+		return new In($values, false);
 	}
 
 	//-------------------------------------------------------------------------------------- notInSet
 	/**
-	 * @param $value string
+	 * @param $value string[]
 	 * @return In_Set
 	 */
-	public static function notInSet($value)
+	public static function notInSet(array $value) : In_Set
 	{
 		return new In_Set($value, true);
 	}
@@ -350,7 +352,7 @@ class Func
 	 * @param $value mixed
 	 * @return Comparison
 	 */
-	public static function notLike($value)
+	public static function notLike(mixed $value) : Comparison
 	{
 		return new Comparison(Comparison::NOT_LIKE, $value);
 	}
@@ -369,7 +371,7 @@ class Func
 	 * @param $value mixed
 	 * @return Logical
 	 */
-	public static function notOp($value)
+	public static function notOp(mixed $value) : Logical
 	{
 		return new Logical(Logical::NOT_OPERATOR, $value);
 	}
@@ -379,7 +381,7 @@ class Func
 	 * @param $where boolean if true, get an Expression(new Now) to use it into a where clause
 	 * @return Left|string
 	 */
-	public static function now($where = false)
+	public static function now(bool $where = false) : Left|string
 	{
 		return $where
 			? Expressions::add(null, new Now())
@@ -391,7 +393,7 @@ class Func
 	 * @param $arguments Where[]|mixed
 	 * @return Logical
 	 */
-	public static function orOp($arguments)
+	public static function orOp(mixed $arguments) : Logical
 	{
 		return new Logical(Logical::OR_OPERATOR, $arguments);
 	}
@@ -403,7 +405,7 @@ class Func
 	 * @param $offset   integer
 	 * @return Position
 	 */
-	public static function position($needle, $haystack, $offset = 0)
+	public static function position(string $needle, string $haystack, int $offset = 0) : Position
 	{
 		return new Position($needle, $haystack, $offset);
 	}
@@ -416,17 +418,17 @@ class Func
 	 * @param $prefix        string column name prefix
 	 * @return Property
 	 */
-	public static function property($property_path, $prefix = '')
+	public static function property(string $property_path, string $prefix = '') : Property
 	{
 		return new Property($property_path, $prefix);
 	}
 
 	//------------------------------------------------------------------------------------------- sum
 	/**
-	 * @param $property_path string
+	 * @param $property_path string|null
 	 * @return Group_By|string
 	 */
-	public static function sum($property_path = null)
+	public static function sum(string $property_path = null) : Group_By|string
 	{
 		return $property_path
 			? Expressions::add($property_path, new Group_By(Group_By::SUM))
@@ -437,17 +439,17 @@ class Func
 	/**
 	 * @return Call
 	 */
-	public static function trim()
+	public static function trim() : Call
 	{
 		return new Call(Call::TRIM);
 	}
 
 	//------------------------------------------------------------------------------------- trimester
 	/**
-	 * @param $property_path string If set, will return a key to the instantiated Trimester object
-	 * @return Trimester|string
+	 * @param $property_path string|null If set, will return a key of instantiated Trimester object
+	 * @return string|Trimester
 	 */
-	public static function trimester($property_path = null)
+	public static function trimester(string $property_path = null) : string|Trimester
 	{
 		return $property_path
 			? Expressions::add($property_path, new Trimester())
@@ -459,7 +461,7 @@ class Func
 	 * @param $value mixed
 	 * @return Value
 	 */
-	public static function value($value)
+	public static function value(mixed $value) : Value
 	{
 		return new Value($value);
 	}
@@ -469,17 +471,17 @@ class Func
 	 * @param $arguments Where[]|mixed
 	 * @return Logical
 	 */
-	public static function xorOp($arguments)
+	public static function xorOp(mixed $arguments) : Logical
 	{
 		return new Logical(Logical::XOR_OPERATOR, $arguments);
 	}
 
 	//------------------------------------------------------------------------------------------ year
 	/**
-	 * @param $property_path string If set, will return a key to the instantiated Year object
-	 * @return Year|string
+	 * @param $property_path string|null If set, will return a key to the instantiated Year object
+	 * @return string|Year
 	 */
-	public static function year($property_path = null)
+	public static function year(string $property_path = null) : string|Year
 	{
 		return $property_path
 			? Expressions::add($property_path, new Year())

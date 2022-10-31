@@ -15,13 +15,13 @@ class Reverse implements Option
 	 *
 	 * @var string
 	 */
-	public $column;
+	public string $column;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $column string
 	 */
-	public function __construct($column)
+	public function __construct(string $column)
 	{
 		$this->column = $column;
 	}

@@ -15,13 +15,13 @@ class Have_All implements Where
 	/**
 	 * @var array|Where
 	 */
-	protected $conditions;
+	protected array|Where $conditions;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $conditions array|Where
 	 */
-	public function __construct($conditions)
+	public function __construct(array|Where $conditions)
 	{
 		$this->conditions = $conditions;
 	}
@@ -33,7 +33,8 @@ class Have_All implements Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '')
+		: string
 	{
 		// TODO LOWEST not used by lists yet
 		return '';
@@ -46,7 +47,7 @@ class Have_All implements Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '') : string
 	{
 		$sql = '';
 		if ($this->conditions) {

@@ -13,13 +13,13 @@ class Foreign_Keys_Tools
 	/**
 	 * @var Contextual_Mysqli
 	 */
-	private $mysqli;
+	private Contextual_Mysqli $mysqli;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Constructor needs a $mysqli to be connected to the MySQL server and database
 	 *
-	 * @param $mysqli Contextual_Mysqli
+	 * @param $mysqli Contextual_Mysqli|null
 	 */
 	public function __construct(Contextual_Mysqli $mysqli = null)
 	{
@@ -35,7 +35,7 @@ class Foreign_Keys_Tools
 	 * @param $table  string
 	 * @param $column string
 	 */
-	public function toColumn($table, $column)
+	public function toColumn(string $table, string $column)
 	{
 		// TODO Some things, I assume
 		/*

@@ -16,13 +16,13 @@ class Time_Limit implements Option
 	/**
 	 * @var integer Effective Query execution time limit in milliseconds
 	 */
-	public $time_limit;
+	public int $time_limit;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $time_limit integer Data link query execution time limit in seconds. 0 = no limit
 	 */
-	public function __construct($time_limit = 0)
+	public function __construct(int $time_limit = 0)
 	{
 		// convert second in milliseconds
 		$this->time_limit = round($time_limit * 1000);
@@ -34,7 +34,7 @@ class Time_Limit implements Option
 	 *
 	 * @return string
 	 */
-	public function getSql()
+	public function getSql() : string
 	{
 		$current = Dao::current();
 
@@ -53,20 +53,20 @@ class Time_Limit implements Option
 	//---------------------------------------------------------------------------- isErrorCodeTimeout
 	/**
 	 * @param $error_code integer
-	 * @param $data_link  Data_Link
+	 * @param $data_link  Data_Link|null
 	 * @return boolean
 	 */
-	public static function isErrorCodeTimeout($error_code, Data_Link $data_link = null)
+	public static function isErrorCodeTimeout(int $error_code, Data_Link $data_link = null) : bool
 	{
 		if (!$data_link) {
 			$data_link = Dao::current();
 		}
 		if ($data_link instanceof Dao\Mysql\Link) {
 			return in_array(
-				$error_code, [Mysql\Errors::ER_FILSORT_ABORT, Mysql\Errors::ER_QUERY_TIMEOUT]
+				$error_code, [Mysql\Errors::ER_FILSORT_ABORT, Mysql\Errors::ER_QUERY_TIMEOUT], true
 			);
 		}
-		return null;
+		return false;
 	}
 
 }

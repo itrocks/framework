@@ -20,48 +20,48 @@ interface Foreign_Key
 	/**
 	 * @return string
 	 */
-	public function getConstraint();
+	public function getConstraint() : string;
 
 	//------------------------------------------------------------------------------------- getFields
 	/**
 	 * @return string[]
 	 */
-	public function getFields();
+	public function getFields() : array;
 
 	//----------------------------------------------------------------------------------- getOnDelete
 	/**
 	 * @return string
 	 */
-	public function getOnDelete();
+	public function getOnDelete() : string;
 
 	//----------------------------------------------------------------------------------- getOnUpdate
 	/**
 	 * @return string
 	 */
-	public function getOnUpdate();
+	public function getOnUpdate() : string;
 
 	//---------------------------------------------------------------------------- getReferenceFields
 	/**
 	 * @return string[]
 	 */
-	public function getReferenceFields();
+	public function getReferenceFields() : array;
 
 	//----------------------------------------------------------------------------- getReferenceTable
 	/**
 	 * @return string
 	 */
-	public function getReferenceTable();
+	public function getReferenceTable() : string;
 
 	//------------------------------------------------------------------------------------- toDropSql
 	/**
 	 * @return string
 	 */
-	public function toDropSql();
+	public function toDropSql() : string;
 
 	//----------------------------------------------------------------------------------------- toSql
 	/**
 	 * @return string
 	 */
-	public function toSql();
+	public function toSql() : string;
 
 }

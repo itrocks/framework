@@ -17,6 +17,8 @@ use ITRocks\Framework\Plugin\Registerable;
  * A plugin to read files from a files cluster
  *
  * Needs bappli/files-cluster
+ * TODO Perhaps should this be into files-cluster.
+ * TODO Files_Cluster seems to be a bad link. Should be Bappli/Files_Cluster ?
  */
 class Read implements Configurable, Registerable
 {
@@ -26,9 +28,9 @@ class Read implements Configurable, Registerable
 	/**
 	 * The files cluster configuration
 	 *
-	 * @var Configuration
+	 * @var ?Configuration
 	 */
-	public $configuration;
+	public ?Configuration $configuration;
 
 	//--------------------------------------------------------------------------- $configuration_file
 	/**
@@ -36,13 +38,13 @@ class Read implements Configurable, Registerable
 	 *
 	 * @var string
 	 */
-	public $configuration_file = '/etc/files-cluster/config.php';
+	public string $configuration_file = '/etc/files-cluster/config.php';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $configuration Configuration|string can be a preset configuration, of a file name
+	 * @param $configuration Configuration|string|null can be a preset configuration, of a file name
 	 */
-	public function __construct($configuration = null)
+	public function __construct(mixed $configuration = null)
 	{
 		if (isset($configuration)) {
 			$this->configuration = $configuration;
@@ -51,7 +53,6 @@ class Read implements Configurable, Registerable
 			$this->configuration_file = $configuration;
 		}
 		if (!$this->configuration) {
-			/** @noinspection PhpIncludeInspection dynamic */
 			$this->configuration = file_exists($this->configuration_file)
 				? include($this->configuration_file)
 				: new Configuration(new Clusters([]), new Directories([]));
@@ -63,10 +64,12 @@ class Read implements Configurable, Registerable
 	 * @param $joinpoint     After_Method
 	 * @param $object        object
 	 * @param $property_name string
-	 * @return string The content read after the files cluster plugin did its work
+	 * @return ?string The content read after the files cluster plugin did its work
 	 * @see Link::readProperty
 	 */
-	public function afterLinkReadProperty(After_Method $joinpoint, $object, $property_name)
+	public function afterLinkReadProperty(
+		After_Method $joinpoint, object $object, string $property_name
+	) : ?string
 	{
 		if (is_null($joinpoint->result)) {
 			$link         = $joinpoint->object;
@@ -75,8 +78,7 @@ class Read implements Configurable, Registerable
 			if (!file_exists(lLastParse($file_path, SL))) {
 				mkdir(lLastParse($file_path, SL), 0777, true);
 			}
-			$result = $cluster_read->getContent($file_path, false);
-			return $result;
+			return $cluster_read->getContent($file_path, false);
 		}
 		return $joinpoint->result;
 	}
@@ -88,7 +90,7 @@ class Read implements Configurable, Registerable
 	 * @param $file_path string
 	 * @return boolean
 	 */
-	public function getFile($file_path)
+	public function getFile(string $file_path) : bool
 	{
 		$cluster_read = new Files_Cluster\Read($this->configuration);
 		if (!file_exists(lLastParse($file_path, SL))) {

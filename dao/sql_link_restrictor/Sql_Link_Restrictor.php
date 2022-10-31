@@ -29,7 +29,7 @@ class Sql_Link_Restrictor implements Registerable
 	 *
 	 * @var string[]
 	 */
-	private $current_restrictions;
+	private array $current_restrictions;
 
 	//--------------------------------------------------------------------------- $final_restrictions
 	/**
@@ -39,7 +39,7 @@ class Sql_Link_Restrictor implements Registerable
 	 *
 	 * @var array associate classes and callbacks : [$class_name][] = callable
 	 */
-	private $final_restrictions = [];
+	private array $final_restrictions = [];
 
 	//--------------------------------------------------------------------------------- $restrictions
 	/**
@@ -49,7 +49,7 @@ class Sql_Link_Restrictor implements Registerable
 	 *
 	 * @var array elements are callable[] : [$class_name][] = callable
 	 */
-	private $restrictions = [];
+	private array $restrictions = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -60,7 +60,7 @@ class Sql_Link_Restrictor implements Registerable
 	 * - the class name which the callback is associated to into Sql_Link_Restrictor
 	 * - a Sql_Joins object giving the restrictor full paths for searches and where it can add joins
 	 *
-	 * @param $restrictions array
+	 * @param $restrictions array|null
 	 */
 	public function __construct(array $restrictions = null)
 	{
@@ -74,7 +74,7 @@ class Sql_Link_Restrictor implements Registerable
 	 * @param $where string empty or begins where ' WHERE '
 	 * @return string full SQL 'WHERE' clause, including $where and added restrictions
 	 */
-	private function applyCurrentRestrictions($where)
+	private function applyCurrentRestrictions(string $where) : string
 	{
 		$sql = join(') AND (', $this->current_restrictions);
 		return $sql
@@ -88,11 +88,13 @@ class Sql_Link_Restrictor implements Registerable
 	 *
 	 * @param $builder     Select
 	 * @param $class_name  string
-	 * @param $restriction callable a restriction callback
+	 * @param $restriction callable|string a restriction callback, or self::CURRENT constant to use
+	 *                     class current method as restriction callback
 	 */
-	private function applyRestriction(Select $builder, $class_name, $restriction)
-	{
-		if ($restriction == self::CURRENT) {
+	private function applyRestriction(
+		Select $builder, string $class_name, callable|string $restriction
+	) {
+		if ($restriction === self::CURRENT) {
 			$restriction = [$class_name, 'current'];
 		}
 		$where_array = call_user_func_array($restriction, [$class_name, $builder->getJoins()]);
@@ -120,7 +122,7 @@ class Sql_Link_Restrictor implements Registerable
 	/**
 	 * @param $where string where clause, including ' WHERE ' or empty if no filter on read
 	 */
-	public function beforeSqlSelectBuilderFinalize(&$where)
+	public function beforeSqlSelectBuilderFinalize(string &$where)
 	{
 		$where = $this->applyCurrentRestrictions($where);
 	}
@@ -130,9 +132,9 @@ class Sql_Link_Restrictor implements Registerable
 	 * Gets restrictions list for a given class name
 	 *
 	 * @param $class_name string
-	 * @return array
+	 * @return callable[]|string[] The only allowed string is 'current' for $class_name::current()
 	 */
-	private function getRestrictions($class_name)
+	private function getRestrictions(string $class_name) : array
 	{
 		if (isset($this->final_restrictions[$class_name])) {
 			$restrictions = $this->final_restrictions[$class_name];

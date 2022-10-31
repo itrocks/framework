@@ -43,29 +43,28 @@ class Comparison implements Negate, Where
 	 * @values =, >, >=, <, <=, LIKE, <>, NOT LIKE
 	 * @var string
 	 */
-	public $sign;
+	public string $sign;
 
 	//----------------------------------------------------------------------------------- $than_value
 	/**
 	 * @null
 	 * @var mixed
 	 */
-	public $than_value;
+	public mixed $than_value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $sign       string
+	 * @param $sign       string|null
 	 * @param $than_value mixed
 	 */
-	public function __construct($sign = null, $than_value = null)
+	public function __construct(string $sign = null, mixed $than_value = null)
 	{
 		if (isset($sign))       $this->sign       = $sign;
 		if (isset($than_value)) $this->than_value = $than_value;
 		if (isset($this->than_value) && !isset($this->sign)) {
-			$this->sign =
-				(str_contains($this->than_value, '_') || str_contains($this->than_value, '%'))
-					? self::LIKE
-					: self::EQUAL;
+			$this->sign = (str_contains($this->than_value, '_') || str_contains($this->than_value, '%'))
+				? self::LIKE
+				: self::EQUAL;
 		}
 	}
 
@@ -86,7 +85,7 @@ class Comparison implements Negate, Where
 	 */
 	public function negate()
 	{
-		if (in_array($this->sign, self::REVERSE)) {
+		if (in_array($this->sign, self::REVERSE, true)) {
 			$this->sign = self::REVERSE[$this->sign];
 		}
 	}
@@ -96,9 +95,9 @@ class Comparison implements Negate, Where
 	 * @param $sign string
 	 * @return string
 	 */
-	public function signToHuman($sign)
+	public function signToHuman(string $sign) : string
 	{
-		return in_array($sign, [self::LIKE, self::NOT_LIKE])
+		return in_array($sign, [self::LIKE, self::NOT_LIKE], true)
 			? Loc::tr('is' . SP . strtolower($sign))
 			: $sign;
 	}
@@ -112,7 +111,8 @@ class Comparison implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '') 
+		: string
 	{
 		$column = $builder->buildColumn($property_path, $prefix);
 		if (is_null($this->than_value)) {
@@ -129,7 +129,7 @@ class Comparison implements Negate, Where
 		}
 		$translate_flag = Summary_Builder::COMPLETE_TRANSLATE;
 		// for a LIKE for property with @values, we do not translate the expression
-		if (in_array($this->sign, [self::LIKE, self::NOT_LIKE])) {
+		if (in_array($this->sign, [self::LIKE, self::NOT_LIKE], true)) {
 			$property = $builder->getProperty($property_path);
 			// check if we are on a enum field with @values list of values
 			$values = ($property ? Values_Annotation::of($property)->values() : []);
@@ -138,7 +138,7 @@ class Comparison implements Negate, Where
 			}
 		}
 		$scalar = $builder->buildScalar($this->than_value, $property_path, $translate_flag);
-		if (in_array($this->sign, [self::LIKE, self::NOT_LIKE])) {
+		if (in_array($this->sign, [self::LIKE, self::NOT_LIKE], true)) {
 			$scalar = str_replace(['_', '%'], ['?', '*'], $scalar);
 		}
 		return $column . SP . $this->signToHuman($this->sign) . SP . $scalar;
@@ -153,13 +153,12 @@ class Comparison implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '') : string
 	{
 		$column = $builder->buildWhereColumn($property_path, $prefix);
 		if (is_null($this->than_value)) {
-			$operand = in_array($this->sign, [self::EQUAL, self::LIKE]) ? 'IS NULL' : 'IS NOT NULL';
-			$sql     = $column . SP . $operand;
-			return $sql;
+			$operand = in_array($this->sign, [self::EQUAL, self::LIKE], true) ? 'IS NULL' : 'IS NOT NULL';
+			return $column . SP . $operand;
 		}
 		if ($this->than_value instanceof Where) {
 			return $this->whereSql(
@@ -177,7 +176,7 @@ class Comparison implements Negate, Where
 			. SP . Value::escape($this->than_value, str_contains($this->sign, 'LIKE'));
 		if (
 			str_contains($property_path, DOT)
-			&& in_array($this->sign, [static::NOT_EQUAL, static::NOT_LIKE])
+			&& in_array($this->sign, [static::NOT_EQUAL, static::NOT_LIKE], true)
 		) {
 			$sql = '(' . $sql . ' OR ' . $column . ' IS NULL)';
 		}
@@ -192,14 +191,14 @@ class Comparison implements Negate, Where
 	 * @param $sql    string
 	 * @return string
 	 */
-	private function whereSql($column, $sql)
+	private function whereSql(string $column, string $sql) : string
 	{
 		if ($this->than_value instanceof Property) {
 			$sql = $column . SP . $this->sign . SP . $sql;
 		}
 		else {
 			$sql = '(' . $sql . ')';
-			if ($this->sign == self::NOT_EQUAL) {
+			if ($this->sign === self::NOT_EQUAL) {
 				$sql = 'NOT ' . $sql;
 			}
 		}

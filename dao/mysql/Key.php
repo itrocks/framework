@@ -9,80 +9,90 @@ use ITRocks\Framework\Dao\Sql;
 class Key implements Sql\Key
 {
 
+	//---------------------------------------------------------------------------------- $Cardinality
 	/**
 	 * @var integer
 	 */
-	//private $Cardinality;
+	private int $Cardinality;
 
+	//-------------------------------------------------------------------------------------- $Comment
 	/**
 	 * @var string
 	 */
-	//private $Comment;
+	private string $Comment;
 
+	//------------------------------------------------------------------------------------ $Collation
 	/**
 	 * @var string
 	 */
-	//private $Collation;
+	private string $Collation;
 
 	//---------------------------------------------------------------------------------- $Column_name
 	/**
 	 * @var string
 	 */
-	private $Column_name;
+	private string $Column_name;
 
+	//-------------------------------------------------------------------------------- $Index_comment
 	/**
 	 * @var string
 	 */
-	//private $Index_comment;
+	private string $Index_comment;
 
 	//----------------------------------------------------------------------------------- $Index_type
 	/**
 	 * @values BTREE, FULLTEXT, SPATIAL, UNIQUE,
 	 * @var string
 	 */
-	private $Index_type;
+	private string $Index_type;
 
 	//------------------------------------------------------------------------------------- $Key_name
 	/**
 	 * @var string
 	 */
-	private $Key_name;
+	private string $Key_name;
 
+	//----------------------------------------------------------------------------------- $Non_unique
 	/**
 	 * @var boolean
 	 */
-	//private $Non_unique;
+	private bool $Non_unique;
 
+	//----------------------------------------------------------------------------------------- $Null
 	/**
 	 * @var boolean
 	 */
-	//private $Null;
+	private bool $Null;
 
+	//--------------------------------------------------------------------------------------- $Packed
 	/**
 	 * @var boolean
 	 */
-	//private $Packed;
+	private bool $Packed;
 
+	//--------------------------------------------------------------------------------- $Seq_in_index
 	/**
 	 * @var integer
 	 */
-	//private $Seq_in_index;
+	private int $Seq_in_index;
 
+	//------------------------------------------------------------------------------------- $Sub_part
 	/**
 	 * @var mixed
 	 */
-	//private $Sub_part;
+	private mixed $Sub_part;
 
+	//---------------------------------------------------------------------------------------- $Table
 	/**
 	 * @var string
 	 */
-	//private $Table;
+	private string $Table;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name string
+	 * @param $name string|null
 	 */
-	public function __construct($name = null)
+	public function __construct(string $name = null)
 	{
 		if (isset($name)) {
 			$this->Column_name = $this->Key_name = $name;
@@ -96,16 +106,16 @@ class Key implements Sql\Key
 	 * @param $key Sql\Key
 	 * @return boolean
 	 */
-	public function equiv(Sql\Key $key)
+	public function equiv(Sql\Key $key) : bool
 	{
-		return ($key instanceof Key) && ($key->Column_name === $this->Column_name);
+		return $key->Column_name === $this->Column_name;
 	}
 
 	//--------------------------------------------------------------------------------------- getName
 	/**
 	 * @return string
 	 */
-	public function getName()
+	public function getName() : string
 	{
 		return $this->Key_name;
 	}
@@ -114,7 +124,7 @@ class Key implements Sql\Key
 	/**
 	 * @return string
 	 */
-	public function getSqlColumnName()
+	public function getSqlColumnName() : string
 	{
 		return $this->Column_name;
 	}
@@ -123,7 +133,7 @@ class Key implements Sql\Key
 	/**
 	 * @return string
 	 */
-	public function getSqlType()
+	public function getSqlType() : string
 	{
 		return $this->Index_type;
 	}
@@ -132,7 +142,7 @@ class Key implements Sql\Key
 	/**
 	 * @return string
 	 */
-	public function getType()
+	public function getType() : string
 	{
 		return $this->Index_type;
 	}
@@ -141,7 +151,7 @@ class Key implements Sql\Key
 	/**
 	 * @return string
 	 */
-	public function toSql()
+	public function toSql() : string
 	{
 		return BQ . $this->Column_name . BQ;
 	}

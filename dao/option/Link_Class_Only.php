@@ -29,7 +29,7 @@ class Link_Class_Only implements Option
 	 * @param $class Reflection_Class|string
 	 * @return Reflection_Property[] link-class-only properties. empty array if not a Link_Class.
 	 */
-	public static function propertiesOf($class)
+	public static function propertiesOf(Reflection_Class|string $class) : array
 	{
 		if (!is_a($class, Link_Class::class)) {
 			/** @noinspection PhpUnhandledExceptionInspection class must be valid */

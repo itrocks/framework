@@ -190,7 +190,7 @@ class Maintainer implements Configurable, Registerable
 						$id_context_property_2 = 'id_' . Names::classToProperty(
 							Names::setToSingle(Namespaces::shortClassName($context_class))
 						);
-						if (in_array($column_name, [$id_context_property, $id_context_property_2])) {
+						if (in_array($column_name, [$id_context_property, $id_context_property_2], true)) {
 							$table->addForeignKey(Foreign_Key::buildLink(
 								$table_name, $column_name, $context_class
 							));
@@ -471,21 +471,23 @@ class Maintainer implements Configurable, Registerable
 			if (end($mysqli->contexts)) {
 				$mysqli->last_errno = $last_errno;
 				$mysqli->last_error = $last_error;
-				if (in_array($last_errno, [Errors::ER_BAD_FIELD_ERROR, Errors::ER_CANNOT_ADD_FOREIGN])) {
+				if (
+					in_array($last_errno, [Errors::ER_BAD_FIELD_ERROR, Errors::ER_CANNOT_ADD_FOREIGN], true)
+				) {
 					$retry = $this->updateContextTables($mysqli);
 				}
 				elseif (
-					($last_errno == Errors::ER_CANT_CREATE_TABLE) && str_contains($last_error, '(errno: 150)')
+					($last_errno === Errors::ER_CANT_CREATE_TABLE) && str_contains($last_error, '(errno: 150)')
 				) {
 					$retry = $this->onCantCreateTableError($mysqli, $query);
 				}
-				elseif ($last_errno == Errors::ER_NO_SUCH_TABLE) {
+				elseif ($last_errno === Errors::ER_NO_SUCH_TABLE) {
 					$retry = $this->onNoSuchTableError($mysqli, $query);
 				}
 			}
 			// errors solving that do not need a context
 			// ER_DUP_ENTRY : this is to patch a bug into MySQL 5.7
-			if ($last_errno == Errors::ER_DUP_ENTRY) {
+			if ($last_errno === Errors::ER_DUP_ENTRY) {
 				$retry = true;
 			}
 			// retry
@@ -541,7 +543,7 @@ class Maintainer implements Configurable, Registerable
 				}
 			}
 			$context_table = is_array($context_class) ? $key : Dao::storeNameOf($context_class);
-			if (in_array($context_table, $error_table_names) || !$mysqli->exists($context_table)) {
+			if (in_array($context_table, $error_table_names, true) || !$mysqli->exists($context_table)) {
 				if (is_array($context_class)) {
 					$this->createImplicitTable($mysqli, $context_table, $context_class);
 				}
@@ -666,6 +668,7 @@ class Maintainer implements Configurable, Registerable
 		while ($dropped) {
 			$dropped = 0;
 			foreach ($mysqli->getTables() as $table_name) {
+				/** @noinspection SqlResolve dynamic */
 				if ($mysqli->query("SELECT COUNT(*) FROM `$table_name`")->fetch_row()[0]) {
 					continue;
 				}
@@ -865,7 +868,10 @@ class Maintainer implements Configurable, Registerable
 		string $class_name, Contextual_Mysqli $mysqli = null, bool $implicit = true
 	) : bool
 	{
-		if (in_array($class_name, $this->exclude_classes) || (new Type($class_name))->isAbstractClass()) {
+		if (
+			in_array($class_name, $this->exclude_classes, true)
+			|| (new Type($class_name))->isAbstractClass()
+		) {
 			return false;
 		}
 

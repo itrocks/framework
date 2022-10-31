@@ -9,7 +9,7 @@ use ITRocks\Framework\Sql\Builder\Select;
 /**
  * Dao IN function
  */
-class InSelect implements Negate, Where
+class In_Select implements Negate, Where
 {
 	use Has_To_String;
 
@@ -19,23 +19,23 @@ class InSelect implements Negate, Where
 	 *
 	 * @var boolean
 	 */
-	public $not_in;
+	public bool $in;
 
 	//--------------------------------------------------------------------------------------- $select
 	/**
 	 * @var Select
 	 */
-	public $select;
+	public Select $select;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $select Select
-	 * @param $not_in boolean
+	 * @param $select Select|null
+	 * @param $in     boolean|null
 	 */
-	public function __construct(Select $select, $not_in = false)
+	public function __construct(Select|null $select, bool $in = null)
 	{
 		if (isset($select)) $this->select = $select;
-		if (isset($not_in)) $this->not_in = $not_in;
+		if (isset($in))     $this->in     = $in;
 	}
 
 	//---------------------------------------------------------------------------------------- negate
@@ -44,7 +44,7 @@ class InSelect implements Negate, Where
 	 */
 	public function negate()
 	{
-		$this->not_in = !$this->not_in;
+		$this->in = !$this->in;
 	}
 
 	//--------------------------------------------------------------------------------------- toHuman
@@ -56,18 +56,16 @@ class InSelect implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '')
+		: string
 	{
-		$str = '';
-		if ($this->select) {
-			$str = $builder->buildColumn($property_path, $prefix)
-				. ($this->not_in ? (SP . Loc::tr('except')) : '') . SP . Loc::tr('in') . ' (';
-			$summary_builder = new Summary_Builder(
-				$this->select->getClassName(), $this->select->getWhereArray()
-			);
-			$str .=  SP . (string)$summary_builder;
-			$str .= ')';
-		}
+		$str = $builder->buildColumn($property_path, $prefix)
+			. ($this->in ? '' : (SP . Loc::tr('except'))) . SP . Loc::tr('in') . ' (';
+		$summary_builder = new Summary_Builder(
+			$this->select->getClassName(), $this->select->getWhereArray()
+		);
+		$str .=  SP . $summary_builder;
+		$str .= ')';
 		return $str;
 	}
 
@@ -80,15 +78,12 @@ class InSelect implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '') : string
 	{
-		$sql = '';
-		if ($this->select) {
-			$sql = $builder->buildWhereColumn($property_path, $prefix)
-				. ($this->not_in ? ' NOT' : '') . ' IN (';
-			$sql .= $this->select->buildQuery();
-			$sql .= ')';
-		}
+		$sql = $builder->buildWhereColumn($property_path, $prefix)
+			. ($this->in ? '' : ' NOT') . ' IN (';
+		$sql .= $this->select->buildQuery();
+		$sql .= ')';
 		return $sql;
 	}
 

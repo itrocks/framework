@@ -42,29 +42,29 @@ class Logical implements Negate, Where
 	/**
 	 * Key can be a property path or numeric if depends on main property part
 	 *
-	 * @var Where[]|mixed[]|Where|mixed
+	 * @var array|Where|mixed|Where[]
 	 */
-	public $arguments;
+	public mixed $arguments;
 
 	//------------------------------------------------------------------------------------- $operator
 	/**
 	 * @var string
 	 */
-	public $operator = Logical::AND_OPERATOR;
+	public string $operator = Logical::AND_OPERATOR;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $operator string
-	 * @param $arguments Where[]|mixed[]|Where|mixed key can be a property path or numeric if depends
+	 * @param $operator string|null
+	 * @param $arguments array|mixed|Where|Where[] key can be a property path or numeric if depends
 	 *        on main property part
 	 */
-	public function __construct($operator = null, $arguments = null)
+	public function __construct(string $operator = null, mixed $arguments = null)
 	{
 		if (isset($operator))  $this->operator  = $operator;
 		if (isset($arguments)) $this->arguments = $arguments;
 		if (
-			in_array($this->operator, [self::NOT_OPERATOR, self::TRUE_OPERATOR])
+			in_array($this->operator, [self::NOT_OPERATOR, self::TRUE_OPERATOR], true)
 			&& is_array($this->arguments)
 		) {
 			/** @noinspection PhpUnhandledExceptionInspection not used by intermediate programming */
@@ -85,7 +85,7 @@ class Logical implements Negate, Where
 	/**
 	 * @return string
 	 */
-	public function humanOperator()
+	public function humanOperator() : string
 	{
 		return static::HUMAN[$this->operator];
 	}
@@ -94,7 +94,7 @@ class Logical implements Negate, Where
 	/**
 	 * @return boolean
 	 */
-	public function isAnd()
+	public function isAnd() : bool
 	{
 		return $this->operator === self::AND_OPERATOR;
 	}
@@ -103,7 +103,7 @@ class Logical implements Negate, Where
 	/**
 	 * @return boolean
 	 */
-	public function isNot()
+	public function isNot() : bool
 	{
 		return $this->operator === self::NOT_OPERATOR;
 	}
@@ -112,7 +112,7 @@ class Logical implements Negate, Where
 	/**
 	 * @return boolean
 	 */
-	public function isOr()
+	public function isOr() : bool
 	{
 		return $this->operator === self::OR_OPERATOR;
 	}
@@ -121,7 +121,7 @@ class Logical implements Negate, Where
 	/**
 	 * @return boolean
 	 */
-	public function isTrue()
+	public function isTrue() : bool
 	{
 		return $this->operator === self::TRUE_OPERATOR;
 	}
@@ -130,7 +130,7 @@ class Logical implements Negate, Where
 	/**
 	 * @return boolean
 	 */
-	public function isXor()
+	public function isXor() : bool
 	{
 		return $this->operator === self::XOR_OPERATOR;
 	}
@@ -141,15 +141,16 @@ class Logical implements Negate, Where
 	 */
 	public function negate()
 	{
-		if (key_exists($this->operator, self::REVERSE)) {
-			if ($this->operator == self::XOR_OPERATOR) {
-				$this->arguments = new Logical(self::XOR_OPERATOR, $this->arguments);
-			}
-			elseif (in_array($this->operator, [self::AND_OPERATOR, self::OR_OPERATOR])) {
-				$this->negateArguments();
-			}
-			$this->operator = self::REVERSE[$this->operator];
+		if (!key_exists($this->operator, self::REVERSE)) {
+			return;
 		}
+		if ($this->operator === self::XOR_OPERATOR) {
+			$this->arguments = new Logical(self::XOR_OPERATOR, $this->arguments);
+		}
+		elseif (in_array($this->operator, [self::AND_OPERATOR, self::OR_OPERATOR], true)) {
+			$this->negateArguments();
+		}
+		$this->operator = self::REVERSE[$this->operator];
 	}
 
 	//------------------------------------------------------------------------------- negateArguments
@@ -161,14 +162,15 @@ class Logical implements Negate, Where
 		if ($this->arguments instanceof Negate) {
 			$this->arguments->negate();
 		}
-		elseif (is_array($this->arguments)) {
-			foreach ($this->arguments as &$argument) {
-				if ($argument instanceof Negate) {
-					$argument->negate();
-				}
-				else {
-					$argument = new Logical(self::NOT_OPERATOR, $argument);
-				}
+		elseif (!is_array($this->arguments)) {
+			return;
+		}
+		foreach ($this->arguments as &$argument) {
+			if ($argument instanceof Negate) {
+				$argument->negate();
+			}
+			else {
+				$argument = new Logical(self::NOT_OPERATOR, $argument);
 			}
 		}
 	}
@@ -178,7 +180,7 @@ class Logical implements Negate, Where
 	 * @param $message string
 	 * @throws Exception
 	 */
-	protected function throwException($message)
+	protected function throwException(string $message)
 	{
 		throw new Exception($message);
 	}
@@ -192,7 +194,8 @@ class Logical implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '')
+		: string
 	{
 		$str = '';
 		// $this->arguments may not be array if operator is NOT_OPERATOR or TRUE_OPERATOR
@@ -239,7 +242,7 @@ class Logical implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '') : string
 	{
 		$sql = '';
 		// $this->arguments may not be array if operator is NOT_OPERATOR or TRUE_OPERATOR

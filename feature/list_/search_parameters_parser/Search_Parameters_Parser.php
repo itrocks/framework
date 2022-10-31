@@ -372,7 +372,7 @@ class Search_Parameters_Parser
 									if ($property_values) {
 										$value = Names::displayToProperty($value);
 									}
-									$search = ($type_string == Type::STRING)
+									$search = ($type_string === Type::STRING)
 										? Func::equal($value)
 										: Func::inSet($value);
 								}
@@ -389,7 +389,7 @@ class Search_Parameters_Parser
 						}
 						$search = (count($reverse_translations) > 1)
 							? Func::in($reverse_translations)
-							: (($type_string == Type::STRING)
+							: (($type_string === Type::STRING)
 								? Func::equal(reset($reverse_translations))
 								: Func::inSet(reset($reverse_translations))
 							);

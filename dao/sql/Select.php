@@ -11,6 +11,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Tools\List_Data;
+use ITRocks\Framework\View\User_Error_Exception;
 use ReflectionException;
 use ReflectionProperty;
 
@@ -55,9 +56,10 @@ class Select
 	 * If set, the callback will be called instead of storing into an array or List_Data
 	 * Set by fetchResultRows
 	 *
-	 * @var callable
+	 * @noinspection PhpDocFieldTypeMismatchInspection property hard type callable does not exist
+	 * @var ?callable
 	 */
-	private $callback;
+	private array|string|null $callback;
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
@@ -65,7 +67,7 @@ class Select
 	 *
 	 * @var string
 	 */
-	private $class_name;
+	private string $class_name;
 
 	//-------------------------------------------------------------------------------------- $classes
 	/**
@@ -73,7 +75,7 @@ class Select
 	 *
 	 * @var Reflection_Class[]
 	 */
-	private $classes;
+	private array $classes;
 
 	//--------------------------------------------------------------------------------- $column_count
 	/**
@@ -81,7 +83,7 @@ class Select
 	 *
 	 * @var integer
 	 */
-	private $column_count;
+	private int $column_count;
 
 	//--------------------------------------------------------------------------------- $column_names
 	/**
@@ -89,7 +91,7 @@ class Select
 	 *
 	 * @var string[]
 	 */
-	private $column_names;
+	private array $column_names;
 
 	//-------------------------------------------------------------------------------------- $columns
 	/**
@@ -99,7 +101,7 @@ class Select
 	 *
 	 * @var string[]
 	 */
-	private $columns = [];
+	private array $columns = [];
 
 	//--------------------------------------------------------------------------------------- $i_to_j
 	/**
@@ -107,7 +109,7 @@ class Select
 	 *
 	 * @var integer[]
 	 */
-	private $i_to_j;
+	private array $i_to_j;
 
 	//-------------------------------------------------------------------- $ignore_unknown_properties
 	/**
@@ -118,7 +120,7 @@ class Select
 	 *
 	 * @var boolean|null
 	 */
-	public $ignore_unknown_properties = false;
+	public bool $ignore_unknown_properties = false;
 
 	//------------------------------------------------------------------------------------------ $key
 	/**
@@ -127,7 +129,7 @@ class Select
 	 *
 	 * @var string[]
 	 */
-	private $key = ['id'];
+	private array $key = ['id'];
 
 	//----------------------------------------------------------------------------------------- $link
 	/**
@@ -135,7 +137,7 @@ class Select
 	 *
 	 * @var Link
 	 */
-	private $link;
+	private Link $link;
 
 	//------------------------------------------------------------------------------- $object_builder
 	/**
@@ -143,7 +145,7 @@ class Select
 	 *
 	 * @var Object_Builder_Array
 	 */
-	private $object_builder;
+	private Object_Builder_Array $object_builder;
 
 	//--------------------------------------------------------------------------------- $path_classes
 	/**
@@ -152,7 +154,7 @@ class Select
 	 *
 	 * @var string[]
 	 */
-	private $path_classes;
+	private array $path_classes;
 
 	//----------------------------------------------------------------------------------- $result_set
 	/**
@@ -160,18 +162,18 @@ class Select
 	 *
 	 * @var mixed
 	 */
-	private $result_set;
+	private mixed $result_set;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Constructs a new Select object, read to use, with all its context data
 	 *
 	 * @param $class_name string The name of the main business class to start from
-	 * @param $columns    string[]|Column[] If not set, the columns names will be taken from the
+	 * @param $columns    Column[]|string[]|null If not set, the columns names will be taken from the
 	 *                    query result
-	 * @param $link       Link If not set, the default link will be Dao::current()
+	 * @param $link       Link|null If not set, the default link will be Dao::current()
 	 */
-	public function __construct($class_name = null, array $columns = null, Link $link = null)
+	public function __construct(string $class_name, array $columns = null, Link $link = null)
 	{
 		$this->link       = $link ?: Dao::current();
 		$this->class_name = $class_name;
@@ -183,10 +185,10 @@ class Select
 
 	//------------------------------------------------------------------------------------ doCallback
 	/**
-	 * @param $data_store array[]|object
+	 * @param $data_store array[]|List_Data|object[]
 	 * @return boolean if the call returns false for any stored object, this will stop & return false
 	 */
-	private function doCallback(&$data_store)
+	private function doCallback(array|List_Data &$data_store)
 	{
 		if (isset($this->callback)) {
 			foreach ($data_store as $object) {
@@ -200,11 +202,13 @@ class Select
 	}
 
 	//--------------------------------------------------------------------------------------- doFetch
+
 	/**
-	 * @param $data_store List_Data|array[]|object[]
-	 * @return List_Data|array[]|object[]|null
+	 * @param $data_store array[]|List_Data|object[]
+	 * @return array[]|List_Data|object[]|null
+	 * @throws User_Error_Exception
 	 */
-	private function doFetch($data_store)
+	private function doFetch(array|List_Data $data_store) : array|List_Data|null
 	{
 		if ($this->class_name && !($data_store instanceof List_Data)) {
 			$this->object_builder = new Object_Builder_Array($this->class_name, false);
@@ -235,31 +239,39 @@ class Select
 	}
 
 	//--------------------------------------------------------------------------- executeClassColumns
+
 	/**
 	 * A simple execute() feature to use it quick with minimal options
 	 *
-	 * @param $data_store List_Data|array[]|object[]|callable
+	 * @param $data_store array[]|callable|List_Data|object[]
 	 * @param $key        string[] Key property names
 	 * @return List_Data|array[]|object[]|callable
+	 * @throws User_Error_Exception
 	 */
-	public function executeClassColumns($data_store = null, $key = null)
+	public function executeClassColumns(
+		array|callable|List_Data $data_store = null, array $key = null
+	) : array|callable|List_Data
 	{
-		$result = $this->executeQuery($this->prepareQuery(), $data_store, $key);
+		$result = $this->executeQuery($this->prepareQuery(null), $data_store, $key);
 		$this->doneQuery();
 		return $result;
 	}
 
 	//---------------------------------------------------------------------------------- executeQuery
+
 	/**
 	 * A simple execute() feature to use with an already built query
 	 * Useful for imports from external SQL data sources
 	 *
 	 * @param $query      string
-	 * @param $data_store List_Data|array[]|object[]|callable
-	 * @param $key        string[] Key property names
-	 * @return List_Data|array[]|object[]|callable
+	 * @param $data_store array[]|callable|List_Data|object[]|null
+	 * @param $key        string[]|null Key property names
+	 * @return array[]|callable|List_Data|object[]
+	 * @throws User_Error_Exception
 	 */
-	public function executeQuery($query, $data_store = null, array $key = null)
+	public function executeQuery(
+		string $query, array|callable|List_Data $data_store = null, array $key = null
+	) : array|callable|List_Data
 	{
 		if (isset($key)) {
 			$this->key = $key;
@@ -268,12 +280,16 @@ class Select
 	}
 
 	//------------------------------------------------------------------------------- fetchResultRows
+
 	/**
 	 * @param $result_set mixed A Link::query() result set
-	 * @param $data_store List_Data|array[]|object[]|callable
-	 * @return List_Data|array[]|object[]|null
+	 * @param $data_store array[]|callable|List_Data|object[]|null
+	 * @return array[]|List_Data|object[]|null
+	 * @throws User_Error_Exception
 	 */
-	public function fetchResultRows($result_set, $data_store = null)
+	public function fetchResultRows(
+		mixed $result_set, array|callable|List_Data $data_store = null
+	) : array|List_Data|null
 	{
 		if (is_callable($data_store)) {
 			$this->callback = $data_store;
@@ -296,9 +312,9 @@ class Select
 	 * - If $object is an array, it keeps and replaces Reflection_Property_Value element by its value
 	 *
 	 * @param $object array|object|null if already an array, nothing will be done
-	 * @return array keys are properties paths
+	 * @return ?array keys are properties paths
 	 */
-	private function objectToProperties($object)
+	private function objectToProperties(array|object|null $object) : ?array
 	{
 		if (is_object($object) && !($object instanceof Dao_Function)) {
 			$id     = $this->link->getObjectIdentifier($object);
@@ -323,7 +339,7 @@ class Select
 	 * @param $columns string[] The input list of column names
 	 * @return string[] The output list of the column names
 	 */
-	private function prepareColumns(array $columns = [])
+	private function prepareColumns(array $columns = []) : array
 	{
 		$cols = [];
 		foreach ($columns as $may_be_column => $column) {
@@ -340,9 +356,9 @@ class Select
 	 * - $column_names
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $data_store List_Data|array[]|object[]|null
+	 * @param $data_store array[]|List_Data|object[]|null
 	 */
-	private function prepareFetch($data_store)
+	private function prepareFetch(array|List_Data|null $data_store)
 	{
 		$this->classes      = [];
 		$this->column_count = $this->link->getColumnsCount($this->result_set);
@@ -381,7 +397,7 @@ class Select
 					$this->i_to_j[$i] = $his_j;
 				}
 			}
-			if (($data_store instanceof List_Data) && (substr($column_name, 0, 3) === 'id_')) {
+			if (($data_store instanceof List_Data) && str_starts_with($column_name, 'id_')) {
 				$this->column_names[$i] = $column_name = substr($column_name, 3);
 			}
 			if (($column_name[0] !== '@') && !isset($this->columns[$i])) {
@@ -398,7 +414,7 @@ class Select
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property_name string
 	 */
-	private function preparePathClass($property_name)
+	private function preparePathClass(string $property_name)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class and property name must be valid */
 		$property   = new Reflection_Property($this->class_name, $property_name);
@@ -412,14 +428,15 @@ class Select
 	 *
 	 * Beware : You must always call doneQuery after having called prepareQuery and executed the query
 	 *
-	 * @param $filter_object object|array|false source object for filter, set properties will be used
+	 * @param $filter_object array|false|object|null source object for filter, set properties will be used
 	 *                       for search. Can be an array associating properties names to matching
 	 *                       search value too.
 	 *                       Special values : null for no filter, false to get no result.
 	 * @param $options       Option|Option[] some options for advanced search
 	 * @return string
 	 */
-	public function prepareQuery($filter_object = null, $options = [])
+	public function prepareQuery(object|array|false|null $filter_object, array|Option $options = [])
+		: string
 	{
 		$filter_object      = $this->objectToProperties($filter_object);
 		$sql_select_builder = new Sql\Builder\Select(
@@ -436,10 +453,11 @@ class Select
 
 	//----------------------------------------------------------------------------------- resultToRow
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $result array
 	 * @return array
 	 */
-	private function resultToRow(array $result)
+	private function resultToRow(array $result) : array
 	{
 		$row = [];
 		for ($i = 0; $i < $this->column_count; $i++) {
@@ -451,6 +469,7 @@ class Select
 				if (!isset($row[$this->columns[$j]])) {
 					// TODO LOW try to get the object from object map to avoid multiple instances
 					$class  = $this->classes[$j];
+					/** @noinspection PhpUnhandledExceptionInspection class must be valid */
 					$object = $class->isAbstract() ? new Abstract_Class : $class->newInstance();
 					$row[$this->columns[$j]] = $object;
 				}
@@ -475,7 +494,7 @@ class Select
 				// may be time-consuming, and do we need the real complete object ?
 				/*
 				if (
-					in_array($property_name, ['class', 'id'])
+					in_array($property_name, ['class', 'id'], true)
 					&& ($row[$this->columns[$j]] instanceof Abstract_Class)
 					&& ($row[$this->columns[$j]]->class ?? false)
 					&& ($row[$this->columns[$j]]->id    ?? false)
@@ -491,14 +510,16 @@ class Select
 	}
 
 	//----------------------------------------------------------------------------------------- store
+
 	/**
 	 * Store the row into the data store
 	 *
 	 * @param $row        array
-	 * @param $data_store List_Data|array[]|object[]
+	 * @param $data_store array[]|List_Data|object[]
 	 * @return boolean false if the callback returned false to stop the read process
+	 * @throws User_Error_Exception
 	 */
-	private function store(array $row, &$data_store)
+	private function store(array $row, array|List_Data &$data_store) : bool
 	{
 		$result = true;
 		if ($data_store instanceof List_Data) {

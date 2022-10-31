@@ -18,14 +18,14 @@ class Index implements Sql\Index
 	/**
 	 * @var Key[]
 	 */
-	public $keys;
+	public array $keys;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * @values KEY, UNIQUE
 	 * @var string
 	 */
-	public $type = self::KEY;
+	public string $type = self::KEY;
 
 	//---------------------------------------------------------------------------------------- addKey
 	/**
@@ -33,7 +33,7 @@ class Index implements Sql\Index
 	 *
 	 * @param $column_name string
 	 */
-	public function addKey($column_name)
+	public function addKey(string $column_name)
 	{
 		$this->keys[] = new Key($column_name);
 	}
@@ -43,14 +43,14 @@ class Index implements Sql\Index
 	 * Builds a Index for a column name that is a link to another class
 	 *
 	 * @param $column_name string the column name used to create the index (with or without 'id_')
-	 * @return Index
+	 * @return static
 	 */
-	public static function buildLink($column_name)
+	public static function buildLink(string $column_name) : static
 	{
-		if (substr($column_name, 0, 3) !== 'id_') {
+		if (!str_starts_with($column_name, 'id_')) {
 			$column_name = 'id_' . $column_name;
 		}
-		$index = new Index();
+		$index = new static();
 		$index->addKey($column_name);
 		return $index;
 	}
@@ -59,7 +59,7 @@ class Index implements Sql\Index
 	/**
 	 * @return Key[]
 	 */
-	public function getKeys()
+	public function getKeys() : array
 	{
 		return $this->keys;
 	}
@@ -68,7 +68,7 @@ class Index implements Sql\Index
 	/**
 	 * @return string
 	 */
-	public function getName()
+	public function getName() : string
 	{
 		$names = [];
 		foreach ($this->keys as $key) {
@@ -81,7 +81,7 @@ class Index implements Sql\Index
 	/**
 	 * @return string
 	 */
-	public function getSqlType()
+	public function getSqlType() : string
 	{
 		return reset($this->keys)->getSqlType();
 	}
@@ -90,7 +90,7 @@ class Index implements Sql\Index
 	/**
 	 * @param $type string self::KEY, self::PRIMARY, self::UNIQUE
 	 */
-	public function setType($type)
+	public function setType(string $type)
 	{
 		$this->type = $type;
 	}
@@ -99,7 +99,7 @@ class Index implements Sql\Index
 	/**
 	 * @return string
 	 */
-	public function toSql()
+	public function toSql() : string
 	{
 		$column_names = [];
 		foreach ($this->keys as $key) {

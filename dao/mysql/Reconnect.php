@@ -23,10 +23,13 @@ class Reconnect implements Registerable
 	 * @param $query     string
 	 * @param $joinpoint Before_Method
 	 */
-	public function onMysqliQueryError(Contextual_Mysqli &$object, $query, Before_Method $joinpoint)
-	{
+	public function onMysqliQueryError(
+		Contextual_Mysqli &$object, string $query, Before_Method $joinpoint
+	) {
 		$mysqli =& $object;
-		if (in_array($mysqli->last_errno, [Errors::CR_SERVER_GONE_ERROR, Errors::CR_SERVER_LOST])) {
+		if (
+			in_array($mysqli->last_errno, [Errors::CR_SERVER_GONE_ERROR, Errors::CR_SERVER_LOST], true)
+		) {
 			// wait 1 second an try to reconnect
 			sleep(1);
 			if (!$mysqli->ping()) {
@@ -64,7 +67,7 @@ class Reconnect implements Registerable
 		$time = time();
 		for ($i = 1; $i <= 15; $i ++) {
 			/** @var $dao Link */
-			$dao = Dao::current();
+			$dao   = Dao::current();
 			$users = Dao::readAll(User::class);
 			/** @var $user User PhpStorm bug */
 			$user = reset($users);
@@ -76,7 +79,7 @@ class Reconnect implements Registerable
 				return $i . ' : query error '
 					. $dao->getConnection()->last_errno . SP . $dao->getConnection()->last_error;
 			}
-			if ($i < 60) {
+			if ($i < 15) {
 				sleep(1);
 			}
 		}

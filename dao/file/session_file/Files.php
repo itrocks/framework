@@ -20,7 +20,7 @@ class Files
 	 * @link Collection
 	 * @var File[]
 	 */
-	public $files;
+	public array $files;
 
 	//----------------------------------------------------------------------------------- __serialize
 	/**
@@ -39,7 +39,6 @@ class Files
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $serialized array
-	 * @return void
 	 */
 	public function __unserialize(array $serialized)
 	{
@@ -60,7 +59,7 @@ class Files
 	 * @param $file File
 	 * @return string
 	 */
-	public function addAndGetLink(File $file)
+	public function addAndGetLink(File $file) : string
 	{
 		$name_hash               = $file->nameHash();
 		$this->files[$name_hash] = $file;

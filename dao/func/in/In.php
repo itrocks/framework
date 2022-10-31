@@ -16,27 +16,27 @@ class In implements Negate, Where
 
 	//--------------------------------------------------------------------------------------- $not_in
 	/**
-	 * If true, then this is a 'NOT IN' instead of a 'IN'
+	 * false : 'NOT IN', true : 'IN'
 	 *
 	 * @var boolean
 	 */
-	public $not_in;
+	public bool $in;
 
 	//--------------------------------------------------------------------------------------- $values
 	/**
-	 * @var mixed[]
+	 * @var array
 	 */
-	public $values;
+	public array $values;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $values array
-	 * @param $not_in boolean
+	 * @param $values array|null
+	 * @param $in     boolean|null
 	 */
-	public function __construct(array $values = null, $not_in = false)
+	public function __construct(array $values = null, bool $in = null)
 	{
 		if (isset($values)) $this->values = $values;
-		if (isset($not_in)) $this->not_in = $not_in;
+		if (isset($in))     $this->in     = $in;
 	}
 
 	//---------------------------------------------------------------------------------------- negate
@@ -45,7 +45,7 @@ class In implements Negate, Where
 	 */
 	public function negate()
 	{
-		$this->not_in = !$this->not_in;
+		$this->in = !$this->in;
 	}
 
 	//--------------------------------------------------------------------------------------- toHuman
@@ -57,7 +57,8 @@ class In implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '')
+		: string
 	{
 		$summary = '';
 		if ($this->values) {
@@ -73,10 +74,8 @@ class In implements Negate, Where
 			$summary = $translation_delimiter . str_replace(
 				['$property', '$values'],
 				[$builder->buildColumn($property_path, $prefix, $builder::SUB_TRANSLATE), $values],
-				Loc::tr(
-					$this->not_in ? '$property is not one of ($values)' : '$property is one of ($values)'
-				)
-			) . $translation_delimiter ;
+				Loc::tr($this->in ? '$property is one of ($values)' : '$property is not one of ($values)')
+			) . $translation_delimiter;
 		}
 		return $summary;
 	}
@@ -90,12 +89,12 @@ class In implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '') : string
 	{
 		$sql = '';
 		if ($this->values) {
 			if (count($this->values) === 1) {
-				$comparison_sign = $this->not_in ? Comparison::NOT_EQUAL : Comparison::EQUAL;
+				$comparison_sign = $this->in ? Comparison::EQUAL : Comparison::NOT_EQUAL;
 				$comparison      = new Comparison($comparison_sign, reset($this->values));
 				return $comparison->toSql($builder, $property_path, $prefix);
 			}
@@ -112,14 +111,14 @@ class In implements Negate, Where
 					$parts[] = new In_Set($value);
 				}
 				$where = Func::orOp($parts);
-				if ($this->not_in) {
+				if (!$this->in) {
 					$where = Func::notOp($where);
 				}
 				$sql .= $where->toSql($builder, $property_path, $prefix);
 			}
 			else {
 				$first = true;
-				$sql   = $column . ($this->not_in ? ' NOT' : '') . ' IN (';
+				$sql   = $column . ($this->in ? '' : ' NOT') . ' IN (';
 				foreach ($this->values as $value) {
 					if ($first) {
 						$first = false;

@@ -17,39 +17,39 @@ class Foreign_Key implements Sql\Foreign_Key
 	/**
 	 * @var string
 	 */
-	private $Constraint;
+	private string $Constraint;
 
 	//--------------------------------------------------------------------------------------- $Fields
 	/**
 	 * @var string
 	 */
-	private $Fields;
+	private string $Fields;
 
 	//------------------------------------------------------------------------------------ $On_delete
 	/**
 	 * @values CASCADE, NO ACTION, RESTRICT, SET NULL
 	 * @var string
 	 */
-	private $On_delete = 'RESTRICT';
+	private string $On_delete = 'RESTRICT';
 
 	//------------------------------------------------------------------------------------ $On_update
 	/**
 	 * @values CASCADE, NO ACTION, RESTRICT, SET NULL
 	 * @var string
 	 */
-	private $On_update = 'RESTRICT';
+	private string $On_update = 'RESTRICT';
 
 	//----------------------------------------------------------------------------- $Reference_fields
 	/**
 	 * @var string
 	 */
-	private $Reference_fields;
+	private string $Reference_fields;
 
 	//------------------------------------------------------------------------------ $Reference_table
 	/**
 	 * @var string
 	 */
-	private $Reference_table;
+	private string $Reference_table;
 
 	//------------------------------------------------------------------------------------- buildLink
 	/**
@@ -59,11 +59,13 @@ class Foreign_Key implements Sql\Foreign_Key
 	 * @param $column_name string the column name linking to the foreign key (with or without 'id_')
 	 * @param $class_name  string the foreign class name
 	 * @param $on          string CASCADE, NO ACTION, RESTRICT, SET NULL
-	 * @return Foreign_Key
+	 * @return static
 	 */
-	public static function buildLink($table_name, $column_name, $class_name, $on = self::CASCADE)
+	public static function buildLink(
+		string $table_name, string $column_name, string $class_name, string $on = self::CASCADE
+	) : static
 	{
-		if (substr($column_name, 0, 3) !== 'id_') {
+		if (!str_starts_with($column_name, 'id_')) {
 			$column_name = 'id_' . $column_name;
 		}
 		$constraint = $table_name . DOT . $column_name;
@@ -87,9 +89,9 @@ class Foreign_Key implements Sql\Foreign_Key
 	 *
 	 * @param $table_name string
 	 * @param $property   Reflection_Property
-	 * @return Foreign_Key
+	 * @return static
 	 */
-	public static function buildProperty($table_name, Reflection_Property $property)
+	public static function buildProperty(string $table_name, Reflection_Property $property) : static
 	{
 		$foreign_key = new Foreign_Key();
 		$foreign_key->Constraint       = self::propertyConstraintToMysql($table_name, $property);
@@ -108,10 +110,12 @@ class Foreign_Key implements Sql\Foreign_Key
 	 *
 	 * @param $mysqli        mysqli
 	 * @param $table_name    string
-	 * @param $database_name string
+	 * @param $database_name string|null
 	 * @return Foreign_Key[]
 	 */
-	public static function buildReferences(mysqli $mysqli, $table_name, $database_name = null)
+	public static function buildReferences(
+		mysqli $mysqli, string $table_name, string $database_name = null
+	) : array
 	{
 		return static::foreignKeysOf($mysqli, 'referenced_table_name', $table_name, $database_name);
 	}
@@ -122,10 +126,12 @@ class Foreign_Key implements Sql\Foreign_Key
 	 *
 	 * @param $mysqli        mysqli
 	 * @param $table_name    string
-	 * @param $database_name string
+	 * @param $database_name string|null
 	 * @return Foreign_Key[]
 	 */
-	public static function buildTable(mysqli $mysqli, $table_name, $database_name = null)
+	public static function buildTable(
+		mysqli $mysqli, string $table_name, string $database_name = null
+	) : array
 	{
 		return static::foreignKeysOf($mysqli, 'table_name', $table_name, $database_name);
 	}
@@ -135,7 +141,7 @@ class Foreign_Key implements Sql\Foreign_Key
 	 * @param $foreign_key Foreign_Key
 	 * @return array
 	 */
-	public function diffCombined(Foreign_Key $foreign_key)
+	public function diffCombined(Foreign_Key $foreign_key) : array
 	{
 		return arrayDiffCombined(get_object_vars($this), get_object_vars($foreign_key), true);
 	}
@@ -145,7 +151,7 @@ class Foreign_Key implements Sql\Foreign_Key
 	 * @param $foreign_key Foreign_Key
 	 * @return boolean
 	 */
-	public function equiv(Foreign_Key $foreign_key)
+	public function equiv(Foreign_Key $foreign_key) : bool
 	{
 		return ($this->Constraint === $foreign_key->Constraint)
 			&& ($this->Fields === $foreign_key->Fields)
@@ -164,8 +170,9 @@ class Foreign_Key implements Sql\Foreign_Key
 	 * @return Foreign_Key[]
 	 */
 	protected static function foreignKeysOf(
-		mysqli $mysqli, $table_name_column, $table_name, $database_name = null
-	) {
+		mysqli $mysqli, string $table_name_column, string $table_name, string $database_name = null
+	) : array
+	{
 		$database_name     = isset($database_name) ? (Q . $database_name . Q) : 'DATABASE()';
 		$table_name_column = BQ . $table_name_column . BQ;
 
@@ -211,7 +218,7 @@ class Foreign_Key implements Sql\Foreign_Key
 	/**
 	 * @return string
 	 */
-	public function getConstraint()
+	public function getConstraint() : string
 	{
 		return $this->Constraint;
 	}
@@ -220,7 +227,7 @@ class Foreign_Key implements Sql\Foreign_Key
 	/**
 	 * @return string[]
 	 */
-	public function getFields()
+	public function getFields() : array
 	{
 		return explode(',', $this->Fields);
 	}
@@ -229,7 +236,7 @@ class Foreign_Key implements Sql\Foreign_Key
 	/**
 	 * @return string
 	 */
-	public function getOnDelete()
+	public function getOnDelete() : string
 	{
 		return $this->On_delete;
 	}
@@ -238,7 +245,7 @@ class Foreign_Key implements Sql\Foreign_Key
 	/**
 	 * @return string
 	 */
-	public function getOnUpdate()
+	public function getOnUpdate() : string
 	{
 		return $this->On_update;
 	}
@@ -247,7 +254,7 @@ class Foreign_Key implements Sql\Foreign_Key
 	/**
 	 * @return string[]
 	 */
-	public function getReferenceFields()
+	public function getReferenceFields() : array
 	{
 		return explode(',', $this->Reference_fields);
 	}
@@ -256,7 +263,7 @@ class Foreign_Key implements Sql\Foreign_Key
 	/**
 	 * @return string
 	 */
-	public function getReferenceTable()
+	public function getReferenceTable() : string
 	{
 		return $this->Reference_table;
 	}
@@ -265,7 +272,7 @@ class Foreign_Key implements Sql\Foreign_Key
 	/**
 	 * @return string
 	 */
-	public function toDropSql()
+	public function toDropSql() : string
 	{
 		return 'DROP FOREIGN KEY ' . BQ . $this->getConstraint() . BQ;
 	}
@@ -274,7 +281,7 @@ class Foreign_Key implements Sql\Foreign_Key
 	/**
 	 * @return string
 	 */
-	public function toSql()
+	public function toSql() : string
 	{
 		return 'CONSTRAINT ' . BQ . $this->getConstraint() . BQ
 			. ' FOREIGN KEY (' . BQ . join('`, `', $this->getFields()) . BQ . ')'

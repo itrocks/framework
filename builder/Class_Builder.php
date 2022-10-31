@@ -276,9 +276,9 @@ class Class_Builder
 	/**
 	 * Returns the prefix namespace for built classes
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	public static function getBuiltNameSpace() : string
+	public static function getBuiltNameSpace() : ?string
 	{
 		static $namespace = null;
 		if (!isset($namespace) && ($application = Application::current())) {

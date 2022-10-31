@@ -33,7 +33,7 @@ abstract class Identifier_Map extends Data_Link
 	 * @param $load_linked_objects boolean if true, load linked objects before disconnect
 	 * @see Data_Link::disconnect()
 	 */
-	public function disconnect($object, $load_linked_objects = false)
+	public function disconnect(object $object, bool $load_linked_objects = false)
 	{
 		// disconnect component objects, including collection elements
 		/** @noinspection PhpUnhandledExceptionInspection $object is an object */
@@ -75,52 +75,45 @@ abstract class Identifier_Map extends Data_Link
 	 * A null value will be returned for an object that is not linked to data link.
 	 * If $object is already an identifier, the identifier is returned.
 	 *
-	 * @param $object        object an object to get data link identifier from
-	 * @param $property_name string a property name to get data link identifier from instead of object
+	 * @param $object        ?object an object to get data link identifier from
+	 * @param $property_name string|null property name to get data link identifier instead of object
 	 * @return mixed you can test if an object identifier is set with empty($of_this_result)
 	 */
-	public function getObjectIdentifier($object, $property_name = null)
+	public function getObjectIdentifier(?object $object, string $property_name = null) : mixed
 	{
 		if (is_object($object)) {
 			if (isset($property_name)) {
-				$id_property_name = ($property_name == 'id') ? 'id' : ('id_' . $property_name);
+				$id_property_name = ($property_name === 'id') ? 'id' : ('id_' . $property_name);
 				if (isset($object->$id_property_name)) {
 					return $object->$id_property_name;
 				}
-				else {
-					return isset($object->$property_name)
-						? (
-							is_object($object->$property_name)
-							? $this->getObjectIdentifier($object->$property_name)
-							: $object->$property_name
-						)
-						: null;
+				if (isset($object->$property_name)) {
+					return is_object($object->$property_name)
+						? $this->getObjectIdentifier($object->$property_name)
+						: $object->$property_name;
 				}
+				return null;
 			}
-			else {
-				return isset($object->id) ? $object->id : null;
-			}
+			return $object->id ?? null;
 		}
-		else {
-			return $object;
-		}
+		return $object;
 	}
 
 	//-------------------------------------------------------------------------------------------- is
 	/**
 	 * Returns true if object1 and object2 match the same stored object
 	 *
-	 * @param $object1 object
-	 * @param $object2 object
-	 * @param $strict boolean if true, will consider @link object and non-@link object as different
+	 * @param $object1 ?object
+	 * @param $object2 ?object
+	 * @param $strict  boolean if true, will consider @link object and non-@link object different
 	 * @return boolean
 	 */
-	public function is($object1, $object2, $strict = false)
+	public function is(?object $object1, ?object $object2, bool $strict = false) : bool
 	{
 		if (!isset($object1) && !isset($object2)) {
 			return true;
 		}
-		$result = $this->getObjectIdentifier($object1)
+		return $this->getObjectIdentifier($object1)
 			&& (
 				strval($this->getObjectIdentifier($object1, $strict ? null : 'id'))
 				=== strval($this->getObjectIdentifier($object2, $strict ? null : 'id'))
@@ -129,18 +122,18 @@ abstract class Identifier_Map extends Data_Link
 				is_a($object1, Builder::current()->sourceClassName(get_class($object2)))
 				|| is_a($object2, Builder::current()->sourceClassName(get_class($object1)))
 			);
-		return $result;
 	}
 
 	//--------------------------------------------------------------------------------------- replace
 	/**
-	 * @param $destination object destination object
-	 * @param $source      object source object
+	 * @param $destination T destination object
+	 * @param $source      T source object
 	 * @param $write       boolean true if the destination object must be immediately written
-	 * @return object the resulting $destination object
+	 * @return T the resulting $destination object
 	 * @see Data_Link::replace()
+	 * @template T
 	 */
-	public function replace($destination, $source, $write = true)
+	public function replace(object $destination, object $source, bool $write = true) : object
 	{
 		$identifier = $this->getObjectIdentifier($source);
 		$this->setObjectIdentifier($destination, $identifier);
@@ -161,14 +154,15 @@ abstract class Identifier_Map extends Data_Link
 	 *
 	 * @param $object        object
 	 * @param $id            mixed
-	 * @param $property_name string
-	 * @return Identifier_Map
+	 * @param $property_name string|null
+	 * @return $this
 	 */
-	public function setObjectIdentifier($object, $id, $property_name = null)
+	public function setObjectIdentifier(object $object, mixed $id, string $property_name = null)
+		: static
 	{
 		// classic class object id
 		if ($property_name) {
-			$id_property_name = 'id_' . $property_name;
+			$id_property_name          = 'id_' . $property_name;
 			$object->$id_property_name = $id;
 		}
 		else {
@@ -177,7 +171,7 @@ abstract class Identifier_Map extends Data_Link
 				foreach (explode(Link_Class::ID_SEPARATOR, $id) as $property) {
 					[$property_name, $id] = explode('=', $property);
 					if (is_numeric($id)) {
-						$id_property_name = 'id_' . $property_name;
+						$id_property_name          = 'id_' . $property_name;
 						$object->$id_property_name = $id;
 					}
 					else {

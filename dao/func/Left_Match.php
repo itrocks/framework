@@ -20,23 +20,23 @@ class Left_Match implements Negate, Where
 	 *
 	 * @var boolean
 	 */
-	public $not_match;
+	public bool $match = true;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * @var mixed|Where
 	 */
-	public $value;
+	public mixed $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value mixed|Where
-	 * @param $not_match boolean
+	 * @param $match boolean|null
 	 */
-	public function __construct($value, $not_match = false)
+	public function __construct(mixed $value, bool $match = null)
 	{
 		$this->value = $value;
-		if (isset($not_match)) $this->not_match = $not_match;
+		if (isset($match)) $this->match = $match;
 	}
 
 	//---------------------------------------------------------------------------------------- negate
@@ -45,7 +45,7 @@ class Left_Match implements Negate, Where
 	 */
 	public function negate()
 	{
-		$this->not_match = !$this->not_match;
+		$this->match = !$this->match;
 	}
 
 	//--------------------------------------------------------------------------------------- toHuman
@@ -57,14 +57,14 @@ class Left_Match implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '')
+		: string
 	{
 		$column  = $builder->buildColumn($property_path, $prefix);
 		$replace = new Replace(['column' => $column, 'value' => $this->value]);
-		$str = $this->not_match
-			? Loc::tr('$column is not start of string "$value"', $replace)
-			: Loc::tr('$column is the start of string "$value"', $replace);
-		return $str;
+		return $this->match
+			? Loc::tr('$column is the start of string "$value"', $replace)
+			: Loc::tr('$column is not start of string "$value"', $replace);
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
@@ -76,12 +76,12 @@ class Left_Match implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '') : string
 	{
 		$column = $builder->buildWhereColumn($property_path, $prefix);
 		$value  = Value::escape($this->value);
 		return $column
-			. ($this->not_match ? ' <> ' : ' = ')
+			. ($this->match ? ' = ' : ' <> ')
 			. 'LEFT(' . $value . ', LENGTH(' . $column . '))';
 	}
 

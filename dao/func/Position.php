@@ -20,33 +20,33 @@ class Position implements Where
 	/**
 	 * String to look into
 	 *
-	 * @var string
+	 * @var string|Where
 	 */
-	public $haystack;
+	public string|Where $haystack;
 
 	//--------------------------------------------------------------------------------------- $needle
 	/**
 	 * String to look for
 	 *
-	 * @var string
+	 * @var string|Where
 	 */
-	public $needle;
+	public string|Where $needle;
 
 	//--------------------------------------------------------------------------------------- $offset
 	/**
 	 * @varChar offset from start
 	 */
-	public $offset = 0;
+	public int $offset = 0;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Locate constructor
 	 *
-	 * @param $needle   string
-	 * @param $haystack string
+	 * @param $needle   string|Where
+	 * @param $haystack string|Where
 	 * @param $offset   integer
 	 */
-	public function __construct($needle, $haystack, $offset = 0)
+	public function __construct(string|Where $needle, string|Where $haystack, int $offset = 0)
 	{
 		$this->needle   = $needle;
 		$this->haystack = $haystack;
@@ -62,7 +62,8 @@ class Position implements Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '')
+		: string
 	{
 		return Loc::tr(Position::POSITION_SQL)
 		. '('
@@ -70,12 +71,12 @@ class Position implements Where
 			($this->needle instanceof Where)
 			? $this->needle->toHuman($builder, $property_path, $prefix)
 			: Value::escape($this->needle)
-		) . ','
+		) . ', '
 		. (
 			($this->haystack instanceof Where)
 			? $this->haystack->toHuman($builder, $property_path, $prefix)
 			: Value::escape($this->haystack)
-		) . ','
+		) . ', '
 		. $this->offset
 		. ')';
 	}
@@ -89,7 +90,7 @@ class Position implements Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '') : string
 	{
 		return Position::POSITION_SQL
 		. '('
@@ -97,12 +98,12 @@ class Position implements Where
 			($this->needle instanceof Where)
 			? $this->needle->toSql($builder, $property_path, $prefix)
 			: Value::escape($this->needle)
-		) . ','
+		) . ', '
 		. (
 			($this->haystack instanceof Where)
 			? $this->haystack->toSql($builder, $property_path, $prefix)
 			: Value::escape($this->haystack)
-		) . ','
+		) . ', '
 		. $this->offset
 		. ')';
 	}

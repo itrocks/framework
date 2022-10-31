@@ -11,19 +11,19 @@ class View
 	/**
 	 * @var string
 	 */
-	private $Name;
+	private string $Name;
 
 	//------------------------------------------------------------------------------- $select_queries
 	/**
 	 * @var string[]
 	 */
-	public $select_queries = [];
+	public array $select_queries = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name string
+	 * @param $name string|null
 	 */
-	public function __construct($name = null)
+	public function __construct(string $name = null)
 	{
 		if (isset($name)) {
 			$this->Name = $name;
@@ -34,7 +34,7 @@ class View
 	/**
 	 * @return string
 	 */
-	public function getName()
+	public function getName() : string
 	{
 		return $this->Name;
 	}

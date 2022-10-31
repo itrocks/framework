@@ -12,14 +12,16 @@ class Decimal
 
 	//------------------------------------------------------------------------------------------ type
 	/**
-	 * @param $max_length integer|null in digits : counts the comma, and the sign if signed
-	 * @param $max_value  integer|null
-	 * @param $min_value  integer|null
-	 * @param $signed     boolean|null
-	 * @param $precision  integer
+	 * @param $max_length ?integer in digits : counts the comma, and the sign if signed
+	 * @param $max_value  ?integer
+	 * @param $min_value  ?integer
+	 * @param $signed     ?boolean
+	 * @param $precision  ?integer
 	 * @return string
 	 */
-	public function type($max_length, $min_value, $max_value, $signed, $precision)
+	public function type(
+		?int $max_length, ?int $min_value, ?int $max_value, ?bool $signed, ?int $precision
+	) : string
 	{
 		// default : length of the decimal part of $min/max_value, or maximal available length
 		if (!isset($max_length)) {

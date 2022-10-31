@@ -15,9 +15,9 @@ class Range implements Negate, Where
 
 	//----------------------------------------------------------------------------------------- $from
 	/**
-	 * @var mixed
+	 * @var float|int|string
 	 */
-	public $from;
+	public float|int|string $from;
 
 	//---------------------------------------------------------------------------------- $not_between
 	/**
@@ -25,25 +25,25 @@ class Range implements Negate, Where
 	 *
 	 * @var boolean
 	 */
-	public $not_between;
+	public bool $between;
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
-	 * @var mixed
+	 * @var float|int|string
 	 */
-	public $to;
+	public float|int|string $to;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $from mixed
-	 * @param $to   mixed
-	 * @param $not_between boolean
+	 * @param $from    mixed
+	 * @param $to      mixed
+	 * @param $between boolean
 	 */
-	public function __construct($from, $to, $not_between = false)
+	public function __construct(float|int|string $from, float|int|string $to, bool $between = true)
 	{
-		$this->from = $from;
-		$this->to   = $to;
-		if (isset($not_between)) $this->not_between = $not_between;
+		$this->from    = $from;
+		$this->to      = $to;
+		$this->between = $between;
 	}
 
 	//---------------------------------------------------------------------------------------- negate
@@ -52,7 +52,7 @@ class Range implements Negate, Where
 	 */
 	public function negate()
 	{
-		$this->not_between = !$this->not_between;
+		$this->between = !$this->between;
 	}
 
 	//--------------------------------------------------------------------------------------- toHuman
@@ -64,50 +64,51 @@ class Range implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '')
+		: string
 	{
-		$str = $builder->buildColumn($property_path, $prefix);
+		$str  = $builder->buildColumn($property_path, $prefix);
 		$from = $builder->buildScalar($this->from, $property_path);
-		$to = $builder->buildScalar($this->to, $property_path);
+		$to   = $builder->buildScalar($this->to, $property_path);
 
 		$property = $builder->getProperty($property_path);
 		if ($property->getType()->isDateTime()) {
 			[$date_from, $time_from] = explode(SP, $from);
 			[$date_to, $time_to]     = explode(SP, $to);
-			//if we check full day, we remove time parts
-			if ($time_from == '00:00:00' && $time_to == '23:59:59') {
+			// if we check full day, we remove time parts
+			if (($time_from === '00:00:00') && ($time_to === '23:59:59')) {
 				$from = $date_from;
 				$to   = $date_to;
 			}
 			else {
-				//if we check full minute or full hour, we remove seconds
+				// if we check full minute or full hour, we remove seconds
 				$time_parts_from = explode(':', $time_from);
 				$time_parts_to   = explode(':', $time_to);
 				if (
-					$time_parts_from[0] == $time_parts_to[0]
+					($time_parts_from[0] === $time_parts_to[0])
 					&& (
-						$time_parts_from[1] == $time_parts_to[1]
-						|| ($time_parts_from[1] == '00' && $time_parts_to[1] == '59')
+						($time_parts_from[1] === $time_parts_to[1])
+						|| (($time_parts_from[1] === '00') && ($time_parts_to[1] === '59'))
 					)
-					&& $time_parts_from[2] == '00'
-					&& $time_parts_to[2]   == '59'
+					&& ($time_parts_from[2] === '00')
+					&& ($time_parts_to[2]   === '59')
 				) {
 					unset($time_parts_from[2]);
 					unset($time_parts_to[2]);
 				}
 				$time_from = implode(':', $time_parts_from);
-				$time_to = implode(':', $time_parts_to);
-				$from = trim("$date_from $time_from");
-				$to = trim("$date_to $time_to");
+				$time_to   = implode(':', $time_parts_to);
+				$from      = trim("$date_from $time_from");
+				$to        = trim("$date_to $time_to");
 			}
 		}
 
-		if ($from == $to) {
-			$str .= SP . ($this->not_between ? Loc::tr('is not') : '=') . SP . $from;
+		if ($from === $to) {
+			$str .= SP . ($this->between ? '=' : Loc::tr('is not')) . SP . $from;
 		}
 		else {
 			$str = '(' . $str . SP
-				. ($this->not_between ? Loc::tr('is not between') : Loc::tr('is between'))
+				. ($this->between ? Loc::tr('is between') : Loc::tr('is not between'))
 				. SP . $from . SP . Loc::tr('and') . SP . $to . ')';
 		}
 		return $str;
@@ -122,10 +123,10 @@ class Range implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '') : string
 	{
 		return '('
-		. $builder->buildWhereColumn($property_path, $prefix) . ($this->not_between ? ' NOT' : '')
+		. $builder->buildWhereColumn($property_path, $prefix) . ($this->between ? '' : ' NOT')
 		. ' BETWEEN '
 		// make SQL secure if given from > to (if from is the greatest, then this will work too)
 		. 'LEAST(' . Value::escape($this->from) . ', ' . Value::escape($this->to) . ') '

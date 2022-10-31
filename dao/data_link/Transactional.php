@@ -11,25 +11,27 @@ interface Transactional
 	/**
 	 * Begin a transaction (non-transactional SQL engines will do nothing and return null)
 	 *
-	 * @return boolean | null true if begin succeeds, false if error, null if not a transactional SQL engine
+	 * @return ?boolean true if begin succeeds, false if error, null if not a transactional SQL engine
 	 */
-	public function begin();
+	public function begin() : ?bool;
 
 	//---------------------------------------------------------------------------------------- commit
 	/**
 	 * Commit a transaction (non-transactional SQL engines will do nothing and return null)
 	 *
 	 * @param $flush boolean
-	 * @return boolean | null true if commit succeeds, false if error, null if not a transactional SQL engine
+	 * @return ?boolean true if commit succeeds, false if error, null if not a transactional SQL
+	 *                  engine
 	 */
-	public function commit($flush = false);
+	public function commit(bool $flush = false) : ?bool;
 
 	//-------------------------------------------------------------------------------------- rollback
 	/**
 	 * Rollback a transaction (non-transactional SQL engines will do nothing and return null)
 	 *
-	 * @return boolean | null true if commit succeeds, false if error, null if not a transactional SQL engine
+	 * @return ?boolean true if commit succeeds, false if error, null if not a transactional SQL
+	 *                  engine
 	 */
-	public function rollback();
+	public function rollback() : ?bool;
 
 }

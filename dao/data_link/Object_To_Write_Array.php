@@ -38,7 +38,7 @@ class Object_To_Write_Array
 	 *
 	 * @var array [string $column_name => mixed $value]
 	 */
-	public $array;
+	public array $array;
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
@@ -49,7 +49,7 @@ class Object_To_Write_Array
 	 *
 	 * @var Link_Class
 	 */
-	protected $class;
+	protected Link_Class $class;
 
 	//---------------------------------------------------------------------------------- $collections
 	/**
@@ -57,7 +57,7 @@ class Object_To_Write_Array
 	 *
 	 * @var array [Reflection_Property $property, object[] $value]
 	 */
-	public $collections;
+	public array $collections;
 
 	//-------------------------------------------------------------------------------------- $exclude
 	/**
@@ -65,7 +65,7 @@ class Object_To_Write_Array
 	 *
 	 * @var string[]
 	 */
-	protected $exclude = [];
+	protected array $exclude = [];
 
 	//-------------------------------------------------------------------------------- $json_encoding
 	/**
@@ -74,7 +74,7 @@ class Object_To_Write_Array
 	 *
 	 * @var boolean
 	 */
-	protected $json_encoding;
+	protected bool $json_encoding;
 
 	//----------------------------------------------------------------------------------------- $link
 	/**
@@ -82,7 +82,7 @@ class Object_To_Write_Array
 	 *
 	 * @var Identifier_Map
 	 */
-	protected $link;
+	protected Identifier_Map $link;
 
 	//----------------------------------------------------------------------------------------- $maps
 	/**
@@ -90,7 +90,7 @@ class Object_To_Write_Array
 	 *
 	 * @var array [Reflection_Property $property, object[] $value]
 	 */
-	public $maps;
+	public array $maps;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -98,7 +98,7 @@ class Object_To_Write_Array
 	 *
 	 * @var object
 	 */
-	protected $object;
+	protected object $object;
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
@@ -106,28 +106,28 @@ class Object_To_Write_Array
 	 *
 	 * @var array
 	 */
-	public $objects;
+	public array $objects;
 
 	//----------------------------------------------------------------------------------------- $only
 	/**
 	 * Will write only these properties (property names)
 	 * If null, all properties but excluded and @store false will be written
 	 *
-	 * @var string[]
+	 * @var ?string[]
 	 */
-	protected $only = null;
+	protected ?array $only = null;
 
 	//-------------------------------------------------------------------------------------- $options
 	/**
 	 * @var Spreadable[]
 	 */
-	protected $options;
+	protected array $options;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * @var array
 	 */
-	public $properties;
+	public array $properties;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -138,12 +138,13 @@ class Object_To_Write_Array
 	 * @param $options       Spreadable[]
 	 * @param $json_encoding boolean
 	 */
-	public function __construct(Identifier_Map $link, $object, array $options, $json_encoding = false)
-	{
+	public function __construct(
+		Identifier_Map $link, object $object, array $options, bool $json_encoding = false
+	) {
+		$this->json_encoding = $json_encoding;
 		$this->link          = $link;
 		$this->object        = $object;
 		$this->options       = $options;
-		$this->json_encoding = $json_encoding;
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -155,7 +156,7 @@ class Object_To_Write_Array
 	 */
 	public function build()
 	{
-		if (!$this->class) {
+		if (!isset($this->class)) {
 			/** @noinspection PhpUnhandledExceptionInspection valid object */
 			$this->class = new Link_Class($this->object);
 		}
@@ -175,10 +176,10 @@ class Object_To_Write_Array
 		$aop_getter_ignore = Getter::$ignore;
 		foreach ($properties as $property) {
 			if (
-				(!isset($this->only) || in_array($property->name, $this->only))
+				(!isset($this->only) || in_array($property->name, $this->only, true))
 				&& !$property->isStatic()
-				&& !in_array($property->name, $this->exclude)
-				&& !in_array($property->name, $exclude_properties)
+				&& !in_array($property->name, $this->exclude, true)
+				&& !in_array($property->name, $exclude_properties, true)
 				&& !Store_Annotation::of($property)->isFalse()
 				&& !($this->json_encoding && $property->getAnnotation('composite')->value)
 			) {
@@ -199,7 +200,7 @@ class Object_To_Write_Array
 					$value = '';
 				}
 				// write a property that matches a stored property (a table column name)
-				if (in_array($property_name, $table_columns_names)) {
+				if (in_array($property_name, $table_columns_names, true)) {
 					[$column_name, $value, $write_property, $class_name] = $this->propertyTableColumnName(
 						$property, $value
 					);
@@ -245,7 +246,7 @@ class Object_To_Write_Array
 	 * @param $value    mixed
 	 * @return mixed
 	 */
-	protected function propertyBasic(Reflection_Property $property, $value)
+	protected function propertyBasic(Reflection_Property $property, mixed $value) : mixed
 	{
 		// $write_value is set to null for the IDE, but will be replaced on every cases
 		$write_value = null;
@@ -286,12 +287,12 @@ class Object_To_Write_Array
 	 *
 	 * @param $property Reflection_Property
 	 * @param $value    mixed
-	 * @return string[]|null [mixed $property_name, mixed $value, Data_Link $data_link]
+	 * @return ?string[] [mixed $property_name, mixed $value, Data_Link $data_link]
 	 */
-	protected function propertyDao(Reflection_Property $property, $value)
+	protected function propertyDao(Reflection_Property $property, mixed $value) : ?array
 	{
 		if ($dao_identifier = $property->getAnnotation('dao')->value) {
-			if (($data_link = Dao::get($dao_identifier)) !== $this) {
+			if (($data_link = Dao::get($dao_identifier)) !== $this->link) {
 				return [$property->name, $value, $data_link];
 			}
 		}
@@ -307,7 +308,7 @@ class Object_To_Write_Array
 	 * @param $values   array
 	 * @return array $values
 	 */
-	protected function propertyMapValue(Reflection_Property $property, array &$values)
+	protected function propertyMapValue(Reflection_Property $property, array &$values) : array
 	{
 		$value_class_name = $property->getType()->getElementTypeAsString();
 		foreach ($values as $key => $value) {
@@ -332,7 +333,7 @@ class Object_To_Write_Array
 	 * @param $property Reflection_Property
 	 * @param $value    object
 	 */
-	protected function propertyObject(Reflection_Property $property, $value)
+	protected function propertyObject(Reflection_Property $property, object $value)
 	{
 		$class_name     = get_class($value);
 		$element_type   = $property->getType()->getElementType();
@@ -378,7 +379,7 @@ class Object_To_Write_Array
 	 * @param $value    mixed
 	 * @return string
 	 */
-	protected function propertyStoreString(Reflection_Property $property, $value)
+	protected function propertyStoreString(Reflection_Property $property, mixed $value) : string
 	{
 		$store = Store_Annotation::of($property);
 		if ($store->isJson()) {
@@ -412,13 +413,13 @@ class Object_To_Write_Array
 	 * @param $value    mixed The value of the property to be written
 	 * @return array [string $storage_name, mixed $write_value, $write_property, $class_name]
 	 */
-	protected function propertyTableColumnName(Reflection_Property $property, $value)
+	protected function propertyTableColumnName(Reflection_Property $property, mixed $value) : array
 	{
 		$class_name             = null;
 		$element_type           = $property->getType()->getElementType();
 		$storage_name           = Store_Name_Annotation::of($property)->value;
 		$store_annotation_value = Store_Annotation::of($property)->value;
-		$value_is_json_encoding = ($store_annotation_value == Store_Annotation::JSON);
+		$value_is_json_encoding = ($store_annotation_value === Store_Annotation::JSON);
 		$write_property         = null;
 		// write basic but test store as json too
 		if ($element_type->isBasic(false) && !$value_is_json_encoding) {
@@ -432,7 +433,7 @@ class Object_To_Write_Array
 			}
 		}
 		// return of value for not-linked array property value using json encoding
-		elseif ($this->json_encoding && is_array($value) && !$store_annotation_value) {
+		elseif ($this->json_encoding && is_array($value)) {
 			$write_value = $this->valueToWriteArray($value, $this->options);
 		}
 		// prepare Date_Time for json encoding
@@ -440,7 +441,7 @@ class Object_To_Write_Array
 			$value_class_name = Builder::current()->sourceClassName(get_class($value));
 			$write_value      = [
 				Store_Annotation::JSON_CLASS     => $value_class_name,
-				Store_Annotation::JSON_CONSTRUCT => $value->toISO(true)
+				Store_Annotation::JSON_CONSTRUCT => $value->toISO()
 			];
 		}
 		elseif ($element_type->isMixed()) {
@@ -475,11 +476,11 @@ class Object_To_Write_Array
 	 * Set input data not set by __construct : $class, $only and $exclude
 	 *
 	 * @param $class   Link_Class The class of the written object we want to write properties from
-	 * @param $only    string[]|null Will write only these properties : each value is a property name
+	 * @param $only    string[] Will write only these properties : each value is a property name
 	 * @param $exclude string[] Will exclude these properties from writing : each value is a name
-	 * @return static
+	 * @return $this
 	 */
-	public function setPropertiesFilters(Link_Class $class, array $only = null, array $exclude = null)
+	public function setPropertiesFilters(Link_Class $class, array $only, array $exclude) : static
 	{
 		$this->class   = $class;
 		$this->exclude = $exclude;
@@ -493,9 +494,9 @@ class Object_To_Write_Array
 	 *
 	 * @param $value   mixed The value of a property
 	 * @param $options Spreadable[] Spread options
-	 * @return array
+	 * @return mixed
 	 */
-	protected function valueToWriteArray($value, array $options)
+	protected function valueToWriteArray(mixed $value, array $options) : mixed
 	{
 		$array = [];
 		if (is_object($value)) {

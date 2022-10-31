@@ -8,7 +8,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 /**
  * After commit structure
  *
- * - At the same time than @after_write, the written data information are kept for the next
+ * - At the same time than @after_write the written data information are kept for the next
  * transaction commit time
  * - When a transaction ends with a commit, all these kept events are fired
  */
@@ -19,19 +19,19 @@ class After_Action
 	/**
 	 * @var Method_Annotation
 	 */
-	private $annotation;
+	private Method_Annotation $annotation;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * @var object
 	 */
-	private $object;
+	private object $object;
 
 	//-------------------------------------------------------------------------------------- $options
 	/**
 	 * @var Option[]
 	 */
-	private $options;
+	private array $options;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -39,7 +39,7 @@ class After_Action
 	 * @param $object     object
 	 * @param $options    Option[]
 	 */
-	public function __construct(Method_Annotation $annotation, $object, array $options)
+	public function __construct(Method_Annotation $annotation, object $object, array $options)
 	{
 		$this->annotation = $annotation;
 		$this->object     = $object;
@@ -53,9 +53,25 @@ class After_Action
 	 * @param $link Data_Link
 	 * @return mixed
 	 */
-	public function call(Data_Link $link)
+	public function call(Data_Link $link) : mixed
 	{
 		return $this->annotation->call($this->object, [$link, $this->options]);
+	}
+
+	//--------------------------------------------------------------------------------------- callAll
+	/**
+	 * @param $actions static[]
+	 * @param $link    Data_Link
+	 * @return boolean false if calls chain was interrupted, true if every call were ok
+	 */
+	public static function callAll(array $actions, Data_Link $link) : bool
+	{
+		foreach ($actions as $action) {
+			if ($action->call($link) === false) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

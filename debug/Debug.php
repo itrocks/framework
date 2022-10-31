@@ -14,7 +14,7 @@ abstract class Debug
 	/**
 	 * @param $text string
 	 */
-	public static function display($text)
+	public static function display(string $text)
 	{
 		echo date('Y-m-d H:i:s') . SP . $text . BR . LF;
 	}
@@ -34,11 +34,10 @@ abstract class Debug
 	 * @param $display boolean|string true or 'pre' if you want to displaying it
 	 * @return array returns the result array
 	 */
-	public static function globalDump($display = 'pre')
+	public static function globalDump(bool|string $display = 'pre') : array
 	{
 		$dump['$GLOBALS'] = $GLOBALS;
 		$dump['$_SERVER'] = $_SERVER;
-		$not_accessible = false;
 		// call stack
 		$call_stack = new Call_Stack();
 		$call_stack->shift();
@@ -64,7 +63,7 @@ abstract class Debug
 	/**
 	 * @param $text string
 	 */
-	public static function log($text)
+	public static function log(string $text)
 	{
 		$f = fopen('debug.log', 'ab');
 		fputs($f, date('Y-m-d H:i:s') . ' #' . getmypid() . SP . $text . LF);
@@ -104,7 +103,7 @@ abstract class Debug
 	 * @param $path string the value path @internal
 	 * @return array returns an associative array of path and sizes (old, new)
 	 */
-	public static function whatGrew($old = null, $new = null, $path = '')
+	public static function whatGrew(mixed $old = null, mixed $new = null, string $path = '') : array
 	{
 		$result = [];
 		if (!isset($old) && !isset($new)) {

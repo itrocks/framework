@@ -19,11 +19,11 @@ class Is_Greatest implements Where_Inner
 	/**
 	 * @var string[]
 	 */
-	public $properties;
+	public array $properties;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $properties string[]
+	 * @param $properties string[]|null
 	 */
 	public function __construct(array $properties = null)
 	{
@@ -39,7 +39,8 @@ class Is_Greatest implements Where_Inner
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '')
+		: string
 	{
 		return SP . Loc::tr('is greatest of') . SP . '(' . implode(', ', $this->properties) . ')';
 	}
@@ -53,7 +54,7 @@ class Is_Greatest implements Where_Inner
 	 * @param $prefix        string
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '') : string
 	{
 		$joins = $builder->getJoins();
 		// sub-query
@@ -73,7 +74,7 @@ class Is_Greatest implements Where_Inner
 				. ' = ' . $builder->buildWhereColumn($property, $prefix);
 		}
 		$join->where = substr($where, 5);
-		return null;
+		return '';
 	}
 
 }

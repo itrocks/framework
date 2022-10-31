@@ -38,7 +38,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *
 	 * @var string[] key is the class name, with or without namespace
 	 */
-	private $tables;
+	private array $tables;
 
 	//-------------------------------------------------------------------------------- $transactional
 	/**
@@ -46,24 +46,27 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *
 	 * @var boolean
 	 */
-	protected $transactional = false;
+	protected bool $transactional = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $parameters array
+	 * @param $parameters array|null
 	 */
 	public function __construct(array $parameters = null)
 	{
-		$this->tables = isset($parameters[self::TABLES]) ? $parameters[self::TABLES] : [];
+		$this->tables = $parameters[self::TABLES] ?? [];
 	}
 
 	//----------------------------------------------------------------------------------------- begin
 	/**
 	 * Begin transaction
+	 *
+	 * @return ?boolean
 	 */
-	public function begin()
+	public function begin() : ?bool
 	{
 		$this->after_commit = [];
+		return true;
 	}
 
 	//---------------------------------------------------------------------------------------- commit
@@ -71,9 +74,9 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * End transaction with commit
 	 *
 	 * @param $flush boolean
-	 * @return boolean
+	 * @return ?boolean
 	 */
-	public function commit($flush = false)
+	public function commit(bool $flush = false) : ?bool
 	{
 		$this->afterCommit();
 		return false;
@@ -86,20 +89,20 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * Sql_Link inherited classes must implement fetching result rows only into this method.
 	 * If $class_name is null, a stdClass object will be created.
 	 *
-	 * @param $result_set mixed  The result set : in most cases, will come from query()
-	 * @param $class_name string The class name to store the result data into
-	 * @return object
+	 * @param $result_set mixed The result set : in most cases, will come from query()
+	 * @param $class_name string|null The class name to store the result data into
+	 * @return ?object
 	 */
-	public abstract function fetch($result_set, $class_name = null);
+	public abstract function fetch(mixed $result_set, string $class_name = null) : ?object;
 
 	//-------------------------------------------------------------------------------------- fetchRow
 	/**
 	 * Fetch a result from a result set to an array
 	 *
 	 * @param $result_set mixed The result set : in most cases, will come from query()
-	 * @return array
+	 * @return ?array
 	 */
-	public abstract function fetchRow($result_set);
+	public abstract function fetchRow(mixed $result_set) : ?array;
 
 	//------------------------------------------------------------------------------------------ free
 	/**
@@ -109,7 +112,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *
 	 * @param $result_set mixed The result set : in most cases, will come from query()
 	 */
-	public abstract function free($result_set);
+	public abstract function free(mixed $result_set);
 
 	//--------------------------------------------------------------------------------- getColumnName
 	/**
@@ -118,10 +121,10 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * Sql_Link inherited classes must implement getting column name only into this method.
 	 *
 	 * @param $result_set mixed The result set : in most cases, will come from query()
-	 * @param $index      mixed The index of the column we want to get the SQL name from
+	 * @param $index      int|string The index of the column we want to get the SQL name from
 	 * @return string
 	 */
-	public abstract function getColumnName($result_set, $index);
+	public abstract function getColumnName(mixed $result_set, int|string $index) : string;
 
 	//------------------------------------------------------------------------------- getColumnsCount
 	/**
@@ -132,7 +135,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @param $result_set mixed The result set : in most cases, will come from query()
 	 * @return integer
 	 */
-	public abstract function getColumnsCount($result_set);
+	public abstract function getColumnsCount(mixed $result_set) : int;
 
 	//---------------------------------------------------------------------------------- getRowsCount
 	/**
@@ -143,15 +146,17 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @param $clause     string The SQL query was starting with this clause
 	 * @param $options    Option|Option[] If set, will set the result into Dao_Count_Option::$count
 	 * @param $result_set mixed The result set : in most cases, will come from query()
-	 * @return integer will return null if $options is set but contains no Dao_Count_Option
+	 * @return ?integer will return null if $options is set but contains no Dao_Count_Option
 	 */
-	public abstract function getRowsCount($clause, $options = [], $result_set = null);
+	public abstract function getRowsCount(
+		string $clause, array|Option $options = [], mixed $result_set = null
+	) : ?int;
 
 	//------------------------------------------------------------------------------------ popContext
 	/**
 	 * Pop context for sql query
 	 */
-	abstract public function popContext();
+	abstract public function popContext() : array|string;
 
 	//----------------------------------------------------------------------------------- pushContext
 	/**
@@ -159,7 +164,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *
 	 * @param $context_object string|string[] Can be a class name or an array of class names
 	 */
-	abstract public function pushContext($context_object);
+	abstract public function pushContext(array|string $context_object);
 
 	//----------------------------------------------------------------------------------------- query
 	/**
@@ -184,44 +189,49 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @param $property_name string the name of the property
 	 * @return mixed the read value for the property read from the data link. null if no value stored
 	 */
-	public function readProperty($object, $property_name)
+	public function readProperty(object $object, string $property_name) : bool
 	{
-		trigger_error(
+		return trigger_error(
 			'@dao : property ' . get_class($object) . '::' . $property_name
 			. ' cannot be read alone into a ' . get_class($this) . ' data link',
 			E_USER_ERROR
 		);
-		return null;
 	}
 
 	//-------------------------------------------------------------------------------------- rollback
 	/**
 	 * Rollback current transaction
+	 *
+	 * @return ?boolean
 	 */
-	public function rollback()
+	public function rollback() : ?bool
 	{
+		return null;
 	}
 
 	//---------------------------------------------------------------------------------------- select
 	/**
 	 * Read selected columns only from data source, using optional filter
 	 *
-	 * @param $object_class  string class for the read object
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $class         class-string<T> class for the read object
 	 * @param $properties    string[]|string|Column[] the list of property paths : only those
 	 *                       properties will be read. You can use Dao\Func\Column sub-classes to get
 	 *                       result of functions.
-	 * @param $filter_object object|array source object for filter, set properties will be used for
-	 *                       search. Can be an array associating properties names to corresponding
+	 * @param $filter_object array|T|null source object for filter, set properties will be used
+	 *                       for search. Can be an array associating properties names to matching
 	 *                       search value too.
 	 * @param $options       Option|Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in
 	 *                   the same order than columns.
+	 * @template T
 	 */
-	public function select($object_class, $properties, $filter_object = null, $options = [])
+	public function select(
+		string $class, array|string $properties, array|object $filter_object = null,
+		array|Option $options = []
+	) : List_Data
 	{
-		if (is_string($object_class)) {
-			$object_class = Builder::className($object_class);
-		}
+		$class = Builder::className($class);
 		if (!is_array($options)) {
 			$options = $options ? [$options] : [];
 		}
@@ -230,13 +240,11 @@ abstract class Link extends Identifier_Map implements Transactional
 		}
 		[$double_pass, $list] = $this->selectOptions($options, $properties);
 		if (!isset($list)) {
-			$list = $this->selectList($object_class, $properties);
+			$list = $this->selectList($class, $properties);
 		}
 
 		if ($double_pass) {
-			$new_filter_object = $this->selectFirstPass(
-				$object_class, $properties, $filter_object, $options
-			);
+			$new_filter_object = $this->selectFirstPass($class, $properties, $filter_object, $options);
 			if (!$new_filter_object) {
 				return $list;
 			}
@@ -245,13 +253,14 @@ abstract class Link extends Identifier_Map implements Transactional
 				: $new_filter_object;
 		}
 
-		$select     = new Select($object_class, $properties, $this);
+		$select     = new Select($class, $properties, $this);
 		$query      = $select->prepareQuery($filter_object, $options);
 		$result_set = $this->query($query);
 		$select->doneQuery();
 		if ($options && !$double_pass) {
 			$this->getRowsCount('SELECT', $options, $result_set);
 		}
+		/** @noinspection PhpUnhandledExceptionInspection User exceptions not managed here */
 		return $select->fetchResultRows($result_set, $list);
 	}
 
@@ -261,15 +270,16 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @param $properties    string[]|Column[] the list of property paths : only those properties will
 	 *                       be read. You can use Dao\Func\Column sub-classes to get result of
 	 *                       functions.
-	 * @param $filter_object object|array source object for filter, set properties will be used for
+	 * @param $filter_object array|object source object for filter, set properties will be used for
 	 *                       search. Can be an array associating properties names to matching search
 	 *                       value too.
 	 * @param $options       Option[] some options for advanced search
-	 * @return Where|null
+	 * @return ?Where
 	 */
 	private function selectFirstPass(
-		$object_class, array $properties, $filter_object, array &$options
-	) {
+		string $object_class, array $properties, array|object $filter_object, array &$options
+	) : ?Where
+	{
 		$properties = $this->selectFirstPassProperties($object_class, $properties, $options);
 		$select     = new Select($object_class, $properties, $this);
 		$query      = $select->prepareQuery($filter_object, $options);
@@ -314,7 +324,9 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @param $options       Option[] some options for advanced search
 	 * @return string[] path of the properties we keep for the first pass, for correct rows counting
 	 */
-	private function selectFirstPassProperties($object_class, array $properties, array $options)
+	private function selectFirstPassProperties(
+		string $object_class, array $properties, array $options
+	) : array
 	{
 		if ($group_by = Option\Group_By::in($options)) {
 			return $group_by->properties;
@@ -327,7 +339,7 @@ abstract class Link extends Identifier_Map implements Transactional
 			$path = '';
 			foreach (explode(DOT, $property_path) as $property_name) {
 				$path .= ($path ? DOT : '') . $property_name;
-				if (substr($path, -1) === ')') {
+				if (str_ends_with($path, ')')) {
 					continue;
 				}
 				/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
@@ -356,9 +368,9 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *                      will be read. You can use 'column.sub_column' to get values from linked
 	 *                      objects from the same data source. You can use Dao\Func\Column sub-classes
 	 *                      to get result of functions.
-	 * @return Default_List_Data
+	 * @return List_Data
 	 */
-	private function selectList($object_class, array $columns)
+	private function selectList(string $object_class, array $columns) : List_Data
 	{
 		$functions  = [];
 		$properties = [];
@@ -388,7 +400,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *                 functions.
 	 * @return array [boolean $double_pass, array $list]
 	 */
-	private function selectOptions(array $options, array $columns)
+	private function selectOptions(array $options, array $columns) : array
 	{
 		$double_pass = false;
 		$list        = null;
@@ -419,7 +431,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @param $class_name string
 	 * @return string
 	 */
-	public function storeNameOf($class_name)
+	public function storeNameOf(string $class_name) : string
 	{
 		if (!isset($this->tables[$class_name])) {
 			$this->tables[$class_name] = parent::storeNameOf($class_name);
@@ -435,7 +447,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *
 	 * @param $class_name string
 	 */
-	public function truncate($class_name)
+	public function truncate(string $class_name)
 	{
 		$this->pushContext($class_name);
 		$table_name = $this->storeNameOf($class_name);
@@ -452,7 +464,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @param $property_name string the name of the property
 	 * @param $value         mixed if set (recommended), the value to be stored. default in $object
 	 */
-	public function writeProperty($object, $property_name, $value = null)
+	public function writeProperty(object $object, string $property_name, mixed $value = null)
 	{
 		trigger_error(
 			'@dao : property ' . get_class($object) . '::' . $property_name

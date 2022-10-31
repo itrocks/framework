@@ -58,19 +58,19 @@ class Link extends Dao\Sql\Link
 	/**
 	 * @var string
 	 */
-	private $collation = self::UTF8;
+	private string $collation = self::UTF8;
 
 	//--------------------------------------------------------------------------------- $commit_stack
 	/**
 	 * @var integer
 	 */
-	private $commit_stack = 0;
+	private int $commit_stack = 0;
 
 	//--------------------------------------------------------------------------- $commit_stack_trace
 	/**
 	 * @var Call_Stack[]
 	 */
-	private $commit_stack_trace;
+	private array $commit_stack_trace;
 
 	//----------------------------------------------------------------------------------- $connection
 	/**
@@ -78,20 +78,20 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @var Contextual_Mysqli
 	 */
-	private $connection;
+	private Contextual_Mysqli $connection;
 
 	//---------------------------------------------------------------------------------------- $locks
 	/**
 	 * @var Lock[]
 	 */
-	private $locks = [];
+	private array $locks = [];
 
 	//------------------------------------------------------------------------------- $prepared_fetch
 	/**
 	 * @example ['content' => [self::GZINFLATE]]
 	 * @var array key is the name of the property, value is an array of actions (eg GZINFLATE)
 	 */
-	private $prepared_fetch;
+	private array $prepared_fetch;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -99,7 +99,7 @@ class Link extends Dao\Sql\Link
 	 *
 	 * The $parameters array keys are : 'host', 'login', 'password', 'database'.
 	 *
-	 * @param $parameters array
+	 * @param $parameters array|null
 	 */
 	public function __construct(array $parameters = null)
 	{
@@ -115,14 +115,15 @@ class Link extends Dao\Sql\Link
 	//------------------------------------------------------------------------------------ __destruct
 	public function __destruct()
 	{
-		if ($this->commit_stack) {
-			trigger_error("Commit stack not closed", E_USER_WARNING);
-			if (isset($GLOBALS['D'])) {
-				$counter = 0;
-				foreach ($this->commit_stack_trace as $call_stack) {
-					echo 'Commit #' . (++$counter) . BRLF;
-					echo $call_stack->asHtml();
-				}
+		if (!$this->commit_stack) {
+			return;
+		}
+		trigger_error("Commit stack not closed", E_USER_WARNING);
+		if (isset($GLOBALS['D'])) {
+			$counter = 0;
+			foreach ($this->commit_stack_trace as $call_stack) {
+				echo 'Commit #' . (++$counter) . BRLF;
+				echo $call_stack->asHtml();
 			}
 		}
 	}
@@ -132,8 +133,10 @@ class Link extends Dao\Sql\Link
 	 * Begin transaction
 	 *
 	 * If a transaction has already been begun, it is counted as we will need the same commits count
+	 *
+	 * @return ?boolean
 	 */
-	public function begin()
+	public function begin() : ?bool
 	{
 		if (!$this->commit_stack) {
 			parent::begin();
@@ -145,14 +148,15 @@ class Link extends Dao\Sql\Link
 			echo PRE . (new Call_Stack)->asHtml() . _PRE;
 			$this->commit_stack_trace[$this->commit_stack] = new Call_Stack();
 		}
+		return true;
 	}
 
 	//---------------------------------------------------------------------------------------- commit
 	/**
 	 * @param $flush boolean if true, then all the pending transactions will be unstacked
-	 * @return boolean
+	 * @return ?boolean
 	 */
-	public function commit($flush = false)
+	public function commit(bool $flush = false) : ?bool
 	{
 		if ($flush) {
 			$this->commit_stack = 0;
@@ -211,9 +215,10 @@ class Link extends Dao\Sql\Link
 	 * @param $database string
 	 * @return Link
 	 */
-	public static function construct($host, $login, $password, $database)
+	public static function construct(string $host, string $login, string $password, string $database)
+		: static
 	{
-		return new Link([
+		return new static([
 			self::DATABASE => $database,
 			self::HOST     => $host,
 			self::LOGIN    => $login,
@@ -225,12 +230,14 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Count the number of elements that match filter
 	 *
-	 * @param $what       object|string|array source object, class name or properties for filter
-	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @param $what       array|object|string source object, class name or properties for filter
+	 * @param $class_name string|null must be set if $what is a filter array instead of an object
 	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return integer
 	 */
-	public function count($what, $class_name = null, $options = []) : int
+	public function count(
+		array|object|string $what, string $class_name = null, array|Option $options = []
+	) : int
 	{
 		if (is_string($what)) {
 			$class_name = $what;
@@ -239,7 +246,7 @@ class Link extends Dao\Sql\Link
 		$class_name = Builder::className($class_name);
 		$builder    = new Count($class_name, $what, $this, $options);
 		$query      = $builder->buildQuery();
-		array_push($this->connection->contexts, $builder->getJoins()->getClassNames());
+		$this->connection->contexts[] = $builder->getJoins()->getClassNames();
 		$result_set = $this->connection->query($query);
 		if ($result_set) {
 			$row = $result_set->fetch_row();
@@ -266,9 +273,10 @@ class Link extends Dao\Sql\Link
 	 *                    only set properties will be used for search
 	 * @param $class_name string must be set if $what is a filter array and not an object
 	 * @param $options    Option[] some options, one can be Create_If_No_Result
-	 * @return object|null
+	 * @return ?object
 	 */
-	protected function createObjectIfOption($what, $class_name, array $options)
+	protected function createObjectIfOption(array|object $what, string $class_name, array $options)
+		: ?object
 	{
 		foreach ($options as $option) {
 			if ($option instanceof Create_If_No_Result) {
@@ -306,7 +314,7 @@ class Link extends Dao\Sql\Link
 	 * @param $class_name string
 	 * @return boolean true if storage was created or updated, false if it was already up to date
 	 */
-	public function createStorage($class_name)
+	public function createStorage(string $class_name) : bool
 	{
 		$class_name = Builder::className($class_name);
 		return (new Maintainer())->updateTable($class_name, $this->connection);
@@ -324,12 +332,12 @@ class Link extends Dao\Sql\Link
 	 * @return boolean true if deleted
 	 * @see Data_Link::delete()
 	 */
-	public function delete($object)
+	public function delete(object $object) : bool
 	{
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		$will_delete = Method_Annotation::callAll(
-			(new Reflection_Class($object))->getAnnotations('before_delete'), $object, [$this]
-		);
+		/** @var $before_delete_annotations Method_Annotation[] */
+		$before_delete_annotations = (new Reflection_Class($object))->getAnnotations('before_delete');
+		$will_delete = Method_Annotation::callAll($before_delete_annotations, $object, [$this]);
 
 		if ($will_delete) {
 			$id = $this->getObjectIdentifier($object);
@@ -344,7 +352,7 @@ class Link extends Dao\Sql\Link
 					: [];
 				$this->begin();
 				foreach ($class->getProperties() as $property) {
-					if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
+					if (!$property->isStatic() && !in_array($property->name, $exclude_properties, true)) {
 						if (Link_Annotation::of($property)->isCollection()) {
 							if ($property->getType()->isMultiple()) {
 								/** @noinspection PhpUnhandledExceptionInspection property from object accessible */
@@ -355,14 +363,13 @@ class Link extends Dao\Sql\Link
 								/** @noinspection PhpUnhandledExceptionInspection property from object accessible */
 								$this->delete($property->getValue($object));
 								trigger_error(
-									"Dead code into Mysql\\Link::delete() on {$property->name} is not so dead",
-									E_USER_NOTICE
+									"Dead code into Mysql\\Link::delete() on $property->name is not so dead"
 								);
 							}
 						}
 					}
 				}
-				array_push($this->connection->contexts, $class_name);
+				$this->connection->contexts[] = $class_name;
 				if ($link->value) {
 					$id = [];
 					foreach ($link->getLinkClass()->getUniqueProperties() as $link_property) {
@@ -391,9 +398,9 @@ class Link extends Dao\Sql\Link
 				}
 				array_pop($this->connection->contexts);
 				/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-				Method_Annotation::callAll(
-					(new Reflection_Class($object))->getAnnotations('after_delete'), $object, [$this]
-				);
+				/** @var $after_delete_annotations Method_Annotation[] */
+				$after_delete_annotations = (new Reflection_Class($object))->getAnnotations('after_delete');
+				Method_Annotation::callAll($after_delete_annotations, $object, [$this]);
 				return true;
 			}
 		}
@@ -406,11 +413,12 @@ class Link extends Dao\Sql\Link
 	 *
 	 * This is called by delete() for linked object collection properties
 	 *
-	 * @param $parent object
+	 * @param $parent   object
 	 * @param $property Reflection_Property
-	 * @param $value mixed
+	 * @param $value    mixed
+	 * @throws Exception
 	 */
-	private function deleteCollection($parent, $property, $value)
+	private function deleteCollection(object $parent, Reflection_Property $property, mixed $value)
 	{
 		$property_name          = $property->name;
 		$parent->$property_name = null;
@@ -431,7 +439,7 @@ class Link extends Dao\Sql\Link
 	 * @param $value string|object
 	 * @return string
 	 */
-	public function escapeString($value)
+	public function escapeString(object|string $value) : string
 	{
 		if (is_object($value)) {
 			$id = $this->getObjectIdentifier($value, 'id');
@@ -455,31 +463,32 @@ class Link extends Dao\Sql\Link
 	 * Fetch a result from a result set to an object
 	 *
 	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
-	 * @param $class_name string The class name to store the result data into
-	 * @return object
+	 * @param $class_name string|null The class name to store the result data into
+	 * @return ?object
 	 */
-	public function fetch($result_set, $class_name = null)
+	public function fetch(mixed $result_set, string $class_name = null) : ?object
 	{
-		if ($object = $result_set->fetch_object(Builder::className($class_name))) {
-			if ($object instanceof Abstract_Class) {
-				$this->prepareFetch($object->class);
-				$object = $this->read($this->getObjectIdentifier($object), $object->class);
-			}
-			// execute actions stored into $prepared_fetch
-			foreach ($this->prepared_fetch as $property_name => $actions) {
-				foreach ($actions as $action) {
-					if ($action === self::GZINFLATE) {
-						/** @noinspection PhpUsageOfSilenceOperatorInspection if not deflated */
-						$value = @gzinflate($object->$property_name);
-						if ($value !== false) {
-							$object->$property_name = $value;
-						}
+		if (!($object = $result_set->fetch_object(Builder::className($class_name)))) {
+			return null;
+		}
+		if ($object instanceof Abstract_Class) {
+			$this->prepareFetch($object->class);
+			$object = $this->read($this->getObjectIdentifier($object), $object->class);
+		}
+		// execute actions stored into $prepared_fetch
+		foreach ($this->prepared_fetch as $property_name => $actions) {
+			foreach ($actions as $action) {
+				if ($action === self::GZINFLATE) {
+					/** @noinspection PhpUsageOfSilenceOperatorInspection if not deflated */
+					$value = @gzinflate($object->$property_name);
+					if ($value !== false) {
+						$object->$property_name = $value;
 					}
-					elseif ($action instanceof Data_Link) {
-						$value = $action->readProperty($object, $property_name);
-						if (isset($value)) {
-							$object->$property_name = $value;
-						}
+				}
+				elseif ($action instanceof Data_Link) {
+					$value = $action->readProperty($object, $property_name);
+					if (isset($value)) {
+						$object->$property_name = $value;
 					}
 				}
 			}
@@ -494,12 +503,12 @@ class Link extends Dao\Sql\Link
 	 * @param $result_set mysqli_result
 	 * @return object[]
 	 */
-	protected function fetchAll($class_name, array $options, mysqli_result $result_set)
+	protected function fetchAll(string $class_name, array $options, mysqli_result $result_set) : array
 	{
 		$search_result    = [];
 		$keys             = $this->getKeyPropertyName($class_name, $options);
 		$keys_is_callable = false;
-		if (($keys !== 'id') && isset($keys) && !is_callable($keys)) {
+		if (($keys !== 'id') && !is_callable($keys)) {
 			if (is_array($keys) && !($keys_is_callable = arrayIsCallable($keys))) {
 				$object_key = [];
 				foreach ($keys as $key => $value) {
@@ -551,11 +560,7 @@ class Link extends Dao\Sql\Link
 						$k_id_object_key = 'id_' . $k_object_key;
 						$k_key          .= ($k_key ? Link_Class::ID_SEPARATOR : '')
 							. ($multiple ? ($k_object_key . '=') : '')
-							. (
-								isset($key_object->$k_id_object_key)
-								? $key_object->$k_id_object_key
-								: $key_object->$k_object_key
-							);
+							. ($key_object->$k_id_object_key ?? $key_object->$k_object_key);
 					}
 					$search_result[$k_key] = $object;
 				}
@@ -582,9 +587,9 @@ class Link extends Dao\Sql\Link
 	 * Fetch a result from a result set to an array
 	 *
 	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
-	 * @return array
+	 * @return ?array
 	 */
-	public function fetchRow($result_set)
+	public function fetchRow(mixed $result_set) : ?array
 	{
 		return $result_set->fetch_row();
 	}
@@ -597,7 +602,7 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
 	 */
-	public function free($result_set)
+	public function free(mixed $result_set)
 	{
 		$result_set->free();
 	}
@@ -612,7 +617,7 @@ class Link extends Dao\Sql\Link
 	 * @param $index integer|string The index of the column we want to get the SQL name from
 	 * @return string
 	 */
-	public function getColumnName($result_set, $index)
+	public function getColumnName(mixed $result_set, int|string $index) : string
 	{
 		return $result_set->fetch_field_direct($index)->name;
 	}
@@ -626,7 +631,7 @@ class Link extends Dao\Sql\Link
 	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
 	 * @return integer
 	 */
-	public function getColumnsCount($result_set)
+	public function getColumnsCount(mixed $result_set) : int
 	{
 		return $result_set->field_count;
 	}
@@ -637,7 +642,7 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @return Contextual_Mysqli
 	 */
-	public function getConnection()
+	public function getConnection() : Contextual_Mysqli
 	{
 		return $this->connection;
 	}
@@ -649,13 +654,14 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
-	 * @param $link   Class_\Link_Annotation send it for optimization, but this is not mandatory
+	 * @param $link   Class_\Link_Annotation|null send it for optimization, but this is not mandatory
 	 * @return string identifiers in a single string, separated with '.'
 	 */
-	public function getLinkObjectIdentifier($object, Class_\Link_Annotation $link = null)
+	public function getLinkObjectIdentifier(object $object, Class_\Link_Annotation $link = null)
+		: string
 	{
 		if (!$object) {
-			return null;
+			return '';
 		}
 		if (!isset($link)) {
 			/** @noinspection PhpUnhandledExceptionInspection object */
@@ -670,14 +676,14 @@ class Link extends Dao\Sql\Link
 					$id = parent::getObjectIdentifier($object, $property_name);
 					if (!isset($id)) {
 						$link_property = $link_class->getCompositeProperty(null, false);
-						if ($link_property && ($link_property->name === $property_name)) {
-							$id = isset($object->id) ? $object->id : null;
+						if ($link_property->name === $property_name) {
+							$id = $object->id ?? null;
 							if (!isset($id)) {
-								return null;
+								return '';
 							}
 						}
 						else {
-							return null;
+							return '';
 						}
 					}
 				}
@@ -690,7 +696,7 @@ class Link extends Dao\Sql\Link
 			sort($ids);
 			return join(Link_Class::ID_SEPARATOR, $ids);
 		}
-		return null;
+		return '';
 	}
 
 	//--------------------------------------------------------------------------- getObjectIdentifier
@@ -700,11 +706,11 @@ class Link extends Dao\Sql\Link
 	 * A null value will be returned for an object that is not linked to data link.
 	 * If $object is already an identifier, the identifier is returned.
 	 *
-	 * @param $object        object an object to get data link identifier from
-	 * @param $property_name string a property name to get data link identifier from instead of object
+	 * @param $object        ?object an object to get data link identifier from
+	 * @param $property_name string|null a property name to get data link identifier instead of object
 	 * @return mixed you can test if an object identifier is set with empty($of_this_result)
 	 */
-	public function getObjectIdentifier($object, $property_name = null)
+	public function getObjectIdentifier(?object $object, string $property_name = null) : mixed
 	{
 		return (is_object($object) && isset($property_name))
 			? parent::getObjectIdentifier($object, $property_name)
@@ -720,13 +726,15 @@ class Link extends Dao\Sql\Link
 	 * @param $clause     string The SQL query was starting with this clause
 	 * @param $options    Option|Option[] If set, will set the result into Dao_Count_Option::$count
 	 * @param $result_set mixed The result set : in most cases, will come from query()
-	 * @return integer will return null if $options is set but contains no Dao_Count_Option
+	 * @return ?integer will return null if $options is set but contains no Dao_Count_Option
 	 */
-	public function getRowsCount($clause, $options = [], $result_set = null)
+	public function getRowsCount(
+		string $clause, array|Option $options = [], mixed $result_set = null
+	) : ?int
 	{
 		if ($options && $result_set) {
 			if (!is_array($options)) {
-				$options = $options ? [$options] : [];
+				$options = [$options];
 			}
 			foreach ($options as $option) {
 				if ($option instanceof Option\Count) {
@@ -750,13 +758,13 @@ class Link extends Dao\Sql\Link
 	 * Returns the list of properties of class $class that are stored into data link
 	 *
 	 * If data link stores properties not existing into $class, they are listed too,
-	 * as if they where official properties of $class, but they storage object is a Sql\Column
+	 * as if they were official properties of $class, but they storage object is a Sql\Column
 	 * and not a Reflection_Property.
 	 *
 	 * @param $class Reflection_Class
 	 * @return Reflection_Property[]|Column[] key is the name of the property
 	 */
-	public function getStoredProperties($class)
+	public function getStoredProperties(Reflection_Class $class) : array
 	{
 		$properties = $class->getProperties([T_EXTENDS, T_USE]);
 		foreach ($properties as $key => $property) {
@@ -788,56 +796,58 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @deprecated UNLOCK cause transactions to COMMIT : this is a problem
 	 * @param $table_name        string
-	 * @param $record_identifier integer
+	 * @param $record_identifier int
 	 * @param $options           string[] @values Lock::const
-	 * @return Lock|null Lock if has been locked, null if could not lock (always Lock if Lock::WAIT)
+	 * @return ?Lock Lock if has been locked, null if could not lock (always Lock if Lock::WAIT)
 	 */
 	public function lockRecord(
-		$table_name, $record_identifier, array $options = [Lock::WAIT, Lock::WRITE]
-	) {
+		string $table_name, int $record_identifier, array $options = [Lock::WAIT, Lock::WRITE]
+	) : ?Lock
+	{
 		$lock_key = $table_name . DOT . $record_identifier;
 		if (isset($this->locks[$lock_key])) {
 			$lock = $this->locks[$lock_key];
 			$lock->count ++;
+			return $lock;
 		}
-		else {
-			$this->begin();
-			$this->query('LOCK TABLES `locks` WRITE');
-			$duration = 1;
-			while (
-				($lock = Lock::get($table_name, $record_identifier, $this))
-				&& in_array(Lock::WAIT, $options)
-			) {
-				$this->query('UNLOCK TABLES');
-				$this->commit();
-				usleep($duration * 10000);
-				$this->begin();
-				$this->query('LOCK TABLES `locks` WRITE');
-				$duration = min(99 + rand(0, 2), $duration + rand(1, 10));
-			}
-			if ($lock) {
-				$lock = null;
-			}
-			else {
-				$lock   = new Lock($table_name, $record_identifier, $options);
-				$write  = Sql\Builder::getObjectVars($lock);
-				unset($write['count']);
-				$insert          = Sql\Builder::buildInsert(Lock::class, $write);
-				$lock_identifier = $this->query($insert);
-				$this->setObjectIdentifier($lock, $lock_identifier);
-				$this->locks[$lock_key] = $lock;
-			}
+		$this->begin();
+		$this->query('LOCK TABLES `locks` WRITE');
+		$duration = 1;
+		while (
+			($lock = Lock::get($table_name, $record_identifier, $this))
+			&& in_array(Lock::WAIT, $options, true)
+		) {
 			$this->query('UNLOCK TABLES');
 			$this->commit();
+			usleep($duration * 10000);
+			$this->begin();
+			$this->query('LOCK TABLES `locks` WRITE');
+			$duration = min(99 + rand(0, 2), $duration + rand(1, 10));
 		}
+		if ($lock) {
+			$lock = null;
+		}
+		else {
+			$lock  = new Lock($table_name, $record_identifier, $options);
+			$write = Sql\Builder::getObjectVars($lock);
+			unset($write['count']);
+			$insert          = Sql\Builder::buildInsert(Lock::class, $write);
+			$lock_identifier = $this->query($insert);
+			$this->setObjectIdentifier($lock, $lock_identifier);
+			$this->locks[$lock_key] = $lock;
+		}
+		$this->query('UNLOCK TABLES');
+		$this->commit();
 		return $lock;
 	}
 
 	//------------------------------------------------------------------------------------ popContext
 	/**
 	 * Pop context for sql query
+	 *
+	 * @return string|string[]
 	 */
-	public function popContext()
+	public function popContext() : array|string
 	{
 		return array_pop($this->connection->contexts);
 	}
@@ -849,7 +859,7 @@ class Link extends Dao\Sql\Link
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 */
-	private function prepareFetch($class_name)
+	private function prepareFetch(string $class_name)
 	{
 		$this->prepared_fetch = [];
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
@@ -873,9 +883,9 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @param $context_object string|string[] Can be a class name or an array of class names
 	 */
-	public function pushContext($context_object)
+	public function pushContext(array|string $context_object)
 	{
-		array_push($this->connection->contexts, $context_object);
+		$this->connection->contexts[] = $context_object;
 	}
 
 	//----------------------------------------------------------------------------------------- query
@@ -935,7 +945,7 @@ class Link extends Dao\Sql\Link
 	 * @param $result mysqli_result
 	 * @return array [$id|$n => [$key => $value]] each element is an [$key => $value] record array
 	 */
-	private function queryFetchAsArray(mysqli_result $result)
+	private function queryFetchAsArray(mysqli_result $result) : array
 	{
 		$elements = [];
 		while ($element = $result->fetch_assoc()) {
@@ -950,7 +960,7 @@ class Link extends Dao\Sql\Link
 	 * @param $class_name string
 	 * @return object[] [$id|$n => $object] each element is a new instance of class $class_name
 	 */
-	private function queryFetchAsObjects(mysqli_result $result, $class_name)
+	private function queryFetchAsObjects(mysqli_result $result, string $class_name) : array
 	{
 		$objects    = [];
 		$class_name = Builder::className($class_name);
@@ -972,7 +982,7 @@ class Link extends Dao\Sql\Link
 	 * @param $result mysqli_result
 	 * @return mixed the value of the returned column for the first read row
 	 */
-	private function queryFetchAsValue(mysqli_result $result)
+	private function queryFetchAsValue(mysqli_result $result) : mixed
 	{
 		$element = $result->fetch_row();
 		return $element ? $element[$result->field_count - 1] : null;
@@ -983,7 +993,7 @@ class Link extends Dao\Sql\Link
 	 * @param $result mysqli_result
 	 * @return array [$id|$n => $value] each element is the value of the first returned column
 	 */
-	private function queryFetchAsValues(mysqli_result $result)
+	private function queryFetchAsValues(mysqli_result $result) : array
 	{
 		$values  = [];
 		$element = $result->fetch_assoc();
@@ -1021,11 +1031,13 @@ class Link extends Dao\Sql\Link
 	 * Read an object from data source
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $identifier integer|object identifier for the object, or an object to re-read
-	 * @param $class_name string class for read object. Useless if $identifier is an object
-	 * @return object an object of class objectClass, read from data source, or null if nothing found
+	 * @param $identifier integer|T identifier for the object, or an object to re-read
+	 * @param $class_name class-string<T>|null class for read object. Useless if $identifier is an
+	 *                    object
+	 * @return ?T an object of class objectClass, read from data source, or null if nothing found
+	 * @template T
 	 */
-	public function read($identifier, $class_name = null)
+	public function read(mixed $identifier, string $class_name = null) : ?object
 	{
 		if (is_object($identifier)) {
 			return $this->read(Dao::getObjectIdentifier($identifier), get_class($identifier));
@@ -1072,17 +1084,18 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Read all objects of a given class from data source
 	 *
-	 * @param $class_name string class for read objects
+	 * @param $class_name class-string<T> class for read objects
 	 * @param $options    Option|Option[] some options for advanced read
-	 * @return object[] a collection of read objects
+	 * @return T[] a collection of read objects
+	 * @template T
 	 */
-	public function readAll($class_name, $options = [])
+	public function readAll(string $class_name, array|Option $options = []) : array
 	{
 		if (!is_array($options)) {
 			$options = $options ? [$options] : [];
 		}
 		$class_name = Builder::className($class_name);
-		array_push($this->connection->contexts, $class_name);
+		$this->connection->contexts[] = $class_name;
 		$query      = (new Select($class_name, null, null, null, $options))->buildQuery();
 		$result_set = $this->connection->query($query);
 		if ($options) {
@@ -1099,11 +1112,12 @@ class Link extends Dao\Sql\Link
 	 * Replace all references to $replaced by references to $replacement into the database.
 	 * Already loaded objects will not be changed.
 	 *
-	 * @param $replaced    object
-	 * @param $replacement object
+	 * @param $replaced    T
+	 * @param $replacement T
 	 * @return boolean true if replacement has been done, false if something went wrong
+	 * @template T
 	 */
-	public function replaceReferences($replaced, $replacement)
+	public function replaceReferences(object $replaced, object $replacement) : bool
 	{
 		$table_name     = $this->storeNameOf(get_class($replaced));
 		$replaced_id    = $this->getObjectIdentifier($replaced);
@@ -1120,7 +1134,7 @@ class Link extends Dao\Sql\Link
 					$error = true;
 				}
 			}
-			return isset($error) ? false : true;
+			return !isset($error);
 		}
 		return false;
 	}
@@ -1129,10 +1143,9 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Rollback a transaction (non-transactional MySQL engines as MyISAM will do nothing and return null)
 	 *
-	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional
-	 *                      SQL engine
+	 * @return ?boolean true as rollback always succeeds, even if there is nothing to do
 	 */
-	public function rollback()
+	public function rollback() : ?bool
 	{
 		$this->commit_stack = 0;
 		if (isset($GLOBALS['D'])) {
@@ -1155,13 +1168,17 @@ class Link extends Dao\Sql\Link
 	 * done on the object identifier, without join. If object is not linked to data-link, the search
 	 * is done with the linked object as others search criterion.
 	 *
-	 * @param $what       object|array source object for filter, or filter array (need class_name)
-	 *                    only set properties will be used for search
-	 * @param $class_name string must be set if $what is a filter array and not an object
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $what       array|T|null source object for filter, or filter array
+	 *                    (need class_name) only set properties will be used for search
+	 * @param $class_name string|null must be set if $what is a filter array and not an object
 	 * @param $options    Option|Option[] some options for advanced search
-	 * @return object[] a collection of read objects
+	 * @return T[] a collection of read objects
+	 * @template T
 	 */
-	public function search($what, $class_name = null, $options = [])
+	public function search(
+		array|object|null $what, string $class_name = null, array|Option $options = []
+	) : array
 	{
 		// prepare arguments
 		if (!is_array($options)) {
@@ -1174,13 +1191,14 @@ class Link extends Dao\Sql\Link
 
 		// read result from cache
 		$cache_result = Cache_Result::get($options);
-		$objects = $cache_result ? $cache_result->cachedResult($what, $class_name, $options) : null;
+		$objects = $cache_result?->cachedResult($what, $class_name, $options);
 		if (!isset($objects)) {
 			// was not in cache or no cache : prepare and execute query
 			$builder = new Select($class_name, null, $what, $this, $options);
 			$query   = $builder->buildQuery();
-			array_push($this->connection->contexts, $builder->getJoins()->getClassNames());
+			$this->connection->contexts[] = $builder->getJoins()->getClassNames();
 			if (Option\Pre_Load::in($options)) {
+				/** @noinspection PhpUnhandledExceptionInspection User exceptions not managed here */
 				$result_set = (new Dao\Sql\Select($class_name, null, $this))->executeQuery($query);
 			}
 			else {
@@ -1206,19 +1224,22 @@ class Link extends Dao\Sql\Link
 	//---------------------------------------------------------------------------------------- unlock
 	/**
 	 * @deprecated UNLOCK cause transactions to COMMIT : this is a problem
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $lock Lock
 	 * @see lockRecord
 	 */
 	public function unlock(Lock $lock)
 	{
 		$lock_key = $lock->table_name . DOT . $lock->identifier;
-		if (isset($this->locks[$lock_key])) {
-			$lock = $this->locks[$lock_key];
-			$lock->count --;
-			if (!$lock->count) {
-				unset($this->locks[$lock_key]);
-				$this->delete($lock);
-			}
+		if (!isset($this->locks[$lock_key])) {
+			return;
+		}
+		$lock = $this->locks[$lock_key];
+		$lock->count --;
+		if (!$lock->count) {
+			unset($this->locks[$lock_key]);
+			/** @noinspection PhpUnhandledExceptionInspection lock record should exist */
+			$this->delete($lock);
 		}
 	}
 
@@ -1231,13 +1252,12 @@ class Link extends Dao\Sql\Link
 	 * record will be written into data source using this object's data.
 	 * If object is null (all properties null or unset), the object will be removed from data source
 	 *
-	 * TODO LOWEST factorize this to become SOLID
-	 *
-	 * @param $object  object object to write into data source
+	 * @param $object  T object to write into data source
 	 * @param $options Option|Option[] some options for advanced write
-	 * @return object the written object if written, or null if the object could not be written
+	 * @return ?T the written object if written, or null if the object could not be written
+	 * @template T
 	 */
-	public function write($object, $options = [])
+	public function write(object $object, array|Option $options = []) : ?object
 	{
 		if (!is_array($options)) {
 			$options = $options ? [$options] : [];

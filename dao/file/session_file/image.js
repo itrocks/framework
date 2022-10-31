@@ -5,6 +5,6 @@ $(document).ready(function()
 	$('body').build('click', 'img.zoom', function()
 	{
 		$(this).parent().remove();
-	});
+	})
 
-});
+})

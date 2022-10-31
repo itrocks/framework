@@ -19,20 +19,20 @@ class In_Set implements Negate, Where
 	 *
 	 * @var boolean
 	 */
-	public $not;
+	public bool $not;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
-	 * @var mixed[]
+	 * @var string[]
 	 */
-	public $value;
+	public array $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value string[]
 	 * @param $not   boolean
 	 */
-	public function __construct($value = null, $not = false)
+	public function __construct(array $value = null, bool $not = false)
 	{
 		if (isset($value)) $this->value = $value;
 		if (isset($not))   $this->not   = $not;
@@ -56,7 +56,8 @@ class In_Set implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '')
+		: string
 	{
 		$summary = '';
 		if ($this->value) {
@@ -65,7 +66,7 @@ class In_Set implements Negate, Where
 			$summary = $translation_delimiter . sprintf(
 				Loc::tr($this->not ? '%s does not contain %s' : '%s contains %s'),
 				$builder->buildColumn($property_path, $prefix, $builder::SUB_TRANSLATE),
-				$builder->buildScalar($this->value, $property_path, $builder::SUB_TRANSLATE)
+				$builder->buildScalar(join(', ', $this->value), $property_path, $builder::SUB_TRANSLATE)
 			) . $translation_delimiter;
 		}
 		return $summary;
@@ -80,7 +81,7 @@ class In_Set implements Negate, Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '') : string
 	{
 		$sql = '';
 		if ($this->value) {

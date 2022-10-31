@@ -15,14 +15,14 @@ class Performance_Analyzer
 	/**
 	 * @var string
 	 */
-	private $sql_log;
+	private string $sql_log;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $sql_log string A complete SQL log, in Entry::$sql format
 	 * @see Entry::$sql
 	 */
-	public function __construct($sql_log)
+	public function __construct(string $sql_log)
 	{
 		$this->sql_log = $sql_log;
 	}
@@ -31,7 +31,7 @@ class Performance_Analyzer
 	/**
 	 * @param $line string
 	 */
-	protected function parseLine($line)
+	protected function parseLine(string $line)
 	{
 		// TODO HIGH measurements, log long executions
 		/*

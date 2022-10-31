@@ -29,7 +29,7 @@ abstract class Data_Link
 	/**
 	 * @var After_Action[]
 	 */
-	public $after_commit;
+	public array $after_commit = [];
 
 	//----------------------------------------------------------------------------------- afterCommit
 	/**
@@ -43,7 +43,7 @@ abstract class Data_Link
 		if (!$this->after_commit) {
 			return;
 		}
-		Method_Annotation::callAll($this->after_commit, $this);
+		After_Action::callAll($this->after_commit, $this);
 		$this->after_commit = [];
 	}
 
@@ -52,13 +52,13 @@ abstract class Data_Link
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 */
-	public function afterRead($object)
+	public function afterRead(object $object)
 	{
 		$options = [];
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		Method_Annotation::callAll(
-			(new Reflection_Class($object))->getAnnotations('after_read'), $object, [$this, &$options]
-		);
+		/** @var $after_read_annotations Method_Annotation[] */
+		$after_read_annotations = (new Reflection_Class($object))->getAnnotations('after_read');
+		Method_Annotation::callAll($after_read_annotations, $object, [$this, &$options]);
 	}
 
 	//----------------------------------------------------------------------------- afterReadMultiple
@@ -89,7 +89,7 @@ abstract class Data_Link
 	 * @param $store_name string
 	 * @return string[] Full class names with namespace
 	 */
-	public function classNamesOf($store_name)
+	public function classNamesOf(string $store_name) : array
 	{
 		$dependencies = Dao::search(
 			['dependency_name' => $store_name, 'type' => Dependency::T_STORE], Dependency::class
@@ -125,21 +125,23 @@ abstract class Data_Link
 	/**
 	 * Count the number of elements that match filter
 	 *
-	 * @param $what       object|string|array source object, class name or properties for filter
-	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @param $what       array|object|string source object, class name or properties for filter
+	 * @param $class_name string|null must be set if $what is a filter array instead of an object
 	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return integer
 	 */
-	abstract public function count($what, $class_name = null, $options = []) : int;
+	abstract public function count(
+		array|object|string $what, string $class_name = null, array|Option $options = []
+	) : int;
 
 	//--------------------------------------------------------------------------------- createStorage
 	/**
 	 * Create a storage space for $class_name objects
 	 *
 	 * @param $class_name string
-	 * @return boolean true if storage was created or updated, false if it was already up to date
+	 * @return boolean true if storage was created or updated, false if it was already up-to-date
 	 */
-	abstract public function createStorage($class_name);
+	abstract public function createStorage(string $class_name) : bool;
 
 	//---------------------------------------------------------------------------------------- delete
 	/**
@@ -151,7 +153,7 @@ abstract class Data_Link
 	 * @param $object object object to delete from data source
 	 * @return boolean true if deleted
 	 */
-	abstract public function delete($object);
+	abstract public function delete(object $object) : bool;
 
 	//------------------------------------------------------------------------------------ disconnect
 	/**
@@ -161,7 +163,7 @@ abstract class Data_Link
 	 * @param $load_linked_objects boolean if true, load linked objects before disconnect
 	 * @see Data_Link::disconnect()
 	 */
-	abstract public function disconnect($object, $load_linked_objects = false);
+	abstract public function disconnect(object $object, bool $load_linked_objects = false);
 
 	//---------------------------------------------------------------------------------- escapeString
 	/**
@@ -170,7 +172,7 @@ abstract class Data_Link
 	 * @param $value string
 	 * @return string
 	 */
-	public function escapeString($value)
+	public function escapeString(string $value) : string
 	{
 		return str_replace([Q, DQ], [BS . Q, BS . DQ], $value);
 	}
@@ -185,9 +187,10 @@ abstract class Data_Link
 	 * @param $options    Option[]
 	 * @return callable|string|string[]
 	 */
-	protected function getKeyPropertyName($class_name, array $options = null)
+	protected function getKeyPropertyName(string $class_name, array $options = [])
+		: array|callable|string
 	{
-		if ($options) foreach ($options as $option) if ($option instanceof Key) {
+		foreach ($options as $option) if ($option instanceof Key) {
 			return $option->property_name;
 		}
 		/** @noinspection PhpUnhandledExceptionInspection */
@@ -210,24 +213,24 @@ abstract class Data_Link
 	/**
 	 * Returns the list of properties of class $class that are stored into data link
 	 *
-	 * If data link stores properties not existing into $class, they are listed too, as if they where
-	 * official properties of $class, but they storage object is a Sql\Column and not
-	 * a Reflection_Property.
+	 * If data link stores properties not existing into $class, they are listed too, as if they were
+	 * official properties of $class, but they storage object is a Sql\Column and not a
+	 * Reflection_Property.
 	 *
-	 * @param $class string|Reflection_Class
+	 * @param $class Reflection_Class
 	 * @return Reflection_Property[]|Sql\Column[]
 	 */
-	abstract public function getStoredProperties($class);
+	abstract public function getStoredProperties(Reflection_Class $class) : array;
 
 	//-------------------------------------------------------------------------------------- getWrite
 	/**
 	 * Get a new Write object matching the data link
 	 *
-	 * @param $object  object
+	 * @param $object  object|null
 	 * @param $options Option[]
 	 * @return Write
 	 */
-	public function getWrite($object = null, array $options = [])
+	public function getWrite(object $object = null, array $options = []) : Write
 	{
 		$write_class = Namespaces::of($this) . BS . 'Write';
 		return new $write_class($this, $object, $options);
@@ -237,32 +240,34 @@ abstract class Data_Link
 	/**
 	 * Returns true if object1 and object2 match the same stored object
 	 *
-	 * @param $object1 object
-	 * @param $object2 object
-	 * @param $strict  boolean if true, will consider @link object and non-@link object as different
+	 * @param $object1 ?object
+	 * @param $object2 ?object
+	 * @param $strict  boolean if true, will consider @link object and non-@link object different
 	 * @return boolean
 	 */
-	abstract public function is($object1, $object2, $strict = false);
+	abstract public function is(?object $object1, ?object $object2, bool $strict = false) : bool;
 
 	//------------------------------------------------------------------------------------------ read
 	/**
 	 * Read an object from data source
 	 *
-	 * @param $identifier mixed|object identifier for the object
-	 * @param $class_name string class for read object
-	 * @return object an object of class objectClass, read from data source, or null if nothing found
+	 * @param $identifier mixed|T identifier for the object
+	 * @param $class_name class-string<T>|null class for read object
+	 * @return ?T an object of class objectClass, read from data source, or null if nothing found
+	 * @template T
 	 */
-	abstract public function read($identifier, $class_name = null);
+	abstract public function read(mixed $identifier, string $class_name = null) : ?object;
 
 	//--------------------------------------------------------------------------------------- readAll
 	/**
 	 * Read all objects of a given class from data source
 	 *
-	 * @param $class_name string class name of read objects
+	 * @param $class_name class-string<T> class name of read objects
 	 * @param $options    Option|Option[] some options for advanced read
-	 * @return object[] a collection of read objects
+	 * @return T[] a collection of read objects
+	 * @template T
 	 */
-	abstract public function readAll($class_name, $options = []);
+	abstract public function readAll(string $class_name, array|Option $options = []) : array;
 
 	//---------------------------------------------------------------------------------- readProperty
 	/**
@@ -273,7 +278,7 @@ abstract class Data_Link
 	 * @param $property_name string the name of the property
 	 * @return mixed the read value for the property read from the data link. null if no value stored
 	 */
-	abstract public function readProperty($object, $property_name);
+	abstract public function readProperty(object $object, string $property_name) : mixed;
 
 	//--------------------------------------------------------------------------------------- replace
 	/**
@@ -281,27 +286,30 @@ abstract class Data_Link
 	 *
 	 * The source object overwrites the destination object into the data source, even if the
 	 * source object was not originally read from the data source.
-	 * Warning: as destination object will stay independent from source object but also linked to the
+	 * Warning: as destination object will stay independent of source object but also linked to the
 	 * same data source identifier. You will still be able to write() either source or destination
 	 * after call to replace().
 	 *
-	 * @param $destination object destination object
-	 * @param $source      object source object
+	 * @param $destination T destination object
+	 * @param $source      T source object
 	 * @param $write       boolean true if the destination object must be immediately written
-	 * @return object the resulting $destination object
+	 * @return T the resulting $destination object
+	 * @template T
 	 */
-	abstract public function replace($destination, $source, $write = true);
+	abstract public function replace(object $destination, object $source, bool $write = true)
+		: object;
 
 	//----------------------------------------------------------------------------- replaceReferences
 	/**
 	 * Replace all references to $replaced by references to $replacement into the database.
 	 * Already loaded objects will not be changed.
 	 *
-	 * @param $replaced    object
-	 * @param $replacement object
+	 * @param $replaced    T
+	 * @param $replacement T
 	 * @return boolean true if replacement has been done, false if something went wrong
+	 * @template T
 	 */
-	abstract public function replaceReferences($replaced, $replacement);
+	abstract public function replaceReferences(object $replaced, object $replacement) : bool;
 
 	//---------------------------------------------------------------------------------------- search
 	/**
@@ -315,13 +323,17 @@ abstract class Data_Link
 	 * be done on the object identifier, without join. If object is not linked to data-link,
 	 * the search is done with the linked object as others search criterion.
 	 *
-	 * @param $what       object|array source object for filter, or filter array (need class_name)
-	 *                    only set properties will be used for search
-	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @param $what       array|T|null source object for filter, or filter array
+	 *                    (need class_name) only set properties will be used for search
+	 * @param $class_name class-string<T>|null must be set if is $what is a filter array instead of
+	 *                    an object
 	 * @param $options    Option|Option[] array some options for advanced search
-	 * @return object[] a collection of read objects
+	 * @return T[] a collection of read objects
+	 * @template T
 	 */
-	abstract public function search($what, $class_name = null, $options = []);
+	abstract public function search(
+		array|object|null $what, string $class_name = null, array|Option $options = []
+	) : array;
 
 	//------------------------------------------------------------------------------------- searchOne
 	/**
@@ -331,13 +343,16 @@ abstract class Data_Link
 	 * It is highly recommended to use this search with primary keys properties values searches.
 	 * If several result exist, only one will be taken, the first on the list (may be random).
 	 *
-	 * @param $what       object|array source object for filter, only set properties will be used for
+	 * @param $what       array|T source object for filter, only set properties will be used for
 	 *        search
-	 * @param $class_name string must be set if is not a filter array
+	 * @param $class_name class-string<T>|null must be set if is not a filter array
 	 * @param $options    Option|Option[] some options for advanced search
-	 * @return object|null the found object, or null if no object was found
+	 * @return ?T the found object, or null if no object was found
+	 * @template T
 	 */
-	public function searchOne($what, $class_name = null, $options = [])
+	public function searchOne(
+		array|object $what, string $class_name = null, array|Option $options = []
+	) : ?object
 	{
 		if (!is_array($options)) {
 			$options = $options ? [$options] : [];
@@ -351,16 +366,21 @@ abstract class Data_Link
 	/**
 	 * Read selected columns only from data source, using optional filter
 	 *
-	 * @param $class         string class for the read object
+	 * @param $class         class-string<T> class for the read object
 	 * @param $properties    string[]|string|Column[] the list of property paths : only those
-	 *        properties will be read.
-	 * @param $filter_object object|array source object for filter, set properties will be used for
-	 *        search. Can be an array associating properties names to corresponding search value too.
-	 * @param $options Option|Option[] some options for advanced search
+	 *                       properties will be read.
+	 * @param $filter_object array|T|null source object for filter, set properties will be used
+	 *                       for search. Can be an array associating properties names to matching
+	 *                       search value too.
+	 * @param $options       Option|Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in
-	 *         the same order than columns.
+	 *                   the same order than columns.
+	 * @template T
 	 */
-	abstract public function select($class, $properties, $filter_object = null, $options = []);
+	abstract public function select(
+		string $class, array|string $properties, array|object $filter_object = null,
+		array|Option $options = []
+	) : List_Data;
 
 	//----------------------------------------------------------------------------------- storeNameOf
 	/**
@@ -370,7 +390,7 @@ abstract class Data_Link
 	 * @param $class_name string
 	 * @return string
 	 */
-	public function storeNameOf($class_name)
+	public function storeNameOf(string $class_name) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $class_name must always be valid */
 		return Store_Name_Annotation::of(new Reflection_Class($class_name))->value;
@@ -383,7 +403,7 @@ abstract class Data_Link
 	 *
 	 * @param $class_name string
 	 */
-	abstract public function truncate($class_name);
+	abstract public function truncate(string $class_name);
 
 	//---------------------------------------------------------------------------------- valueChanged
 	/**
@@ -396,10 +416,10 @@ abstract class Data_Link
 	 * @param $default_value mixed
 	 * @return boolean
 	 */
-	protected function valueChanged($element, $property_name, $default_value)
+	protected function valueChanged(object $element, string $property_name, mixed $default_value)
+		: bool
 	{
-		$id_property_name = 'id_' . $property_name;
-		if (!isset($element->$property_name) && empty($id_property_name)) {
+		if (!isset($element->$property_name)) {
 			return false;
 		}
 		$element_value = $element->$property_name;
@@ -419,8 +439,8 @@ abstract class Data_Link
 		}
 		else {
 			return isset($element_value)
-				&& (strval($element_value) != '')
-				&& (strval($element_value) != strval($default_value));
+				&& (strval($element_value) !== '')
+				&& (strval($element_value) !== strval($default_value));
 		}
 	}
 
@@ -432,11 +452,12 @@ abstract class Data_Link
 	 * If object was not originally read from data source nor linked to it using replace(), a new
 	 * record will be written into data source using this object's data.
 	 *
-	 * @param $object  object object to write into data source
+	 * @param $object  T object to write into data source
 	 * @param $options Option|Option[] some options for advanced write
-	 * @return object the written object
+	 * @return ?T the written object
+	 * @template T
 	 */
-	abstract public function write($object, $options = []);
+	abstract public function write(object $object, array|Option $options = []) : ?object;
 
 	//--------------------------------------------------------------------------------- writeProperty
 	/**
@@ -447,6 +468,8 @@ abstract class Data_Link
 	 * @param $property_name string the name of the property
 	 * @param $value         mixed if set (recommended), the value to be stored. default in $object
 	 */
-	abstract public function writeProperty($object, $property_name, $value = null);
+	abstract public function writeProperty(
+		object $object, string $property_name, mixed $value = null
+	);
 
 }

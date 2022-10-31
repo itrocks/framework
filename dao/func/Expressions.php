@@ -17,13 +17,13 @@ class Expressions
 	 *
 	 * @var Expression[] ['§$count' => Expression]
 	 */
-	public $cache = [];
+	public array $cache = [];
 
 	//-------------------------------------------------------------------------------------- $current
 	/**
 	 * @var static
 	 */
-	public static $current;
+	public static Expressions $current;
 
 	//------------------------------------------------------------------------------------------- add
 	/**
@@ -31,7 +31,7 @@ class Expressions
 	 * @param $function      Column
 	 * @return string The expression key in cache : always begin with '§' for an easy identification
 	 */
-	public static function add($property_path, Column $function)
+	public static function add(string $property_path, Column $function) : string
 	{
 		$expression = new Expression($property_path, $function);
 		$key        = static::MARKER . count(static::$current->cache);
@@ -48,7 +48,7 @@ class Expressions
 	 * @param $property_path string
 	 * @return boolean
 	 */
-	public static function isFunction($property_path)
+	public static function isFunction(string $property_path) : bool
 	{
 		return str_starts_with($property_path, static::MARKER);
 	}

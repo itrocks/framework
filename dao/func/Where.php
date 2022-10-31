@@ -19,7 +19,8 @@ interface Where extends Dao_Function
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '');
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '')
+		: string;
 
 	//----------------------------------------------------------------------------------------- toSql
 	/**
@@ -30,6 +31,7 @@ interface Where extends Dao_Function
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '');
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '')
+		: string;
 
 }

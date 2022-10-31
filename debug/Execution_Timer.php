@@ -17,7 +17,7 @@ class Execution_Timer implements Registerable
 	 *
 	 * @var float
 	 */
-	private $start_time;
+	private float $start_time;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -53,7 +53,7 @@ class Execution_Timer implements Registerable
 	 *
 	 * @return float
 	 */
-	public function end()
+	public function end() : float
 	{
 		if (!isset($this->start_time)) {
 			$this->start_time = $_SERVER['REQUEST_TIME_FLOAT'];

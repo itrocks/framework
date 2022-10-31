@@ -231,7 +231,7 @@ class Func_Test extends Test
 			$argument = new Logical(Logical::TRUE_OPERATOR, [_TRUE, _FALSE]);
 			unset($argument);
 		}
-		catch (Exception $e) {
+		catch (Exception) {
 			$check = true;
 		}
 		static::assertEquals(true, $check);

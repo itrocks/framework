@@ -14,17 +14,17 @@ class Concat extends Column
 	/**
 	 * @var string[]
 	 */
-	public $columns;
+	public array $columns;
 
 	//------------------------------------------------------------------------------------ $separator
 	/**
 	 * @var string
 	 */
-	public $separator = SP;
+	public string $separator = SP;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $columns string[]
+	 * @param $columns string[]|null
 	 */
 	public function __construct(array $columns = null)
 	{
@@ -41,13 +41,13 @@ class Concat extends Column
 	 * @param $property_path string the property path
 	 * @return string
 	 */
-	public function toSql(With_Build_Column $builder, $property_path)
+	public function toSql(With_Build_Column $builder, string $property_path) : string
 	{
 		$columns = [];
 		foreach ($this->columns as $column) {
 			$columns[] = $builder->buildColumn($column, false, true);
 		}
-		if (count($columns) == 1) {
+		if (count($columns) === 1) {
 			$sql = reset($columns);
 		}
 		else {

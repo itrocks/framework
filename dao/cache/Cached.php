@@ -15,7 +15,7 @@ class Cached
 	 *
 	 * @var Date_Time
 	 */
-	public $date;
+	public Date_Time $date;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -23,20 +23,18 @@ class Cached
 	 *
 	 * @var object
 	 */
-	public $object;
+	public object $object;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object object
+	 * @param $object object|null
 	 */
-	public function __construct($object = null)
+	public function __construct(object $object = null)
 	{
 		if (isset($object)) {
 			$this->object = $object;
 		}
 		if (!isset($this->date)) {
-			/** @noinspection PhpUnhandledExceptionInspection valid */
 			$this->date = new Date_Time();
 		}
 	}
@@ -44,12 +42,9 @@ class Cached
 	//---------------------------------------------------------------------------------------- access
 	/**
 	 * Call this each time the object is accessed : its access date-time will be updated
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function access()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid */
 		$this->date = new Date_Time();
 	}
 

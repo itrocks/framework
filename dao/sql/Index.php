@@ -11,13 +11,13 @@ interface Index
 	/**
 	 * @return Key[]
 	 */
-	public function getKeys();
+	public function getKeys() : array;
 
 	//--------------------------------------------------------------------------------------- getName
 	/**
 	 * @return string
 	 */
-	public function getName();
+	public function getName() : string;
 
 	//----------------------------------------------------------------------------------------- toSql
 	/**
@@ -25,6 +25,6 @@ interface Index
 	 *
 	 * @returns string
 	 */
-	public function toSql();
+	public function toSql() : string;
 
 }

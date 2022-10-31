@@ -14,11 +14,11 @@ class Set
 	/**
 	 * @var Identifier_Map
 	 */
-	public $data_link;
+	public Identifier_Map $data_link;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $data_link Identifier_Map
+	 * @param $data_link Identifier_Map|null
 	 */
 	public function __construct(Identifier_Map $data_link = null)
 	{
@@ -30,11 +30,12 @@ class Set
 	 * Replaces all objects in data link that match search with the given objects collection
 	 * If search is null and $class_name is an object : $class_name will be the search
 	 *
-	 * @param $objects    object[] objects may not have any object identifier into data link
-	 * @param $class_name string|object
-	 * @param $search     string[]|object
+	 * @param $objects    T[] objects may not have any object identifier into data link
+	 * @param $class_name class-string<T>|T
+	 * @param $search     string[]|T
+	 * @template T
 	 */
-	public function replace(array $objects, $class_name, $search = null)
+	public function replace(array $objects, object|string $class_name, array|object $search = null)
 	{
 		$dao = $this->data_link;
 		// change $class_name to string, change $search to search object or array
@@ -86,11 +87,11 @@ class Set
 	 * @param $object object The object which stores the values
 	 * @return string The resulting search key
 	 */
-	private function searchKey($object)
+	private function searchKey(object $object) : string
 	{
 		$keys = [];
 		foreach (array_keys(get_class_vars(get_class($object))) as $property_name) {
-			$keys[$property_name] = isset($object->$property_name) ? $object->$property_name : '';
+			$keys[$property_name] = $object->$property_name ?? '';
 		}
 		ksort($keys);
 		return join(':', $keys);

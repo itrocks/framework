@@ -37,7 +37,7 @@ class Column implements Sql\Column
 	 *
 	 * @var mixed
 	 */
-	private $Default;
+	private mixed $Default;
 
 	//---------------------------------------------------------------------------------------- $Extra
 	/**
@@ -49,7 +49,7 @@ class Column implements Sql\Column
 	 * @values auto_increment
 	 * @var string
 	 */
-	private $Extra = '';
+	private string $Extra = '';
 
 	//---------------------------------------------------------------------------------------- $Field
 	/**
@@ -57,7 +57,7 @@ class Column implements Sql\Column
 	 *
 	 * @var string
 	 */
-	private $Field;
+	private string $Field;
 
 	//------------------------------------------------------------------------------------------ $Key
 	/**
@@ -68,7 +68,7 @@ class Column implements Sql\Column
 	 * @values PRI, MUL, UNI,
 	 * @var string
 	 */
-	private $Key = '';
+	private string $Key = '';
 
 	//----------------------------------------------------------------------------------------- $Null
 	/**
@@ -79,7 +79,7 @@ class Column implements Sql\Column
 	 * @values YES, NO
 	 * @var string
 	 */
-	private $Null = 'NO';
+	private string $Null = 'NO';
 
 	//----------------------------------------------------------------------------------------- $Type
 	/**
@@ -97,20 +97,20 @@ class Column implements Sql\Column
 	 *
 	 * @var string
 	 */
-	private $Type;
+	private string $Type;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name string
-	 * @param $type string
+	 * @param $name string|null
+	 * @param $type string|null
 	 */
-	public function __construct($name = null, $type = null)
+	public function __construct(string $name = null, string $type = null)
 	{
 		if (isset($name)) {
 			$this->Field = $name;
 		}
 		if (isset($type)) {
-			$this->Type  = $type;
+			$this->Type = $type;
 			if (!isset($this->Default)) {
 				$this->Default = '';
 			}
@@ -124,11 +124,12 @@ class Column implements Sql\Column
 	 *
 	 * @return boolean
 	 */
-	public function alwaysNullDefault()
+	public function alwaysNullDefault() : bool
 	{
 		return in_array(
 			lParse($this->Type, SP),
-			['blob', 'longblob', 'longtext', 'mediumblob', 'mediumtext', 'text', 'tinyblob', 'tinytext']
+			['blob', 'longblob', 'longtext', 'mediumblob', 'mediumtext', 'text', 'tinyblob', 'tinytext'],
+			true
 		);
 	}
 
@@ -139,7 +140,7 @@ class Column implements Sql\Column
 	 * @param $property Reflection_Property
 	 * @return Column
 	 */
-	public static function buildClassProperty(Reflection_Property $property)
+	public static function buildClassProperty(Reflection_Property $property) : Column
 	{
 		$column = new Column();
 		// instructions order may matters : do not change it
@@ -157,7 +158,7 @@ class Column implements Sql\Column
 	 *
 	 * @return Column
 	 */
-	public static function buildId()
+	public static function buildId() : Column
 	{
 		$column = new Column('id', 'bigint(18) unsigned');
 		$column->Default = null;
@@ -174,7 +175,7 @@ class Column implements Sql\Column
 	 * @param $column_name string
 	 * @return Column
 	 */
-	public static function buildLink($column_name)
+	public static function buildLink(string $column_name) : Column
 	{
 		$column = new Column($column_name, 'bigint(18) unsigned');
 		$column->Default = 0;
@@ -189,7 +190,7 @@ class Column implements Sql\Column
 	 * @param $property Reflection_Property
 	 * @return Column
 	 */
-	public static function buildProperty(Reflection_Property $property)
+	public static function buildProperty(Reflection_Property $property) : Column
 	{
 		$column = new Column();
 		// instructions order matters : do not change it
@@ -208,10 +209,12 @@ class Column implements Sql\Column
 	 *
 	 * @param $mysqli        mysqli
 	 * @param $table_name    string
-	 * @param $database_name string
+	 * @param $database_name string|null
 	 * @return Column[] key is the name of the column
 	 */
-	public static function buildTable(mysqli $mysqli, $table_name, $database_name = null)
+	public static function buildTable(
+		mysqli $mysqli, string $table_name, string $database_name = null
+	) : array
 	{
 		$database_name = isset($database_name) ? (Q . $database_name . Q) : 'DATABASE()';
 		$columns       = [];
@@ -241,7 +244,7 @@ class Column implements Sql\Column
 	/**
 	 * @return boolean
 	 */
-	public function canBeNull()
+	public function canBeNull() : bool
 	{
 		return $this->Null === self::YES;
 	}
@@ -251,9 +254,9 @@ class Column implements Sql\Column
 	 * Gives the default value the correct type
 	 *
 	 * @example replace '0' by 0 for a numeric value (ie mysqli->fetch_object gets Default as string)
-	 * @return Column
+	 * @return $this
 	 */
-	private function cleanupDefault()
+	private function cleanupDefault() : static
 	{
 		if (isset($this->Default)) {
 			if ($this->getType()->isFloat()) {
@@ -274,7 +277,7 @@ class Column implements Sql\Column
 	 * @param $column Column
 	 * @return array
 	 */
-	public function diffCombined(Column $column)
+	public function diffCombined(Column $column) : array
 	{
 		return arrayDiffCombined(get_object_vars($this), get_object_vars($column), true);
 	}
@@ -283,10 +286,10 @@ class Column implements Sql\Column
 	/**
 	 * Returns true if the column is an equivalent of the other column
 	 *
-	 * @param $column Column|Sql\Column
+	 * @param $column Sql\Column
 	 * @return boolean
 	 */
-	public function equiv(Sql\Column $column)
+	public function equiv(Sql\Column $column) : bool
 	{
 		$column_default = $column->Default;
 		$this_default   = $this->Default;
@@ -317,7 +320,7 @@ class Column implements Sql\Column
 	/**
 	 * @return mixed
 	 */
-	public function getDefaultValue()
+	public function getDefaultValue() : mixed
 	{
 		return $this->Default;
 	}
@@ -326,7 +329,7 @@ class Column implements Sql\Column
 	/**
 	 * @return string
 	 */
-	public function getName()
+	public function getName() : string
 	{
 		return $this->Field;
 	}
@@ -337,7 +340,7 @@ class Column implements Sql\Column
 	 *
 	 * @return string
 	 */
-	public function getRawType()
+	public function getRawType() : string
 	{
 		$i = minSet(strpos($this->Type, '('), strpos($this->Type, SP));
 		return is_null($i) ? $this->Type : substr($this->Type, 0, $i);
@@ -347,7 +350,7 @@ class Column implements Sql\Column
 	/**
 	 * @return string
 	 */
-	public function getSqlPostfix()
+	public function getSqlPostfix() : string
 	{
 		return $this->Extra ? (SP . $this->Extra) : '';
 	}
@@ -356,7 +359,7 @@ class Column implements Sql\Column
 	/**
 	 * @return string
 	 */
-	public function getSqlType()
+	public function getSqlType() : string
 	{
 		return $this->Type;
 	}
@@ -365,7 +368,7 @@ class Column implements Sql\Column
 	/**
 	 * @return Type
 	 */
-	public function getType()
+	public function getType() : Type
 	{
 		switch ($this->getRawType()) {
 			case 'decimal': case 'float': case 'double':
@@ -376,16 +379,15 @@ class Column implements Sql\Column
 				return (new Type(Type::STRING))->multiple();
 			case 'date': case 'datetime': case 'timestamp': case 'time': case 'year':
 				return new Type(Date_Time::class);
-			default:
-				return new Type(Type::STRING);
 		}
+		return new Type(Type::STRING);
 	}
 
 	//---------------------------------------------------------------------------------------- hasKey
 	/**
 	 * @return boolean
 	 */
-	public function hasKey()
+	public function hasKey() : bool
 	{
 		return !empty($this->Key);
 	}
@@ -394,7 +396,7 @@ class Column implements Sql\Column
 	/**
 	 * @return boolean
 	 */
-	public function isPrimaryKey()
+	public function isPrimaryKey() : bool
 	{
 		return ($this->Key === self::PRIMARY_KEY);
 	}
@@ -403,9 +405,9 @@ class Column implements Sql\Column
 	/**
 	 * @return boolean
 	 */
-	public function isString()
+	public function isString() : bool
 	{
-		return in_array($this->getRawType(), self::STRING_TYPES);
+		return in_array($this->getRawType(), self::STRING_TYPES, true);
 	}
 
 	//--------------------------------------------------------------------------------------- reduces
@@ -414,6 +416,7 @@ class Column implements Sql\Column
 	 * @return boolean true if $this type reduces data size from $old_column and may break it
 	 */
 	public function reduces(/** @noinspection PhpUnusedParameterInspection */ Sql\Column $old_column)
+		: bool
 	{
 		// TODO reduce calculation
 		return false;
@@ -421,9 +424,9 @@ class Column implements Sql\Column
 
 	//------------------------------------------------------------------------------- setDefaultValue
 	/**
-	 * @param $default string
+	 * @param $default mixed
 	 */
-	public function setDefaultValue($default)
+	public function setDefaultValue(mixed $default)
 	{
 		$this->Default = $default;
 	}
@@ -433,7 +436,7 @@ class Column implements Sql\Column
 	 * @param $primary_key boolean if false, no PRIMARY KEY will be added to auto_increment columns
 	 * @return string
 	 */
-	public function toSql($primary_key = true)
+	public function toSql(bool $primary_key = true) : string
 	{
 		$column_name = $this->getName();
 		$type        = $this->getSqlType();

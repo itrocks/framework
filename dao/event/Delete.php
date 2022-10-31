@@ -15,7 +15,7 @@ abstract class Delete extends Event
 	/**
 	 * @var object
 	 */
-	public $old_value;
+	public object $old_value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -24,7 +24,7 @@ abstract class Delete extends Event
 	 * @param $old_value object
 	 * @param $options   Option[]
 	 */
-	public function __construct(Data_Link $link, $object, $old_value, array &$options)
+	public function __construct(Data_Link $link, object $object, object $old_value, array &$options)
 	{
 		parent::__construct($link, $object, $options);
 		$this->old_value = $old_value;

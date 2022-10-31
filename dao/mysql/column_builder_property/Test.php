@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao\Mysql\Column_Builder_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tests;
+use ReflectionException;
 
 /**
  * Column builder property tests
@@ -20,7 +21,7 @@ class Test extends Tests\Test
 	 * @precision 2
 	 * @var float
 	 */
-	public $decimal1;
+	public float $decimal1;
 
 	//------------------------------------------------------------------------------------ $decimal1b
 	/**
@@ -31,7 +32,7 @@ class Test extends Tests\Test
 	 * @signed
 	 * @var float
 	 */
-	public $decimal1b;
+	public float $decimal1b;
 
 	//------------------------------------------------------------------------------------- $decimal2
 	/**
@@ -42,7 +43,7 @@ class Test extends Tests\Test
 	 * @precision  2
 	 * @var float
 	 */
-	public $decimal2;
+	public float $decimal2;
 
 	//------------------------------------------------------------------------------------- $decimal3
 	/**
@@ -54,7 +55,7 @@ class Test extends Tests\Test
 	 * @signed
 	 * @var float
 	 */
-	public $decimal3;
+	public float $decimal3;
 
 	//------------------------------------------------------------------------------------- $decimal4
 	/**
@@ -65,7 +66,7 @@ class Test extends Tests\Test
 	 * @precision 2
 	 * @var float
 	 */
-	public $decimal4;
+	public float $decimal4;
 
 	//------------------------------------------------------------------------------------ $decimal4b
 	/**
@@ -76,7 +77,7 @@ class Test extends Tests\Test
 	 * @precision 2
 	 * @var float
 	 */
-	public $decimal4b;
+	public float $decimal4b;
 
 	//------------------------------------------------------------------------------------ $decimal4c
 	/**
@@ -87,7 +88,7 @@ class Test extends Tests\Test
 	 * @precision 2
 	 * @var float
 	 */
-	public $decimal4c;
+	public float $decimal4c;
 
 	//------------------------------------------------------------------------------------- $decimal5
 	/**
@@ -100,7 +101,7 @@ class Test extends Tests\Test
 	 * @signed
 	 * @var float
 	 */
-	public $decimal5;
+	public float $decimal5;
 
 	//------------------------------------------------------------------------------------ $decimal5b
 	/**
@@ -113,7 +114,7 @@ class Test extends Tests\Test
 	 * @signed
 	 * @var float
 	 */
-	public $decimal5b;
+	public float $decimal5b;
 
 	//------------------------------------------------------------------------------------ $decimal5c
 	/**
@@ -126,7 +127,7 @@ class Test extends Tests\Test
 	 * @signed
 	 * @var float
 	 */
-	public $decimal5c;
+	public float $decimal5c;
 
 	//------------------------------------------------------------------------------------ $decimal5d
 	/**
@@ -139,7 +140,7 @@ class Test extends Tests\Test
 	 * @signed
 	 * @var float
 	 */
-	public $decimal5d;
+	public float $decimal5d;
 
 	//------------------------------------------------------------------------------------ $decimal5e
 	/**
@@ -152,7 +153,7 @@ class Test extends Tests\Test
 	 * @signed
 	 * @var float
 	 */
-	public $decimal5e;
+	public float $decimal5e;
 
 	//------------------------------------------------------------------------------------ $decimal5f
 	/**
@@ -165,7 +166,7 @@ class Test extends Tests\Test
 	 * @signed
 	 * @var float
 	 */
-	public $decimal5f;
+	public float $decimal5f;
 
 	//------------------------------------------------------------------------------------ $decimal5g
 	/**
@@ -177,7 +178,7 @@ class Test extends Tests\Test
 	 * @signed
 	 * @var float
 	 */
-	public $decimal5g;
+	public float $decimal5g;
 
 	//------------------------------------------------------------------------------------- $integer1
 	/**
@@ -187,7 +188,7 @@ class Test extends Tests\Test
 	 * @min_value -2300
 	 * @var integer
 	 */
-	public $integer1;
+	public int $integer1;
 
 	//------------------------------------------------------------------------------------- $integer2
 	/**
@@ -198,7 +199,7 @@ class Test extends Tests\Test
 	 * @signed
 	 * @var integer
 	 */
-	public $integer2;
+	public int $integer2;
 
 	//------------------------------------------------------------------------------------ $integer2b
 	/**
@@ -209,7 +210,7 @@ class Test extends Tests\Test
 	 * @signed
 	 * @var integer
 	 */
-	public $integer2b;
+	public int $integer2b;
 
 	//------------------------------------------------------------------------------------- $integer3
 	/**
@@ -219,7 +220,7 @@ class Test extends Tests\Test
 	 * @max_value 255
 	 * @var integer
 	 */
-	public $integer3;
+	public int $integer3;
 
 	//------------------------------------------------------------------------------------ $integer3b
 	/**
@@ -229,7 +230,7 @@ class Test extends Tests\Test
 	 * @max_value 65535
 	 * @var integer
 	 */
-	public $integer3b;
+	public int $integer3b;
 
 	//------------------------------------------------------------------------------------ $integer3c
 	/**
@@ -239,7 +240,7 @@ class Test extends Tests\Test
 	 * @max_value 16777215
 	 * @var integer
 	 */
-	public $integer3c;
+	public int $integer3c;
 
 	//------------------------------------------------------------------------------------ $integer3d
 	/**
@@ -249,7 +250,7 @@ class Test extends Tests\Test
 	 * @max_value 4294967295
 	 * @var integer
 	 */
-	public $integer3d;
+	public int $integer3d;
 
 	//------------------------------------------------------------------------------------ $integer3e
 	/**
@@ -259,14 +260,14 @@ class Test extends Tests\Test
 	 * @max_value 4294967296
 	 * @var integer
 	 */
-	public $integer3e;
+	public int $integer3e;
 
 	//------------------------------------------------------------------------------------- $integer4
 	/**
 	 * @assume bigint(18) unsigned
 	 * @var integer
 	 */
-	public $integer4;
+	public int $integer4;
 
 	//------------------------------------------------------------------------------------- $integer5
 	/**
@@ -274,14 +275,14 @@ class Test extends Tests\Test
 	 * @signed
 	 * @var integer
 	 */
-	public $integer5;
+	public int $integer5;
 
 	//--------------------------------------------------------------------------------- propertyTests
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property_prefix string @values decimal, integer
+	 * @throws ReflectionException
 	 */
-	protected function propertyTests($property_prefix)
+	protected function propertyTests(string $property_prefix)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$property_type_to_mysql = (new Reflection_Method(
@@ -300,12 +301,18 @@ class Test extends Tests\Test
 	}
 
 	//----------------------------------------------------------------------------------- testDecimal
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testDecimal()
 	{
 		$this->propertyTests('decimal');
 	}
 
 	//----------------------------------------------------------------------------------- testInteger
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testInteger()
 	{
 		$this->propertyTests('integer');

@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Tests\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
@@ -24,16 +25,16 @@ trait Has_Dao_Mock
 	/**
 	 * @var Dao\Mysql\Link|null
 	 */
-	private $link = null;
+	private Dao\Mysql\Link|null $link = null;
 
 	//------------------------------------------------------------------------------------ $link_mock
 	/**
 	 * @var Dao\Mysql\Link|MockObject|null
 	 */
-	public $link_mock = null;
+	public Dao\Mysql\Link|MockObject|null $link_mock = null;
 
 	//----------------------------------------------------------------------------------------- setUp
-	protected function setUp(): void
+	protected function setUp() : void
 	{
 		$this->link_mock = $this->createMock(Dao\Mysql\Link::class);
 		$this->link      = Dao::current();
@@ -41,7 +42,7 @@ trait Has_Dao_Mock
 	}
 
 	//-------------------------------------------------------------------------------------- tearDown
-	protected function tearDown(): void
+	protected function tearDown() : void
 	{
 		Dao::current($this->link);
 	}

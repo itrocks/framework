@@ -17,7 +17,7 @@ class Day extends Column
 	 * @param $property_path string the property path
 	 * @return string
 	 */
-	public function toSql(With_Build_Column $builder, $property_path)
+	public function toSql(With_Build_Column $builder, string $property_path) : string
 	{
 		return $this->quickSql($builder, $property_path, 'DAY');
 	}

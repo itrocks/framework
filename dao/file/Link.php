@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Sql\Column;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Default_List_Data;
 use ITRocks\Framework\Tools\Files;
 use ITRocks\Framework\Tools\List_Data;
 
@@ -29,15 +30,16 @@ class Link extends Identifier_Map
 	 *
 	 * @var string
 	 */
-	private $path;
+	private string $path;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Construct a new File link into given path
 	 *
+	 * @noinspection PhpTypedPropertyMightBeUninitializedInspection $this->path must be configured
 	 * @param $parameters string[] ['path' => $local_storage_path]
 	 */
-	public function __construct($parameters = [])
+	public function __construct(array $parameters = [])
 	{
 		if ($parameters) {
 			foreach ($parameters as $parameter => $value) {
@@ -45,7 +47,7 @@ class Link extends Identifier_Map
 			}
 			Files::mkdir($this->path, 0700);
 		}
-		if (substr($this->path, -1) !== SL) {
+		if (!str_ends_with($this->path, SL)) {
 			$this->path .= SL;
 		}
 	}
@@ -54,12 +56,14 @@ class Link extends Identifier_Map
 	/**
 	 * Count the number of elements that match filter
 	 *
-	 * @param $what       object|string|array source object, class name or properties for filter
-	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @param $what       array|object|string source object, class name or properties for filter
+	 * @param $class_name string|null must be set if $what is a filter array instead of an object
 	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return integer
 	 */
-	public function count($what, $class_name = null, $options = []) : int
+	public function count(
+		array|object|string $what, string $class_name = null, array|Option $options = []
+	) : int
 	{
 		// TODO: Implement count() method.
 		return 0;
@@ -70,9 +74,9 @@ class Link extends Identifier_Map
 	 * Create a storage space for $class_name objects
 	 *
 	 * @param $class_name string
-	 * @return boolean true if storage was created or updated, false if it was already up to date
+	 * @return boolean true if storage was created or updated, false if it was already up-to-date
 	 */
-	public function createStorage($class_name)
+	public function createStorage(string $class_name) : bool
 	{
 		// TODO: Implement createStorage() method.
 		return false;
@@ -88,7 +92,7 @@ class Link extends Identifier_Map
 	 * @param $object object object to delete from data source
 	 * @return boolean true if deleted
 	 */
-	public function delete($object)
+	public function delete(object $object) : bool
 	{
 		// TODO: Implement delete() method.
 		return false;
@@ -107,12 +111,14 @@ class Link extends Identifier_Map
 	/**
 	 * Returns the list of properties of class $class that are stored into data link
 	 *
-	 * If data link stores properties not existing into $class, they are listed too, as if they where official properties of $class, but they storage object is a Sql\Column and not a Reflection_Property.
+	 * If data link stores properties not existing into $class, they are listed too, as if they were
+	 * official properties of $class, but they storage object is a Sql\Column and not a
+	 * Reflection_Property.
 	 *
-	 * @param $class string|Reflection_Class
+	 * @param $class Reflection_Class
 	 * @return Reflection_Property[]|Column[]
 	 */
-	public function getStoredProperties($class)
+	public function getStoredProperties(Reflection_Class $class) : array
 	{
 		// TODO: Implement getStoredProperties() method.
 		return [];
@@ -124,7 +130,7 @@ class Link extends Identifier_Map
 	 * @param $property_name string the name of the property
 	 * @return string
 	 */
-	public function propertyFileName($object, $property_name)
+	public function propertyFileName(object $object, string $property_name) : string
 	{
 		return $this->path
 			. $this->storeNameOf(get_class($object)) . SL
@@ -135,11 +141,13 @@ class Link extends Identifier_Map
 	/**
 	 * Read an object from data source
 	 *
-	 * @param $identifier integer|object identifier for the object, or an object to re-read
-	 * @param $class_name string class for read object. Useless if $identifier is an object
-	 * @return object an object of class objectClass, read from data source, or null if nothing found
+	 * @param $identifier integer|T identifier for the object, or an object to re-read
+	 * @param $class_name class-string<T>|null class for read object. Useless if $identifier is an
+	 *                    object
+	 * @return ?T an object of class objectClass, read from data source, or null if nothing found
+	 * @template T
 	 */
-	public function read($identifier, $class_name = null)
+	public function read(mixed $identifier, string $class_name = null) : ?object
 	{
 		// TODO: Implement read() method.
 		return null;
@@ -149,11 +157,12 @@ class Link extends Identifier_Map
 	/**
 	 * Read all objects of a given class from data source
 	 *
-	 * @param $class_name string class name of read objects
+	 * @param $class_name class-string<T> class name of read objects
 	 * @param $options    Option|Option[] some options for advanced read
-	 * @return object[] a collection of read objects
+	 * @return T[] a collection of read objects
+	 * @template T
 	 */
-	public function readAll($class_name, $options = [])
+	public function readAll(string $class_name, array|Option $options = []) : array
 	{
 		// TODO: Implement readAll() method.
 		return [];
@@ -166,9 +175,9 @@ class Link extends Identifier_Map
 	 *
 	 * @param $object        object object from which to read the value of the property
 	 * @param $property_name string the name of the property
-	 * @return mixed the read value for the property read from the data link. null if no value stored
+	 * @return ?string read value for the property read from the data link, null if no value stored
 	 */
-	public function readProperty($object, $property_name)
+	public function readProperty(object $object, string $property_name) : ?string
 	{
 		$file_name = $this->propertyFileName($object, $property_name);
 		return (is_file($file_name)) ? file_get_contents($file_name) : null;
@@ -179,11 +188,12 @@ class Link extends Identifier_Map
 	 * Replace all references to $replaced by references to $replacement into the database.
 	 * Already loaded objects will not be changed.
 	 *
-	 * @param $replaced    object
-	 * @param $replacement object
+	 * @param $replaced    T
+	 * @param $replacement T
 	 * @return boolean true if replacement has been done, false if something went wrong
+	 * @template T
 	 */
-	public function replaceReferences($replaced, $replacement)
+	public function replaceReferences(object $replaced, object $replacement) : bool
 	{
 		// TODO: Implement replaceReferences() method.
 		return false;
@@ -193,16 +203,25 @@ class Link extends Identifier_Map
 	/**
 	 * Search objects from data source
 	 *
-	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate() in order to initialize all properties as unset and build a correct search object.
-	 * If some properties are an not-loaded objects, the search will be done on the object identifier, without joins to the linked object.
-	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
+	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate() in
+	 * order to initialize all properties as unset and build a correct search object.
+	 * If some properties are an not-loaded objects, the search will be done on the object identifier,
+	 * without joins to the linked object.
+	 * If some properties are loaded objects : if the object comes from a read, the search will be
+	 * done on the object identifier, without join. If object is not linked to data-link, the search
+	 * is done with the linked object as others search criterion.
 	 *
-	 * @param $what       object|array source object for filter, or filter array (need class_name) only set properties will be used for search
-	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @param $what       array|T|null source object for filter, or filter array
+	 *                    (need class_name) only set properties will be used for search
+	 * @param $class_name class-string<T>|null must be set if is $what is a filter array instead of an
+	 *                    object
 	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return object[] a collection of read objects
+	 * @template T
 	 */
-	public function search($what, $class_name = null, $options = [])
+	public function search(
+		array|object|null $what, string $class_name = null, array|Option $options = []
+	) : array
 	{
 		// TODO: Implement search() method.
 		return [];
@@ -212,17 +231,24 @@ class Link extends Identifier_Map
 	/**
 	 * Read selected columns only from data source, using optional filter
 	 *
-	 * @param $class         string class for the read object
+	 * @param $class         class-string<T> class for the read object
 	 * @param $properties    string[]|string|Column[] the list of property paths : only those
-	 *        properties will be read.
-	 * @param $filter_object object|array source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
+	 *                       properties will be read.
+	 * @param $filter_object array|T|null source object for filter, set properties will be used
+	 *                       for search. Can be an array associating properties names to matching
+	 *                       search value too.
 	 * @param $options       Option|Option[] some options for advanced search
-	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
+	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the
+	 *                   same order than columns.
+	 * @template T
 	 */
-	public function select($class, $properties, $filter_object = null, $options = [])
+	public function select(
+		string $class, array|string $properties, array|object $filter_object = null,
+		array|Option $options = []
+	) : List_Data
 	{
 		// TODO: Implement select() method.
-		return null;
+		return new Default_List_Data($class, []);
 	}
 
 	//-------------------------------------------------------------------------------------- truncate
@@ -232,7 +258,7 @@ class Link extends Identifier_Map
 	 *
 	 * @param $class_name string
 	 */
-	public function truncate($class_name)
+	public function truncate(string $class_name)
 	{
 		// TODO: Implement truncate() method
 	}
@@ -245,11 +271,12 @@ class Link extends Identifier_Map
 	 * If object was not originally read from data source nor linked to it using replace(), a new
 	 * record will be written into data source using this object's data.
 	 *
-	 * @param $object  object object to write into data source
+	 * @param $object  T object to write into data source
 	 * @param $options Option|Option[] some options for advanced write
-	 * @return object the written object
+	 * @return ?T the written object
+	 * @template T
 	 */
-	public function write($object, $options = [])
+	public function write(object $object, array|object $options = []) : ?object
 	{
 		// TODO: Implement write() method.
 		return null;
@@ -264,10 +291,10 @@ class Link extends Identifier_Map
 	 * @param $property_name string the name of the property
 	 * @param $value         mixed if set (recommended), the value to be stored. default in $object
 	 */
-	public function writeProperty($object, $property_name, $value = null)
+	public function writeProperty(object $object, string $property_name, mixed $value = null)
 	{
 		$file_name = $this->propertyFileName($object, $property_name);
-		$value = isset($value) ? $value : $object->$property_name;
+		$value     = $value ?? $object->$property_name;
 		if (isset($value)) {
 			Files::mkdir(lLastParse($file_name, SL), 0700);
 			file_put_contents($file_name, $value);

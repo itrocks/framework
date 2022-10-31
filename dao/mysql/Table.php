@@ -14,37 +14,37 @@ class Table implements Sql\Table
 	 * @values 'ARCHIVE', 'BDB', 'CSV', 'FEDERATED', 'InnoDB', 'MyISAM', 'MEMORY', 'MERGE', 'NDBCluster'
 	 * @var string
 	 */
-	private $Engine;
+	private string $Engine;
 
 	//----------------------------------------------------------------------------------------- $Name
 	/**
 	 * @var string
 	 */
-	private $Name;
+	private string $Name;
 
 	//-------------------------------------------------------------------------------------- $columns
 	/**
 	 * @var Column[] key is the column name
 	 */
-	private $columns;
+	private array $columns;
 
 	//--------------------------------------------------------------------------------- $foreign_keys
 	/**
 	 * @var Foreign_Key[] key is the column name
 	 */
-	private $foreign_keys;
+	private array $foreign_keys = [];
 
 	//-------------------------------------------------------------------------------------- $indexes
 	/**
 	 * @var Index[] key is the index name
 	 */
-	private $indexes;
+	private array $indexes = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name string
+	 * @param $name string|null
 	 */
-	public function __construct($name = null)
+	public function __construct(string $name = null)
 	{
 		if (isset($name)) {
 			$this->Name   = $name;
@@ -88,7 +88,7 @@ class Table implements Sql\Table
 	 * @param $name string
 	 * @return Column
 	 */
-	public function getColumn($name)
+	public function getColumn(string $name) : Column
 	{
 		return $this->columns[$name];
 	}
@@ -97,7 +97,7 @@ class Table implements Sql\Table
 	/**
 	 * @return Column[]
 	 */
-	public function getColumns()
+	public function getColumns() : array
 	{
 		return $this->columns;
 	}
@@ -106,25 +106,25 @@ class Table implements Sql\Table
 	/**
 	 * @return Foreign_Key[]
 	 */
-	public function getForeignKeys()
+	public function getForeignKeys() : array
 	{
-		return is_array($this->foreign_keys) ? $this->foreign_keys : [];
+		return $this->foreign_keys;
 	}
 
 	//------------------------------------------------------------------------------------ getIndexes
 	/**
 	 * @return Index[]
 	 */
-	public function getIndexes()
+	public function getIndexes() : array
 	{
-		return is_array($this->indexes) ? $this->indexes : [];
+		return $this->indexes;
 	}
 
 	//--------------------------------------------------------------------------------------- getName
 	/**
 	 * @return string
 	 */
-	public function getName()
+	public function getName() : string
 	{
 		return $this->Name;
 	}
@@ -133,7 +133,7 @@ class Table implements Sql\Table
 	/**
 	 * @return string
 	 */
-	public function getSqlPostfix()
+	public function getSqlPostfix() : string
 	{
 		return ' ENGINE=' . $this->Engine;
 	}
@@ -143,7 +143,7 @@ class Table implements Sql\Table
 	 * @param $name string
 	 * @return boolean
 	 */
-	public function hasColumn($name)
+	public function hasColumn(string $name) : bool
 	{
 		return isset($this->columns[$name]);
 	}

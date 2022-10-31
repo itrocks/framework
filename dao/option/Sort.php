@@ -73,14 +73,14 @@ class Sort implements Option
 	 */
 	public function addSortColumn(string $property_path, int $sort_columns_count = 3)
 	{
-		if (in_array($property_path, $this->columns)) {
+		if (in_array($property_path, $this->columns, true)) {
 			unset($this->columns[array_search($property_path, $this->columns)]);
 		}
 		array_unshift($this->columns, $property_path);
 		$this->columns = array_slice($this->columns, 0, $sort_columns_count);
 		// remove reverse of removed columns
 		foreach ($this->reverse as $key => $property_path) {
-			if (!in_array($property_path, $this->columns)) {
+			if (!in_array($property_path, $this->columns, true)) {
 				unset($this->reverse[$key]);
 			}
 		}
@@ -165,10 +165,16 @@ class Sort implements Option
 					$column    = $property_name . DOT . $sub_column;
 					$columns[] = $column;
 					if (!isset($lock_reverse[$column])) {
-						if (in_array($property_name, $this->reverse) && !in_array($column, $this->reverse)) {
+						if (
+							in_array($property_name, $this->reverse, true)
+							&& !in_array($column, $this->reverse, true)
+						) {
 							$this->reverse[] = $column;
 						}
-						elseif (in_array($column, $this->reverse) && !in_array($property_name, $this->reverse)) {
+						elseif (
+							in_array($column, $this->reverse, true)
+							&& !in_array($property_name, $this->reverse, true)
+						) {
 							unset($this->reverse[array_search($column, $this->reverse)]);
 						}
 					}
@@ -209,7 +215,7 @@ class Sort implements Option
 	 */
 	public function isReverse(string $property_path) : bool
 	{
-		if (in_array($property_path, $this->reverse)) {
+		if (in_array($property_path, $this->reverse, true)) {
 			return true;
 		}
 		foreach ($this->columns as $column) {

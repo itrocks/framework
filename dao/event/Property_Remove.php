@@ -15,7 +15,7 @@ class Property_Remove extends Delete
 	/**
 	 * @var Reflection_Property
 	 */
-	public $property;
+	public Reflection_Property $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -26,7 +26,8 @@ class Property_Remove extends Delete
 	 * @param $property  Reflection_Property
 	 */
 	public function __construct(
-		Data_Link $link, $object, $old_value, array &$options, Reflection_Property $property
+		Data_Link $link, object $object, object $old_value, array &$options,
+		Reflection_Property $property
 	) {
 		parent::__construct($link, $object, $old_value, $options);
 		$this->property = $property;

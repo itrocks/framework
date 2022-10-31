@@ -14,20 +14,15 @@ class Group_By implements Option
 	/**
 	 * @var string[]
 	 */
-	public $properties;
+	public array $properties = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $properties string[]|string
+	 * @param $properties string|string[]
 	 */
-	public function __construct($properties = null)
+	public function __construct(array|string $properties = null)
 	{
-		if (isset($properties)) {
-			$this->properties = is_array($properties) ? $properties : [$properties];
-		}
-		elseif (!$this->properties) {
-			$this->properties = [];
-		}
+		if (isset($properties)) $this->properties = is_array($properties) ? $properties : [$properties];
 	}
 
 }

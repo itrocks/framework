@@ -13,15 +13,15 @@ class Group_Concat extends Column
 
 	//--------------------------------------------------------------------------------------- $column
 	/**
-	 * @var Column
+	 * @var ?Column
 	 */
-	public $column = null;
+	public ?Column $column = null;
 
 	//------------------------------------------------------------------------------------- $distinct
 	/**
 	 * @var boolean
 	 */
-	public $distinct = true;
+	public bool $distinct = true;
 
 	//------------------------------------------------------------------------------------- $order_by
 	/**
@@ -29,7 +29,7 @@ class Group_Concat extends Column
 	 *
 	 * @var string[]
 	 */
-	public $order_by;
+	public array $order_by;
 
 	//------------------------------------------------------------------------------------ $separator
 	/**
@@ -37,14 +37,14 @@ class Group_Concat extends Column
 	 *
 	 * @var string
 	 */
-	public $separator;
+	public string $separator;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $separator string Separator for the concat @default ,
-	 * @param $column    Column
+	 * @param $separator Column|string|null Separator for the concat @default ,
+	 * @param $column    Column|null
 	 */
-	public function __construct($separator = null, Column $column = null)
+	public function __construct(Column|string $separator = null, Column $column = null)
 	{
 		$this->column    = ($separator instanceof Column) ? $separator : $column;
 		$this->separator = ($separator instanceof Column) ? null : $separator;
@@ -58,7 +58,7 @@ class Group_Concat extends Column
 	 * @param $property_path string the property path
 	 * @return string
 	 */
-	public function toSql(With_Build_Column $builder, $property_path)
+	public function toSql(With_Build_Column $builder, string $property_path) : string
 	{
 		$alias_property_path = $property_path;
 		if ($this->column instanceof Column) {
@@ -85,14 +85,13 @@ class Group_Concat extends Column
 			$separator = ' SEPARATOR ' . Value::escape($this->separator);
 		}
 
-		$sql = 'GROUP_CONCAT('
+		return 'GROUP_CONCAT('
 			. ($this->distinct ? 'DISTINCT ' : '')
 			. $group_concat_property
 			. ($order_by ? ' ORDER BY ' . join(', ', $order_by) : '')
-			. (isset($separator) ? $separator : '')
+			. ($separator ?? '')
 			. ')'
 			. $this->aliasSql($builder, $alias_property_path);
-		return $sql;
 	}
 
 }

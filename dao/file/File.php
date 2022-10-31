@@ -11,7 +11,6 @@ use ITRocks\Framework\Dao\File\Type_Builder;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Files;
-use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\View;
 
@@ -31,16 +30,16 @@ class File
 	 * @impacts hash, updated_on
 	 * @max_length 4000000000
 	 * @setter
-	 * @var string
+	 * @var ?string Null if the file does not exist (no content)
 	 */
-	public $content;
+	public ?string $content = null;
 
 	//----------------------------------------------------------------------------------------- $hash
 	/**
 	 * @getter
 	 * @var string
 	 */
-	public $hash;
+	public string $hash = '';
 
 	//-------------------------------------------------------------------------- $temporary_file_name
 	/**
@@ -50,7 +49,7 @@ class File
 	 * @setter
 	 * @var string
 	 */
-	public $temporary_file_name;
+	public string $temporary_file_name = '';
 
 	//----------------------------------------------------------------------------------- $updated_on
 	/**
@@ -58,17 +57,17 @@ class File
 	 * @mandatory
 	 * @var Date_Time
 	 */
-	public $updated_on;
+	public Date_Time $updated_on;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $temporary_file_name string
+	 * @param $temporary_file_name string|null
 	 */
-	public function __construct($temporary_file_name = null)
+	public function __construct(string $temporary_file_name = null)
 	{
 		if (isset($temporary_file_name)) {
-			if (!isset($this->name)) {
+			if (empty($this->name)) {
 				$this->name = rLastParse($temporary_file_name, SL, 1, true);
 			}
 			$this->temporary_file_name = $temporary_file_name;
@@ -85,6 +84,7 @@ class File
 	 */
 	protected function calcHash()
 	{
+		/** @noinspection PhpExpressionResultUnusedInspection force @getter call */
 		$this->content;
 		$this->hash = isset($this->content) ? md5($this->content) : null;
 	}
@@ -93,11 +93,11 @@ class File
 	/**
 	 * Gets $this->content, or load it from temporary file name if not set
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	public function getContent()
+	public function getContent() : ?string
 	{
-		if (isset($this->temporary_file_name) && !isset($this->content)) {
+		if (!empty($this->temporary_file_name) && !isset($this->content)) {
 			$this->content = file_exists($this->temporary_file_name)
 				? file_get_contents($this->temporary_file_name)
 				: null;
@@ -110,7 +110,7 @@ class File
 	 * @param $errors string[]
 	 * @return array Two dimensional array (keys are row, column)
 	 */
-	public function getCsvContent(array &$errors = [])
+	public function getCsvContent(array &$errors = []) : array
 	{
 		return (new Spreadsheet_File)->readCsvFile($this->temporary_file_name, $errors);
 	}
@@ -119,11 +119,12 @@ class File
 	/**
 	 * Gets $hash, or calculate it from content if not set
 	 *
+	 * @noinspection PhpUnused @getter
 	 * @return string
 	 */
-	protected function getHash()
+	protected function getHash() : string
 	{
-		if (!isset($this->hash)) {
+		if (empty($this->hash)) {
 			$this->calcHash();
 		}
 		return $this->hash;
@@ -137,7 +138,7 @@ class File
 	 * @noinspection PhpUnused @getter
 	 * @return string
 	 */
-	protected function getTemporaryFileName()
+	protected function getTemporaryFileName() : string
 	{
 		if (
 			isset($this->content)
@@ -153,26 +154,13 @@ class File
 		return $this->temporary_file_name;
 	}
 
-	//--------------------------------------------------------------------------- getTemporaryFileUri
-	/**
-	 * Gets the temporary file URI, relative to the document root
-	 *
-	 * @deprecated I don't know what it is useful for
-	 * @noinspection PhpUnused @getter
-	 * @return string
-	 */
-	public function getTemporaryFileUri()
-	{
-		return Paths::$project_uri . SL . $this->temporary_file_name;
-	}
-
 	//--------------------------------------------------------------------------------------- getType
 	/**
 	 * @return Type
 	 */
-	public function getType()
+	public function getType() : Type
 	{
-		return Type_Builder::build($this->name ?: '');
+		return Type_Builder::build($this->name);
 	}
 
 	//------------------------------------------------------------------------------------------ link
@@ -182,18 +170,18 @@ class File
 	 * The file will be stored into a server-side local temporary storage, to be available by the link
 	 *
 	 * @param $feature    string
-	 * @param $parameters string|string[]|null additional link parameters
+	 * @param $parameters mixed additional link parameters
 	 * @return string
 	 */
-	public function link($feature = Feature::F_OUTPUT, $parameters = [])
+	public function link(string $feature = Feature::F_OUTPUT, mixed $parameters = []) : string
 	{
 		$hash = $this->nameHash();
 		/** @var $session_files Session_File\Files */
 		$session_files               = Session::current()->get(Session_File\Files::class, true);
 		$session_files->files[$hash] = $this;
 
-		if (!is_array($parameters)) {
-			$parameters = isset($parameters) ? [$parameters] : [];
+		if (isset($parameters) && !is_array($parameters)) {
+			$parameters = [$parameters];
 		}
 		$parameters = array_merge([$hash], $parameters);
 
@@ -204,7 +192,7 @@ class File
 	/**
 	 * @return string
 	 */
-	public function nameHash()
+	public function nameHash() : string
 	{
 		return sha1($this->name ?: $this->temporary_file_name ?: '');
 	}
@@ -219,7 +207,7 @@ class File
 	 * @param $size integer
 	 * @return string
 	 */
-	public function previewLink($size = 22)
+	public function previewLink(int $size = 22) : string
 	{
 		$image_file = $this;
 		if (!$this->getType()->is('image')) {
@@ -240,9 +228,9 @@ class File
 
 	//------------------------------------------------------------------------------------ setContent
 	/**
-	 * @param $content string
+	 * @param $content ?string
 	 */
-	protected function setContent($content)
+	protected function setContent(?string $content)
 	{
 		$old_hash      = $this->hash;
 		$this->content = $content;
@@ -258,7 +246,7 @@ class File
 	 * @noinspection PhpUnused @getter
 	 * @param $temporary_file_name string
 	 */
-	protected function setTemporaryFileName($temporary_file_name)
+	protected function setTemporaryFileName(string $temporary_file_name)
 	{
 		if ($temporary_file_name && file_exists($temporary_file_name)) {
 			$this->content = null;
@@ -270,7 +258,7 @@ class File
 	/**
 	 * @return integer
 	 */
-	public function size()
+	public function size() : int
 	{
 		return filesize($this->temporary_file_name);
 	}

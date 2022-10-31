@@ -12,9 +12,10 @@ trait Has_Name
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @mandatory
-	 * @var string
+	 * @todo null value should disappear, as it is mandatory, but we must update serialized objects
+	 * @var ?string
 	 */
-	public $name;
+	public ?string $name = '';
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -22,7 +23,7 @@ trait Has_Name
 	 */
 	public function __toString() : string
 	{
-		return strval($this->name);
+		return $this->name;
 	}
 
 }

@@ -23,7 +23,7 @@ interface Key extends Field
 	 *
 	 * @return string
 	 */
-	public function getSqlType();
+	public function getSqlType() : string;
 
 	//----------------------------------------------------------------------------------------- toSql
 	/**
@@ -31,6 +31,6 @@ interface Key extends Field
 	 *
 	 * @return string
 	 */
-	public function toSql();
+	public function toSql() : string;
 
 }

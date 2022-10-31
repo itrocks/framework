@@ -88,7 +88,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	 * Called each time after a mysql_query() call is done : log the query and its result
 	 *
 	 * @param $object Contextual_Mysqli
-	 * @param $query string
+	 * @param $query  string
 	 * @param $result boolean|mysqli_result
 	 */
 	public function afterQuery(Contextual_Mysqli $object, string $query, bool|mysqli_result $result)
@@ -149,7 +149,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 			Builder::UPDATE
 				=> '#> ' . $mysqli->affected_rows . LF,
 			Builder::INSERT
-				=> (($mysqli->affected_rows == 1) && $mysqli->insert_id)
+				=> (($mysqli->affected_rows === 1) && $mysqli->insert_id)
 					? '#+ ' . $mysqli->insert_id . LF
 					: '#> ' . $mysqli->affected_rows . LF,
 			Builder::SELECT

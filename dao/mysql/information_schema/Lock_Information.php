@@ -36,11 +36,11 @@ EOT;
 	/**
 	 * @var Link
 	 */
-	protected $link;
+	protected Link $link;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $link Link
+	 * @param $link Link|null
 	 */
 	public function __construct(Link $link = null)
 	{
@@ -52,11 +52,13 @@ EOT;
 	 * Which objects does this object lock ?
 	 *
 	 * @param $object        object
-	 * @param $property_name string If set, check only locks from this property
+	 * @param $property_name string|null If set, check only locks from this property
 	 * @param $rule          string @values Rule::const
 	 * @return Lock_Objects[]
 	 */
-	public function whoIsLockedBy($object, $property_name = null, $rule = Rule::DELETE)
+	public function whoIsLockedBy(
+		object $object, string $property_name = null, string $rule = Rule::DELETE
+	) : array
 	{
 		// TODO
 		return [];
@@ -71,7 +73,7 @@ EOT;
 	 * @param $rule   string @values Rule::const
 	 * @return Lock_Objects[]
 	 */
-	public function whoLocks($object, $rule = Rule::DELETE)
+	public function whoLocks(object $object, string $rule = Rule::DELETE) : array
 	{
 		$class_name   = get_class($object);
 		$lock_objects = [];
@@ -96,7 +98,7 @@ EOT;
 			$class_name = $dependency->class_name;
 			// TODO Move this search into a common method to get the property name from a column name
 			$property_name = $constraint->column_name;
-			if (substr($property_name, 0, 3) === 'id_') {
+			if (str_starts_with($property_name, 'id_')) {
 				$property_name = substr($property_name, 3);
 			}
 			/** @noinspection PhpUnhandledExceptionInspection */

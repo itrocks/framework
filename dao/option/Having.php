@@ -14,7 +14,7 @@ class Having implements Option
 	/**
 	 * @var array
 	 */
-	public $conditions;
+	public array $conditions;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

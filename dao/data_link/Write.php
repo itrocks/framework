@@ -25,29 +25,29 @@ abstract class Write
 	/**
 	 * @var Identifier_Map
 	 */
-	protected $link;
+	protected Identifier_Map $link;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
-	 * @var object
+	 * @var ?object
 	 */
-	public $object;
+	public ?object $object;
 
 	//-------------------------------------------------------------------------------------- $options
 	/**
 	 * @var Option[]
 	 */
-	protected $options;
+	protected array $options;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Write constructor
 	 *
 	 * @param $link    Identifier_Map
-	 * @param $object  object
+	 * @param $object  ?object
 	 * @param $options Option[]
 	 */
-	public function __construct(Identifier_Map $link, $object, array $options)
+	public function __construct(Identifier_Map $link, ?object $object, array $options)
 	{
 		$this->link    = $link;
 		$this->object  = $object;
@@ -61,13 +61,13 @@ abstract class Write
 	 * @param $options                Option[]
 	 * @param $after_write_annotation string @values after_create, after_update, after_write
 	 */
-	protected function afterWrite($object, array &$options, $after_write_annotation)
+	protected function afterWrite(object $object, array &$options, string $after_write_annotation)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		$class = new Reflection_Class($object);
 		/** @var $after_writes Method_Annotation[] */
 		$after_writes = $class->getAnnotations($after_write_annotation);
-		if (in_array($after_write_annotation, [self::AFTER_CREATE, self::AFTER_UPDATE])) {
+		if (in_array($after_write_annotation, [self::AFTER_CREATE, self::AFTER_UPDATE], true)) {
 			$after_writes = array_merge($after_writes, $class->getAnnotations(self::AFTER_WRITE));
 		}
 		Method_Annotation::callAll($after_writes, $object, [$this->link, &$options]);
@@ -82,13 +82,14 @@ abstract class Write
 	 *                                 before_writes
 	 * @return boolean
 	 */
-	public function beforeWrite($object, array &$options, $before_write_annotation)
+	public function beforeWrite(object $object, array &$options, string $before_write_annotation)
+		: bool
 	{
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		$class = new Reflection_Class($object);
 		/** @var $before_writes Method_Annotation[] */
 		$before_writes = $class->getAnnotations($before_write_annotation);
-		if (in_array($before_write_annotation, [self::BEFORE_CREATE, self::BEFORE_UPDATE])) {
+		if (in_array($before_write_annotation, [self::BEFORE_CREATE, self::BEFORE_UPDATE], true)) {
 			$before_writes = array_merge($before_writes, $class->getAnnotations(self::BEFORE_WRITE));
 		}
 		if ($before_writes) {
@@ -119,8 +120,9 @@ abstract class Write
 	 * @param $before_write_annotation string @values before_create, before_update, before_write,
 	 *                                 before_writes
 	 */
-	public function beforeWriteComponents($object, $options, $before_write_annotation)
-	{
+	public function beforeWriteComponents(
+		object $object, array $options, string $before_write_annotation
+	) {
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($object))->getProperties() as $property) {
 			if (
@@ -154,7 +156,7 @@ abstract class Write
 	 * @param $object  object
 	 * @param $options Option[]
 	 */
-	protected function prepareAfterCommit($object, array $options)
+	protected function prepareAfterCommit(object $object, array $options)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		/** @var $after_commits Method_Annotation[] */

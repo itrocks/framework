@@ -17,13 +17,13 @@ class Post_Files
 	/**
 	 * @var string
 	 */
-	public $for_class_name;
+	public string $for_class_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $for_class_name string
+	 * @param $for_class_name string|null
 	 */
-	public function __construct($for_class_name = null)
+	public function __construct(string $for_class_name = null)
 	{
 		if (isset($for_class_name)) {
 			$this->for_class_name = $for_class_name;
@@ -100,7 +100,7 @@ class Post_Files
 						new Reflection_Property($this->for_class_name, $property_path . DOT . $key);
 						$property_path .= DOT . $key;
 					}
-					catch(ReflectionException $exception) {
+					catch(ReflectionException) {
 					}
 				}
 				if ($result_as_files) {
@@ -135,7 +135,7 @@ class Post_Files
 				$property   = new Reflection_Property($this->for_class_name, $property_path);
 				$file_class = $property->getType()->getElementTypeAsString();
 			}
-			catch (ReflectionException $exception) {
+			catch (ReflectionException) {
 			}
 		}
 		/** @noinspection PhpUnhandledExceptionInspection file class must be a valid class */

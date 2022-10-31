@@ -14,12 +14,14 @@ abstract class Table_Builder_Mysqli
 	 * Builds a Table or Table[] taken from database, using a mysqli connection
 	 *
 	 * @param $mysqli        mysqli
-	 * @param $table_name    string
-	 * @param $database_name string
+	 * @param $table_name    string|null
+	 * @param $database_name string|null
 	 * @return Table|Table[] will be a single table only if $table_name is a
 	 *         single table name without jokers characters
 	 */
-	public static function build(mysqli $mysqli, $table_name = null, $database_name = null)
+	public static function build(
+		mysqli $mysqli, string $table_name = null, string $database_name = null
+	) : array|Table
 	{
 		$tables = [];
 		$result = $mysqli->query(

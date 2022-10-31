@@ -13,13 +13,13 @@ class Key implements Option
 	/**
 	 * @var callable|string|string[]
 	 */
-	public $property_name;
+	public array|string $property_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $property_name callable|string|string[]
 	 */
-	public function __construct($property_name)
+	public function __construct(array|callable|string $property_name)
 	{
 		$this->property_name = $property_name;
 	}

@@ -20,7 +20,7 @@ class Duplicator
 	/**
 	 * @var Identifier_Map
 	 */
-	private $dao;
+	private Identifier_Map $dao;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -28,11 +28,11 @@ class Duplicator
 	 * The default data link will be Dao::current()
 	 * This works only for Identifier_Map data links
 	 *
-	 * @param $dao Identifier_Map
+	 * @param $dao Identifier_Map|null
 	 */
 	public function __construct(Identifier_Map $dao = null)
 	{
-		$this->dao = isset($dao) ? $dao : Dao::current();
+		$this->dao = $dao ?? Dao::current();
 	}
 
 	//------------------------------------------------------------------------------- createDuplicate
@@ -40,43 +40,47 @@ class Duplicator
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 */
-	public function createDuplicate($object)
+	public function createDuplicate(object $object)
 	{
-		if ($this->dao->getObjectIdentifier($object)) {
-			// duplicate @link Collection and Map properties values
-			$class_name = get_class($object);
-			/** @noinspection PhpUnhandledExceptionInspection get_class from object */
-			$class = new Reflection_Class($class_name);
-			$link  = Class_\Link_Annotation::of($class);
-			/** @noinspection PhpUnhandledExceptionInspection link annotation value must be valid */
-			$exclude_properties = $link->value
-				? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
-				: [];
-			foreach ($class->getProperties() as $property) {
-				if (!$property->getAnnotation('duplicate')->value) {
-					$property->setValue($object, $property->getDefaultValue());
-				}
-				elseif (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
-					$property_link = Link_Annotation::of($property);
-					// @link Collection : must disconnect objects
-					// @link Collection | Map : duplicate and remove reference to the parent id
-					if ($property_link->is(Link_Annotation::COLLECTION, Link_Annotation::MAP)) {
-						/** @noinspection PhpUnhandledExceptionInspection property from object and accessible */
-						$elements = $property->getValue($object);
-						if ($property_link->isCollection()) {
-							foreach ($elements as $element) {
-								$this->createDuplicate($element);
-							}
-						}
-						$this->removeCompositeFromComponents($elements, $class_name);
-					}
+		if (!$this->dao->getObjectIdentifier($object)) {
+			return;
+		}
+		// duplicate @link Collection and Map properties values
+		$class_name = get_class($object);
+		/** @noinspection PhpUnhandledExceptionInspection get_class from object */
+		$class = new Reflection_Class($class_name);
+		$link  = Class_\Link_Annotation::of($class);
+		/** @noinspection PhpUnhandledExceptionInspection link annotation value must be valid */
+		$exclude_properties = $link->value
+			? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
+			: [];
+		foreach ($class->getProperties() as $property) {
+			if (!$property->getAnnotation('duplicate')->value) {
+				$property->setValue($object, $property->getDefaultValue());
+				continue;
+			}
+			if ($property->isStatic() || in_array($property->name, $exclude_properties, true)) {
+				continue;
+			}
+			$property_link = Link_Annotation::of($property);
+			// @link Collection : must disconnect objects
+			// @link Collection | Map : duplicate and remove reference to the parent id
+			if (!$property_link->is(Link_Annotation::COLLECTION, Link_Annotation::MAP)) {
+				continue;
+			}
+			/** @noinspection PhpUnhandledExceptionInspection property from object and accessible */
+			$elements = $property->getValue($object);
+			if ($property_link->isCollection()) {
+				foreach ($elements as $element) {
+					$this->createDuplicate($element);
 				}
 			}
-			// duplicate object
-			$this->dao->disconnect($object);
-			// after duplicate
-			$this->onDuplicate($object, $class);
+			$this->removeCompositeFromComponents($elements, $class_name);
 		}
+		// duplicate object
+		$this->dao->disconnect($object);
+		// after duplicate
+		$this->onDuplicate($object, $class);
 	}
 
 	//----------------------------------------------------------------------------------- onDuplicate
@@ -86,11 +90,12 @@ class Duplicator
 	 * @param $object object
 	 * @param $class  Reflection_Class
 	 */
-	private function onDuplicate($object, Reflection_Class $class)
+	private function onDuplicate(object $object, Reflection_Class $class)
 	{
 		foreach (array_reverse($class->getAnnotations('duplicate')) as $on_duplicate) {
 			$callback = explode('::', $on_duplicate->value);
-			if (($callback[1] === true) || is_numeric($callback[1])) {
+			// is_numeric : probably '1' for true
+			if (is_numeric($callback[1])) {
 				$callback[1] = 'onDuplicate';
 			}
 			if (isA($object, $callback[0])) {
@@ -119,17 +124,19 @@ class Duplicator
 	 * @param $elements             object[]|Component[] the component objects
 	 * @param $composite_class_name string the composite class name
 	 */
-	private function removeCompositeFromComponents(array $elements, $composite_class_name)
+	private function removeCompositeFromComponents(array $elements, string $composite_class_name)
 	{
-		if (isA($element = reset($elements), Component::class)) {
-			$get_composite_property_method = [get_class($element), 'getCompositeProperty'];
-			$composite_property = call_user_func($get_composite_property_method, $composite_class_name);
-			if ($composite_property) {
-				foreach ($elements as $element) {
-					$id_property_name = 'id_' . $composite_property->name;
-					unset($element->$id_property_name);
-				}
-			}
+		if (!isA($element = reset($elements), Component::class)) {
+			return;
+		}
+		$get_composite_property_method = [get_class($element), 'getCompositeProperty'];
+		$composite_property = call_user_func($get_composite_property_method, $composite_class_name);
+		if (!$composite_property) {
+			return;
+		}
+		foreach ($elements as $element) {
+			$id_property_name = 'id_' . $composite_property->name;
+			unset($element->$id_property_name);
 		}
 	}
 

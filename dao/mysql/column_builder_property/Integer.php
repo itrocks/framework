@@ -58,13 +58,13 @@ class Integer
 
 	//------------------------------------------------------------------------------------------ type
 	/**
-	 * @param $max_length int|null
-	 * @param $min_value  int|null
-	 * @param $max_value  int|null
-	 * @param $signed     boolean|null
+	 * @param $max_length ?int
+	 * @param $min_value  ?int
+	 * @param $max_value  ?int
+	 * @param $signed     ?boolean
 	 * @return string
 	 */
-	public function type($max_length, $min_value, $max_value, $signed)
+	public function type(?int $max_length, ?int $min_value, ?int $max_value, ?bool $signed) : string
 	{
 		if ($min_value < 0) {
 			$signed = true;

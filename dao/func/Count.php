@@ -15,7 +15,7 @@ class Count extends Column
 	 *
 	 * @var boolean
 	 */
-	public $distinct = true;
+	public bool $distinct = true;
 
 	//----------------------------------------------------------------------------------------- toSql
 	/**
@@ -26,12 +26,11 @@ class Count extends Column
 	 * @param $property_path string the property path
 	 * @return string
 	 */
-	public function toSql(With_Build_Column $builder, $property_path)
+	public function toSql(With_Build_Column $builder, string $property_path) : string
 	{
 		$distinct = $this->distinct ? 'DISTINCT ' : '';
-		$sql = 'COUNT(' . $distinct . $builder->buildColumn($property_path, false) . ')'
+		return 'COUNT(' . $distinct . $builder->buildColumn($property_path, false) . ')'
 			. $this->aliasSql($builder, $property_path);
-		return $sql;
 	}
 
 }

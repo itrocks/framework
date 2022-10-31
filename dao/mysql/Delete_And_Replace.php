@@ -25,10 +25,10 @@ class Delete_And_Replace implements Registerable
 	 * @param $query string
 	 * @return integer
 	 */
-	private function extractId($query)
+	private function extractId(string $query) : int
 	{
 		$id = rLastParse($query, LF . 'WHERE id = ');
-		return is_numeric($id) ? intval($id) : null;
+		return is_numeric($id) ? intval($id) : 0;
 	}
 
 	//---------------------------------------------------------------------------------- onQueryError
@@ -37,12 +37,13 @@ class Delete_And_Replace implements Registerable
 	 * @param $query     string
 	 * @param $joinpoint Before_Method
 	 */
-	public function onQueryError(Contextual_Mysqli $object, $query, Before_Method $joinpoint)
+	public function onQueryError(Contextual_Mysqli $object, string $query, Before_Method $joinpoint)
 	{
 		if (
 			in_array(
 				$object->last_errno,
-				[Errors::ER_ROW_IS_REFERENCED, Errors::ER_ROW_IS_REFERENCED_2]
+				[Errors::ER_ROW_IS_REFERENCED, Errors::ER_ROW_IS_REFERENCED_2],
+				true
 			)
 			&& ($context = end($object->contexts))
 			&& is_string($context)

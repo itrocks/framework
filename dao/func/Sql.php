@@ -15,13 +15,13 @@ class Sql implements Where
 	/**
 	 * @var string
 	 */
-	protected $sql;
+	protected string $sql;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $sql string
 	 */
-	public function __construct($sql)
+	public function __construct(string $sql)
 	{
 		$this->sql = $sql;
 	}
@@ -33,7 +33,8 @@ class Sql implements Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
+	public function toHuman(Summary_Builder $builder, string $property_path, string $prefix = '')
+		: string
 	{
 		return '';
 	}
@@ -45,7 +46,7 @@ class Sql implements Where
 	 * @param $prefix        string column name prefix
 	 * @return string
 	 */
-	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
+	public function toSql(Builder\Where $builder, string $property_path, string $prefix = '') : string
 	{
 		return $this->sql;
 	}

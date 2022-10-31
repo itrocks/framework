@@ -12,7 +12,6 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\List_Data;
-use ITRocks\Framework\Tools\List_Row;
 
 /**
  * The Dao class enables direct access to the main Dao object of the application methods
@@ -30,13 +29,13 @@ class Dao implements Configurable
 	 *
 	 * @var Data_Link[]
 	 */
-	private static $list;
+	private static array $list;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration)
+	public function __construct(mixed $configuration)
 	{
 		if (isset($configuration[self::LINKS_LIST])) {
 			self::$list = $configuration[self::LINKS_LIST];
@@ -53,7 +52,7 @@ class Dao implements Configurable
 	 *
 	 * @return Option\Add
 	 */
-	public static function add()
+	public static function add() : Option\Add
 	{
 		return new Option\Add();
 	}
@@ -63,19 +62,17 @@ class Dao implements Configurable
 	 * Begin a transaction with the current data link (non-transactional SQL engines will do nothing
 	 * and return null)
 	 *
-	 * @return boolean|null true if begin succeeds, false if error, null if not a transactional SQL engine
+	 * @return ?boolean true if begin succeeds, false if error, null if not a transactional SQL engine
 	 * @see Transactional::begin()
 	 */
-	public static function begin()
+	public static function begin() : ?bool
 	{
 		$current = self::current();
 		if ($current instanceof Transactional) {
 			return $current->begin();
 		}
-		else {
-			$current->after_commit = [];
-			return null;
-		}
+		$current->after_commit = [];
+		return null;
 	}
 
 	//----------------------------------------------------------------------------------- cacheResult
@@ -85,7 +82,7 @@ class Dao implements Configurable
 	 *
 	 * @return Option\Cache_Result
 	 */
-	public static function cacheResult()
+	public static function cacheResult() : Option\Cache_Result
 	{
 		return new Option\Cache_Result();
 	}
@@ -97,7 +94,7 @@ class Dao implements Configurable
 	 * @param $store_name string
 	 * @return string[] Full class name with namespace
 	 */
-	public static function classNamesOf($store_name)
+	public static function classNamesOf(string $store_name) : array
 	{
 		return self::current()->classNamesOf($store_name);
 	}
@@ -107,32 +104,32 @@ class Dao implements Configurable
 	 * Commit a transaction using the current data link (non-transactional SQL engines will do nothing
 	 * and return null)
 	 *
-	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional SQL
-	 *                      engine
+	 * @return ?boolean true if commit succeeds, false if error, null if not a transactional SQL
+	 *                  engine
 	 * @see Transactional::commit()
 	 */
-	public static function commit()
+	public static function commit() : ?bool
 	{
 		$current = self::current();
 		if ($current instanceof Transactional) {
 			return $current->commit();
 		}
-		else {
-			$current->afterCommit();
-			return null;
-		}
+		$current->afterCommit();
+		return null;
 	}
 
 	//----------------------------------------------------------------------------------------- count
 	/**
 	 * Count the number of elements that match filter
 	 *
-	 * @param $what       object|string|array source object for filter, only set properties used
-	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @param $what       array|object|string source object for filter, only set properties used
+	 * @param $class_name string|null must be set if is $what is a filter array instead of a filter object
 	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return integer
 	 */
-	public static function count($what, $class_name = null, $options = []) : int
+	public static function count(
+		array|object|string $what, string $class_name = null, array|Option $options = []
+	) : int
 	{
 		return self::current()->count($what, $class_name, $options);
 	}
@@ -141,7 +138,7 @@ class Dao implements Configurable
 	/**
 	 * @return Option\Create_If_No_Result
 	 */
-	public static function createIfNoResult()
+	public static function createIfNoResult() : Option\Create_If_No_Result
 	{
 		return new Option\Create_If_No_Result();
 	}
@@ -155,7 +152,7 @@ class Dao implements Configurable
 	 * @param $class_name string
 	 * @return boolean true if storage was created or updated, false if it was already up to date
 	 */
-	public static function createStorage($class_name)
+	public static function createStorage(string $class_name) : bool
 	{
 		return self::current()->createStorage($class_name);
 	}
@@ -163,9 +160,9 @@ class Dao implements Configurable
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @param $set_current Data_Link|null
-	 * @return Data_Link|null
+	 * @return ?Data_Link
 	 */
-	public static function current(Data_Link $set_current = null) : Data_Link|null
+	public static function current(Data_Link $set_current = null) : ?Data_Link
 	{
 		/** @var $data_link Data_Link */
 		$data_link = self::pCurrent($set_current);
@@ -183,7 +180,7 @@ class Dao implements Configurable
 	 * @return boolean true if deleted
 	 * @see Data_Link::delete()
 	 */
-	public static function delete($object)
+	public static function delete(object $object) : bool
 	{
 		return self::current()->delete($object);
 	}
@@ -196,7 +193,7 @@ class Dao implements Configurable
 	 * @param $load_linked_objects boolean if true, load linked objects before disconnect
 	 * @see Data_Link::disconnect()
 	 */
-	public static function disconnect($object, $load_linked_objects = false)
+	public static function disconnect(object $object, bool $load_linked_objects = false)
 	{
 		self::current()->disconnect($object, $load_linked_objects);
 	}
@@ -204,8 +201,10 @@ class Dao implements Configurable
 	//-------------------------------------------------------------------------------------- distinct
 	/**
 	 * Gets a DAO distinct option, used to return only distinct (different) values
+	 *
+	 * @return Option\Distinct
 	 */
-	public static function distinct()
+	public static function distinct() : Option\Distinct
 	{
 		return new Option\Distinct();
 	}
@@ -216,7 +215,7 @@ class Dao implements Configurable
 	 *
 	 * @return Option\Double_Pass
 	 */
-	public static function doublePass()
+	public static function doublePass() : Option\Double_Pass
 	{
 		return new Option\Double_Pass();
 	}
@@ -231,7 +230,7 @@ class Dao implements Configurable
 	 * @param $properties string[]|string ...
 	 * @return Option\Exclude
 	 */
-	public static function exclude($properties)
+	public static function exclude(array|string... $properties) : Option\Exclude
 	{
 		return new Option\Exclude(func_get_args());
 	}
@@ -257,7 +256,6 @@ class Dao implements Configurable
 			}
 			return;
 		}
-		$set_accessible_false = false;
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($object))->getProperties() as $property) {
 			if (!$keep_composite && $property->getAnnotation('composite')->value) {
@@ -289,22 +287,20 @@ class Dao implements Configurable
 	 * If no data link matches $dao_identifier or if its empty, gets the current default data link
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection verified $class_name configuration
-	 * @param $dao_identifier string
+	 * @param $dao_identifier string|null
 	 * @return Data_Link
 	 */
-	public static function get($dao_identifier)
+	public static function get(string $dao_identifier = null) : Data_Link
 	{
-		if (!empty($dao_identifier) && isset(self::$list[$dao_identifier])) {
-			$dao = self::$list[$dao_identifier];
-			if (is_array($dao)) {
-				$class_name = $dao[Configuration::CLASS_NAME];
-				unset($dao[Configuration::CLASS_NAME]);
-				/** @noinspection PhpUnhandledExceptionInspection verified $class_name */
-				$dao = self::$list[$dao_identifier] = Builder::create($class_name, [$dao]);
-			}
+		if (empty($dao_identifier) || !isset(self::$list[$dao_identifier])) {
+			return self::current();
 		}
-		else {
-			$dao = self::current();
+		$dao = self::$list[$dao_identifier];
+		if (is_array($dao)) {
+			$class_name = $dao[Configuration::CLASS_NAME];
+			unset($dao[Configuration::CLASS_NAME]);
+			/** @noinspection PhpUnhandledExceptionInspection verified $class_name */
+			$dao = self::$list[$dao_identifier] = Builder::create($class_name, [$dao]);
 		}
 		return $dao;
 	}
@@ -315,7 +311,7 @@ class Dao implements Configurable
 	 *
 	 * @return Data_Link[] key is the data list identifier (text, or empty for the main data list)
 	 */
-	public static function getList()
+	public static function getList() : array
 	{
 		return array_merge(['' => self::current()], self::$list);
 	}
@@ -329,14 +325,14 @@ class Dao implements Configurable
 	 * object's identifier. This enable you to get the property value id without reading the object
 	 * from the database.
 	 *
-	 * @param $object        object
-	 * @param $property_name string
+	 * @param $object        ?object
+	 * @param $property_name string|null
 	 * @return mixed
 	 */
-	public static function getObjectIdentifier($object, $property_name = null)
+	public static function getObjectIdentifier(?object $object, string $property_name = null) : mixed
 	{
 		$data_link = self::current();
-		return (($data_link instanceof Identifier_Map) && is_object($object))
+		return ($object && ($data_link instanceof Identifier_Map))
 			? $data_link->getObjectIdentifier($object, $property_name)
 			: null;
 	}
@@ -346,7 +342,7 @@ class Dao implements Configurable
 	 * @param $properties string[]|string|null
 	 * @return Option\Group_By
 	 */
-	public static function groupBy($properties = null)
+	public static function groupBy(array|string $properties = null) : Option\Group_By
 	{
 		return new Option\Group_By($properties);
 	}
@@ -356,7 +352,7 @@ class Dao implements Configurable
 	 * @param $conditions array
 	 * @return Option\Having
 	 */
-	public static function having(array $conditions = [])
+	public static function having(array $conditions = []) : Option\Having
 	{
 		return new Option\Having($conditions);
 	}
@@ -365,12 +361,12 @@ class Dao implements Configurable
 	/**
 	 * Returns true if object1 and object2 match the same stored object
 	 *
-	 * @param $object1 object
-	 * @param $object2 object
+	 * @param $object1 ?object
+	 * @param $object2 ?object
 	 * @param $strict  boolean if true, will consider @link object and non-@link object as different
 	 * @return boolean
 	 */
-	public static function is($object1, $object2, $strict = false)
+	public static function is(?object $object1, ?object $object2, bool $strict = false) : bool
 	{
 		return self::current()->is($object1, $object2, $strict);
 	}
@@ -381,7 +377,7 @@ class Dao implements Configurable
 	 * @return boolean
 	 * @see modify
 	 */
-	public static function isLinkedObjectModified($object)
+	public static function isLinkedObjectModified(object $object) : bool
 	{
 		return isset($object->_dao_modified_linked_object);
 	}
@@ -394,7 +390,7 @@ class Dao implements Configurable
 	 * @param $property_name callable|string|string[]
 	 * @return Option\Key;
 	 */
-	public static function key($property_name)
+	public static function key(array|callable|string $property_name) : Option\Key
 	{
 		return new Option\Key($property_name);
 	}
@@ -408,12 +404,12 @@ class Dao implements Configurable
 	 * Will return 10 read users objects, starting with the second read user
 	 * @example Dao::readAll('ITRocks\Framework\User', Dao::limit(10));
 	 * Will return the 10 first read users objects
-	 * @param $from  integer The offset of the first object to return
+	 * @param $from  integer|null The offset of the first object to return
 	 *               (or the maximum number of objects to return if $count is null)
-	 * @param $count integer The maximum number of objects to return
+	 * @param $count integer|null The maximum number of objects to return
 	 * @return Option\Limit
 	 */
-	public static function limit($from = null, $count = null)
+	public static function limit(int $from = null, int $count = null) : Option\Limit
 	{
 		return new Option\Limit($from, $count);
 	}
@@ -422,7 +418,7 @@ class Dao implements Configurable
 	/**
 	 * @return Option\Link_Class_Only
 	 */
-	public static function linkClassOnly()
+	public static function linkClassOnly() : Option\Link_Class_Only
 	{
 		return new Option\Link_Class_Only();
 	}
@@ -437,7 +433,7 @@ class Dao implements Configurable
 	 * @param $modified boolean true to enable 'modified, force write' ; false to disable it
 	 * @see Write::writeCollection
 	 */
-	public static function modifyLinkedObject($object, $modified = true)
+	public static function modifyLinkedObject(object $object, bool $modified = true)
 	{
 		if ($modified) {
 			$object->_dao_modified_linked_object = true;
@@ -457,7 +453,7 @@ class Dao implements Configurable
 	 * @param $properties string[]|string ...
 	 * @return Option\Only
 	 */
-	public static function only($properties)
+	public static function only(array|string... $properties)
 	{
 		return new Option\Only(func_get_args());
 	}
@@ -471,7 +467,7 @@ class Dao implements Configurable
 	 * @param $properties string[]|string ...
 	 * @return Option\Pre_Load
 	 */
-	public static function preLoad($properties)
+	public static function preLoad(array|string... $properties)
 	{
 		return new Option\Pre_Load(func_get_args());
 	}
@@ -480,13 +476,13 @@ class Dao implements Configurable
 	/**
 	 * Read an object from current data link
 	 *
-	 * @param $identifier integer|string|T identifier for the object, or an object to re-read
+	 * @param $identifier mixed|T identifier for the object, or an object to re-read
 	 * @param $class_name class-string<T>|null class for read object. Useless if $identifier is object
 	 * @return ?T an object of class objectClass, read from data source, or null if nothing found
 	 * @see Data_Link::read()
 	 * @template T
 	 */
-	public static function read(int|object|string $identifier, string $class_name = null) : ?object
+	public static function read(mixed $identifier, string $class_name = null) : ?object
 	{
 		return self::current()->read($identifier, $class_name);
 	}
@@ -510,9 +506,9 @@ class Dao implements Configurable
 	/**
 	 * Removes a data link which identifier is a string from the list of available data links
 	 *
-	 * @param $dao_identifier int|string
+	 * @param $dao_identifier string
 	 */
-	public static function remove(int|string $dao_identifier)
+	public static function remove(string $dao_identifier)
 	{
 		if (isset(self::$list[$dao_identifier])) {
 			unset(self::$list[$dao_identifier]);
@@ -578,19 +574,17 @@ class Dao implements Configurable
 	 * Rollback a transaction with the current data link (non-transactional SQL engines will do
 	 * nothing and return null)
 	 *
-	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional SQL
+	 * @return ?boolean true if commit succeeds, false if error, null if not a transactional SQL
 	 * engine
 	 * @see Transactional::rollback()
 	 */
-	public static function rollback()
+	public static function rollback() : ?bool
 	{
 		$current = self::current();
 		if ($current instanceof Transactional) {
 			return $current->rollback();
 		}
-		else {
-			return null;
-		}
+		return null;
 	}
 
 	//---------------------------------------------------------------------------------------- search
@@ -605,14 +599,18 @@ class Dao implements Configurable
 	 * done on the object identifier, without join. If object is not linked to data-link, the search
 	 * is done with the linked object as others search criterion.
 	 *
-	 * @param $what       object|array source object for filter, only set properties will be used for
-	 *                    search
-	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @param $what       array|T|null source object for filter, only set properties will be used
+	 *                    for search
+	 * @param $class_name class-string<T>|null must be set if is $what is a filter array instead of a
+	 *                    filter object
 	 * @param $options    Option|Option[] some options for advanced search
-	 * @return object[] a collection of read objects
+	 * @return T[] a collection of read objects
 	 * @see Data_Link::search()
+	 * @template T
 	 */
-	public static function search($what, $class_name = null, $options = [])
+	public static function search(
+		array|object|null $what, string $class_name = null, array|Option $options = []
+	) : array
 	{
 		return self::current()->search($what, $class_name, $options);
 	}
@@ -625,15 +623,17 @@ class Dao implements Configurable
 	 * It is highly recommended to use this search with primary keys properties values searches.
 	 * If several result exist, only one will be taken, the first on the list (may be random).
 	 *
-	 * @param $what       object|array source object for filter, only set properties will be used for
+	 * @param $what       array|T source object for filter, only set properties will be used for
 	 *                    search
-	 * @param $class_name class-string<T> must be set if is not a filter array
+	 * @param $class_name class-string<T>|null must be set if is not a filter array
 	 * @param $options    Option|Option[] some options for advanced search
-	 * @return T|null the found object, or null if no object was found
+	 * @return ?T the found object, or null if no object was found
 	 * @see Data_Link::searchOne()
 	 * @template T
 	 */
-	public static function searchOne($what, $class_name = null, $options = [])
+	public static function searchOne(
+		array|object $what, string $class_name = null, array|Option $options = []
+	) : ?object
 	{
 		return self::current()->searchOne($what, $class_name, $options);
 	}
@@ -642,17 +642,21 @@ class Dao implements Configurable
 	/**
 	 * Read selected columns only from data source, using optional filter
 	 *
-	 * @param $class         string class for the read object
+	 * @param $class         class-string<T> class for the read object
 	 * @param $properties    string[]|string|Func[] the list of the property paths : only those
 	 *                       properties will be read.
-	 * @param $filter_object object|array source object for filter, set properties will be used for
-	 *                       search. Can be an array associating properties names to matching
+	 * @param $filter_object array|T|null source object for filter, set properties will be used
+	 *                       for search. Can be an array associating properties names to matching
 	 *                       search value too.
 	 * @param $options       Option|Option[] some options for advanced search
-	 * @return List_Data|List_Row[] a list of read records. Each record values (may be objects) are
+	 * @return List_Data a list of read records. Each record values (may be objects) are
 	 *                       stored in the same order than columns.
+	 * @template T
 	 */
-	public static function select($class, $properties, $filter_object = null, $options = [])
+	public static function select(
+		string $class, array|string $properties, array|object $filter_object = null,
+		array|Option $options = []
+	) : List_Data
 	{
 		return self::current()->select($class, $properties, $filter_object, $options);
 	}
@@ -664,7 +668,7 @@ class Dao implements Configurable
 	 * @param $dao_identifier             string
 	 * @param $data_link_or_configuration Data_Link|string[]
 	 */
-	public static function set($dao_identifier, $data_link_or_configuration)
+	public static function set(string $dao_identifier, array|Data_Link $data_link_or_configuration)
 	{
 		self::$list[$dao_identifier] = $data_link_or_configuration;
 	}
@@ -678,12 +682,12 @@ class Dao implements Configurable
 	 *   ITRocks\Framework\User::class,
 	 *   Dao::sort(['first_name', 'last_name', 'city.country.name'])
 	 * );
-	 * @param $columns string|string[] A single or several column names.
+	 * @param $columns string|string[]|null A single or several column names.
 	 *                 If null, the value of annotations 'sort' or 'representative' will be taken as
 	 *                 defaults.
 	 * @return Option\Sort
 	 */
-	public static function sort($columns = null)
+	public static function sort(array|string $columns = null) : Option\Sort
 	{
 		return new Option\Sort($columns);
 	}
@@ -695,7 +699,7 @@ class Dao implements Configurable
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function storeNameOf($class_name)
+	public static function storeNameOf(string $class_name) : string
 	{
 		return self::current()->storeNameOf($class_name);
 	}
@@ -708,12 +712,12 @@ class Dao implements Configurable
 	 * @param $property Reflection_Property
 	 * @return boolean
 	 */
-	public static function storedAsForeign(Reflection_Property $property)
+	public static function storedAsForeign(Reflection_Property $property) : bool
 	{
 		$type = $property->getType();
 		return $type->isClass()
 			&& !$type->isDateTime()
-			&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']);
+			&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, ''], true);
 	}
 
 	//------------------------------------------------------------------------------------- timeLimit
@@ -724,7 +728,7 @@ class Dao implements Configurable
 	 * @param $time_limit integer Data link query execution time limit in seconds
 	 * @return Option\Time_Limit
 	 */
-	public static function timeLimit($time_limit = 0)
+	public static function timeLimit(int $time_limit = 0) : Option\Time_Limit
 	{
 		return new Option\Time_Limit($time_limit);
 	}
@@ -733,7 +737,7 @@ class Dao implements Configurable
 	/**
 	 * @return Option\Translate
 	 */
-	public static function translate()
+	public static function translate() : Option\Translate
 	{
 		return new Option\Translate();
 	}
@@ -745,7 +749,7 @@ class Dao implements Configurable
 	 *
 	 * @param $class_name string
 	 */
-	public static function truncate($class_name)
+	public static function truncate(string $class_name)
 	{
 		self::current()->truncate($class_name);
 	}
@@ -760,11 +764,11 @@ class Dao implements Configurable
 	 *
 	 * @param $object  T object to write into data source
 	 * @param $options Option|Option[] some options for advanced write
-	 * @return T|null the written object, if has been written
+	 * @return ?T the written object, if has been written
 	 * @see Data_Link::write()
 	 * @template T
 	 */
-	public static function write(object $object, array|Option $options = []) : object|null
+	public static function write(object $object, array|Option $options = []) : ?object
 	{
 		return self::current()->write($object, $options);
 	}

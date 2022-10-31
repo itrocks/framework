@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 use ITRocks\Framework\Dao\Data_Link\Object_To_Write_Array;
 use ITRocks\Framework\Dao\Event;
 use ITRocks\Framework\Dao\Event\Property_Add;
@@ -37,46 +38,46 @@ class Write extends Data_Link\Write
 	/**
 	 * @var string[]
 	 */
-	protected $exclude;
+	protected array $exclude;
 
 	//------------------------------------------------------------------------------------ $force_add
 	/**
 	 * @var boolean
 	 */
-	protected $force_add;
+	protected bool $force_add;
 
 	//---------------------------------------------------------------------------------- $id_property
 	/**
 	 * Identifier property name
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	protected $id_property;
+	protected ?string $id_property;
 
 	//----------------------------------------------------------------------------------------- $link
 	/**
 	 * @override
 	 * @var Link
 	 */
-	protected $link;
+	protected Identifier_Map $link;
 
 	//------------------------------------------------------------------------------ $link_class_only
 	/**
 	 * @var boolean
 	 */
-	protected $link_class_only;
+	protected bool $link_class_only;
 
 	//----------------------------------------------------------------------------------------- $only
 	/**
 	 * @var string[]
 	 */
-	protected $only;
+	protected array $only;
 
 	//------------------------------------------------------------------------------- $spread_options
 	/**
 	 * @var Option\Spreadable[]
 	 */
-	protected $spread_options;
+	protected array $spread_options;
 
 	//------------------------------------------------------------------------- addImpactedProperties
 	/**
@@ -95,7 +96,7 @@ class Write extends Data_Link\Write
 					foreach ($impact_annotation->values() as $impacted_property_name) {
 						if (
 							property_exists($class_name, $impacted_property_name)
-							&& !in_array($impacted_property_name, $this->only)
+							&& !in_array($impacted_property_name, $this->only, true)
 						) {
 							$impacted     = true;
 							$this->only[] = $impacted_property_name;
@@ -115,7 +116,7 @@ class Write extends Data_Link\Write
 	 * @param $annotations Method_Annotation[]
 	 * @return boolean
 	 */
-	protected function callEvent(Event $event, array $annotations)
+	protected function callEvent(Event $event, array $annotations) : bool
 	{
 		return Method_Annotation::callAll($annotations, $event->object, [$event]);
 	}
@@ -127,7 +128,7 @@ class Write extends Data_Link\Write
 	protected function parseOptions()
 	{
 		$this->exclude        = [];
-		$this->only           = null;
+		$this->only           = [];
 		$this->spread_options = [];
 		foreach ($this->options as $option) {
 			if ($option instanceof Option\Add) {
@@ -140,9 +141,7 @@ class Write extends Data_Link\Write
 				$this->link_class_only = true;
 			}
 			elseif ($option instanceof Option\Only) {
-				$this->only = isset($this->only)
-					? array_merge($this->only, $option->properties)
-					: $option->properties;
+				$this->only = array_merge($this->only, $option->properties);
 			}
 			if ($option instanceof Option\Spreadable) {
 				$this->spread_options[] = $option;
@@ -158,105 +157,106 @@ class Write extends Data_Link\Write
 	 * Run the write feature
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return object|null
+	 * @return ?object
 	 */
-	public function run()
+	public function run() : ?object
 	{
 		$new_object = !Dao::getObjectIdentifier($this->object);
-		if ($this->beforeWrite(
+		if (!$this->beforeWrite(
 			$this->object,
 			$this->options,
 			$new_object ? self::BEFORE_CREATE : self::BEFORE_UPDATE
 		)) {
-			$this->link->begin();
-			if (
-				Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])
-				&& !($this->object instanceof Has_History)
-			) {
-				$this->link->disconnect($this->object);
-			}
-			/** @noinspection PhpUnhandledExceptionInspection object */
-			$class             = new Link_Class($this->object);
-			$this->id_property = 'id';
-			$this->parseOptions();
-			do {
-				$link = Class_\Link_Annotation::of($class);
-				if ($link->value) {
-					$link_property = $link->getLinkClass()->getLinkProperty();
-					/** @noinspection PhpUnhandledExceptionInspection $link_property calculated from object */
-					$link_object = $link_property->getValue($this->object);
-					if (!$link_object) {
-						$id_link_property                = 'id_' . $link_property->name;
-						$this->object->$id_link_property = $this->link->write($link_object, $this->options);
-					}
-				}
-				$object_to_write_array
-					= (new Object_To_Write_Array($this->link, $this->object, $this->spread_options))
-					->setPropertiesFilters($class, $this->only, $this->exclude)
-					->build();
-				$write             = $object_to_write_array->array;
-				$write_collections = $object_to_write_array->collections;
-				$write_maps        = $object_to_write_array->maps;
-				$write_objects     = $object_to_write_array->objects;
-				$write_properties  = $object_to_write_array->properties;
-
-				$properties = $class->getProperties();
-				$properties = Replaces_Annotations::removeReplacedProperties($properties);
-				if ($write) {
-					$this->writeArray($write, $properties, $class);
-				}
-				foreach ($write_collections as $write) {
-					[$property, $value] = $write;
-					$this->writeCollection($property, $value);
-				}
-				foreach ($write_maps as $write) {
-					[$property, $value] = $write;
-					$this->spreadExcludeAndOnly(
-						$this->spread_options, $property->name, $this->exclude, $this->only
-					);
-					$this->writeMap($property, $value);
-				}
-				foreach ($write_objects as $write) {
-					[$property, $value] = $write;
-					$this->spreadExcludeAndOnly(
-						$this->spread_options, $property->name, $this->exclude, $this->only
-					);
-					$this->writeObject($property, $value);
-				}
-				foreach ($write_properties as $write) {
-					/** @var $dao Data_Link */
-					[$property, $value, $dao] = $write;
-					$dao->writeProperty($this->object, $property, $value);
-				}
-				// if link class : write linked object too
-				if ($link->value && !isset($this->link_class_only)) {
-					$this->id_property = ('id_' . $class->getCompositeProperty()->name);
-					/** @noinspection PhpUnhandledExceptionInspection link annotation value must be valid */
-					$class = new Link_Class($link->value);
-				}
-				else {
-					$class = $this->id_property = null;
-				}
-			} while (
-				$class
-				// TODO This will not work with objects containing properties with non-null default
-				&& !Null_Object::isNull($this->object, function($properties) use ($class) {
-					return Store_Annotation::storedPropertiesOnly(
-						Reflection_Property::filter($properties, $class->name)
-					);
-				})
-			);
-			$this->link->commit();
-			$this->afterWrite(
-				$this->object, $this->options, $new_object ? self::AFTER_CREATE : self::AFTER_UPDATE
-			);
-			// TODO HIGHEST remove this 'anti-crash-on-update' patch condition
-			if (method_exists($this, 'prepareAfterCommit')) {
-				$this->prepareAfterCommit($this->object, $this->options);
-			}
-			return $this->object;
+			return null;
 		}
-		return null;
+		$this->link->begin();
+		if (
+			Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])
+			&& !($this->object instanceof Has_History)
+		) {
+			$this->link->disconnect($this->object);
+		}
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$class             = new Link_Class($this->object);
+		$this->id_property = 'id';
+		$this->parseOptions();
+		do {
+			$link = Class_\Link_Annotation::of($class);
+			if ($link->value) {
+				$link_property = $link->getLinkClass()->getLinkProperty();
+				/** @noinspection PhpUnhandledExceptionInspection $link_property calculated from object */
+				$link_object = $link_property->getValue($this->object);
+				if (!$link_object) {
+					$id_link_property                = 'id_' . $link_property->name;
+					$this->object->$id_link_property = $this->link->write($link_object, $this->options);
+				}
+			}
+			$object_to_write_array
+				= (new Object_To_Write_Array($this->link, $this->object, $this->spread_options))
+				->setPropertiesFilters($class, $this->only, $this->exclude)
+				->build();
+			$write             = $object_to_write_array->array;
+			$write_collections = $object_to_write_array->collections;
+			$write_maps        = $object_to_write_array->maps;
+			$write_objects     = $object_to_write_array->objects;
+			$write_properties  = $object_to_write_array->properties;
+
+			$properties = $class->getProperties();
+			$properties = Replaces_Annotations::removeReplacedProperties($properties);
+			if ($write) {
+				$this->writeArray($write, $properties, $class);
+			}
+			foreach ($write_collections as $write) {
+				[$property, $value] = $write;
+				$this->writeCollection($property, $value);
+			}
+			foreach ($write_maps as $write) {
+				[$property, $value] = $write;
+				$this->spreadExcludeAndOnly(
+					$this->spread_options, $property->name, $this->exclude, $this->only
+				);
+				$this->writeMap($property, $value);
+			}
+			foreach ($write_objects as $write) {
+				[$property, $value] = $write;
+				$this->spreadExcludeAndOnly(
+					$this->spread_options, $property->name, $this->exclude, $this->only
+				);
+				$this->writeObject($property, $value);
+			}
+			foreach ($write_properties as $write) {
+				/** @var $dao Data_Link */
+				[$property, $value, $dao] = $write;
+				$dao->writeProperty($this->object, $property, $value);
+			}
+			// if link class : write linked object too
+			if ($link->value && !isset($this->link_class_only)) {
+				$this->id_property = ('id_' . $class->getCompositeProperty()->name);
+				/** @noinspection PhpUnhandledExceptionInspection link annotation value must be valid */
+				$class = new Link_Class($link->value);
+			}
+			else {
+				$class = $this->id_property = null;
+			}
+		}
+		while (
+			$class
+			// TODO This will not work with objects containing properties with non-null default
+			&& !Null_Object::isNull($this->object, function($properties) use ($class) {
+				return Store_Annotation::storedPropertiesOnly(
+					Reflection_Property::filter($properties, $class->name)
+				);
+			})
+		);
+		$this->link->commit();
+		$this->afterWrite(
+			$this->object, $this->options, $new_object ? self::AFTER_CREATE : self::AFTER_UPDATE
+		);
+		// TODO HIGHEST remove this 'anti-crash-on-update' patch condition
+		if (method_exists($this, 'prepareAfterCommit')) {
+			$this->prepareAfterCommit($this->object, $this->options);
+		}
+		return $this->object;
 	}
 
 	//-------------------------------------------------------------------------- spreadExcludeAndOnly
@@ -269,8 +269,9 @@ class Write extends Data_Link\Write
 	 * @param $exclude       string[]
 	 * @param $only          string[]
 	 */
-	protected function spreadExcludeAndOnly(array &$options, $property_name, $exclude, $only)
-	{
+	protected function spreadExcludeAndOnly(
+		array &$options, string $property_name, array $exclude, array $only
+	) {
 		if ($exclude) {
 			$spread_only = (new Option\Only($only))->subObjectOption($property_name);
 			if ($spread_only) {
@@ -311,8 +312,8 @@ class Write extends Data_Link\Write
 				}
 				elseif (
 					(
-						in_array($property_name, $this->exclude)
-						|| (!$this->only || !in_array($property_name, $this->only))
+						in_array($property_name, $this->exclude, true)
+						|| !in_array($property_name, $this->only, true)
 					)
 					&& $this->object->$property_name
 				) {
@@ -326,7 +327,7 @@ class Write extends Data_Link\Write
 				}
 				if (
 					$property->getType()->isInstanceOf($link->value)
-					&& ($search[$property_name] != $object_identifier)
+					&& ($search[$property_name] !== $object_identifier)
 				) {
 					$option[] = new Link_Property_Name($property_name);
 				}
@@ -431,6 +432,7 @@ class Write extends Data_Link\Write
 					$property_add_event = new Property_Add(
 						$this->link, $this->object, $element, $options, $property
 					);
+					/** @var $before_add_elements Method_Annotation[] */
 					$before_add_elements = $property->getAnnotations('before_add_element');
 					$before_result       = $this->callEvent($property_add_event, $before_add_elements);
 				}
@@ -441,6 +443,7 @@ class Write extends Data_Link\Write
 				if ($before_result) {
 					$this->link->write($element, empty($id) ? [] : $options);
 					if ($property_add_event) {
+						/** @var $after_add_elements Method_Annotation[] */
 						$after_add_elements = $property->getAnnotations('after_add_element');
 						$this->callEvent($property_add_event, $after_add_elements);
 					}
@@ -463,8 +466,10 @@ class Write extends Data_Link\Write
 				$remove_event = new Property_Remove(
 					$this->link, $this->object, $old_element, $options, $property
 				);
+				/** @var $before_remove_elements Method_Annotation[] */
 				$before_remove_elements = $property->getAnnotations('before_remove_element');
 				if ($this->callEvent($remove_event, $before_remove_elements)) {
+					/** @noinspection PhpUnhandledExceptionInspection should always work */
 					$this->link->delete($old_element);
 				}
 			}
@@ -501,10 +506,12 @@ class Write extends Data_Link\Write
 				$property_add_event = new Property_Add(
 					$this->link, $this->object, $element, $this->spread_options, $property
 				);
+				/** @var $before_add_elements Method_Annotation[] */
 				$before_add_elements = $property->getAnnotations('before_add_element');
 				if ($this->callEvent($property_add_event, $before_add_elements)) {
 					$query = $insert_builder->buildQuery($this->object, $element);
 					$this->link->getConnection()->query($query);
+					/** @var $after_add_elements Method_Annotation[] */
 					$after_add_elements = $property->getAnnotations('after_add_element');
 					$this->callEvent($property_add_event, $after_add_elements);
 				}
@@ -519,6 +526,7 @@ class Write extends Data_Link\Write
 				$remove_event = new Property_Remove(
 					$this->link, $this->object, $old_element, $this->spread_options, $property
 				);
+				/** @var $before_remove_elements Method_Annotation[] */
 				$before_remove_elements = $property->getAnnotations('before_remove_element');
 				if ($this->callEvent($remove_event, $before_remove_elements)) {
 					$query = $delete_builder->buildQuery($this->object, $old_element);
@@ -530,12 +538,14 @@ class Write extends Data_Link\Write
 
 	//----------------------------------------------------------------------------------- writeObject
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @noinspection PhpDocSignatureInspection $component_object Component is a trait
 	 * @param $property         Reflection_Property
-	 * @param $component_object Component
+	 * @param $component_object ?Component
 	 * @todo And what if $component_object has a @link class type ?
 	 * @todo working with @dao property annotation
 	 */
-	protected function writeObject(Reflection_Property $property, $component_object)
+	protected function writeObject(Reflection_Property $property, ?object $component_object)
 	{
 		// notice that this work only because called after write of $this->object (see searches bellow)
 		// if there is already a stored component object : there must be only one
@@ -563,11 +573,12 @@ class Write extends Data_Link\Write
 				$property->getType()->asString()
 			);
 			foreach ($components as $component) {
+				/** @noinspection PhpUnhandledExceptionInspection should always work */
 				$this->link->delete($component);
 			}
 		}
 		// create / update
-		elseif ($component_object) {
+		else {
 			$component_object->setComposite($this->object);
 			// for creation if a only option is given, we should always write foreign property
 			if (!Dao::getObjectIdentifier($component_object)) {

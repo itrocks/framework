@@ -16,7 +16,7 @@ abstract class Properties implements Option
 	 * @mandatory
 	 * @var string[]
 	 */
-	public $properties;
+	public array $properties;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -28,9 +28,9 @@ abstract class Properties implements Option
 	 * Will write the values of user's login and password into the database
 	 * @example Dao::write($user, Dao::only(['login', 'password']));
 	 * Will write the values of user's login and password into the database
-	 * @param $properties string[]|string ...
+	 * @param $properties string|string[] ...
 	 */
-	public function __construct($properties = [])
+	public function __construct(array|string... $properties)
 	{
 		$this->properties = [];
 		$this->add(func_get_args());
@@ -38,9 +38,9 @@ abstract class Properties implements Option
 
 	//------------------------------------------------------------------------------------------- add
 	/**
-	 * @param $properties string|string[] Each property can be a property.path
+	 * @param $properties string|string[] ... Each property can be a property.path
 	 */
-	public function add($properties)
+	public function add(array|string... $properties)
 	{
 		foreach (func_get_args() as $properties) {
 			if (is_array($properties)) {
@@ -70,9 +70,9 @@ abstract class Properties implements Option
 	 * @param $property string
 	 * @return boolean
 	 */
-	public function has($property)
+	public function has(string $property) : bool
 	{
-		return in_array($property, $this->properties);
+		return in_array($property, $this->properties, true);
 	}
 
 	//------------------------------------------------------------------------------------------ have
@@ -109,10 +109,10 @@ abstract class Properties implements Option
 	 *
 	 * @deprecated should use Has_In and its method in() instead
 	 * @param $options Option[]
-	 * @return object|null if found, the first instance of the class into $options
+	 * @return ?object if found, the first instance of the class into $options
 	 * @see Has_In::in
 	 */
-	public static function instanceIn(array $options)
+	public static function instanceIn(array $options) : ?object
 	{
 		return instanceIn(static::class, $options);
 	}
@@ -124,7 +124,7 @@ abstract class Properties implements Option
 	 * @param $options Option[]
 	 * @return string[]
 	 */
-	public static function properties(array $options)
+	public static function properties(array $options) : array
 	{
 		$properties = [];
 		foreach ($options as $option) {
@@ -142,7 +142,7 @@ abstract class Properties implements Option
 	 * @param $property string
 	 * @return integer How many properties were removed. 0 if was not here.
 	 */
-	public function remove($property)
+	public function remove(string $property) : int
 	{
 		$removed = 0;
 		while (($key = array_search($property, $this->properties)) !== false) {
@@ -160,7 +160,7 @@ abstract class Properties implements Option
 	 * @param $property string
 	 * @return integer the count of property removed from options
 	 */
-	public static function removeAll(array $options, $property)
+	public static function removeAll(array $options, string $property) : int
 	{
 		$removed = 0;
 		foreach ($options as $option) {
@@ -175,9 +175,11 @@ abstract class Properties implements Option
 	/**
 	 * @param $property_path        string
 	 * @param $always_return_option boolean If true : return an empty option instead of null
-	 * @return static|null null if there is no path for $property_path into
+	 * @return ?static null if there is no path for $property_path into
 	 */
-	public function subObjectOption($property_path, $always_return_option = false)
+	public function subObjectOption(
+		string $property_path, bool $always_return_option = false
+	) : ?static
 	{
 		$property_path .= DOT;
 		$length         = strlen($property_path);

@@ -15,7 +15,7 @@ class Option_Test extends Test
 	 * @return Only[]
 	 * @see testOnly
 	 */
-	public function onlyProvider()
+	public function onlyProvider() : array
 	{
 		return [
 			'arguments' => [Dao::only('one', 'two', 'three', 'four')    ],

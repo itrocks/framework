@@ -16,13 +16,13 @@ class Cache_Result implements Option
 	 *
 	 * @var array object[string $class_name][string $where_hash][$result_number]
 	 */
-	protected $cache;
+	protected array $cache;
 
 	//-------------------------------------------------------------------------------------- $current
 	/**
 	 * @var static
 	 */
-	protected static $current;
+	protected static Cache_Result $current;
 
 	//----------------------------------------------------------------------------------- cacheResult
 	/**
@@ -33,8 +33,9 @@ class Cache_Result implements Option
 	 * @param $options    Option[]
 	 * @param $result     array
 	 */
-	public function cacheResult($where, $class_name, array $options, array $result)
-	{
+	public function cacheResult(
+		array|object $where, string $class_name, array $options, array $result
+	) {
 		$options                                    = $this->hash($options);
 		$where                                      = $this->hash($where);
 		$this->cache[$class_name][$where][$options] = $result;
@@ -49,14 +50,13 @@ class Cache_Result implements Option
 	 * @param $options    Option[]
 	 * @return object[]|null null if there is no cached result
 	 */
-	public function cachedResult($where, $class_name, array $options)
+	public function cachedResult(array|object $where, string $class_name, array $options) : ?array
 	{
 		if (isset($this->cache[$class_name])) {
 			$options = $this->hash($options);
 			$where   = $this->hash($where);
 			if (isset($this->cache[$class_name][$where][$options])) {
-				$result = $this->cache[$class_name][$where][$options];
-				return $result;
+				return $this->cache[$class_name][$where][$options];
 			}
 		}
 		return null;
@@ -66,15 +66,15 @@ class Cache_Result implements Option
 	/**
 	 * Clear all or a part of the cache
 	 *
-	 * @param $class_name string
-	 * @param $where      array|object
+	 * @param $class_name string|null
+	 * @param $where      array|object|null
 	 */
-	public function clear($class_name = null, $where = null)
+	public function clear(string $class_name = null, array|object $where = null)
 	{
 		if (!$class_name) {
 			$this->cache = [];
 		}
-		elseif (!$where) {
+		elseif (!isset($where)) {
 			unset($this->cache[$class_name]);
 		}
 		else {
@@ -86,9 +86,9 @@ class Cache_Result implements Option
 	/**
 	 * @return static
 	 */
-	public static function current()
+	public static function current() : static
 	{
-		return isset(static::$current) ? static::$current : (static::$current = new static);
+		return static::$current ?? (static::$current = new static);
 	}
 
 	//------------------------------------------------------------------------------------------- get
@@ -97,9 +97,9 @@ class Cache_Result implements Option
 	 * If none, returns null
 	 *
 	 * @param $options Option[]
-	 * @return static|null
+	 * @return ?static
 	 */
-	public static function get(array $options)
+	public static function get(array $options) : ?static
 	{
 		foreach ($options as $option) {
 			if ($option instanceof static) {
@@ -117,23 +117,18 @@ class Cache_Result implements Option
 	 * @param $value array|object
 	 * @return string
 	 */
-	protected function hash($value)
+	protected function hash(array|object $value) : string
 	{
 		if (is_object($value)) {
 			if (isset($value->id)) {
 				return get_class($value) . ':' . $value->id;
 			}
-			else {
-				return get_class($value) . ':' . $this->hash(get_object_vars($value));
-			}
+			return get_class($value) . ':' . $this->hash(get_object_vars($value));
 		}
-		if (is_array($value)) {
-			foreach ($value as $key => $val) {
-				$value[$key] = $key . ':' . $this->hash($val);
-			}
-			return '[' . join(',', $value) . ']';
+		foreach ($value as $key => $val) {
+			$value[$key] = $key . ':' . $this->hash($val);
 		}
-		return $value;
+		return '[' . join(',', $value) . ']';
 	}
 
 }

@@ -101,7 +101,7 @@ class Select_Test extends Test
 		foreach ($properties as $property) {
 			$type        = $property->getType();
 			$type_string = $type->getElementTypeAsString();
-			$class       = ($type->isClass() && !in_array($type_string, ['object', 'static']))
+			$class       = ($type->isClass() && !in_array($type_string, ['object', 'static'], true))
 				? $type->asReflectionClass()
 				: null;
 			if (
@@ -163,7 +163,7 @@ class Select_Test extends Test
 		$dao                      = Dao::current();
 		Maintainer::get()->notice = '';
 		$mysqli                   = $dao->getConnection();
-		array_push($mysqli->contexts, $builder->getJoins()->getClassNames());
+		$mysqli->contexts[]       = $builder->getJoins()->getClassNames();
 		$dao->query($query);
 		array_pop($mysqli->contexts);
 

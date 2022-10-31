@@ -13,12 +13,12 @@ class Representative_Object
 	/**
 	 * @var string
 	 */
-	public $name;
+	public string $name;
 
 	//----------------------------------------------------------------------------------- $name_value
 	/**
 	 * @var string
 	 */
-	public $name_value;
+	public string $name_value;
 
 }

@@ -10,7 +10,6 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql\Builder\Select;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
 use ITRocks\Framework\Tools\Namespaces;
@@ -26,13 +25,13 @@ class View_Builder_Class
 	/**
 	 * @var string[]
 	 */
-	public $exclude_class_names = [];
+	public array $exclude_class_names = [];
 
 	//--------------------------------------------------------------------------------------- $mysqli
 	/**
 	 * @var Contextual_Mysqli
 	 */
-	private $mysqli;
+	private Contextual_Mysqli $mysqli;
 
 	//----------------------------------------------------------------------------------------- build
 	/**
@@ -45,7 +44,7 @@ class View_Builder_Class
 	 * @param $mysqli     Contextual_Mysqli
 	 * @return View[]
 	 */
-	public function build($class_name, Contextual_Mysqli $mysqli)
+	public function build(string $class_name, Contextual_Mysqli $mysqli) : array
 	{
 		$this->excluded_properties  = [];
 		$this->mysqli               = $mysqli;
@@ -63,14 +62,13 @@ class View_Builder_Class
 	 * @param $class Reflection_Class
 	 * @return View
 	 */
-	private function buildClassView(Reflection_Class $class)
+	private function buildClassView(Reflection_Class $class) : View
 	{
-		$view_name = Dao::current()->storeNameOf($class->name);
-		$view      = new View($view_name);
-		/** @var $properties Reflection_Property[] */
+		$view_name  = Dao::current()->storeNameOf($class->name);
+		$view       = new View($view_name);
 		$properties = $class->getProperties();
 		foreach ($properties as $property_name => $property) {
-			if (in_array($property->name, $this->excluded_properties)) {
+			if (in_array($property->name, $this->excluded_properties, true)) {
 				unset($properties[$property_name]);
 			}
 		}
@@ -87,9 +85,8 @@ class View_Builder_Class
 			) {
 				continue;
 			}
-			$representative = Representative_Annotation::of($sub_class)->values();
-			$source_class_name = Builder::current()->sourceClassName($sub_class->name);
-			/** @var $sub_properties Reflection_Property[] */
+			$representative     = Representative_Annotation::of($sub_class)->values();
+			$source_class_name  = Builder::current()->sourceClassName($sub_class->name);
 			$sub_properties     = $sub_class->getProperties();
 			$sub_property_names = ['id', 'class' => Dao\Func::value($source_class_name)];
 			foreach ($properties as $property_name => $property) {
@@ -100,7 +97,7 @@ class View_Builder_Class
 			}
 			foreach ($sub_properties as $property_name => $sub_property) {
 				if (
-					in_array($property_name, $representative)
+					in_array($property_name, $representative, true)
 					&& !isset($properties[$property_name])
 					&& !isset($sub_property_names[$property_name])
 				) {
@@ -128,19 +125,19 @@ class View_Builder_Class
 	 * The internal build method builds View objects using a Php class definition
 	 *
 	 * It is the same than build(), but enables to add an additional field
-	 * (link field for link classes)
+	 * (link field for @link classes)
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @return View[]
 	 */
-	private function buildInternal($class_name)
+	private function buildInternal(string $class_name) : array
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$class = new Reflection_Class($class_name);
 		$link  = Class_\Link_Annotation::of($class)->value;
 		$views = $link ? $this->buildLinkViews($link, $class_name) : [];
-		if (!in_array($class_name, $this->exclude_class_names)) {
+		if (!in_array($class_name, $this->exclude_class_names, true)) {
 			$views[] = $this->buildClassView($class);
 		}
 		return $views;
@@ -153,7 +150,7 @@ class View_Builder_Class
 	 * @param $class_name string
 	 * @return View[]
 	 */
-	private function buildLinkViews($link, $class_name)
+	private function buildLinkViews(string $link, string $class_name) : array
 	{
 		$view_builder_class                      = new View_Builder_Class();
 		$view_builder_class->exclude_class_names = $this->exclude_class_names;

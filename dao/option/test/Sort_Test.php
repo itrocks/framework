@@ -38,20 +38,21 @@ class Sort_Test extends Test
 	 * @param $method_parameter string|null
 	 * @param $expected array
 	 */
-	public function testGetColumn($construct_parameter, $method_parameter, $expected) : void
-	{
-		$sort = new Sort($construct_parameter);
+	public function testGetColumn(
+		array|string|null $construct_parameter, string|null $method_parameter, array $expected
+	) {
+		$sort    = new Sort($construct_parameter);
 		$columns = $sort->getColumns($method_parameter);
 		$this->assertEquals($expected, $columns);
 	}
 
 	//------------------------------------------------------------------- testSortConstructColumnName
-	public function testSortConstructColumnName() : void
+	public function testSortConstructColumnName()
 	{
 		$sort_class_name = new Sort(Simple_Object::class);
-		$sort_property = new Sort('id');
+		$sort_property   = new Sort('id');
 		$sort_properties = new Sort(['id', 'name']);
-		$sort_null = new Sort(null);
+		$sort_null       = new Sort(null);
 		$this->assertNotNull($sort_class_name);
 		$this->assertNotNull($sort_property);
 		$this->assertNotNull($sort_properties);

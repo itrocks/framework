@@ -22,15 +22,15 @@ class Condition extends Column
 	/**
 	 * @var array
 	 */
-	public $condition;
+	public array $condition;
 
 	//---------------------------------------------------------------------------------- $else_result
 	/**
 	 * property_path or string or Func\Column
 	 *
-	 * @var Column|string
+	 * @var Column|string|null
 	 */
-	public $else_result;
+	public Column|string|null $else_result;
 
 	//---------------------------------------------------------------------------------- $then_result
 	/**
@@ -38,7 +38,7 @@ class Condition extends Column
 	 *
 	 * @var Column|string
 	 */
-	public $then_result;
+	public Column|string $then_result;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -46,10 +46,11 @@ class Condition extends Column
 	 *
 	 * @param $condition   array source object for filter
 	 * @param $then_result Column|string
-	 * @param $else_result Column|string
+	 * @param $else_result Column|string|null
 	 */
-	public function __construct($condition, $then_result, $else_result = null)
-	{
+	public function __construct(
+		array $condition, Column|string $then_result, Column|string $else_result = null
+	) {
 		$this->condition   = $condition;
 		$this->else_result = $else_result;
 		$this->then_result = $then_result;
@@ -60,23 +61,21 @@ class Condition extends Column
 	 * @param $class  Reflection_Class
 	 * @param $result mixed property_path or string
 	 * @param $builder With_Build_Column
-	 * @return string
+	 * @return ?string
 	 */
 	private function buildConditionResult(
-		Reflection_Class $class, $result, With_Build_Column $builder
-	) {
-		if ($result) {
-			if ($result instanceof Column) {
-				return $result->toSql($builder, '');
-			}
-			else {
-				return (Reflection_Property::exists($class->getName(), $result)) ?
-					$builder->buildColumn($result, false) : Value::escape($result);
-			}
-		}
-		else {
+		Reflection_Class $class, mixed $result, With_Build_Column $builder
+	) : ?string
+	{
+		if (!$result) {
 			return null;
 		}
+		if ($result instanceof Column) {
+			return $result->toSql($builder, '');
+		}
+		return (Reflection_Property::exists($class->getName(), $result))
+			? $builder->buildColumn($result, false)
+			: Value::escape($result);
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
@@ -87,7 +86,7 @@ class Condition extends Column
 	 * @param $property_path string the property path
 	 * @return string
 	 */
-	public function toSql(With_Build_Column $builder, $property_path)
+	public function toSql(With_Build_Column $builder, string $property_path) : string
 	{
 		$starting_class    = $builder->getJoins()->getStartingClass();
 		$condition_builder = (new Builder\Where(

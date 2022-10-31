@@ -20,31 +20,31 @@ class Dead_Or_Alive
 	/**
 	 * @var integer
 	 */
-	public $counter = 0;
+	public int $counter = 0;
 
 	//----------------------------------------------------------------------------------------- $file
 	/**
 	 * @var string
 	 */
-	public $file;
+	public string $file;
 
 	//----------------------------------------------------------------------------------- $identifier
 	/**
 	 * @var string
 	 */
-	public $identifier;
+	public string $identifier;
 
 	//----------------------------------------------------------------------------------------- $line
 	/**
 	 * @var integer
 	 */
-	public $line;
+	public int $line;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $identifier string
+	 * @param $identifier string|null
 	 */
-	public function __construct($identifier = null)
+	public function __construct(string $identifier = null)
 	{
 		if (isset($identifier)) {
 			$this->identifier = $identifier;
@@ -67,7 +67,7 @@ class Dead_Or_Alive
 	 *
 	 * @param $identifier string
 	 */
-	public static function isAlive($identifier)
+	public static function isAlive(string $identifier)
 	{
 		$search             = Search_Object::create(static::class);
 		$search->identifier = $identifier;

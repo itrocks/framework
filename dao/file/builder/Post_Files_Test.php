@@ -17,7 +17,7 @@ class Post_Files_Test extends Test
 	/**
 	 * @param $element array|File
 	 */
-	protected function filesToArray(&$element)
+	protected function filesToArray(array|File &$element)
 	{
 		if (is_array($element)) {
 			foreach ($element as &$sub_element) {

@@ -17,13 +17,13 @@ class Call extends Column
 	/**
 	 * @var string
 	 */
-	private $function;
+	private string $function;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $function      string
+	 * @param $function string|null
 	 */
-	public function __construct($function = null)
+	public function __construct(string $function = null)
 	{
 		if (isset($function)) $this->function = $function;
 	}
@@ -36,7 +36,7 @@ class Call extends Column
 	 * @param $property_path string the property path
 	 * @return string
 	 */
-	public function toSql(With_Build_Column $builder, $property_path)
+	public function toSql(With_Build_Column $builder, string $property_path) : string
 	{
 		return $this->quickSql($builder, $property_path, $this->function);
 	}

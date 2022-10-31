@@ -20,7 +20,7 @@ abstract class Column implements Dao_Function
 	 * @param $property_path string The alias itself
 	 * @return string @example ' AS `alias_name`' or empty string if alias resolving is "off"
 	 */
-	protected function aliasSql(With_Build_Column $builder, $property_path)
+	protected function aliasSql(With_Build_Column $builder, string $property_path) : string
 	{
 		return (($builder instanceof Builder\Columns) && $builder->resolve_aliases)
 			? (' AS ' . BQ . $property_path . BQ)
@@ -38,8 +38,9 @@ abstract class Column implements Dao_Function
 	 * @return string
 	 */
 	protected function quickSql(
-		With_Build_Column $builder, $property_path, $sql_function, array $args = []
-	) {
+		With_Build_Column $builder, string $property_path, string $sql_function, array $args = []
+	) : string
+	{
 		$sql = $sql_function . '(' . $builder->buildColumn($property_path, false);
 		foreach ($args as $arg) {
 			$sql .= ', ' . Value::escape($arg);
@@ -55,6 +56,6 @@ abstract class Column implements Dao_Function
 	 * @param $property_path string the property path
 	 * @return string
 	 */
-	abstract public function toSql(With_Build_Column $builder, $property_path);
+	abstract public function toSql(With_Build_Column $builder, string $property_path) : string;
 
 }

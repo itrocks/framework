@@ -13,7 +13,7 @@ class Expression
 	/**
 	 * @var Column
 	 */
-	public $function;
+	public Column $function;
 
 	//--------------------------------------------------------------------------------------- $prefix
 	/**
@@ -21,27 +21,23 @@ class Expression
 	 *
 	 * @var string
 	 */
-	public $prefix;
+	public string $prefix;
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
 	 * @var string
 	 */
-	public $property_path;
+	public string $property_path;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $property_path string
-	 * @param $function      Column
+	 * @param $property_path string|null
+	 * @param $function      Column|null
 	 */
-	public function __construct($property_path = null, Column $function = null)
+	public function __construct(string $property_path = null, Column $function = null)
 	{
-		if (isset($function)) {
-			$this->function = $function;
-		}
-		if (isset($property_path)) {
-			$this->property_path = $property_path;
-		}
+		if (isset($function))      $this->function = $function;
+		if (isset($property_path)) $this->property_path = $property_path;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -60,7 +56,7 @@ class Expression
 	 * @param $builder With_Build_Column
 	 * @return string
 	 */
-	public function toSql(With_Build_Column $builder)
+	public function toSql(With_Build_Column $builder) : string
 	{
 		return $this->function->toSql($builder, $this->property_path);
 	}

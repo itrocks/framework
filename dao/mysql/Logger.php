@@ -25,7 +25,7 @@ class Logger implements Configurable, Registerable
 	 *
 	 * @var boolean
 	 */
-	public $continue = false;
+	public bool $continue = false;
 
 	//---------------------------------------------------------------------------------- $display_log
 	/**
@@ -33,7 +33,7 @@ class Logger implements Configurable, Registerable
 	 *
 	 * @var boolean
 	 */
-	public $display_log = true;
+	public bool $display_log = true;
 
 	//----------------------------------------------------------------------------------- $errors_log
 	/**
@@ -43,7 +43,7 @@ class Logger implements Configurable, Registerable
 	 *
 	 * @var string[]
 	 */
-	public $errors_log = [];
+	public array $errors_log = [];
 
 	//---------------------------------------------------------------------- $main_controller_counter
 	/**
@@ -51,7 +51,7 @@ class Logger implements Configurable, Registerable
 	 *
 	 * @var integer
 	 */
-	public $main_controller_counter = 0;
+	public int $main_controller_counter = 0;
 
 	//---------------------------------------------------------------------------------- $queries_log
 	/**
@@ -61,13 +61,13 @@ class Logger implements Configurable, Registerable
 	 *
 	 * @var string[]
 	 */
-	public $queries_log = [];
+	public array $queries_log = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
 		if (isset($configuration[self::CONTINUE_LOG])) {
 			$this->continue = $configuration[self::CONTINUE_LOG];
@@ -121,7 +121,7 @@ class Logger implements Configurable, Registerable
 	 *
 	 * @param $query string
 	 */
-	public function onQuery($query)
+	public function onQuery(string $query)
 	{
 		if ($this->continue && $this->display_log) {
 			echo '<div class="Mysql logger query">' . $query . '</div>' . LF;
@@ -136,7 +136,7 @@ class Logger implements Configurable, Registerable
 	 * @param $object Contextual_Mysqli
 	 * @param $query  string
 	 */
-	public function onQueryError(Contextual_Mysqli $object, $query)
+	public function onQueryError(Contextual_Mysqli $object, string $query)
 	{
 		$mysqli = $object;
 

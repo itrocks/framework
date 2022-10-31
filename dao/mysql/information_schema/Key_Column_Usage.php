@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused uppercase property names */
 namespace ITRocks\Framework\Dao\Mysql\Information_Schema;
 
 /**
@@ -26,14 +26,14 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	protected $COLUMN_NAME;
+	protected string $COLUMN_NAME;
 
 	//--------------------------------------------------------------------------- $CONSTRAINT_CATALOG
 	/**
 	 * @values def
 	 * @var string
 	 */
-	protected $CONSTRAINT_CATALOG;
+	protected string $CONSTRAINT_CATALOG;
 
 	//------------------------------------------------------------------------------ $CONSTRAINT_NAME
 	/**
@@ -41,7 +41,7 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	protected $CONSTRAINT_NAME;
+	protected string $CONSTRAINT_NAME;
 
 	//---------------------------------------------------------------------------- $CONSTRAINT_SCHEMA
 	/**
@@ -49,19 +49,19 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	protected $CONSTRAINT_SCHEMA;
+	protected string $CONSTRAINT_SCHEMA;
 
 	//----------------------------------------------------------------------------- $ORDINAL_POSITION
 	/**
 	 * @var integer
 	 */
-	protected $ORDINAL_POSITION;
+	protected int $ORDINAL_POSITION;
 
 	//---------------------------------------------------------------- $POSITION_IN_UNIQUE_CONSTRAINT
 	/**
 	 * @var integer
 	 */
-	protected $POSITION_IN_UNIQUE_CONSTRAINT;
+	protected int $POSITION_IN_UNIQUE_CONSTRAINT;
 
 	//----------------------------------------------------------------------- $REFERENCED_COLUMN_NAME
 	/**
@@ -70,7 +70,7 @@ class Key_Column_Usage
 	 * @values id
 	 * @var string
 	 */
-	protected $REFERENCED_COLUMN_NAME;
+	protected string $REFERENCED_COLUMN_NAME;
 
 	//------------------------------------------------------------------------ $REFERENCED_TABLE_NAME
 	/**
@@ -78,7 +78,7 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	protected $REFERENCED_TABLE_NAME;
+	protected string $REFERENCED_TABLE_NAME;
 
 	//---------------------------------------------------------------------- $REFERENCED_TABLE_SCHEMA
 	/**
@@ -86,14 +86,14 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	protected $REFERENCED_TABLE_SCHEMA;
+	protected string $REFERENCED_TABLE_SCHEMA;
 
 	//-------------------------------------------------------------------------------- $TABLE_CATALOG
 	/**
 	 * @values def
 	 * @var string
 	 */
-	protected $TABLE_CATALOG;
+	protected string $TABLE_CATALOG;
 
 	//----------------------------------------------------------------------------------- $TABLE_NAME
 	/**
@@ -101,7 +101,7 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	protected $TABLE_NAME;
+	protected string $TABLE_NAME;
 
 	//--------------------------------------------------------------------------------- $TABLE_SCHEMA
 	/**
@@ -109,14 +109,14 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	protected $TABLE_SCHEMA;
+	protected string $TABLE_SCHEMA;
 
 	//----------------------------------------------------------------------------------------- __get
 	/**
 	 * @param $property_name string
-	 * @return mixed
+	 * @return int|string
 	 */
-	public function __get($property_name)
+	public function __get(string $property_name) : int|string
 	{
 		return $this->{strtoupper($property_name)};
 	}

@@ -15,7 +15,7 @@ abstract class Add extends Event
 	/**
 	 * @var object
 	 */
-	public $new_value;
+	public object $new_value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -24,7 +24,7 @@ abstract class Add extends Event
 	 * @param $new_value object
 	 * @param $options   Option[]
 	 */
-	public function __construct($link, $object, $new_value, array &$options)
+	public function __construct(Data_Link $link, object $object, object $new_value, array &$options)
 	{
 		parent::__construct($link, $object, $options);
 		$this->new_value = $new_value;

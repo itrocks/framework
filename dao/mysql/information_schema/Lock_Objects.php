@@ -5,8 +5,8 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
-use ITRocks\Framework\Property\Reflection_Property;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 
@@ -22,7 +22,7 @@ class Lock_Objects
 	 *
 	 * @var string Class name
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//------------------------------------------------------------------------------------ $composite
 	/**
@@ -31,7 +31,7 @@ class Lock_Objects
 	 *
 	 * @var object
 	 */
-	protected $composite;
+	protected object $composite;
 
 	//--------------------------------------------------------------------------- $composite_property
 	/**
@@ -40,7 +40,7 @@ class Lock_Objects
 	 *
 	 * @var Reflection_Property
 	 */
-	protected $composite_property;
+	protected Reflection_Property $composite_property;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -48,7 +48,7 @@ class Lock_Objects
 	 *
 	 * @var object
 	 */
-	public $object;
+	public object $object;
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
@@ -56,7 +56,7 @@ class Lock_Objects
 	 *
 	 * @var object[] Lock objects
 	 */
-	public $objects;
+	public array $objects;
 
 	//-------------------------------------------------------------------------------- $objects_count
 	/**
@@ -64,7 +64,7 @@ class Lock_Objects
 	 *
 	 * @var integer
 	 */
-	public $objects_count;
+	public int $objects_count;
 
 	//-------------------------------------------------------------------------------- $property_name
 	/**
@@ -72,7 +72,7 @@ class Lock_Objects
 	 *
 	 * @var string
 	 */
-	public $property_name;
+	public string $property_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -80,10 +80,12 @@ class Lock_Objects
 	 * @param $class_name    string
 	 * @param $property_name string
 	 * @param $objects       object[]
-	 * @param $objects_count integer
+	 * @param $objects_count integer|null
 	 */
-	public function __construct($object, $class_name, $property_name, $objects, $objects_count = null)
-	{
+	public function __construct(
+		object $object, string $class_name, string $property_name, array $objects,
+		int $objects_count = null
+	) {
 		$this->object        = $object;
 		$this->class_name    = Builder::className($class_name);
 		$this->property_name = $property_name;
@@ -104,7 +106,7 @@ class Lock_Objects
 	/**
 	 * @return object
 	 */
-	public function composite()
+	public function composite() : object
 	{
 		$object     = reset($this->objects);
 		$class_name = $this->class_name;
@@ -123,7 +125,7 @@ class Lock_Objects
 	/**
 	 * @return string
 	 */
-	public function display()
+	public function display() : string
 	{
 		$object = $this->composite() ? $this->composite : reset($this->objects);
 		if ($this->objects_count > 1) {
@@ -132,19 +134,19 @@ class Lock_Objects
 		}
 		elseif ($this->objects) {
 			$display = Loc::tr(Names::classToDisplay(get_class($object)));
-			return $display . SP . strval($object);
+			return $display . SP . $object;
 		}
-		return null;
+		return '';
 	}
 
 	//------------------------------------------------------------------------------------------ link
 	/**
 	 * @return string
 	 */
-	public function link()
+	public function link() : string
 	{
 		if (!$this->objects) {
-			return null;
+			return '';
 		}
 		$object               = reset($this->objects);
 		$class_name           = get_class($object);

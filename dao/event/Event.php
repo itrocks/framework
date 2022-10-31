@@ -11,19 +11,19 @@ abstract class Event
 	/**
 	 * @var Data_Link
 	 */
-	public $link;
+	public Data_Link $link;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * @var object
 	 */
-	public $object;
+	public object $object;
 
 	//-------------------------------------------------------------------------------------- $options
 	/**
 	 * @var Option[]
 	 */
-	public $options;
+	public array $options;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -31,10 +31,10 @@ abstract class Event
 	 * @param $object  object
 	 * @param $options Option[]
 	 */
-	public function __construct(Data_Link $link, $object, array &$options)
+	public function __construct(Data_Link $link, object $object, array &$options)
 	{
-		$this->link = $link;
-		$this->object = $object;
+		$this->link    =  $link;
+		$this->object  =  $object;
 		$this->options =& $options;
 	}
 

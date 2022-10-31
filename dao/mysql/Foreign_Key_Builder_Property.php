@@ -18,7 +18,9 @@ trait Foreign_Key_Builder_Property
 	 * @param $property   Reflection_Property
 	 * @return string
 	 */
-	private static function propertyConstraintToMysql($table_name, Reflection_Property $property)
+	private static function propertyConstraintToMysql(
+		string $table_name, Reflection_Property $property
+	) : string
 	{
 		$column_name = Link_Annotation::of($property)->value
 			? ('id_' . Store_Name_Annotation::of($property)->value)
@@ -36,7 +38,7 @@ trait Foreign_Key_Builder_Property
 	 * @param $property Reflection_Property
 	 * @return string
 	 */
-	private static function propertyFieldsToMysql(Reflection_Property $property)
+	private static function propertyFieldsToMysql(Reflection_Property $property) : string
 	{
 		return 'id_' . Store_Name_Annotation::of($property)->value;
 	}
@@ -46,7 +48,7 @@ trait Foreign_Key_Builder_Property
 	 * @param $property Reflection_Property
 	 * @return string
 	 */
-	private static function propertyOnDeleteToMysql(Reflection_Property $property)
+	private static function propertyOnDeleteToMysql(Reflection_Property $property) : string
 	{
 		$constraint = $property->getAnnotation('delete_constraint')->value;
 		if ($constraint && ($constraint !== 'initial')) {
@@ -68,7 +70,7 @@ trait Foreign_Key_Builder_Property
 	 * @param $property Reflection_Property
 	 * @return string
 	 */
-	private static function propertyOnUpdateToMysql(Reflection_Property $property)
+	private static function propertyOnUpdateToMysql(Reflection_Property $property) : string
 	{
 		$constraint = $property->getAnnotation('update_constraint')->value;
 		if ($constraint && ($constraint !== 'initial')) {
@@ -89,7 +91,7 @@ trait Foreign_Key_Builder_Property
 	/**
 	 * @return string
 	 */
-	private static function propertyReferenceFieldsToMysql()
+	private static function propertyReferenceFieldsToMysql() : string
 	{
 		return 'id';
 	}
@@ -99,7 +101,7 @@ trait Foreign_Key_Builder_Property
 	 * @param $property Reflection_Property
 	 * @return string
 	 */
-	private static function propertyReferenceTableToMysql(Reflection_Property $property)
+	private static function propertyReferenceTableToMysql(Reflection_Property $property) : string
 	{
 		return Dao::storeNameOf($property->getType()->asString());
 	}

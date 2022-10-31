@@ -34,13 +34,13 @@ class Lock
 	 * @store false
 	 * @var integer
 	 */
-	public $count = 1;
+	public int $count = 1;
 
 	//----------------------------------------------------------------------------------- $identifier
 	/**
 	 * @var integer
 	 */
-	public $identifier;
+	public int $identifier;
 
 	//------------------------------------------------------------------------------ $mysql_thread_id
 	/**
@@ -48,14 +48,14 @@ class Lock
 	 *
 	 * @var integer
 	 */
-	public $mysql_thread_id;
+	public int $mysql_thread_id;
 
 	//-------------------------------------------------------------------------------------- $options
 	/**
 	 * @values static::const
 	 * @var string[]
 	 */
-	public $options;
+	public array $options;
 
 	//--------------------------------------------------------------------------- $process_identifier
 	/**
@@ -64,24 +64,25 @@ class Lock
 	 *
 	 * @var integer
 	 */
-	public $process_identifier;
+	public int $process_identifier;
 
 	//----------------------------------------------------------------------------------- $table_name
 	/**
 	 * @var string
 	 */
-	public $table_name;
+	public string $table_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Constructor : initializes data
 	 *
-	 * @param $table_name string
-	 * @param $identifier integer
-	 * @param $options    string[] @values static::const
+	 * @param $table_name string|null
+	 * @param $identifier integer|null
+	 * @param $options    string[]|null @values static::const
 	 */
-	public function __construct($table_name = null, $identifier = null, $options = null)
-	{
+	public function __construct(
+		string $table_name = null, int $identifier = null, array $options = null
+	) {
 		if (!isset($this->creation)) {
 			$this->creation = Date_Time::now();
 		}
@@ -113,11 +114,13 @@ class Lock
 	 * considered as non-existent
 	 *
 	 * @param $table_name        string
-	 * @param $record_identifier integer
-	 * @param $link              Link
-	 * @return Lock
+	 * @param $record_identifier integer|string
+	 * @param $link              Link|null
+	 * @return ?Lock
 	 */
-	public static function get($table_name, $record_identifier, Link $link = null)
+	public static function get(
+		string $table_name, int|string $record_identifier, Link $link = null
+	) : ?Lock
 	{
 		if (!$link) {
 			$link = Dao::current();
@@ -125,25 +128,26 @@ class Lock
 		/** @var $locks Lock[] */
 		$locks = $link->query(
 			'SELECT * FROM `locks`' . LF
-			. ' WHERE `table_name` = ' . DQ . $table_name . DQ
-			. ' AND `identifier` = ' . $record_identifier,
+				. ' WHERE `table_name` = ' . DQ . $table_name . DQ
+				. ' AND `identifier` = ' . $record_identifier,
 			Lock::class
 		);
 		$lock = reset($locks);
-		if ($lock) {
-			// is the lock still alive ?
-			$alive = false;
-			foreach ($link->query('SHOW PROCESSLIST', Process::class) as $process) {
-				/** @var $process Process */
-				if ($process->getMysqlThreadId() === $lock->mysql_thread_id) {
-					$alive = true;
-					break;
-				}
+		if (!$lock) {
+			return $lock;
+		}
+		// is the lock still alive ?
+		$alive = false;
+		foreach ($link->query('SHOW PROCESSLIST', Process::class) as $process) {
+			/** @var $process Process */
+			if ($process->getMysqlThreadId() === $lock->mysql_thread_id) {
+				$alive = true;
+				break;
 			}
-			if (!$alive) {
-				$link->query('DELETE FROM `locks` WHERE id = ' . $link->getObjectIdentifier($lock));
-				$lock = null;
-			}
+		}
+		if (!$alive) {
+			$link->query('DELETE FROM `locks` WHERE id = ' . $link->getObjectIdentifier($lock));
+			return null;
 		}
 		return $lock;
 	}

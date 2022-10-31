@@ -17,7 +17,7 @@ class Trimester extends Column
 	 * @param $property_path string the property path
 	 * @return string
 	 */
-	public function toSql(With_Build_Column $builder, $property_path)
+	public function toSql(With_Build_Column $builder, string $property_path) : string
 	{
 		return 'FLOOR((MONTH(' . $builder->buildColumn($property_path, false) . ') + 2) / 3)'
 			. $this->aliasSql($builder, $property_path);

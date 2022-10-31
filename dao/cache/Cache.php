@@ -26,15 +26,15 @@ class Cache implements Configurable, Registerable
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
-	 * @var array keys are [$class_name string][$identifier integer], value is a Cached
+	 * @var object[][] keys are [$class_name string][$identifier integer], value is a Cached
 	 */
-	protected $cache = [];
+	protected array $cache = [];
 
 	//---------------------------------------------------------------------------------------- $count
 	/**
 	 * @var integer
 	 */
-	protected $count = 0;
+	protected int $count = 0;
 
 	//-------------------------------------------------------------------------------------- $enabled
 	/**
@@ -42,7 +42,7 @@ class Cache implements Configurable, Registerable
 	 *
 	 * @var boolean
 	 */
-	protected $enabled;
+	protected bool $enabled;
 
 	//------------------------------------------------------------------------------------- $features
 	/**
@@ -53,21 +53,21 @@ class Cache implements Configurable, Registerable
 	 *
 	 * @var string[]
 	 */
-	protected $features = Feature::READ_ONLY;
+	protected array $features = Feature::READ_ONLY;
 
 	//-------------------------------------------------------------------------------------- $maximum
 	/**
-	 * When there are more than MAXIMUM objects into the cache, let's purge PURGE of them
+	 * When there are more than MAXIMUM objects into the cache, let's purge 'PURGE' of them
 	 *
 	 * @var integer
 	 */
-	protected $maximum = 9999;
+	protected int $maximum = 9999;
 
 	//---------------------------------------------------------------------------------------- $purge
 	/**
 	 * @var integer
 	 */
-	protected $purge = 2000;
+	protected int $purge = 2000;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -78,13 +78,13 @@ class Cache implements Configurable, Registerable
 	 *
 	 * @param $config array
 	 */
-	public function __construct($config = [])
+	public function __construct(mixed $config = [])
 	{
 		foreach ($config as $parameter => $value) {
 			$this->$parameter = $value;
 		}
 		// enabled before executeController : true only if ENABLED_FOR_ALL
-		$this->enabled = in_array(self::ENABLED_FOR_ALL, $this->features);
+		$this->enabled = in_array(self::ENABLED_FOR_ALL, $this->features, true);
 	}
 
 	//------------------------------------------------------------------------------------------- add
@@ -93,27 +93,22 @@ class Cache implements Configurable, Registerable
 	 * If more than ::$maximum objects are stored, purge ::$purge objects
 	 *
 	 * @param $object object
-	 * @param $link   Mysql\Link
+	 * @param $link   Mysql\Link|null
 	 */
-	public function add($object, Mysql\Link $link = null)
+	public function add(object $object, Mysql\Link $link = null)
 	{
-		// Do nothing if cache is disabled.
 		if (!$this->enabled) {
 			return;
 		}
-
-		if (!$link) {
-			$link = Dao::current();
+		if (!($identifier = ($link ?: Dao::current())->getObjectIdentifier($object))) {
+			return;
 		}
-
-		if (is_object($object) && ($identifier = $link->getObjectIdentifier($object))) {
-			$class_name = Builder::className(get_class($object));
-			if (isset($GLOBALS['D'])) echo "CACHE add $class_name.$identifier" . BRLF;
-			$this->cache[$class_name][$identifier] = new Cached($object);
-			$this->count++;
-			if ($this->count > $this->maximum) {
-				$this->purge();
-			}
+		$class_name = Builder::className(get_class($object));
+		if (isset($GLOBALS['D'])) echo "CACHE add $class_name.$identifier" . BRLF;
+		$this->cache[$class_name][$identifier] = new Cached($object);
+		$this->count ++;
+		if ($this->count > $this->maximum) {
+			$this->purge();
 		}
 	}
 
@@ -123,16 +118,14 @@ class Cache implements Configurable, Registerable
 	 *
 	 * @param $joinpoint After_Method
 	 */
-	public function cacheReadObject(After_Method $joinpoint = null)
+	public function cacheReadObject(After_Method $joinpoint)
 	{
-		// Do nothing if cache is disabled.
 		if (!$this->enabled) {
 			return;
 		}
-
-		/** @var $link Mysql\Link */
-		$link = $joinpoint ? $joinpoint->object : Dao::current();
-		$this->add($joinpoint->result, $link);
+		if ($joinpoint->result) {
+			$this->add($joinpoint->result, $joinpoint->object);
+		}
 	}
 
 	//------------------------------------------------------------------------------ cacheWriteObject
@@ -144,13 +137,13 @@ class Cache implements Configurable, Registerable
 	 * @param $options   Option|Option[]
 	 * @param $joinpoint After_Method
 	 */
-	public function cacheWriteObject($object, $options = [], After_Method $joinpoint = null)
-	{
-		if ($this->enabled && !$options) {
-			/** @var $link Mysql\Link */
-			$link = $joinpoint ? $joinpoint->object : Dao::current();
-			$this->add($object, $link);
+	public function cacheWriteObject(
+		object $object, array|Option $options, After_Method $joinpoint
+	) {
+		if ($options || !$this->enabled) {
+			return;
 		}
+		$this->add($object, $joinpoint->object);
 	}
 
 	//---------------------------------------------------------------------------------------- enable
@@ -160,7 +153,7 @@ class Cache implements Configurable, Registerable
 	 * @param $enable boolean Cache will be enabled if true, or disabled if false
 	 * @return boolean true if was enabled before call, else false
 	 */
-	public function enable($enable = true)
+	public function enable(bool $enable = true) : bool
 	{
 		$enabled       = $this->enabled;
 		$this->enabled = $enable;
@@ -181,11 +174,12 @@ class Cache implements Configurable, Registerable
 	/**
 	 * Get cached object
 	 *
-	 * @param $class_name string
-	 * @param $identifier integer|object identifier for the object, or an object to re-read
-	 * @return object the cached object, null if none
+	 * @param $class_name class-string<T>
+	 * @param $identifier integer|T identifier for the object, or an object to re-read
+	 * @return ?T the cached object, null if none
+	 * @template T
 	 */
-	public function getCachedObject($class_name, $identifier)
+	public function getCachedObject(string $class_name, int|object $identifier) : ?object
 	{
 		if (!$this->enabled) {
 			return null;
@@ -194,10 +188,7 @@ class Cache implements Configurable, Registerable
 		if (is_object($identifier)) {
 			$identifier = Dao::getObjectIdentifier($identifier);
 		}
-		if (isset($this->cache[$class_name][$identifier])) {
-			return $this->cache[$class_name][$identifier]->object;
-		}
-		return null;
+		return $this->cache[$class_name][$identifier]->object ?? null;
 	}
 
 	//----------------------------------------------------------------------------------------- purge
@@ -212,19 +203,19 @@ class Cache implements Configurable, Registerable
 		foreach ($this->cache as $class_name => $cache) {
 			foreach ($cache as $identifier => $cached) {
 				/** @var $cached Cached */
-				$counter++;
+				$counter ++;
 				$list_id        = $cached->date->toISO() . '-' . sprintf($format, $counter);
 				$list[$list_id] = [$class_name, $identifier];
 			}
 		}
 		krsort($list);
 		$threshold = $this->maximum - $this->purge;
-		for (reset($list); $counter > $threshold; next($list)) {
+		for (; $counter > $threshold; next($list)) {
 			[$class_name, $identifier] = current($list);
 			if (isset($GLOBALS['D'])) echo "CACHE purge $class_name.$identifier" . BRLF;
 			unset($this->cache[$class_name][$identifier]);
-			$this->count--;
-			$counter--;
+			$this->count --;
+			$counter --;
 		}
 	}
 
@@ -249,13 +240,13 @@ class Cache implements Configurable, Registerable
 	 * @param $class_name string
 	 * @param $identifier integer
 	 */
-	public function remove($class_name, $identifier)
+	public function remove(string $class_name, int $identifier)
 	{
 		$class_name = Builder::className($class_name);
 		if (isset($this->cache[$class_name][$identifier])) {
 			if (isset($GLOBALS['D'])) echo "CACHE remove $class_name.$identifier" . BRLF;
 			unset($this->cache[$class_name][$identifier]);
-			$this->count--;
+			$this->count --;
 		}
 	}
 
@@ -267,15 +258,11 @@ class Cache implements Configurable, Registerable
 	 * @param $object    object
 	 * @param $joinpoint After_Method
 	 */
-	public function removeObject($object, After_Method $joinpoint = null)
+	public function removeObject(object $object, After_Method $joinpoint)
 	{
 		/** @var $link Mysql\Link */
-		$link = $joinpoint ? $joinpoint->object : Dao::current();
-		if (
-			is_object($object)
-			&& ($identifier = $link->getObjectIdentifier($object))
-			&& (!$joinpoint || $joinpoint->result)
-		) {
+		$link = $joinpoint->object;
+		if ($joinpoint->result && ($identifier = $link->getObjectIdentifier($object))) {
 			$this->remove(get_class($object), $identifier);
 		}
 	}
@@ -289,11 +276,10 @@ class Cache implements Configurable, Registerable
 	public function toggleCacheActivation(Uri $uri)
 	{
 		$feature = $uri->feature_name;
-
 		if (
-			in_array(self::ENABLED_FOR_ALL, $this->features)
-				? !in_array($feature, $this->features)
-				: in_array($feature, $this->features)
+			in_array(self::ENABLED_FOR_ALL, $this->features, true)
+				? !in_array($feature, $this->features, true)
+				: in_array($feature, $this->features, true)
 		) {
 			if (isset($GLOBALS['D'])) echo 'CACHE toggle ON for ' . $uri . BRLF;
 			$this->enabled = true;

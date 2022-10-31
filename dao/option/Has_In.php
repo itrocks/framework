@@ -12,9 +12,9 @@ trait Has_In
 	//-------------------------------------------------------------------------------------------- in
 	/**
 	 * @param $options Option[]
-	 * @return static
+	 * @return ?static
 	 */
-	public static function in(array $options)
+	public static function in(array $options) : ?static
 	{
 		foreach ($options as $option) {
 			if (is_a($option, static::class)) {

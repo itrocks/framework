@@ -24,13 +24,13 @@ class Table_Builder_Class
 	 *
 	 * @var string[]
 	 */
-	public $dependencies_context;
+	public array $dependencies_context;
 
 	//-------------------------------------------------------------------------- $exclude_class_names
 	/**
 	 * @var string[]
 	 */
-	public $exclude_class_names = [];
+	public array $exclude_class_names = [];
 
 	//----------------------------------------------------------------------------------------- build
 	/**
@@ -42,11 +42,11 @@ class Table_Builder_Class
 	 * @param $class_name string
 	 * @return Table[]
 	 */
-	public function build($class_name)
+	public function build(string $class_name) : array
 	{
 		$this->dependencies_context = [];
 		$this->excluded_properties  = [];
-		return $this->buildInternal($class_name, null);
+		return $this->buildInternal($class_name);
 	}
 
 	//------------------------------------------------------------------------------- buildClassTable
@@ -57,14 +57,14 @@ class Table_Builder_Class
 	 * before buildClassTable().
 	 *
 	 * @param $class      Reflection_Class
-	 * @param $more_field Column
+	 * @param $more_field Column|null
 	 * @return Table
 	 */
-	private function buildClassTable(Reflection_Class $class, $more_field)
+	private function buildClassTable(Reflection_Class $class, Column $more_field = null) : Table
 	{
 		$table_name = Dao::current()->storeNameOf($class->name);
 		$table      = new Table($table_name);
-		if (!in_array('id', $this->excluded_properties)) {
+		if (!in_array('id', $this->excluded_properties, true)) {
 			$table->addColumn(Column::buildId());
 		}
 		if ($more_field) {
@@ -107,20 +107,20 @@ class Table_Builder_Class
 	 * The internal build method builds Table objects using a Php class definition
 	 *
 	 * It is the same than build(), but enables to add an additional field
-	 * (link field for link classes)
+	 * (link field for @link classes)
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
-	 * @param $more_field Column
+	 * @param $more_field Column|null
 	 * @return Table[]
 	 */
-	private function buildInternal($class_name, $more_field)
+	private function buildInternal(string $class_name, Column $more_field = null) : array
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$class  = new Reflection_Class($class_name);
 		$link   = Class_\Link_Annotation::of($class)->value;
 		$tables = $link ? $this->buildLinkTables($link, $class_name) : [];
-		if (!in_array($class_name, $this->exclude_class_names)) {
+		if (!in_array($class_name, $this->exclude_class_names, true)) {
 			$tables[] = $this->buildClassTable($class, $more_field);
 		}
 		return $tables;
@@ -133,7 +133,7 @@ class Table_Builder_Class
 	 * @param $class_name string
 	 * @return Table[]
 	 */
-	private function buildLinkTables($link, $class_name)
+	private function buildLinkTables(string $link, string $class_name) : array
 	{
 		$table_builder_class                      = new Table_Builder_Class();
 		$table_builder_class->exclude_class_names = $this->exclude_class_names;

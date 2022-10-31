@@ -19,24 +19,25 @@ trait Property_Filter
 	 *
 	 * @var string[]
 	 */
-	protected $excluded_properties;
+	protected array $excluded_properties;
 
 	//-------------------------------------------------------------------------------- filterProperty
 	/**
 	 * @param $property Reflection_Property
 	 * @return boolean
 	 */
-	protected function filterProperty(Reflection_Property $property)
+	protected function filterProperty(Reflection_Property $property) : bool
 	{
 		$type = $property->getType();
 		return
-			!in_array($property->name, $this->excluded_properties)
+			!in_array($property->name, $this->excluded_properties, true)
 			&& (
 				$type->isMultipleString()
 				|| !$type->isMultiple()
 				|| in_array(
 					$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
-					[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING]
+					[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING],
+					true
 				)
 			)
 			&& !$property->isStatic()
@@ -44,7 +45,8 @@ trait Property_Filter
 				!$property->getAnnotation('component')->value
 				|| in_array(
 					$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
-					[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING]
+					[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING],
+					true
 				)
 			)
 			&& !Store_Annotation::of($property)->isFalse();

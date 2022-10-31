@@ -25,7 +25,7 @@ class Database implements Sql\Database
 	/**
 	 * @var string
 	 */
-	private $Database;
+	private string $Database = '';
 
 	//------------------------------------------------------------------------ characterSetCollateSql
 	/**
@@ -58,7 +58,7 @@ class Database implements Sql\Database
 	/**
 	 * @return string
 	 */
-	public function getName()
+	public function getName() : string
 	{
 		return $this->Database;
 	}

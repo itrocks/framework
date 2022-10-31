@@ -21,19 +21,19 @@ class Xdebug implements Registerable
 	/**
 	 * @var string
 	 */
-	protected $key;
+	protected string $key;
 
 	//-------------------------------------------------------------------------------------- $profile
 	/**
 	 * @var string
 	 */
-	protected $profile;
+	protected string $profile;
 
 	//-------------------------------------------------------------------------------- $session_start
 	/**
 	 * @var string
 	 */
-	protected $session_start;
+	protected string $session_start;
 
 	//-------------------------------------------------------------------------------------- addToUri
 	/**
@@ -42,7 +42,7 @@ class Xdebug implements Registerable
 	 * @param $uri string
 	 * @return string
 	 */
-	public function addToUri($uri)
+	public function addToUri(string $uri) : string
 	{
 		if (isset($this->profile)) {
 			$uri = $this->append($uri, self::PROFILE, $this->profile);
@@ -61,9 +61,9 @@ class Xdebug implements Registerable
 	 * @param $uri   string
 	 * @param $key   string
 	 * @param $value string
-	 * @return string;
+	 * @return string
 	 */
-	protected function append($uri, $key, $value)
+	protected function append(string $uri, string $key, string $value) : string
 	{
 		return $uri . (str_contains($uri, '?') ? '&' : '?') . $key . '=' . $value;
 	}
@@ -94,9 +94,8 @@ class Xdebug implements Registerable
 	 *
 	 * @return boolean
 	 */
-	public static function isEnabled()
+	public static function isEnabled() : bool
 	{
-		/** @noinspection PhpComposerExtensionStubsInspection function_exists called */
 		return function_exists('xdebug_is_enabled') && xdebug_is_enabled();
 	}
 

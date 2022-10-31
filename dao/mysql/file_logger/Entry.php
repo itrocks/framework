@@ -19,13 +19,14 @@ trait Entry
 	 * @store false
 	 * @var string
 	 */
-	public $sql;
+	public string $sql;
 
 	//---------------------------------------------------------------------------------------- getSql
 	/**
+	 * @noinspection PhpUnused @getter
 	 * @return string
 	 */
-	protected function getSql()
+	protected function getSql() : string
 	{
 		/** @var $logger File_Logger */
 		$logger = Session::current()->plugins->get(File_Logger::class);

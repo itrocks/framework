@@ -11,55 +11,55 @@ class Process
 	/**
 	 * @var string
 	 */
-	protected $Command;
+	protected string $Command;
 
 	//----------------------------------------------------------------------------------------- $Host
 	/**
 	 * @var string
 	 */
-	protected $Host;
+	protected string $Host;
 
 	//------------------------------------------------------------------------------------------- $Id
 	/**
 	 * @var integer
 	 */
-	protected $Id;
+	protected int $Id;
 
 	//----------------------------------------------------------------------------------------- $Info
 	/**
 	 * @var string
 	 */
-	protected $Info;
+	protected string $Info;
 
 	//---------------------------------------------------------------------------------------- $State
 	/**
 	 * @var string
 	 */
-	protected $State;
+	protected string $State;
 
 	//----------------------------------------------------------------------------------------- $Time
 	/**
 	 * @var integer
 	 */
-	protected $Time;
+	protected int $Time;
 
 	//----------------------------------------------------------------------------------------- $User
 	/**
 	 * @var string
 	 */
-	protected $User;
+	protected string $User;
 
 	//------------------------------------------------------------------------------------------- $db
 	/**
 	 * @var string
 	 */
-	protected $db;
+	protected string $db;
 
 	//------------------------------------------------------------------------------ getMysqlThreadId
 	/**
 	 * @return integer
 	 */
-	public function getMysqlThreadId()
+	public function getMysqlThreadId() : int
 	{
 		return $this->Id;
 	}
