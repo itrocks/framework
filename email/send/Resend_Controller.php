@@ -33,7 +33,6 @@ class Resend_Controller extends Controller implements Registerable
 		if (!(Sender\Smtp::get() ?: Sender\File::get())) {
 			return;
 		}
-		/** @var $email Email */
 		$email = $joinpoint->parameters['object'];
 		if ($email->uidl && !$email->send_message) {
 			return;

@@ -26,8 +26,11 @@ class Encoder_Test extends Test
 		parent::setUp();
 		/** @noinspection PhpUnhandledExceptionInspection class */
 		$this->email = Builder::create(Email::class);
-		$this->email->content
-			= '<p>Image: <img alt="" src="itrocks/framework/skins/default/img/delete.png"></p>';
+		$this->email->content = str_replace(
+			'app://',
+			'',
+			'<p>Image: <img alt="" src="app://itrocks/framework/skins/default/img/delete.png"></p>'
+		);
 		$this->email->from = new Recipient('test@email.co', 'Test recipient');
 	}
 

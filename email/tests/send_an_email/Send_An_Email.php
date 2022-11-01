@@ -18,7 +18,7 @@ use ITRocks\Framework\Email\Sender\Smtp;
  *
  * Everything must be checked
  *
- * @example connect as super-admin, then
+ * @example connect as super-admin, then :
  * http://localhost/studio/ITRocks/Framework/Email/Tests/Send_An_Email/send
  */
 class Send_An_Email

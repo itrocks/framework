@@ -13,10 +13,7 @@ final class Senders_Test extends Test
 	protected function setUp() : void
 	{
 		parent::setUp();
-		$this->foo_configuration = [
-			'foo' => [],
-			'bar' => [],
-		];
+		$this->foo_configuration = ['foo' => [], 'bar' => []];
 	}
 
 	//-------------------------------------------------------------- testConstructorWithConfiguration

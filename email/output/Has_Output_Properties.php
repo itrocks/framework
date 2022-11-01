@@ -7,7 +7,6 @@ use ITRocks\Framework\Reflection\Reflection_Property_Value;
 
 /**
  * @extends Email
- * @see Email
  */
 trait Has_Output_Properties
 {
@@ -15,9 +14,10 @@ trait Has_Output_Properties
 	//------------------------------------------------------------------------------ outputProperties
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
+	 * @noinspection PhpUnused object.html
 	 * @return Reflection_Property[]
 	 */
-	public function outputProperties()
+	public function outputProperties() : array
 	{
 		$properties     = [];
 		$property_names = [

@@ -1,6 +1,7 @@
 article.email {
 
 	#content > div {
+		white-space: initial;
 
 		a {
 			color: blue;
@@ -17,8 +18,6 @@ article.email {
 				margin-top: 1em;
 			}
 		}
-
-		white-space: initial;
 	}
 
 	#content {

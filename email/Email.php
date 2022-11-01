@@ -34,9 +34,9 @@ class Email
 	/**
 	 * @link Object
 	 * @user hide_empty
-	 * @var Account
+	 * @var ?Account
 	 */
-	public $account;
+	public ?Account $account = null;
 
 	//---------------------------------------------------------------------------------- $attachments
 	/**
@@ -44,7 +44,7 @@ class Email
 	 * @user hide_empty
 	 * @var Attachment[]
 	 */
-	public $attachments;
+	public array $attachments = [];
 
 	//-------------------------------------------------------------------------------- $blind_copy_to
 	/**
@@ -54,7 +54,7 @@ class Email
 	 * @user hide_empty
 	 * @var Recipient[]
 	 */
-	public $blind_copy_to;
+	public array $blind_copy_to = [];
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
@@ -65,7 +65,7 @@ class Email
 	 * @store gz
 	 * @var string
 	 */
-	public $content;
+	public string $content = '';
 
 	//-------------------------------------------------------------------------------------- $copy_to
 	/**
@@ -75,23 +75,24 @@ class Email
 	 * @user hide_empty
 	 * @var Recipient[]
 	 */
-	public $copy_to;
+	public array $copy_to = [];
 
 	//----------------------------------------------------------------------------------------- $date
 	/**
 	 * @default Date_Time::now
 	 * @link DateTime
-	 * @var Date_Time
+	 * @see Date_Time::now
+	 * @var Date_Time|string
 	 */
-	public $date;
+	public Date_Time|string $date;
 
 	//----------------------------------------------------------------------------------------- $from
 	/**
 	 * @link Object
 	 * @user invisible_edit
-	 * @var Recipient
+	 * @var ?Recipient
 	 */
-	public $from;
+	public ?Recipient $from;
 
 	//-------------------------------------------------------------------------------------- $headers
 	/**
@@ -99,55 +100,55 @@ class Email
 	 * @null
 	 * @store json
 	 * @user invisible
-	 * @var string[]
+	 * @var string|string[]
 	 */
-	public $headers = [];
+	public array|string $headers = [];
 
 	//--------------------------------------------------------------------------------- $receive_date
 	/**
 	 * @link DateTime
 	 * @user hide_empty
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $receive_date;
+	public Date_Time|string $receive_date;
 
 	//------------------------------------------------------------------------------------- $reply_to
 	/**
 	 * @link Object
 	 * @user hide_empty
-	 * @var Recipient
+	 * @var ?Recipient
 	 */
-	public $reply_to;
+	public ?Recipient $reply_to = null;
 
 	//---------------------------------------------------------------------------------- $return_path
 	/**
 	 * @link Object
 	 * @user hide_empty
-	 * @var Recipient
+	 * @var ?Recipient
 	 */
-	public $return_path;
+	public ?Recipient $return_path = null;
 
 	//------------------------------------------------------------------------------------ $send_date
 	/**
 	 * @link DateTime
 	 * @user hide_empty
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $send_date;
+	public Date_Time|string $send_date;
 
 	//--------------------------------------------------------------------------------- $send_message
 	/**
 	 * @user hide_empty, readonly
 	 * @var string
 	 */
-	public $send_message;
+	public string $send_message = '';
 
 	//-------------------------------------------------------------------------------------- $subject
 	/**
 	 * @data focus
 	 * @var string
 	 */
-	public $subject;
+	public string $subject = '';
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
@@ -156,7 +157,7 @@ class Email
 	 * @user hide_empty
 	 * @var Recipient[]
 	 */
-	public $to;
+	public array $to = [];
 
 	//----------------------------------------------------------------------------------------- $uidl
 	/**
@@ -166,7 +167,7 @@ class Email
 	 * @user hide_empty, readonly
 	 * @var string
 	 */
-	public $uidl;
+	public string $uidl = '';
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -174,7 +175,7 @@ class Email
 	 */
 	public function __toString() : string
 	{
-		return strval($this->subject);
+		return $this->subject;
 	}
 
 	//----------------------------------------------------------------------------------- beforeWrite
@@ -197,9 +198,9 @@ class Email
 	 * @param $text string
 	 * @return string
 	 */
-	protected function encodeHeader($text)
+	protected function encodeHeader(string $text) : string
 	{
-		return mb_encode_mimeheader(strval($text), 'utf-8', 'Q');
+		return mb_encode_mimeheader($text, 'utf-8', 'Q');
 	}
 
 	//------------------------------------------------------------------------------- encodeRecipient
@@ -207,7 +208,7 @@ class Email
 	 * @param $recipient Recipient
 	 * @return string
 	 */
-	protected function encodeRecipient(Recipient $recipient)
+	protected function encodeRecipient(Recipient $recipient) : string
 	{
 		if ($recipient->name) {
 			$name = str_replace([DQ, '<', '>'], [BS . DQ, '', ''], $recipient->name);
@@ -222,7 +223,7 @@ class Email
 	 *
 	 * @return string[]
 	 */
-	protected function & getHeaders()
+	protected function & getHeaders() : array
 	{
 		if (is_string($this->headers)) {
 			$this->headers = json_decode($this->headers, true);
@@ -234,7 +235,7 @@ class Email
 	/**
 	 * @return string[]
 	 */
-	public function getHeadersAsStrings()
+	public function getHeadersAsStrings() : array
 	{
 		if ($this->blind_copy_to) {
 			$this->headers['Bcc'] = $this->encodeHeader($this->mimeRecipients($this->blind_copy_to));
@@ -248,7 +249,7 @@ class Email
 		if ($this->from) {
 			$from = $this->from;
 			if ($from->name) {
-				$from = clone $from;
+				$from       = clone $from;
 				$from->name = str_replace(DOT, SP, $from->name);
 			}
 			$this->headers['From'] = $this->encodeRecipient($from);
@@ -280,7 +281,7 @@ class Email
 	/**
 	 * @return string
 	 */
-	public function getHeadersString()
+	public function getHeadersString() : string
 	{
 		$headers = [];
 		foreach ($this->getHeadersAsStrings() as $key => $value) {
@@ -293,7 +294,7 @@ class Email
 	/**
 	 * @return string[]
 	 */
-	public function getRecipientsAsStrings()
+	public function getRecipientsAsStrings() : array
 	{
 		$recipients = [];
 		foreach ([$this->to, $this->copy_to, $this->blind_copy_to] as $recipients_objects) {
@@ -310,7 +311,7 @@ class Email
 	 * @param $recipients Recipient[]
 	 * @return string
 	 */
-	protected function mimeRecipients(array $recipients)
+	protected function mimeRecipients(array $recipients) : string
 	{
 		$result = [];
 		foreach ($recipients as $recipient) {
@@ -333,7 +334,7 @@ class Email
 			if (
 				$search->hash
 				&& ($find = Dao::searchOne($search))
-				&& ($find->name == $attachment->name)
+				&& ($find->name === $attachment->name)
 				&& ($find->content === $attachment->content)
 			) {
 				Dao::replace($attachment, $find, false);
@@ -388,7 +389,7 @@ class Email
 	 * @param $parameters Parameters
 	 * @return string
 	 */
-	public function update(Parameters $parameters)
+	public function update(Parameters $parameters) : string
 	{
 		$search = ['content' => Func::notEqual('')];
 		if (!$parameters->contains('all') && !$parameters->has('all')) {

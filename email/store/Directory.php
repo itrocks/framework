@@ -18,15 +18,15 @@ class Directory
 	 * @getter
 	 * @var string
 	 */
-	public $full_path;
+	public string $full_path;
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
 	 * @link Object
 	 * @setter
-	 * @var Directory|null
+	 * @var ?Directory
 	 */
-	public $parent = null;
+	public ?Directory $parent = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

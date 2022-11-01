@@ -29,13 +29,14 @@ class Senders implements Configurable
 	 * @param $configuration array Sender configurations
 	 * @throws Exception
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
-		if ($configuration) {
-			foreach ($configuration as $identifier => $sender_configuration) {
-				$transport = $sender_configuration[static::TRANSPORT] ?? Smtp::TRANSPORT;
-				$this->senders[$identifier] = Sender::call($transport, $sender_configuration);
-			}
+		if (!$configuration) {
+			return;
+		}
+		foreach ($configuration as $identifier => $sender_configuration) {
+			$transport = $sender_configuration[static::TRANSPORT] ?? Smtp::TRANSPORT;
+			$this->senders[$identifier] = Sender::call($transport, $sender_configuration);
 		}
 	}
 
@@ -44,7 +45,7 @@ class Senders implements Configurable
 	 * Get a Sender knowing its identifier
 	 *
 	 * @param $identifier string
-	 * @return Sender|null null if identifier is not set in configuration
+	 * @return ?Sender null if identifier is not set in configuration
 	 */
 	public function sender(string $identifier) : ?Sender
 	{

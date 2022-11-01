@@ -55,7 +55,7 @@ abstract class Sender implements Configurable, Sender_Interface
 	 *
 	 * @param $configuration string[]
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
 		if ($configuration) {
 			if (isset($configuration[self::BCC]))  $this->bcc  = $configuration[self::BCC];

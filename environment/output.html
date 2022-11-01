@@ -31,10 +31,10 @@
 
 	<!--selected-->
 	<script>
-		var action = $('main>form').attr('action');
-		if (action) {
-			redirect(action, '#main');
-		}
+		(() => {
+			const action = $('main>form').attr('action');
+			if (action) redirect(action, '#main');
+		})()
 	</script>
 	<!--end-->
 

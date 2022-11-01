@@ -13,7 +13,7 @@ class Policy
 	 *
 	 * @var integer
 	 */
-	public $delay_between_mail = 0;
+	public int $delay_between_mail = 0;
 
 	//-------------------------------------------------------------------------- $delay_between_retry
 	/**
@@ -21,7 +21,7 @@ class Policy
 	 *
 	 * @var integer
 	 */
-	public $delay_between_retry = 60;
+	public int $delay_between_retry = 60;
 
 	//----------------------------------------------------------------------------------- $delay_send
 	/**
@@ -31,17 +31,17 @@ class Policy
 	 *
 	 * @var boolean|string
 	 */
-	public $delay_send = false;
+	public bool|string $delay_send = false;
 
 	//------------------------------------------------------------------------------- $multiple_hosts
 	/**
 	 * If true, multiple hosts will be used each time a mail have to be transmitted
 	 *
-	 * This is usefull for charge dispatching
+	 * This is useful for charge dispatching
 	 *
 	 * @var boolean
 	 */
-	public $multiple_hosts = true;
+	public bool $multiple_hosts = true;
 
 	//------------------------------------------------------------------------------- $multiple_retry
 	/**
@@ -49,7 +49,7 @@ class Policy
 	 *
 	 * @var boolean
 	 */
-	public $multiple_retry = true;
+	public bool $multiple_retry = true;
 
 	//---------------------------------------------------------------------------------------- $retry
 	/**
@@ -57,6 +57,6 @@ class Policy
 	 *
 	 * @var integer
 	 */
-	public $retry = 1;
+	public int $retry = 1;
 
 }

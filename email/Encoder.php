@@ -85,6 +85,7 @@ class Encoder
 			$content
 		);
 		foreach (['(' => ')', Q => Q, DQ => DQ] as $open => $close) {
+			/** @noinspection RegExpRedundantEscape not that redundant */
 			$pattern = SL . BS . $open . '([\\w\\.\\/\\-\\_]+\\.(?:gif|jpg|png|svg))' . BS . $close . SL;
 			preg_match_all($pattern, $content, $matches);
 			foreach ($matches[1] as $file_name) {

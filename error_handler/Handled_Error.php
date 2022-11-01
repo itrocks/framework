@@ -109,7 +109,7 @@ class Handled_Error
 	 * Default behaviour is to don't call php error handler for handled errors.
 	 *
 	 * @param $call boolean set this to false if you don't want php error handler to be called anymore
-	 * @return static
+	 * @return $this
 	 */
 	public function callStandardPhpErrorHandler(bool $call = true) : static
 	{
@@ -124,7 +124,7 @@ class Handled_Error
 	 * An error handler will call this if it wants other error handlers not to be called after it.
 	 * Default behaviour is to call all error handlers.
 	 *
-	 * @return static
+	 * @return $this
 	 */
 	public function dontCallNextErrorHandlers() : static
 	{

@@ -13,20 +13,21 @@ class Smtp_Account extends Net_Account
 	//----------------------------------------------------------------------------------- $encryption
 	/**
 	 * @values static::const
-	 * @var string|null
+	 * @var ?string
 	 */
-	public $encryption = null;
+	public ?string $encryption = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $host       string
-	 * @param $login      string
-	 * @param $password   string
-	 * @param $port       integer
-	 * @param $encryption string @values static::const
+	 * @param $host       string|null
+	 * @param $login      string|null
+	 * @param $password   string|null
+	 * @param $port       integer|null
+	 * @param $encryption string|null @values static::const
 	 */
 	public function __construct(
-		$host = null, $login = null, $password = null, $port = null, $encryption = null
+		string $host = null, string $login = null, string $password = null, int $port = null,
+		string $encryption = null
 	) {
 		parent::__construct();
 		if (isset($host))       $this->host       = $host;

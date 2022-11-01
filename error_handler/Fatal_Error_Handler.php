@@ -1,8 +1,6 @@
 <?php
 namespace ITRocks\Framework\Error_Handler;
 
-use JetBrains\PhpStorm\NoReturn;
-
 /**
  * Fatal error handler : this handler display the error and stops the program
  */
@@ -15,7 +13,6 @@ class Fatal_Error_Handler extends Main_Error_Handler
 	 *
 	 * @param $error Handled_Error
 	 */
-	#[NoReturn]
 	public function handle(Handled_Error $error)
 	{
 		die(

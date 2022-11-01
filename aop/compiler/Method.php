@@ -57,10 +57,14 @@ class Method
 				. ' for advice ' . $this->displayAdvice(reset($advices)),
 				E_USER_ERROR
 			);
+			/** @noinspection PhpUnreachableStatementInspection in case of caught error */
+			return '';
 		}
 		$source_method = $methods[$method_name];
 		if (!$source_method) {
 			trigger_error($this->class->name . '::' . $method_name . ' not found', E_USER_ERROR);
+			/** @noinspection PhpUnreachableStatementInspection in case of caught error */
+			return '';
 		}
 		// don't compile abstract method where they are declared : will be compiled where they are
 		// implemented

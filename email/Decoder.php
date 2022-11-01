@@ -36,6 +36,7 @@ class Decoder
 	 */
 	public function decodeFile(string $filename) : Email
 	{
+		$content = '';
 		/** @noinspection PhpUnhandledExceptionInspection class */
 		$email = Builder::create(Email::class);
 

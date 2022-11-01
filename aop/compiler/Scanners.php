@@ -116,7 +116,8 @@ trait Scanners
 						. ' must be All, Collection, DateTime, Map or Object',
 						E_USER_ERROR
 					);
-					//$advice = null;
+					/** @noinspection PhpUnreachableStatementInspection in case of caught error */
+					$advice = null;
 				}
 				$properties[$property->name][] = [Handler::READ, $advice];
 			}

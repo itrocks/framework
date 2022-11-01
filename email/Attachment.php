@@ -14,15 +14,15 @@ class Attachment extends File
 	/**
 	 * @var boolean
 	 */
-	public $embedded = false;
+	public bool $embedded = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name     string
-	 * @param $content  string binary data
-	 * @param $embedded boolean
+	 * @param $name     string|null
+	 * @param $content  string|null binary data
+	 * @param $embedded boolean|null
 	 */
-	public function __construct($name = null, $content = null, $embedded = null)
+	public function __construct(string $name = null, string $content = null, bool $embedded = null)
 	{
 		parent::__construct(isset($content) ? null : $name);
 		if (isset($name) && isset($content)) $this->name     = $name;

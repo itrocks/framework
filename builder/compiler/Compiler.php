@@ -86,6 +86,8 @@ class Compiler implements ICompiler
 		);
 		if (!$dependency) {
 			trigger_error("missing dependency for $class_name", E_USER_ERROR);
+			/** @noinspection PhpUnreachableStatementInspection in case of caught error */
+			return;
 		}
 		if (!isset($more_sources->sources[$dependency->file_name])) {
 			$source = Reflection_Source::ofFile($dependency->file_name, $class_name);

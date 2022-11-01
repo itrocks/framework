@@ -20,14 +20,14 @@ class Account
 	 * @link Map
 	 * @var Pop_Account[]
 	 */
-	public $pop_accounts;
+	public array $pop_accounts;
 
 	//-------------------------------------------------------------------------------- $smtp_accounts
 	/**
 	 * @link Map
 	 * @var Smtp_Account[]
 	 */
-	public $smtp_accounts;
+	public array $smtp_accounts;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**

@@ -45,7 +45,7 @@ class Smtp extends Sender
 	 *
 	 * @param $configuration string[]|integer[]
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
 		parent::__construct($configuration);
 		$this->default_smtp_account = new Smtp_Account(

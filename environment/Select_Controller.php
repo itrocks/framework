@@ -21,7 +21,7 @@ class Select_Controller implements Feature_Controller
 	/**
 	 * @var Reflection_Property
 	 */
-	private $property;
+	private Reflection_Property $property;
 
 	//------------------------------------------------------------------------------------------- run
 	/**
@@ -64,7 +64,7 @@ class Select_Controller implements Feature_Controller
 	 *
 	 * @return object[]|string[]|null
 	 */
-	public function values()
+	public function values() : ?array
 	{
 		$type = $this->property->getType();
 		if ($type->isClass()) {
@@ -73,13 +73,12 @@ class Select_Controller implements Feature_Controller
 		elseif ($values = $this->property->getListAnnotation('values')->values()) {
 			return array_combine($values, $values);
 		}
-		else {
-			trigger_error(
-				"Unable to get {$this->property->name} environment values from type " . $type->asString(),
-				E_USER_ERROR
-			);
-			return null;
-		}
+		trigger_error(
+			"Unable to get {$this->property->name} environment values from type " . $type->asString(),
+			E_USER_ERROR
+		);
+		/** @noinspection PhpUnreachableStatementInspection in case of caught error */
+		return null;
 	}
 
 }

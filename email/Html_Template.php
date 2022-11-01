@@ -12,14 +12,14 @@ class Html_Template extends Template
 
 	//----------------------------------------------------------------------------------- replaceLink
 	/**
-	 * @param $uri string
+	 * @param $link string
 	 * @return string
 	 */
-	protected function replaceLink(string $uri) : string
+	protected function replaceLink(string $link) : string
 	{
-		return str_contains($uri, '://')
-			? $uri
-			: (Paths::absoluteBase() . $uri);
+		return str_contains($link, '://')
+			? $link
+			: (Paths::absoluteBase() . $link);
 	}
 
 	//------------------------------------------------------------------------------------ replaceUri
@@ -32,13 +32,9 @@ class Html_Template extends Template
 	 */
 	protected function replaceUri(string $uri) : string
 	{
-		if (str_contains($uri, '://') || !in_array(substr($uri, -4), ['.gif', '.jpg', '.png'])) {
-			$final_uri = $uri;
-		}
-		else {
-			$final_uri = $this->path . SL . $uri;
-		}
-		return $final_uri;
+		return (str_contains($uri, '://') || !in_array(substr($uri, -4), ['.gif', '.jpg', '.png']))
+			? $uri
+			: ($this->path . SL . $uri);
 	}
 
 }

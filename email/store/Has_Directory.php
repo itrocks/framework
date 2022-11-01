@@ -14,8 +14,8 @@ trait Has_Directory
 	//------------------------------------------------------------------------------------ $directory
 	/**
 	 * @link Object
-	 * @var Directory|null
+	 * @var ?Directory
 	 */
-	public $directory = null;
+	public ?Directory $directory = null;
 
 }

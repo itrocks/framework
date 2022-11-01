@@ -13,35 +13,36 @@ abstract class Net_Account
 	/**
 	 * @var string
 	 */
-	public $host;
+	public string $host = '';
 
 	//---------------------------------------------------------------------------------------- $login
 	/**
 	 * @var string
 	 */
-	public $login;
+	public string $login = '';
 
 	//------------------------------------------------------------------------------------- $password
 	/**
 	 * @var string
 	 */
-	public $password;
+	public string $password = '';
 
 	//----------------------------------------------------------------------------------------- $port
 	/**
 	 * @var integer
 	 */
-	public $port = 25;
+	public int $port = 25;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $host     string
-	 * @param $login    string
-	 * @param $password string
-	 * @param $port     integer
+	 * @param $host     string|null
+	 * @param $login    string|null
+	 * @param $password string|null
+	 * @param $port     integer|null
 	 */
-	public function __construct($host = null, $login = null, $password = null, $port = null)
-	{
+	public function __construct(
+		string $host = null, string $login = null, string $password = null, int $port = null
+	) {
 		if (isset($host))     $this->host     = $host;
 		if (isset($login))    $this->login    = $login;
 		if (isset($password)) $this->password = $password;
