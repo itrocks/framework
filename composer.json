@@ -39,7 +39,7 @@
 		"php":                                   "^8.0.0",
 		"phpunit/phpunit":                       "9.*",
 		"setasign/fpdi":                         "^2.3",
-		"swiftmailer/swiftmailer":               "^6.0",
+		"symfony/mailer":                        "^6.1",
 		"tecnickcom/tcpdf":                      "^6.3"
 	},
 	"type": "itrocks"
