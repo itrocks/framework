@@ -10,7 +10,7 @@ use ITRocks\Framework\Tools\Names;
 /**
  * Sends emails
  *
- * This offers a ITRocks interface to the SwiftMailer package
+ * This offers a ITRocks interface to mail senders
  */
 abstract class Sender implements Configurable, Sender_Interface
 {
@@ -120,7 +120,7 @@ abstract class Sender implements Configurable, Sender_Interface
 				$this->to = [$this->to];
 			}
 			foreach ($this->to as $to_name => $to_email) {
-				array_push($email->to, new Recipient($to_email, is_numeric($to_name) ? null : $to_name));
+				$email->to[] = new Recipient($to_email, is_numeric($to_name) ? null : $to_name);
 			}
 		}
 		// bcc is useful in production too
@@ -129,7 +129,7 @@ abstract class Sender implements Configurable, Sender_Interface
 				$this->bcc = [$this->bcc];
 			}
 			foreach ($this->bcc as $bcc) {
-				array_push($email->blind_copy_to, new Recipient($bcc));
+				$email->blind_copy_to[] = new Recipient($bcc);
 			}
 		}
 	}

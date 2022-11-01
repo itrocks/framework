@@ -4,16 +4,12 @@ namespace ITRocks\Framework\Email;
 use Html2Text\Html2Text;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Tools\Date_Time;
-use Swift_Attachment;
-use Swift_Image;
-use Swift_Message;
-use Swift_Mime_Headers_DateHeader;
-use Swift_Mime_Headers_IdentificationHeader;
+use Symfony\Component\Mime;
+use Symfony\Component\Mime\Header\DateHeader;
+use Symfony\Component\Mime\Header\IdentificationHeader;
 
 /**
- * Encodes emails
- *
- * This offers a ITRocks interface to the SwiftMailer package
+ * Encodes emails using the Symfony Mime component
  */
 class Encoder
 {
@@ -109,51 +105,65 @@ class Encoder
 	 */
 	public function toString() : string
 	{
-		return $this->toSwiftMessage()->toString();
+		return $this->toMessage()->toString();
 	}
 
-	//-------------------------------------------------------------------------------- toSwiftHeaders
+	//------------------------------------------------------------------------------------- toHeaders
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $message Swift_Message
+	 * @param $message Mime\Email
 	 * @param $headers string[]
 	 */
-	protected function toSwiftHeaders(Swift_Message $message, array $headers)
+	protected function toHeaders(Mime\Email $message, array $headers)
 	{
-		$swift_headers = $message->getHeaders();
-		foreach ($headers as $header_name => $header_value) {
-			$header = $swift_headers->get($header_name);
-			if ($header instanceof Swift_Mime_Headers_IdentificationHeader) {
-				/** @noinspection PhpUnhandledExceptionInspection Swift_Mime_Headers_IdentificationHeader::setId */
-				$header->setId($header_value);
-			}
-			if ($header instanceof Swift_Mime_Headers_DateHeader) {
-				/** @noinspection PhpUnhandledExceptionInspection would be a programming error */
-				$header->setDateTime(new Date_Time($header_value));
-			}
-			// TODO handle other header classes (btw a Swift::fromString() would be the simplest)
+		$message_headers = $message->getHeaders();
+		if (!isset($headers['Message-ID'])) {
+			$headers['Message-ID'] = date('YmdHis') . DOT . uniqid()
+				. AT . ($_SERVER['SERVER_NAME'] ?? 'console');
 		}
-		if (!isset($this->email->headers['Message-ID'])) {
-			/** @noinspection PhpPossiblePolymorphicInvocationInspection I'm sure */
-			$message->getHeaders()->get('Message-ID')->setId(
-				date('YmdHis') . DOT . uniqid() . AT . ($_SERVER['SERVER_NAME'] ?? 'console')
-			);
+		foreach ($headers as $header_name => $header_value) {
+			$header = $message_headers->get($header_name);
+			// update header
+			if ($header) {
+				if ($header instanceof DateHeader) {
+					/** @noinspection PhpUnhandledExceptionInspection would be a programming error */
+					$header->setDateTime(new Date_Time($header_value));
+					continue;
+				}
+				if ($header instanceof IdentificationHeader) {
+					$header->setId($header_value);
+					continue;
+				}
+				$message_headers->remove($header_name);
+				$header = null;
+			}
+			// add header
+			if (!strcasecmp($header_name, 'Message-ID')) {
+				$message_headers->addIdHeader($header_name, $header_value);
+			}
+			elseif (!strcasecmp($header_name, 'Date')) {
+				/** @noinspection PhpUnhandledExceptionInspection would be a programming error */
+				$message_headers->addDateHeader($header_name, new Date_Time($header_value));
+			}
+			else {
+				$message_headers->addTextHeader($header_name, $header_value);
+			}
 		}
 	}
 
-	//-------------------------------------------------------------------------------- toSwiftMessage
+	//------------------------------------------------------------------------------------- toMessage
 	/**
 	 * Create a message that can be sent from an Email object
 	 *
-	 * @return Swift_Message
+	 * @return Mime\Email
 	 */
-	public function toSwiftMessage() : Swift_Message
+	public function toMessage() : Mime\Email
 	{
-		$message = new Swift_Message();
+		$message = new Mime\Email();
 
 		// Headers
-		$message->setSubject($this->email->subject);
-		$message->setFrom($this->email->from->email, $this->email->from->name);
+		$message->subject($this->email->subject);
+		$message->from($this->email->from->email, $this->email->from->name);
 		foreach ($this->email->to as $recipient) {
 			$message->addTo($recipient->email, $recipient->name);
 		}
@@ -164,31 +174,34 @@ class Encoder
 			$message->addBcc($recipient->email, $recipient->name);
 		}
 		if ($this->email->reply_to) {
-			$message->setReplyTo($this->email->reply_to->email, $this->email->reply_to->name);
+			$message->replyTo($this->email->reply_to->email, $this->email->reply_to->name);
 		}
 		if ($this->email->return_path) {
-			$message->setReturnPath($this->email->return_path->email);
+			$message->returnPath($this->email->return_path->email);
 		}
-		$this->toSwiftHeaders($message, $this->email->headers);
+		$this->toHeaders($message, $this->email->headers);
 
 		// Body
+		$image     = 0;
 		$html_part = $this->parseImages(
 			$this->email->content,
-			function($image_path) use($message) : string {
-				return $message->embed(Swift_Image::fromPath($image_path));
+			function($image_path) use($image, $message) : string {
+				$cid = 'im' . ++$image;
+				$message->embedFromPath($image_path, $cid);
+				return $cid;
 			}
 		);
-		$message->setBody($html_part, 'text/html', 'utf-8');
-		$message->addPart((new Html2Text($this->email->content))->getText(), 'text/plain', 'utf-8');
+		$message->html($html_part);
+		$message->text((new Html2Text($this->email->content))->getText());
 
 		// Attachments
 		foreach ($this->email->attachments as $a) {
-			$attachment = Swift_Attachment::fromPath($a->temporary_file_name);
-			$attachment->setFilename($a->name);
 			if ($a->embedded) {
-				$attachment->setDisposition('inline');
+				$message->embedFromPath($a->temporary_file_name, $a->name);
 			}
-			$message->attach($attachment);
+			else {
+				$message->attachFromPath($a->temporary_file_name, $a->name);
+			}
 		}
 
 		return $message;

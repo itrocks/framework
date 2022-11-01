@@ -99,6 +99,12 @@ class Type
 		return self::$extensions_types[$file_extension] ?? null;
 	}
 
+	//-------------------------------------------------------------------------- fileNameToTypeString
+	public static function fileNameToTypeString(string $file_name) : ?string
+	{
+		return static::fileExtensionToTypeString(rLastParse($file_name, DOT));
+	}
+
 	//--------------------------------------------------------------------------- initExtensionsTypes
 	/**
 	 * Init the $extensions_types static property (if not already done)

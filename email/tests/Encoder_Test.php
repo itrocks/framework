@@ -6,7 +6,7 @@ use ITRocks\Framework\Email;
 use ITRocks\Framework\Email\Encoder;
 use ITRocks\Framework\Email\Recipient;
 use ITRocks\Framework\Tests\Test;
-use Swift_Message;
+use Symfony\Component\Mime;
 
 /**
  * Email\Encoder tests
@@ -45,30 +45,31 @@ class Encoder_Test extends Test
 	public function testCreateMessage()
 	{
 		$encoder = new Encoder($this->email);
-		$message = $encoder->toSwiftMessage();
-		static::assertInstanceOf(Swift_Message::class, $message);
+		$message = $encoder->toMessage();
+		static::assertInstanceOf(Mime\Email::class, $message);
 	}
 
 	//------------------------------------------------------------------------------- testEmbedImages
 	public function testEmbedImages()
 	{
 		$encoder = new Encoder($this->email);
-		$message = $encoder->toSwiftMessage();
+		$message = $encoder->toMessage();
 		// Image should be embedded as the first MIME child
-		static::assertNotEmpty($message->getChildren());
-		$embedded_image = $message->getChildren()[0];
-		$cid = $embedded_image->getId();
-		static::assertMatchesRegularExpression('/[[:xdigit:]]{32}@swift.generated/', $cid);
+		static::assertNotEmpty($message->getAttachments());
+		$embedded_image = $message->getAttachments()[0];
+		$cid = $embedded_image->getContentId();
+		static::assertMatchesRegularExpression('/im1/', $cid);
 		// Embedded image should be referenced in html mail body
 		$body = $message->getBody();
-		static::assertEquals("<p>Image: <img alt=\"\" src=\"cid:$cid\"></p>", $body);
+		/** @noinspection HtmlUnknownTarget Inspector bug : it is a cid, not a file, so it's ok */
+		static::assertEquals('<p>Image: <img alt="" src="cid:im1"></p>', $body);
 	}
 
 	//------------------------------------------------------------------------------- testEmptyHeader
 	public function testEmptyHeader()
 	{
 		$encoder = new Encoder($this->email);
-		$message = $encoder->toSwiftMessage();
+		$message = $encoder->toMessage();
 		$from    = $message->getFrom();
 		static::assertNotEquals([], $from);
 		$headers = $message->getHeaders()->toString();
@@ -79,7 +80,7 @@ class Encoder_Test extends Test
 	public function testNoBccHeader()
 	{
 		$encoder = new Encoder($this->email);
-		$message = $encoder->toSwiftMessage();
+		$message = $encoder->toMessage();
 		$bcc = $message->getBcc();
 		static::assertEmpty($bcc);
 		$headers = $message->getHeaders()->toString();
@@ -90,7 +91,7 @@ class Encoder_Test extends Test
 	public function testNoCcHeader()
 	{
 		$encoder = new Encoder($this->email);
-		$message = $encoder->toSwiftMessage();
+		$message = $encoder->toMessage();
 		$cc = $message->getCc();
 		static::assertEmpty($cc);
 		$headers = $message->getHeaders()->toString();
@@ -101,7 +102,7 @@ class Encoder_Test extends Test
 	public function testNoToHeader()
 	{
 		$encoder = new Encoder($this->email);
-		$message = $encoder->toSwiftMessage();
+		$message = $encoder->toMessage();
 		$to = $message->getTo();
 		static::assertEmpty($to);
 		$headers = $message->getHeaders()->toString();
@@ -113,7 +114,7 @@ class Encoder_Test extends Test
 	{
 		$this->email->blind_copy_to = [new Recipient('foo@example.org', 'Foo Bar')];
 		$encoder = new Encoder($this->email);
-		$message = $encoder->toSwiftMessage();
+		$message = $encoder->toMessage();
 		$bcc = $message->getBcc();
 		static::assertArrayHasKey('foo@example.org', $bcc);
 		static::assertCount(1, $bcc);
@@ -126,7 +127,7 @@ class Encoder_Test extends Test
 	{
 		$this->email->copy_to = [new Recipient('foo@example.org', 'Foo Bar')];
 		$encoder = new Encoder($this->email);
-		$message = $encoder->toSwiftMessage();
+		$message = $encoder->toMessage();
 		$cc = $message->getCc();
 		static::assertArrayHasKey('foo@example.org', $cc);
 		static::assertCount(1, $cc);
@@ -139,7 +140,7 @@ class Encoder_Test extends Test
 	{
 		$this->email->from = new Recipient('foo@example.org', 'Foo Bar');
 		$encoder = new Encoder($this->email);
-		$message = $encoder->toSwiftMessage();
+		$message = $encoder->toMessage();
 		$from = $message->getFrom();
 		static::assertArrayHasKey('foo@example.org', $from);
 		static::assertCount(1, $from);
@@ -152,7 +153,7 @@ class Encoder_Test extends Test
 	{
 		$this->email->to = [new Recipient('foo@example.org', 'Foo Bar')];
 		$encoder = new Encoder($this->email);
-		$message = $encoder->toSwiftMessage();
+		$message = $encoder->toMessage();
 		$to = $message->getTo();
 		static::assertArrayHasKey('foo@example.org', $to);
 		static::assertCount(1, $to);

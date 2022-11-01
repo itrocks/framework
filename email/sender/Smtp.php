@@ -5,11 +5,10 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Email\Encoder;
 use ITRocks\Framework\Email\Sender;
-use ITRocks\Framework\Email\Sender\Smtp\Swift_Smtp_Transport;
-use ITRocks\Framework\Email\Sender\Smtp\Swift_Smtp_UIDL;
 use ITRocks\Framework\Email\Smtp_Account;
 use ITRocks\Framework\Tools\Date_Time;
-use Swift_Mailer;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\Transport;
 
 /**
  * Email SMTP sender
@@ -69,34 +68,36 @@ class Smtp extends Sender
 	public function send(Email $email) : bool|string
 	{
 		// email send configuration
-		$smtp_account = $this->smtpAccount($email);
+		$account = $this->smtpAccount($email);
 		$this->sendConfiguration($email);
-
-		$transport = new Swift_Smtp_Transport(
-			$smtp_account->host, $smtp_account->port, $smtp_account->encryption
-		);
-		if ($smtp_account->login) {
-			$transport->setUsername($smtp_account->login);
-			$transport->setPassword($smtp_account->password);
+		$dsn = $account->host;
+		if ($account->port) {
+			$dsn .= ':' . $account->port;
 		}
-		$mailer = new Swift_Mailer($transport);
-		/** @noinspection PhpUnhandledExceptionInspection class */
-		$mailer->registerPlugin(Builder::create(Swift_Smtp_UIDL::class));
+		if ($account->login) {
+			$dsn = $account->login . ':' . $account->password . '@' . $dsn;
+		}
+		if (!$account->encryption) {
+			$dsn .= '?verify_peer=0';
+		}
+		$transport = Transport::fromDsn($dsn);
 
 		/** @noinspection PhpUnhandledExceptionInspection class */
 		$encoder = Builder::create(Encoder::class, [$email, $this->working_directory]);
-		$message = $encoder->toSwiftMessage();
+		$message = $encoder->toMessage();
 
-		$send_result = $mailer->send($message, $failures);
-
-		if ($send_result === 0) {
-			return $email->send_message = 'Send error : ' . join(' ; ', $failures);
+		try {
+			$sent = $transport->send($message);
 		}
+		catch (TransportExceptionInterface $exception) {
+			return $email->send_message = 'Send error : ' . $exception->getMessage();
+		}
+
 		/** @noinspection PhpUnhandledExceptionInspection valid */
 		$email->send_date    = new Date_Time($message->getDate()->getTimestamp());
 		$email->send_message = '';
-		if ($transport->last_uidl) {
-			$email->uidl = $transport->last_uidl;
+		if ($uidl = $sent->getMessageId()) {
+			$email->uidl = $uidl;
 		}
 
 		return true;
