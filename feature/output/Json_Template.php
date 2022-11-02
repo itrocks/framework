@@ -17,12 +17,10 @@ class Json_Template extends View\Json\Json_Template
 	 * @return string
 	 * @throws Json\Exception
 	 */
-	public function render()
+	public function render() : string
 	{
-		$json   = new Json();
-		$result = $json->toJson($json->toStdObject($this->parameters[$this->class_name]));
-
-		return $result;
+		$json = new Json();
+		return $json->toJson($json->toStdObject($this->parameters[$this->class_name]));
 	}
 
 }

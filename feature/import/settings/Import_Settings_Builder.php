@@ -43,12 +43,11 @@ abstract class Import_Settings_Builder
 				) {
 					$auto_identify[$property_path][$pos] = true;
 				}
+				/** @noinspection PhpUnhandledExceptionInspection Property path must be valid */
 				$property = $class->getProperty($property_name);
-				if (isset($property)) {
-					$type = $property->getType();
-					if ($type->isClass()) {
-						$class = $type->asReflectionClass();
-					}
+				$type     = $property->getType();
+				if ($type->isClass()) {
+					$class = $type->asReflectionClass();
 				}
 			}
 		}
@@ -81,7 +80,7 @@ abstract class Import_Settings_Builder
 			$class_path              = '';
 			$property_path_for_class = [];
 			foreach (explode(DOT, $property_path) as $pos => $property_name) {
-				$identify = (substr($property_name, -1) !== '*');
+				$identify = !str_ends_with($property_name, '*');
 				if (!$identify) {
 					$property_name = substr($property_name, 0, -1);
 				}
@@ -112,7 +111,7 @@ abstract class Import_Settings_Builder
 					$sub_class   = $property->getType()->getElementTypeAsString();
 					$class_path .= $sub_class . DOT;
 				}
-				catch (ReflectionException $exception) {
+				catch (ReflectionException) {
 					$class->ignore_properties[$property_name]  = $import_property;
 					$class->unknown_properties[$property_name] = $import_property;
 				}
@@ -173,7 +172,7 @@ abstract class Import_Settings_Builder
 	 * @return Import_Class
 	 */
 	private static function buildFormClass(string $class_name, string $property_path, array $class)
-	: Import_Class
+		: Import_Class
 	{
 		$property_path = $property_path ? explode(DOT, $property_path) : [];
 		$import_class  = new Import_Class(
@@ -202,7 +201,7 @@ abstract class Import_Settings_Builder
 					$import_class->properties[$property_name]
 						= new Reflection_Property($class_name, $property_name);
 				}
-				catch (ReflectionException $exception) {
+				catch (ReflectionException) {
 					$import_class->unknown_properties[$property_name] = $import_property;
 				}
 			}

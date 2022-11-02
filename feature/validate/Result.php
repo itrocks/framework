@@ -43,7 +43,7 @@ abstract class Result
 	 * @param $warning_is_valid boolean
 	 * @return boolean
 	 */
-	public static function isValid($result, $warning_is_valid = false)
+	public static function isValid(string $result, bool $warning_is_valid = false) : bool
 	{
 		return $warning_is_valid
 			? ($result !== self::ERROR)

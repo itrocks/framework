@@ -25,7 +25,7 @@ class Unlock implements Registerable
 	 * @param $class_name string
 	 * @param $result     Button[]
 	 */
-	public function afterListControllerGetSelectionButtons($class_name, array &$result)
+	public function afterListControllerGetSelectionButtons(string $class_name, array &$result)
 	{
 		if (!isA($class_name, Lockable::class)) {
 			return;
@@ -36,26 +36,16 @@ class Unlock implements Registerable
 			Controller::FEATURE,
 			Target::RESPONSES
 		);
-		if (!isset($result[Feature::F_DELETE])) {
-			$result[Controller::FEATURE] = $unlock_button;
-			return;
-		}
-		$buttons = [];
-		foreach ($result as $key => $button) {
-			if ($key === Feature::F_DELETE) {
-				$buttons[Controller::FEATURE] = $unlock_button;
-			}
-			$buttons[$key] = $button;
-		}
-		$result = $buttons;
+		Button::insertBefore($result, $unlock_button, Feature::F_DELETE);
 	}
 
 	//-------------------------------------------------------- afterOutputControllerGetGeneralButtons
 	/**
+	 * @noinspection PhpDocSignatureInspection filtered
 	 * @param $object    Lockable|Unlockable
 	 * @param $joinpoint After_Method
 	 */
-	public function afterOutputControllerGetGeneralButtons($object, After_Method $joinpoint)
+	public function afterOutputControllerGetGeneralButtons(object $object, After_Method $joinpoint)
 	{
 		$buttons =& $joinpoint->result;
 		if (

@@ -59,7 +59,9 @@ class Map_As_Collection extends Property
 			else {
 				$collection = new Collection($this->property, $this->value, true);
 			}
-			$collection->sort = Widget_Annotation::of($this->property)->option('sort', true);
+			$collection->sort = Widget_Annotation::of($this->property)->option(
+				Widget_Annotation::SORT, true
+			);
 			// build
 			return $collection->build();
 		}

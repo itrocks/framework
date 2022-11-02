@@ -5,8 +5,6 @@ use ITRocks\Framework\Dao\Func;
 
 /**
  * Wildcard search parameters parser
- *
- * @extends Search_Parameter_Parser
  */
 abstract class Wildcard
 {
@@ -17,17 +15,14 @@ abstract class Wildcard
 	 * @param $is_range_value boolean  true if we parse a range value
 	 * @return string
 	 */
-	public static function applyWildcards($search_value, $is_range_value = false)
+	public static function applyWildcards(string $search_value, bool $is_range_value = false) : string
 	{
-		if (is_string($search_value)) {
-			// $search = str_replace(['*', '?'], ['%', '_'], $search_value);
-			$search = preg_replace(['/[*%]/', '/[?_]/'], ['%', '_'], $search_value, -1, $count);
-			if ($count && !$is_range_value) {
-				$search = Func::like($search);
-			}
-			return $search;
+		// $search = str_replace(['*', '?'], ['%', '_'], $search_value);
+		$search = preg_replace(['/[*%]/', '/[?_]/'], ['%', '_'], $search_value, -1, $count);
+		if ($count && !$is_range_value) {
+			$search = Func::like($search);
 		}
-		return $search_value;
+		return $search;
 	}
 
 	//----------------------------------------------------------------------------- containsWildcards
@@ -41,7 +36,7 @@ abstract class Wildcard
 	 * @param $string string
 	 * @return boolean
 	 */
-	public static function containsWildcards($string)
+	public static function containsWildcards(string $string) : bool
 	{
 		return str_contains(strtr($string, '?_%', '***'), '*');
 	}

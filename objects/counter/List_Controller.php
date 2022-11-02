@@ -24,7 +24,7 @@ class List_Controller extends Controller
 	 * @return List_Data
 	 */
 	public function readData(
-		$class_name, List_Setting\Set $list_settings, array $search, array $options = []
+		string $class_name, List_Setting\Set $list_settings, array $search, array $options = []
 	) : List_Data
 	{
 		if (isset($search['identifier'])) {

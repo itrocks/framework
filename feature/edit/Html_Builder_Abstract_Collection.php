@@ -48,7 +48,7 @@ class Html_Builder_Abstract_Collection extends Abstract_Collection
 	 *
 	 * @return string
 	 */
-	public function build()
+	public function build() : string
 	{
 		$result = '';
 		foreach ($this->collection as $object) {
@@ -69,9 +69,9 @@ class Html_Builder_Abstract_Collection extends Abstract_Collection
 	//----------------------------------------------------------------------------------- setTemplate
 	/**
 	 * @param $template Html_Template
-	 * @return static
+	 * @return $this
 	 */
-	public function setTemplate(Html_Template $template)
+	public function setTemplate(Html_Template $template) : static
 	{
 		$this->template = $template;
 		return $this;

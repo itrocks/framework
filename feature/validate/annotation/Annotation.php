@@ -24,7 +24,7 @@ trait Annotation
 	 * null value is reserved to invalid validation (should never occur)
 	 *
 	 * @values Result::const
-	 * @var string|boolean|null simplified boolean values can be returned by Annotation::validate(),
+	 * @var boolean|string|null simplified boolean values can be returned by Annotation::validate(),
 	 *      but they will be changed into Validate::ERROR for true and Validate::INFORMATION for false
 	 *      immediately after the internal call to Annotation::validate()
 	 */

@@ -10,15 +10,17 @@
 </head>
 <body>
 <article class="list">
-<form>
+<header><h2>{title}</h2></header>
+<form method="post">
 <table>
 <!--BEGIN-->
 
 	<thead>
 		<tr class="title">
 			<th class="fix visible lines" title="|check to select all !{rows_count}! lines|">
-				<input class="selector" data-no-autofocus type="checkbox">
-				<input name="excluded_selection" type="hidden">
+				<label for="selector">|selector|</label>
+				<input class="selector" data-no-autofocus id="selector" type="checkbox">
+				<input id="excluded_selection" name="excluded_selection" type="hidden">
 				<input data-count="{rows_count}" name="select_all" type="hidden" value="0">
 				<input name="selection" type="hidden">
 			</th>
@@ -49,8 +51,14 @@
 			<!--properties-->
 			<td class="{path.@cssClass} {type.@typeCss}">{search.@searchEdit}</td>
 			<!--sample-->
-			<td class="column_name_2 float"><input name="search[path][column_name_2]"></td>
-			<td class="column_name_3 float"><input name="search[path][column_name_3]"></td>
+			<td class="column_name_2 float">
+				<label for="search_2">search 2</label>
+				<input id="search_2" name="search[path][column_name_2]">
+			</td>
+			<td class="column_name_3 float">
+				<label for="search_3">search 3</label>
+				<input id="search_3" name="search[path][column_name_3]">
+			</td>
 			<!--end-->
 			<td></td>
 		</tr>

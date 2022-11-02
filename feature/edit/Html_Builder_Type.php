@@ -29,25 +29,25 @@ class Html_Builder_Type
 	/**
 	 * @var string[] Additional HTML attributes for your DOM element
 	 */
-	public $attributes = [];
+	public array $attributes = [];
 
 	//---------------------------------------------------------------------------------- $auto_height
 	/**
 	 * @var boolean
 	 */
-	public $auto_height = true;
+	public bool $auto_height = true;
 
 	//----------------------------------------------------------------------------------- $auto_width
 	/**
 	 * @var boolean
 	 */
-	public $auto_width = true;
+	public bool $auto_width = true;
 
 	//-------------------------------------------------------------------------------------- $classes
 	/**
 	 * @var string[] Additional CSS classes for your DOM element class attribute
 	 */
-	public $classes = [];
+	public array $classes = [];
 
 	//----------------------------------------------------------------------------------- $conditions
 	/**
@@ -56,13 +56,13 @@ class Html_Builder_Type
 	 *
 	 * @var string[]
 	 */
-	public $conditions;
+	public array $conditions;
 
 	//----------------------------------------------------------------------------------------- $data
 	/**
 	 * @var string[] Additional data-key attributes for your DOM element
 	 */
-	public $data = [];
+	public array $data = [];
 
 	//---------------------------------------------------------------------------------- $is_abstract
 	/**
@@ -70,7 +70,7 @@ class Html_Builder_Type
 	 *
 	 * @var boolean
 	 */
-	public $is_abstract = false;
+	public bool $is_abstract = false;
 
 	//--------------------------------------------------------------------------------------- $is_new
 	/**
@@ -78,13 +78,13 @@ class Html_Builder_Type
 	 *
 	 * @var boolean
 	 */
-	public $is_new = false;
+	public bool $is_new = false;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string
 	 */
-	public $name;
+	public string $name;
 
 	//----------------------------------------------------------------------------------------- $null
 	/**
@@ -93,19 +93,19 @@ class Html_Builder_Type
 	 *
 	 * @var boolean
 	 */
-	public $null = false;
+	public bool $null = false;
 
 	//------------------------------------------------------------------------------------ $on_change
 	/**
 	 * @var string[]
 	 */
-	public $on_change = [];
+	public array $on_change = [];
 
 	//------------------------------------------------------------------------- $parent_level_filters
 	/**
 	 * @var boolean
 	 */
-	public $parent_level_filters = false;
+	public bool $parent_level_filters = false;
 
 	//------------------------------------------------------------------------------------- $pre_path
 	/**
@@ -119,13 +119,13 @@ class Html_Builder_Type
 	 *
 	 * @var boolean
 	 */
-	public $readonly = false;
+	public bool $readonly = false;
 
 	//------------------------------------------------------------------------------ $realtime_change
 	/**
 	 * @var boolean
 	 */
-	public $realtime_change = false;
+	public bool $realtime_change = false;
 
 	//------------------------------------------------------------------------------------- $required
 	/**
@@ -133,25 +133,25 @@ class Html_Builder_Type
 	 *
 	 * @var boolean
 	 */
-	public $required = false;
+	public bool $required = false;
 
 	//------------------------------------------------------------------------------------- $template
 	/**
 	 * @var Html_Template
 	 */
-	public $template;
+	public Html_Template $template;
 
 	//-------------------------------------------------------------------------------------- $tooltip
 	/**
 	 * @var string
 	 */
-	public $tooltip;
+	public string $tooltip = '';
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * @var Type
 	 */
-	protected $type;
+	protected Type $type;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
@@ -163,7 +163,7 @@ class Html_Builder_Type
 	/**
 	 * @var boolean
 	 */
-	protected $with_id;
+	protected bool $with_id;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -187,7 +187,7 @@ class Html_Builder_Type
 	 *
 	 * @param $element Element the button / input / select element
 	 */
-	protected function addConditionsToElement($element)
+	protected function addConditionsToElement(Element $element)
 	{
 		if ($this->conditions) {
 			$html_conditions = [];
@@ -195,7 +195,7 @@ class Html_Builder_Type
 			foreach ($this->conditions as $condition_name => $condition_value) {
 				$this->name = $condition_name;
 				$name       = $this->getFieldName('', false, $old_name);
-				$operator   = (in_array(substr($condition_value, 0, 1), ['<', '>']) ? '' : '=');
+				$operator   = strStartsWith($condition_value, ['<', '>']) ? '' : '=';
 				$html_conditions[] = $name . $operator . $condition_value;
 			}
 			$this->name = $old_name;
@@ -207,74 +207,70 @@ class Html_Builder_Type
 	/**
 	 * @return string
 	 */
-	public function build()
+	public function build() : string
 	{
 		$this->patchSearchTypes();
 		$type = $this->type;
 		if (!isset($type)) {
 			return $this->buildId();
 		}
-		else {
-			switch ($type->asString()) {
-				case Type::BOOLEAN:      $result = $this->buildBoolean(); break;
-				case Type::FLOAT:        $result = $this->buildFloat();   break;
-				case Type::INTEGER:      $result = $this->buildInteger(); break;
-				case Type::STRING:       $result = $this->buildString();  break;
-				case Type::STRING_ARRAY: $result = $this->buildString();  break;
+		$result = match($type->asString()) {
+			Type::BOOLEAN => $this->buildBoolean(),
+			Type::FLOAT   => $this->buildFloat(),
+			Type::INTEGER => $this->buildInteger(),
+			Type::STRING, Type::STRING_ARRAY => $this->buildString(),
+			default => null
+		};
+		if (!isset($result) && $type->isClass()) {
+			$class_name = $type->asString();
+			if (is_a($class_name, DateTime::class, true)) {
+				$result = $this->buildDateTime();
 			}
-			if (!isset($result) && $type->isClass()) {
-				$class_name = $type->asString();
-				if (is_a($class_name, DateTime::class, true)) {
-					$result = $this->buildDateTime();
-				}
-				elseif (is_a($class_name, File::class, true)) {
-					$result = $this->buildFile();
-				}
-				else {
-					$result = $this->buildObject();
-				}
+			elseif (is_a($class_name, File::class, true)) {
+				$result = $this->buildFile();
 			}
-			// TODO SM Create a Editable_Element class to be able to add some behavior like on_change because Element may be span or other html
-			if (isset($result) && ($result instanceof Element)) {
-				$this->setOnChangeAttribute($result);
-				if ($this->tooltip) {
-					$result->setAttribute('title', $this->tooltip);
-				}
+			else {
+				$result = $this->buildObject();
 			}
 		}
-		return isset($result) ? $result : $this->value;
+		// TODO SM Create a Editable_Element class to be able to add some behavior like on_change because Element may be span or other html
+		if ($result instanceof Element) {
+			$this->setOnChangeAttribute($result);
+			if ($this->tooltip) {
+				$result->setAttribute('title', $this->tooltip);
+			}
+		}
+		return $result ?? $this->value;
 	}
 
 	//---------------------------------------------------------------------------------- buildBoolean
 	/**
 	 * @return Element|string
 	 */
-	protected function buildBoolean()
+	protected function buildBoolean() : Element|string
 	{
-		$value = strlen(strval($this->value)) ? $this->value : ($this->null ? null : 0);
+		$value = (strval($this->value) === '') ? $this->value : ($this->null ? null : 0);
 		if ($this->null) {
 			$input = new Select($this->getFieldName(), ['' => '', '0' => NO, '1' => YES], $value);
 			$this->commonAttributes($input);
 			return $input;
 		}
-		else {
-			$input = new Input($this->getFieldName());
-			$input->setAttribute('type', 'hidden');
-			$input->setAttribute('value', $value);
-			$checkbox = new Input();
-			$checkbox->setAttribute('id', 'cb-' . uniqid());
-			$checkbox->setAttribute('type', 'checkbox');
-			$checkbox->setAttribute('value', true);
-			if ($this->readonly) {
-				$this->setInputAsReadOnly($input);
-			}
-			if ($this->value) {
-				$checkbox->setAttribute('checked');
-			}
-			$this->setOnChangeAttribute($checkbox);
-			$this->commonAttributes($checkbox);
-			return $input . $checkbox;
+		$input = new Input($this->getFieldName());
+		$input->setAttribute('type', 'hidden');
+		$input->setAttribute('value', $value);
+		$checkbox = new Input();
+		$checkbox->setAttribute('id', 'cb-' . uniqid());
+		$checkbox->setAttribute('type', 'checkbox');
+		$checkbox->setAttribute('value', true);
+		if ($this->readonly) {
+			$this->setInputAsReadOnly($input);
 		}
+		if ($this->value) {
+			$checkbox->setAttribute('checked');
+		}
+		$this->setOnChangeAttribute($checkbox);
+		$this->commonAttributes($checkbox);
+		return $input . $checkbox;
 	}
 
 	//--------------------------------------------------------------------------------- buildDateTime
@@ -282,7 +278,7 @@ class Html_Builder_Type
 	 * @param $format boolean
 	 * @return Element
 	 */
-	protected function buildDateTime($format = true)
+	protected function buildDateTime(bool $format = true) : Element
 	{
 		$input = new Input(
 			$this->getFieldName(),
@@ -299,7 +295,7 @@ class Html_Builder_Type
 	/**
 	 * @return string
 	 */
-	protected function buildFile()
+	protected function buildFile() : string
 	{
 		$field_name = $this->getFieldName();
 		if (
@@ -331,7 +327,7 @@ class Html_Builder_Type
 	 * @param $format boolean
 	 * @return Element
 	 */
-	protected function buildFloat($format = true)
+	protected function buildFloat(bool $format = true) : Element
 	{
 		$input = new Input(
 			$this->getFieldName(),
@@ -349,7 +345,7 @@ class Html_Builder_Type
 	/**
 	 * @return Element
 	 */
-	protected function buildId()
+	protected function buildId() : Element
 	{
 		$input = new Input($this->getFieldName(), $this->value);
 		$input->setAttribute('type', 'hidden');
@@ -363,7 +359,7 @@ class Html_Builder_Type
 	 * @param $format boolean
 	 * @return Element
 	 */
-	protected function buildInteger($format = true)
+	protected function buildInteger(bool $format = true) : Element
 	{
 		$input = new Input(
 			$this->getFieldName(),
@@ -384,7 +380,7 @@ class Html_Builder_Type
 	 * @param $as_string boolean true if the object should be used as a string
 	 * @return string
 	 */
-	public function buildObject(array $filters = null, $as_string = false)
+	public function buildObject(array $filters = null, bool $as_string = false) : string
 	{
 		$this->with_id     = true;
 		$class_name        = $this->type->asString();
@@ -452,7 +448,7 @@ class Html_Builder_Type
 					if (
 						is_numeric($filter_value)
 						|| (
-							in_array(substr($filter_value, 0, 1), [DQ, Q])
+							strStartsWith($filter_value, [DQ, Q])
 							&& (substr($filter_value, 0, 1) === substr($filter_value, -1))
 						)
 					) {
@@ -484,7 +480,7 @@ class Html_Builder_Type
 			}
 		}
 		$this->commonAttributes($input);
-		return (isset($id_input) ? $id_input : '') . $input . $more;
+		return ($id_input ?? '') . $input . $more;
 	}
 
 	//----------------------------------------------------------------------------------- buildString
@@ -494,7 +490,9 @@ class Html_Builder_Type
 	 * @param $ordered_values boolean true if values are ordered and to disable alphabetical sort
 	 * @return Element
 	 */
-	protected function buildString($multiline = false, array $values = null, $ordered_values = false)
+	protected function buildString(
+		bool $multiline = false, array $values = null, bool $ordered_values = false
+	) : Element
 	{
 		// case choice of values (single or multiple)
 		if ($values) {
@@ -582,15 +580,17 @@ class Html_Builder_Type
 	 * @param $counter_name      string
 	 * @return string
 	 */
-	public function getFieldName($prefix = '', $counter_increment = true, $counter_name = null)
+	public function getFieldName(
+		string $prefix = '', bool $counter_increment = true, string $counter_name = ''
+	) : string
 	{
 		if (empty($this->name) && $this->pre_path) {
 			$prefix = '';
 		}
-		if (!strlen($this->pre_path)) {
+		if ($this->pre_path === '') {
 			$field_name = $prefix . $this->name;
 		}
-		elseif (substr($this->pre_path, -2) === '[]') {
+		elseif (str_ends_with($this->pre_path, '[]')) {
 			if ($counter_name) {
 				$counter_name = substr($this->pre_path, 0, -2)
 					. '[' . ($this->with_id ? 'id_' : '') . $counter_name . ']';
@@ -599,7 +599,7 @@ class Html_Builder_Type
 			$count       = $this->template->nextCounter($counter_name ?: $field_name, $counter_increment);
 			$field_name .= '[' . $count . ']';
 		}
-		elseif (strlen($prefix . $this->name)) {
+		elseif (($prefix . $this->name) !== '') {
 			$field_name = str_contains($this->pre_path, '[]')
 				? $this->getRepetitiveFieldName($prefix, $counter_increment)
 				: ($this->pre_path . '[' . $prefix . $this->name . ']');
@@ -617,7 +617,7 @@ class Html_Builder_Type
 	 * @param $counter_increment boolean
 	 * @return string
 	 */
-	private function getRepetitiveFieldName($prefix, $counter_increment)
+	private function getRepetitiveFieldName(string $prefix, bool $counter_increment) : string
 	{
 		$i                = strpos($this->pre_path, '[]');
 		$counter_name     = substr($this->pre_path, 0, $i);
@@ -636,10 +636,11 @@ class Html_Builder_Type
 	//----------------------------------------------------------------------- makeTextInputOrTextarea
 	/**
 	 * @param $multiline boolean
-	 * @param $value     string|string[]
-	 * @return Input
+	 * @param $value     string|string[]|null
+	 * @return Input|TextArea
 	 */
-	private function makeTextInputOrTextarea($multiline, $value)
+	private function makeTextInputOrTextarea(bool $multiline, array|string|null $value)
+		: Input|Textarea
 	{
 		if ($multiline) {
 			if (is_array($value)) {
@@ -668,10 +669,7 @@ class Html_Builder_Type
 	 */
 	private function patchSearchTypes()
 	{
-		if (
-			(substr($this->name, 0, 7) === 'search[')
-			&& $this->type->isDateTime()
-		) {
+		if (str_starts_with($this->name, 'search[') && $this->type->isDateTime()) {
 			$this->type = new Type(Type::STRING);
 			if ($this->value) {
 				$this->value = Loc::dateToLocale($this->value);
@@ -683,7 +681,7 @@ class Html_Builder_Type
 	/**
 	 * @param $input Element
 	 */
-	public function setInputAsReadOnly($input)
+	public function setInputAsReadOnly(Element $input)
 	{
 		if ($this->readonly) {
 			if ($input->getAttribute('name') && !$this->is_new) {
@@ -700,14 +698,15 @@ class Html_Builder_Type
 	 * @param $element         Element
 	 * @param $realtime_change boolean
 	 */
-	private function setOnChangeAttribute(Element $element, $realtime_change = true)
+	private function setOnChangeAttribute(Element $element, bool $realtime_change = true)
 	{
-		if ($this->on_change) {
-			$on_change = join(',', $this->on_change);
-			$element->setData('on-change', $on_change);
-			if ($realtime_change && $this->realtime_change) {
-				$element->setData('realtime-change');
-			}
+		if (!$this->on_change) {
+			return;
+		}
+		$on_change = join(',', $this->on_change);
+		$element->setData('on-change', $on_change);
+		if ($realtime_change && $this->realtime_change) {
+			$element->setData('realtime-change');
 		}
 	}
 
@@ -716,9 +715,9 @@ class Html_Builder_Type
 	 * Set template : will be set only if $template is an Html_Template
 	 *
 	 * @param $template Template
-	 * @return Html_Builder_Type
+	 * @return $this
 	 */
-	public function setTemplate(Template $template)
+	public function setTemplate(Template $template) : static
 	{
 		if ($template instanceof Html_Template) {
 			$this->template = $template;

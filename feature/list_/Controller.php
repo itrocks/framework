@@ -26,6 +26,7 @@ use ITRocks\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
 use ITRocks\Framework\Feature\Export;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Words;
 use ITRocks\Framework\Feature\List_Setting;
+use ITRocks\Framework\Feature\List_Setting\Set;
 use ITRocks\Framework\Feature\Output;
 use ITRocks\Framework\History;
 use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
@@ -50,13 +51,13 @@ use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Setting;
+use ITRocks\Framework\Tools;
 use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Color;
 use ITRocks\Framework\Tools\Contextual_Callable;
 use ITRocks\Framework\Tools\Default_List_Data;
 use ITRocks\Framework\Tools\List_Data;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ReflectionException;
@@ -77,7 +78,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	/**
 	 * @var string The set class name (can be virtual if only the element class name exists)
 	 */
-	private $class_names;
+	private string $class_names;
 
 	//---------------------------------------------------------------- $default_displayed_lines_count
 	/**
@@ -85,7 +86,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *
 	 * @var integer
 	 */
-	public $default_displayed_lines_count = 20;
+	public int $default_displayed_lines_count = 20;
 
 	//-------------------------------------------------------------------- $displayed_lines_count_gap
 	/**
@@ -93,27 +94,27 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *
 	 * @var integer
 	 */
-	public $displayed_lines_count_gap = 100;
+	public int $displayed_lines_count_gap = 100;
 
 	//--------------------------------------------------------------------------------------- $errors
 	/**
 	 * List of errors on fields' search expression
 	 *
-	 * @var \Exception[]
+	 * @var Exception[]
 	 */
-	protected $errors = [];
+	protected array $errors = [];
 
 	//------------------------------------------------------------------------- $foot_property_values
 	/**
 	 * @var Reflection_Property_Value[]
 	 */
-	protected $foot_property_values = [];
+	protected array $foot_property_values = [];
 
 	//------------------------------------------------------------------------------ $load_more_lines
 	/**
 	 * @var boolean
 	 */
-	protected $load_more_lines = null;
+	protected bool $load_more_lines = false;
 
 	//---------------------------------------------------------------- $maximum_displayed_lines_count
 	/**
@@ -121,7 +122,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *
 	 * @var integer
 	 */
-	public $maximum_displayed_lines_count = 1000;
+	public int $maximum_displayed_lines_count = 1000;
 
 	//----------------------------------------------------------------------------------- $time_limit
 	/**
@@ -131,7 +132,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *
 	 * @var integer
 	 */
-	public $time_limit = 30;
+	public int $time_limit = 30;
 
 	//-------------------------------------------------------------------------- applyGettersToValues
 	/**
@@ -194,13 +195,13 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	/**
 	 * Apply parameters to list settings
 	 *
-	 * @param $list_settings    List_Setting\Set
+	 * @param $list_settings    Set
 	 * @param $parameters       array
-	 * @param $form             array
-	 * @return List_Setting\Set set if parameters did change
+	 * @param $form             array|null
+	 * @return Set set if parameters did change
 	 */
 	public function applyParametersToListSettings(
-		List_Setting\Set &$list_settings, array $parameters, array $form = null
+		Set &$list_settings, array $parameters, array $form = null
 	) {
 		if (isset($form)) {
 			$parameters = array_merge($parameters, $form);
@@ -211,15 +212,13 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		if (isset($parameters['add_property'])) {
 			$list_settings->addProperty(
 				$parameters['add_property'],
-				isset($parameters['before']) ? 'before' : 'after',
-				isset($parameters['before'])
-					? $parameters['before']
-					: (isset($parameters['after']) ? $parameters['after'] : '')
+				isset($parameters[Set::BEFORE]) ? Set::BEFORE : Set::AFTER,
+				$parameters[Set::BEFORE] ?? $parameters[Set::AFTER] ?? ''
 			);
 			$did_change = true;
 		}
 		if (isset($parameters['less'])) {
-			if ($parameters['less'] == $this->default_displayed_lines_count) {
+			if (intval($parameters['less']) === $this->default_displayed_lines_count) {
 				$list_settings->maximum_displayed_lines_count = $this->default_displayed_lines_count;
 			}
 			else {
@@ -238,11 +237,11 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			$did_change = true;
 		}
 		if (isset($parameters['move'])) {
-			if ($parameters['move'] == 'down') {
+			if ($parameters['move'] === 'down') {
 				$list_settings->start_display_line_number += $list_settings->maximum_displayed_lines_count;
 				$did_change = true;
 			}
-			elseif ($parameters['move'] == 'up') {
+			elseif ($parameters['move'] === 'up') {
 				$list_settings->start_display_line_number -= $list_settings->maximum_displayed_lines_count;
 				$did_change = true;
 			}
@@ -278,8 +277,8 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			$list_settings->search(self::descapeForm($parameters['search']));
 			$did_change = true;
 		}
-		if (isset($parameters['sort'])) {
-			$list_settings->sort($parameters['sort']);
+		if (isset($parameters[Property::SORT])) {
+			$list_settings->sort($parameters[Property::SORT]);
 			$did_change = true;
 		}
 		if (isset($parameters['title'])) {
@@ -308,10 +307,10 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	//------------------------------------------------------------------------- applySearchParameters
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $list_settings List_Setting\Set
+	 * @param $list_settings Set
 	 * @return array search-compatible search array
 	 */
-	public function applySearchParameters(List_Setting\Set $list_settings)
+	public function applySearchParameters(Set $list_settings) : array
 	{
 		$class  = $list_settings->getClass();
 		$search = $this->searchObjectsToRepresentative($class->name, $list_settings->search);
@@ -337,11 +336,11 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $form string[]
 	 * @return string[]
 	 */
-	protected function descapeForm(array $form)
+	protected function descapeForm(array $form) : array
 	{
 		$result = [];
 		foreach ($form as $property_name => $value) {
-			$property_name = self::descapePropertyName($property_name);
+			$property_name          = self::descapePropertyName($property_name);
 			$result[$property_name] = $value;
 		}
 		return $result;
@@ -353,12 +352,12 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @return string
 	 * @see Functions::escapeName()
 	 */
-	protected function descapePropertyName($property_name)
+	protected function descapePropertyName(string $property_name) : string
 	{
 		$property_name = str_replace(
 			['.id_', '>id_', '>', Q, BQ], [DOT, DOT, DOT, '(', ')'], $property_name
 		);
-		if (substr($property_name, 0, 3) == 'id_') {
+		if (str_starts_with($property_name, 'id_')) {
 			$property_name = substr($property_name, 3);
 		}
 		return $property_name;
@@ -372,9 +371,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $parameters Parameters
 	 * @return string
 	 */
-	protected function forceSetMainObject(Parameters $parameters)
+	protected function forceSetMainObject(Parameters $parameters) : string
 	{
-		$set = Set::instantiate($this->class_names);
+		$set = Tools\Set::instantiate($this->class_names);
 		if (!is_a($object = $parameters->shiftObject(), Names::setToClass($this->class_names))) {
 			$parameters->unshift($object);
 		}
@@ -388,16 +387,16 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *
 	 * @return string
 	 */
-	public function getClassNames()
+	public function getClassNames() : string
 	{
 		return $this->class_names;
 	}
 
 	//------------------------------------------------------------------------------------- getErrors
 	/**
-	 * @return array
+	 * @return Exception[]
 	 */
-	public function getErrors()
+	public function getErrors() : array
 	{
 		return $this->errors;
 	}
@@ -408,7 +407,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $class_name
 	 * @param $class_name string The context object or class name
 	 * @param $parameters array Parameters prepared to the view. 'selection_buttons' to be added
-	 * @param $settings   Setting\Custom\Set&List_Setting\Set|null
+	 * @param $settings   Setting\Custom\Set&Set|null
 	 * @return Button[]
 	 */
 	public function getGeneralButtons(
@@ -434,10 +433,10 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $list_settings List_Setting\Set
+	 * @param $list_settings Set
 	 * @return Property[]
 	 */
-	protected function getProperties(List_Setting\Set $list_settings)
+	protected function getProperties(Set $list_settings) : array
 	{
 		$class_name = $list_settings->getClassName();
 		/** @var $properties Property[] */
@@ -477,38 +476,39 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	//------------------------------------------------------------------------------ getSearchSummary
 	/**
 	 * @param $class_name    string class for the read object
-	 * @param $list_settings List_Setting\Set
+	 * @param $list_settings Set
 	 * @param $search        array search-compatible search array
 	 * @return string
 	 */
 	public function getSearchSummary(
-		string $class_name, List_Setting\Set $list_settings, array $search
-	) {
+		string $class_name, Set $list_settings, array $search
+	) : string
+	{
 		if (!$search) {
 			return '';
 		}
-		if ($list_settings->search) {
-			if (Locale::current()) {
-				$t = '|';
-				$i = '¦';
-			}
-			else {
-				$t = $i = '';
-			}
-			$class_display = Names::classToDisplay(Set_Annotation::of($list_settings->getClass())->value);
-			$summary         = $t . $i. ucfirst($class_display) . $i . ' filtered by' . $t;
-			$summary_builder = new Summary_Builder($class_name, $search);
-			$summary        .= SP . (string)$summary_builder;
-			return $summary;
+		if (!$list_settings->search) {
+			return '';
 		}
-		return null;
+		if (Locale::current()) {
+			$t = '|';
+			$i = '¦';
+		}
+		else {
+			$t = $i = '';
+		}
+		$class_display = Names::classToDisplay(Set_Annotation::of($list_settings->getClass())->value);
+		$summary         = $t . $i. ucfirst($class_display) . $i . ' filtered by' . $t;
+		$summary_builder = new Summary_Builder($class_name, $search);
+		$summary        .= SP . $summary_builder;
+		return $summary;
 	}
 
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
 	 * @param $class_name string class name
 	 * @param $parameters string[] parameters
-	 * @param $settings   List_Setting\Set|null
+	 * @param $settings   Set|null
 	 * @return Button[]
 	 */
 	public function getSelectionButtons(
@@ -571,7 +571,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$load_time             = time();
 		$parameters            = $parameters->getObjects();
 		$this->load_more_lines = isset($parameters['last_time']) && isset($parameters['move']);
-		$list_settings = List_Setting\Set::current($class_name);
+		$list_settings = Set::current($class_name);
 		$list_settings->cleanup();
 		$did_change = $this->applyParametersToListSettings($list_settings, $parameters, $form);
 		$customized_list_settings = $list_settings->getCustomSettings();
@@ -605,7 +605,8 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				$list_settings->save();
 			}
 		}
-		catch (\Exception $exception) {
+		/** @noinspection PhpRedundantCatchClauseInspection Yes it could */
+		catch (Exception $exception) {
 			$this->reportError($exception);
 		}
 		finally {
@@ -683,9 +684,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	//--------------------------------------------------------------------------------------- groupBy
 	/**
 	 * @param $properties List_Setting\Property[]
-	 * @return Group_By|null
+	 * @return ?Group_By
 	 */
-	public function groupBy(array $properties)
+	public function groupBy(array $properties) : ?Group_By
 	{
 		$group_by = null;
 		foreach ($properties as $property) {
@@ -766,19 +767,22 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	//-------------------------------------------------------------------------------------- readData
 	/**
 	 * @param $class_name    string
-	 * @param $list_settings List_Setting\Set
+	 * @param $list_settings Set
 	 * @param $search        array search-compatible search array
 	 * @param $options       Option[]
 	 * @return List_Data
 	 */
 	public function readData(
-		$class_name, List_Setting\Set $list_settings, array $search, array $options = []
-	) {
+		string $class_name, Set $list_settings, array $search, array $options = []
+	) : List_Data
+	{
 		// SM : Moved outside the method in order result to be used for search summary
 		//$search = $this->applySearchParameters($list_settings);
 
 		$class = $list_settings->getClass();
-		Method_Annotation::callAll($class->getAnnotations('on_list'), $class->name, [&$search]);
+		/** @var $on_list_annotations Method_Annotation[] */
+		$on_list_annotations = $class->getAnnotations('on_list');
+		Method_Annotation::callAll($on_list_annotations, $class->name, [&$search]);
 
 		$properties = array_keys($list_settings->properties);
 		[$properties_path, $search] = $this->removeInvisibleProperties(
@@ -796,7 +800,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			$max_lines = isset($_SERVER['HTTP_TARGET_HEIGHT'])
 				? intval(ceil($_SERVER['HTTP_TARGET_HEIGHT'] / 33))
 				: 20;
-			if ($list_settings->maximum_displayed_lines_count != $max_lines) {
+			if ($list_settings->maximum_displayed_lines_count !== $max_lines) {
 				$list_settings->maximum_displayed_lines_count = $max_lines;
 			}
 			$limit = new Limit(
@@ -898,14 +902,16 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $properties_path string[] the list of the columns names : only those properties
 	 *                         will be read. There are 'column.sub_column' to get values from linked
 	 *                         objects from the same data source
-	 * @param $search          object|array source object for filter, set properties will be used for
+	 * @param $search          array|object source object for filter, set properties will be used for
 	 *                         search. Can be an array associating properties names to matching
 	 *                         search value too.
 	 * @param $options         Option[] some options for advanced search
 	 * @return List_Data A list of read records. Each record values (may be objects) are
 	 *         stored in the same order than columns.
 	 */
-	public function readDataSelect($class_name, array $properties_path, $search, array $options)
+	public function readDataSelect(
+		string $class_name, array $properties_path, array|object $search, array $options)
+	: List_Data
 	{
 		return Dao::select($class_name, $properties_path, $search, $options);
 	}
@@ -923,8 +929,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *         stored in the same order than columns.
 	 */
 	public function readDataSelectSearch(
-		$class_name, array $properties_path, array $search, array $options
-	) {
+		string $class_name, array $properties_path, array $search, array $options
+	) : List_Data
+	{
 		$options[] = Dao::translate();
 		if ($filters = Filter_Annotation::apply($class_name, $options, Filter_Annotation::FOR_VIEW)) {
 			$search = $search ? Func::andOp([$filters, $search]) : $filters;
@@ -937,16 +944,19 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * Return only all search objects
 	 *
 	 * @param $class_name    string
-	 * @param $list_settings List_Setting\Set
+	 * @param $list_settings Set
 	 * @param $search        array search-compatible search array
-	 * @param $count         Count
+	 * @param $count         Count|null
 	 * @return object[]
 	 */
 	public function readObjects(
-		$class_name, List_Setting\Set $list_settings, array $search, Count $count = null
-	) {
+		string $class_name, Set $list_settings, array $search, Count $count = null
+	) : array
+	{
 		$class = $list_settings->getClass();
-		Method_Annotation::callAll($class->getAnnotations('on_list'), $class->name, [&$search]);
+		/** @var $on_list_annotations Method_Annotation[] */
+		$on_list_annotations = $class->getAnnotations('on_list');
+		Method_Annotation::callAll($on_list_annotations, $class->name, [&$search]);
 		$options = [$list_settings->sort, Dao::doublePass()];
 		if ($count) {
 			$options[] = $count;
@@ -962,7 +972,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $search          array search where to add Has_History criteria
 	 * @return array properties path without the invisible properties
 	 */
-	public function removeInvisibleProperties($class_name, array $properties_path, array $search)
+	public function removeInvisibleProperties(
+		string $class_name, array $properties_path, array $search
+	) : array
 	{
 		// remove properties directly used as columns
 		foreach ($properties_path as $key => $property_path) {
@@ -1014,9 +1026,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	/**
 	 * Log the error in order software maintainer to be informed
 	 *
-	 * @param $exception \Exception
+	 * @param $exception Exception
 	 */
-	protected function reportError(\Exception $exception)
+	protected function reportError(Exception $exception)
 	{
 		if (
 			($exception instanceof Mysql_Error_Exception)
@@ -1027,10 +1039,10 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		}
 		else {
 			$handled = new Handled_Error(
-			$exception->getCode(),
-			$exception->getMessage(),
-			$exception->getFile(),
-			$exception->getLine()
+				$exception->getCode(),
+				$exception->getMessage(),
+				$exception->getFile(),
+				$exception->getLine()
 			);
 			$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
 			$handler->displayError($handled);
@@ -1059,7 +1071,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		}
 		$this->class_names = $class_name;
 		$main_object       = $parameters->getMainObject();
-		$class_name = (($main_object instanceof Set) && $main_object->element_class_name)
+		$class_name = (($main_object instanceof Tools\Set) && $main_object->element_class_name)
 			? $main_object->element_class_name
 			: $this->forceSetMainObject($parameters);
 		Loc::enterContext($class_name);
@@ -1079,7 +1091,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $recurse    boolean @private true if recursive call
 	 * @return array search criterion, may include Func\Logical elements for representative searches
 	 */
-	public function searchObjectsToRepresentative($class_name, array $search, $recurse = false)
+	public function searchObjectsToRepresentative(
+		string $class_name, array $search, bool $recurse = false
+	) : array
 	{
 		foreach ($search as $property_path => $search_value) {
 			if (($search_value instanceof Comparison) && is_null($search_value->than_value)) {
@@ -1163,21 +1177,21 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
 	 * @param $value    string
-	 * @return Reflection_Property_Value
+	 * @return Reflection_Property|Reflection_Property_Value
 	 */
-	private function searchProperty(Reflection_Property $property, $value)
+	private function searchProperty(Reflection_Property $property, string $value)
+		: Reflection_Property|Reflection_Property_Value
 	{
-		if (strlen($value) && !is_null($value)) {
-			if ($property->getType()->isClass() && !Store_Annotation::of($property)->value) {
-				$value = Dao::read($value, $property->getType()->asString());
-			}
-			/** @noinspection PhpUnhandledExceptionInspection valid $property */
-			$property = new Reflection_Property_Value(
-				$property->root_class, $property->path, $value, true
-			);
-			$this->prepareSearchPropertyComponent($property);
-			$property->value(Loc::propertyToIso($property, $value));
+		if ($value === '') {
+			return $property;
 		}
+		if ($property->getType()->isClass() && !Store_Annotation::of($property)->value) {
+			$value = Dao::read($value, $property->getType()->asString());
+		}
+		/** @noinspection PhpUnhandledExceptionInspection valid $property */
+		$property = new Reflection_Property_Value($property->root_class, $property->path, $value, true);
+		$this->prepareSearchPropertyComponent($property);
+		$property->value(Loc::propertyToIso($property, $value));
 		return $property;
 	}
 
@@ -1191,11 +1205,12 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 */
 	protected function selectPrintButton(Button $print_button, array $print_buttons)
 	{
-		if ($print_buttons) {
-			$first_button         = reset($print_buttons);
-			$print_button->link   = $first_button->link;
-			$print_button->target = $first_button->target;
+		if (!$print_buttons) {
+			return;
 		}
+		$first_button         = reset($print_buttons);
+		$print_button->link   = $first_button->link;
+		$print_button->target = $first_button->target;
 	}
 
 }

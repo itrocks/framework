@@ -18,7 +18,7 @@ class Edit_Controller implements Feature_Controller
 	 * @param $feature    string The feature
 	 * @return Set
 	 */
-	private function applyCustomSettingsToOutputSettings($class_name, $feature)
+	private function applyCustomSettingsToOutputSettings(string $class_name, string $feature) : Set
 	{
 		$output_settings = Set::current($class_name, $feature);
 		$output_settings->cleanup();

@@ -20,7 +20,7 @@ class Parser_Test extends Test
 	/**
 	 * @var string
 	 */
-	private static $date_format_backup;
+	private static string $date_format_backup;
 
 	//--------------------------------------------------------------------------------------- $parser
 	/**
@@ -28,7 +28,7 @@ class Parser_Test extends Test
 	 *
 	 * @var Search_Parameters_Parser
 	 */
-	private $parser;
+	private Search_Parameters_Parser $parser;
 
 	//----------------------------------------------------------------------------------------- setUp
 	/**

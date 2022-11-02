@@ -18,16 +18,16 @@ class Simple_Component
 	 * @link Object
 	 * @var Has_Collection
 	 */
-	public $composite;
+	public Has_Collection $composite;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * constructor
 	 *
-	 * @param $code string
-	 * @param $name string
+	 * @param $code string|null
+	 * @param $name string|null
 	 */
-	public function __construct($code = null, $name = null)
+	public function __construct(string $code = null, string $name = null)
 	{
 		if (isset($code)) $this->code = $code;
 		if (isset($name)) $this->name = $name;

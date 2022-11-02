@@ -25,7 +25,7 @@ class Condition
 	 *
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//------------------------------------------------------------------------------------------ $now
 	/**
@@ -36,7 +36,7 @@ class Condition
 	 * @store false
 	 * @var Date_Time
 	 */
-	public $now;
+	public Date_Time $now;
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
@@ -45,7 +45,7 @@ class Condition
 	 * @store false
 	 * @var string
 	 */
-	public $title = 'Condition editor';
+	public string $title = 'Condition editor';
 
 	//---------------------------------------------------------------------------------------- $where
 	/**
@@ -60,14 +60,14 @@ class Condition
 	 * @store json
 	 * @var Logical
 	 */
-	public $where;
+	public Logical $where;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
-	 * @param $where      Logical
+	 * @param $class_name string|null
+	 * @param $where      Logical|null
 	 */
-	public function __construct($class_name = null, Logical $where = null)
+	public function __construct(string $class_name = null, Logical $where = null)
 	{
 		if (isset($class_name)) {
 			$this->class_name = $class_name;

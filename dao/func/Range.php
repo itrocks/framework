@@ -5,6 +5,7 @@ use ITRocks\Framework\Feature\List_\Summary_Builder;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Value;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Dao Range function
@@ -15,9 +16,9 @@ class Range implements Negate, Where
 
 	//----------------------------------------------------------------------------------------- $from
 	/**
-	 * @var float|int|string
+	 * @var Date_Time|float|int|string
 	 */
-	public float|int|string $from;
+	public Date_Time|float|int|string $from;
 
 	//---------------------------------------------------------------------------------- $not_between
 	/**
@@ -29,9 +30,9 @@ class Range implements Negate, Where
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
-	 * @var float|int|string
+	 * @var Date_Time|float|int|string
 	 */
-	public float|int|string $to;
+	public Date_Time|float|int|string $to;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -39,8 +40,9 @@ class Range implements Negate, Where
 	 * @param $to      mixed
 	 * @param $between boolean
 	 */
-	public function __construct(float|int|string $from, float|int|string $to, bool $between = true)
-	{
+	public function __construct(
+		Date_Time|float|int|string $from, Date_Time|float|int|string $to, bool $between = true
+	) {
 		$this->from    = $from;
 		$this->to      = $to;
 		$this->between = $between;

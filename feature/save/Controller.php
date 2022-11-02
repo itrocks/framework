@@ -13,6 +13,7 @@ use ITRocks\Framework\Mapper\Built_Object;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\View\User_Error_Exception;
 use ITRocks\Framework\View\View_Exception;
 
 /**
@@ -33,8 +34,9 @@ class Controller implements Default_Class_Controller
 	 * @param $form   array
 	 * @param $files  array
 	 * @return Built_Object[]
+	 * @throws User_Error_Exception
 	 */
-	protected function buildObjects($object, array $form, array $files)
+	protected function buildObjects(object $object, array $form, array $files) : array
 	{
 		$builder = new Post_Files(get_class($object));
 		$form    = $builder->appendToForm($form, $files);
@@ -58,18 +60,19 @@ class Controller implements Default_Class_Controller
 	 */
 	protected function checkFormIntegrity(array $form, array $files)
 	{
-		if (!$form && !$files) {
-			$max_size = max(ini_get('post_max_size'), ini_get('upload_max_filesize'));
-			throw new View_Exception(
-				'<div class="error">'
-				. Loc::tr('Unable to save your data : you probably sent too much big files') . BR
-				. Loc::tr(
-					'The maximum allowed size for files / sent data is :max_size',
-					Loc::replace(['max_size' => $max_size])
-				)
-				. '</div>'
-			);
+		if ($form || $files) {
+			return;
 		}
+		$max_size = max(ini_get('post_max_size'), ini_get('upload_max_filesize'));
+		throw new View_Exception(
+			'<div class="error">'
+			. Loc::tr('Unable to save your data : you probably sent too much big files') . BR
+			. Loc::tr(
+				'The maximum allowed size for files / sent data is :max_size',
+				Loc::replace(['max_size' => $max_size])
+			)
+			. '</div>'
+		);
 	}
 
 	//----------------------------------------------------------------------------- getExistingObject
@@ -78,7 +81,7 @@ class Controller implements Default_Class_Controller
 	 * @param $class_name string
 	 * @return object
 	 */
-	protected function getExistingObject(Parameters $parameters, $class_name)
+	protected function getExistingObject(Parameters $parameters, string $class_name) : object
 	{
 		return $parameters->getMainObject($class_name);
 	}
@@ -90,7 +93,9 @@ class Controller implements Default_Class_Controller
 	 * @param $write_error boolean
 	 * @return array
 	 */
-	protected function getViewParameters(Parameters $parameters, $class_name, $write_error)
+	protected function getViewParameters(
+		Parameters $parameters, string $class_name, bool $write_error
+	) : array
 	{
 		$parameters->getMainObject($class_name);
 		$parameters                     = $parameters->getObjects();
@@ -137,10 +142,9 @@ class Controller implements Default_Class_Controller
 		// any exception catch, it is more secure
 		catch (Exception $exception) {
 			Dao::rollback();
-			/** @noinspection PhpUnhandledExceptionInspection Useless for the developer */
 			// this is managed by the top-level Main\Controller
+			/** @noinspection PhpUnhandledExceptionInspection Useless for the developer */
 			$this->throwException($exception);
-			return null;
 		}
 
 		$parameters = $this->getViewParameters($parameters, $class_name, $write_error);
@@ -165,7 +169,7 @@ class Controller implements Default_Class_Controller
 	 * @param $write_objects Built_Object[]
 	 * @return boolean true when write error, false if writes were made without error
 	 */
-	protected function write(array $write_objects)
+	protected function write(array $write_objects) : bool
 	{
 		$write = Dao::current()->getWrite();
 		foreach ($write_objects as $write_object) {
@@ -185,11 +189,12 @@ class Controller implements Default_Class_Controller
 
 	//----------------------------------------------------------------------------------- writeObject
 	/**
-	 * @param $write_object  object
+	 * @param $write_object  T
 	 * @param $write_options array
-	 * @return object $object if write was ok
+	 * @return ?T $object if write was ok
+	 * @template T
 	 */
-	protected function writeObject($write_object, array $write_options)
+	protected function writeObject(object $write_object, array $write_options) : ?object
 	{
 		return Dao::write($write_object, $write_options);
 	}

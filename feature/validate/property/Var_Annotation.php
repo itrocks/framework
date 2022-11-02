@@ -26,10 +26,10 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 *
-	 * @param $value    ?string
+	 * @param $value    bool|string|null
 	 * @param $property Interfaces\Reflection_Property
 	 */
-	public function __construct(?string $value, Interfaces\Reflection_Property $property)
+	public function __construct(bool|string|null $value, Interfaces\Reflection_Property $property)
 	{
 		parent::__construct($value, $property);
 		$this->property = $property;

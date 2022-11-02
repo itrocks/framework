@@ -86,15 +86,15 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 	 *
 	 * @param $property  Reflection_Property
 	 * @param $arguments array arguments for method call
-	 * @return ?string
+	 * @return string
 	 */
-	public function callProperty(Reflection_Property $property, array $arguments = []) : ?string
+	public function callProperty(Reflection_Property $property, array $arguments = []) : string
 	{
 		if ($this->value) {
 			$object = ($property instanceof Reflection_Property_Value) ? $property->getObject() : null;
 			return $this->call($object, $arguments);
 		}
-		return null;
+		return '';
 	}
 
 	//------------------------------------------------------------------------------------- setMethod

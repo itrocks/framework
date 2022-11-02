@@ -18,32 +18,32 @@ class Import_Class
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//------------------------------------------------------------------------------------ $constants
 	/**
 	 * @var Reflection_Property_Value[] key is the name of the property
 	 */
-	public $constants = [];
+	public array $constants = [];
 
 	//-------------------------------------------------------------------------- $identify_properties
 	/**
 	 * @var Import_Property[] key is the name of the property
 	 */
-	public $identify_properties = [];
+	public array $identify_properties = [];
 
 	//---------------------------------------------------------------------------- $ignore_properties
 	/**
 	 * @var Import_Property[] key is the name of the property
 	 */
-	public $ignore_properties = [];
+	public array $ignore_properties = [];
 
 	//------------------------------------------------------------------- $object_not_found_behaviour
 	/**
 	 * @values create_new_value, do_nothing, tell_it_and_stop_import
 	 * @var string
 	 */
-	public $object_not_found_behaviour = 'do_nothing';
+	public string $object_not_found_behaviour = 'do_nothing';
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -53,34 +53,36 @@ class Import_Class
 	 * @see $write_properties
 	 * @var Reflection_Property[] key is the property path, starting from $this->class_name
 	 */
-	public $properties = [];
+	public array $properties = [];
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
 	 * @var string[] key is the name of the property
 	 */
-	public $property_path;
+	public array $property_path;
 
 	//--------------------------------------------------------------------------- $unknown_properties
 	/**
 	 * @var Import_Property[] key is the name of the property
 	 */
-	public $unknown_properties = [];
+	public array $unknown_properties = [];
 
 	//----------------------------------------------------------------------------- $write_properties
 	/**
 	 * @var Import_Property[] key is the name of the property
 	 */
-	public $write_properties = [];
+	public array $write_properties = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name                 string
-	 * @param $property_path              string[]
-	 * @param $object_not_found_behaviour string create_new_value, do_nothing, tell_it_and_stop_import
+	 * @param $class_name                 string|null
+	 * @param $property_path              string[]|null
+	 * @param $object_not_found_behaviour string|null @values create_new_value, do_nothing,
+	 *                                    tell_it_and_stop_import
 	 */
 	public function __construct(
-		$class_name = null, array $property_path = null, $object_not_found_behaviour = null
+		string $class_name = null, array $property_path = null,
+		string $object_not_found_behaviour = null
 	) {
 		if (isset($class_name)) {
 			$this->class_name = $class_name;
@@ -178,7 +180,7 @@ class Import_Class
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return integer number of changes made during cleanup : if 0, then cleanup was not necessary
 	 */
-	public function cleanup()
+	public function cleanup() : int
 	{
 		$changes_count = 0;
 		foreach (array_keys($this->identify_properties) as $property_name) {
@@ -223,9 +225,10 @@ class Import_Class
 
 	//------------------------------------------------------------------------------ getIdentifyValue
 	/**
+	 * @noinspection PhpUnused importPreview.html
 	 * @return string
 	 */
-	public function getIdentifyValue()
+	public function getIdentifyValue() : string
 	{
 		$properties = [];
 		foreach ($this->identify_properties as $property) {
@@ -236,9 +239,10 @@ class Import_Class
 
 	//-------------------------------------------------------------------------------- getIgnoreValue
 	/**
+	 * @noinspection PhpUnused importPreview.html
 	 * @return string
 	 */
-	public function getIgnoreValue()
+	public function getIgnoreValue() : string
 	{
 		$properties = [];
 		foreach ($this->ignore_properties as $property) {
@@ -251,16 +255,17 @@ class Import_Class
 	/**
 	 * @return string
 	 */
-	public function getPropertyPathValue()
+	public function getPropertyPathValue() : string
 	{
 		return $this->property_path ? (join(DOT, $this->property_path)) : $this->class_name;
 	}
 
 	//--------------------------------------------------------------------------------- getWriteValue
 	/**
+	 * @noinspection PhpUnused importPreview.html
 	 * @return string
 	 */
-	public function getWriteValue()
+	public function getWriteValue() : string
 	{
 		$properties = [];
 		foreach ($this->write_properties as $property) {
@@ -275,7 +280,7 @@ class Import_Class
 	 *
 	 * @param $property_name string
 	 */
-	public function removeConstant($property_name)
+	public function removeConstant(string $property_name)
 	{
 		if (isset($this->constants[$property_name])) {
 			unset($this->constants[$property_name]);

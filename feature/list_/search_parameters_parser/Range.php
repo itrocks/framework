@@ -2,9 +2,7 @@
 namespace ITRocks\Framework\Feature\List_\Search_Parameters_Parser;
 
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Feature\List_\Exception;
-use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -13,8 +11,6 @@ use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Word search parameters parser
- *
- * @extends Search_Parameter_Parser
  */
 abstract class Range
 {
@@ -32,12 +28,13 @@ abstract class Range
 	/**
 	 * Apply a range expression on search string. The range is supposed to exist !
 	 *
-	 * @param $expression string|Option
+	 * @param $expression string
 	 * @param $property   ?Reflection_Property
 	 * @return Func\Range
 	 * @throws Exception
 	 */
-	public static function applyRange($expression, ?Reflection_Property $property)
+	public static function applyRange(string $expression, ?Reflection_Property $property)
+		: Func\Range
 	{
 		if ($property && $property->getType()->isDateTime() && (substr_count($expression, '-') > 1)) {
 			if (
@@ -56,47 +53,33 @@ abstract class Range
 		}
 		$range[0] = self::applyRangeValue($range[0], $property, self::MIN);
 		$range[1] = self::applyRangeValue($range[1], $property, self::MAX);
-		if ($range[0] === false || $range[1] === false) {
-			throw new Exception(
-				$expression, Loc::tr('Error in range expression or range must have 2 parts only')
-			);
-		}
 		return self::buildRange($range[0], $range[1]);
 	}
 
 	//------------------------------------------------------------------------------- applyRangeValue
 	/**
-	 * @param $expression string|Option
+	 * @param $expression string
 	 * @param $property   ?Reflection_Property
-	 * @param $range_side integer  Range::MIN | Range::MAX | Range::NONE
-	 * @return mixed
+	 * @param $range_side integer @values static::const
+	 * @return Func\Comparison|Func\Logical|Func\Range|string
 	 * @throws Exception
 	 */
 	protected static function applyRangeValue(
-		$expression, ?Reflection_Property $property, $range_side
+		string $expression, ?Reflection_Property $property, int $range_side
 	) {
-		$type_string = $property ? $property->getType()->asString() : new Type(Type::STRING);
-		switch ($type_string) {
-			// Date_Time type
-			case Date_Time::class:
-				$search = Date::applyDateRangeValue($expression, $property, $range_side);
-				break;
-			// Float | Integer | String types
-			//case in_array($type_string, [Type::FLOAT, Type::INTEGER, Type::STRING]): {
-			default:
-				$search = Scalar::applyScalar($expression, true);
-				break;
-		}
-		return $search;
+		$type_string = $property?->getType()->asString();
+		return ($type_string === Date_Time::class)
+			? Date::applyDateRangeValue($expression, $property, $range_side)
+			: Scalar::applyScalar($expression, true);
 	}
 
 	//------------------------------------------------------------------------------------ buildRange
 	/**
-	 * @param $min mixed
-	 * @param $max mixed
+	 * @param $min string
+	 * @param $max string
 	 * @return Func\Range
 	 */
-	public static function buildRange($min, $max)
+	public static function buildRange(string $min, string $max) : Func\Range
 	{
 		return new Func\Range($min, $max);
 	}
@@ -109,31 +92,10 @@ abstract class Range
 	 * @param $property   ?Reflection_Property
 	 * @return boolean
 	 */
-	public static function isRange($expression, ?Reflection_Property $property)
+	public static function isRange(string $expression, ?Reflection_Property $property) : bool
 	{
-		$type_string = $property ? $property->getType()->asString() : new Type(Type::STRING);
-		switch ($type_string) {
-			// Date_Time type
-			case Date_Time::class: {
-				$is_date_expression = Date::isSingleDateExpression($expression);
-				if (
-					is_string($expression)
-					// take care of formula that may contains char '-'
-					&& !$is_date_expression
-					&& str_contains($expression, '-')
-				) {
-					return true;
-				}
-				break;
-			}
-			default: {
-				if (is_string($expression) && str_contains($expression, '-')) {
-					return true;
-				}
-				break;
-			}
-		}
-		return false;
+		return str_contains($expression, '-')
+			&& !($property?->getType()->isDateTime() && Date::isSingleDateExpression($expression));
 	}
 
 	//--------------------------------------------------------------------------------- supportsRange
@@ -143,11 +105,11 @@ abstract class Range
 	 * @param $property ?Reflection_Property
 	 * @return boolean true if range supported and authorized
 	 */
-	public static function supportsRange(?Reflection_Property $property)
+	public static function supportsRange(?Reflection_Property $property) : bool
 	{
-		$type         = $property ? $property->getType() : new Type(Type::STRING);
+		$type         = $property?->getType() ?: new Type(Type::STRING);
 		$type_string  = $type->asString();
-		$search_range = $property ? $property->getAnnotation('search_range')->value : null;
+		$search_range = $property?->getAnnotation('search_range')->value;
 		$search_range = isset($search_range)
 			? (new Boolean_Annotation($search_range))->value
 			: ($type->isNumeric() || $type->isDateTime());

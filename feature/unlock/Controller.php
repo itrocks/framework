@@ -33,6 +33,7 @@ class Controller implements Feature_Controller
 		Dao::begin();
 		foreach ($objects as $object) {
 			if ($object instanceof Unlockable) {
+				/** @var $object Lockable|Unlockable */
 				$object->locked = false;
 				Dao::write($object, Dao::only('locked'));
 			}

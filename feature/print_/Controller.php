@@ -23,7 +23,7 @@ class Controller implements Default_Feature_Controller
 	 *
 	 * @param $class_name string
 	 */
-	protected function newLayoutModel($class_name)
+	protected function newLayoutModel(string $class_name)
 	{
 		Main::$current->redirect(
 			View::link(
@@ -50,10 +50,12 @@ class Controller implements Default_Feature_Controller
 		$layout_model = $parameters->getObject(Print_Model::class);
 		$parameters->remove(Print_Model::class);
 		$objects = $parameters->getSelectedObjects($form);
-		/** @noinspection PhpUnhandledExceptionInspection */
-		return $layout_model
-			? Builder::create(Model::class)->print($objects, $layout_model)
-			: $this->newLayoutModel($class_name);
+		if ($layout_model) {
+			/** @noinspection PhpUnhandledExceptionInspection */
+			return Builder::create(Model::class)->print($objects, $layout_model);
+		}
+		$this->newLayoutModel($class_name);
+		return '';
 	}
 
 }

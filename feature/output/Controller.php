@@ -17,6 +17,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Duplicate;
 use ITRocks\Framework\Feature\List_\Navigation;
 use ITRocks\Framework\Feature\Output_Setting;
+use ITRocks\Framework\Feature\Output_Setting\Set;
 use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
@@ -125,8 +126,8 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			}
 			$output_settings->addAction(
 				$parameters['add_action'],
-				isset($parameters['before']) ? 'before' : 'after',
-				$parameters['before'] ?? $parameters['after']
+				isset($parameters[Set::BEFORE]) ? Set::BEFORE : Set::AFTER,
+				$parameters[Set::BEFORE] ?? $parameters[Set::AFTER]
 			);
 			$did_change = true;
 		}
@@ -134,14 +135,14 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			$output_settings->addProperty(
 				$parameters['add_property'],
 				$parameters['tab'] ?? '',
-				isset($parameters['before']) ? 'before' : 'after',
-				$parameters['before'] ?? ($parameters['after'] ?? '')
+				isset($parameters[Set::BEFORE]) ? Set::BEFORE : Set::AFTER,
+				$parameters[Set::BEFORE] ?? ($parameters[Set::AFTER] ?? '')
 			);
 			$did_change = true;
 		}
 		if (
 			isset($parameters['conditions'])
-			&& ($output_settings->conditions != $parameters['conditions'])
+			&& ($output_settings->conditions !== $parameters['conditions'])
 		) {
 			$output_settings->conditions = $parameters['conditions'];
 			$did_change = true;
@@ -187,7 +188,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			$did_change = true;
 		}
 		if ($did_change) {
-			$output_settings->save($parameters['title'] ?? null);
+			$output_settings->save($parameters['title'] ?? '');
 		}
 		return $did_change ? $output_settings : null;
 	}
@@ -277,53 +278,49 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	//------------------------------------------------------------------------------------- getModule
 	/**
 	 * @param $class_name string
-	 * @return Button|string
+	 * @return ?Button
 	 */
-	protected function getModule(string $class_name) : Button|string
+	protected function getModule(string $class_name) : ?Button
 	{
 		$class_names = Names::classToSet($class_name);
-		$module      = '';
 		if (!Menu::registered()) {
-			return $module;
+			return null;
 		}
 		$menu = Menu::get();
 		foreach ([$class_names, $class_name] as $link_class_name) {
 			foreach ($menu->blocks as $block) {
 				foreach ($block->items as $item) {
 					if (str_starts_with($item->link, View::link($link_class_name))) {
-						$module = new Button($block->title, $block->title_link);
-						break 3;
+						return new Button($block->title, $block->title_link);
 					}
 				}
 			}
 		}
-		return $module;
+		return null;
 	}
 
 	//------------------------------------------------------------------------------------- getParent
 	/**
 	 * @param $class_name string
-	 * @return Button|string
+	 * @return ?Button
 	 */
-	protected function getParent(string $class_name) : Button|string
+	protected function getParent(string $class_name) : ?Button
 	{
 		$class_names = Names::classToSet($class_name);
-		$parent = '';
 		if (!Menu::registered()) {
-			return $parent;
+			return null;
 		}
 		$menu = Menu::get();
 		foreach ([$class_names, $class_name] as $link_class_name) {
 			foreach ($menu->blocks as $block) {
 				foreach ($block->items as $item) {
 					if (str_starts_with($item->link, View::link($link_class_name))) {
-						$parent = new Button($item->caption, $item->link);
-						break 3;
+						return new Button($item->caption, $item->link);
 					}
 				}
 			}
 		}
-		return $parent;
+		return null;
 	}
 
 	//----------------------------------------------------------------------------- getPropertiesList
@@ -332,8 +329,9 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @return string[] property names list
 	 */
 	protected function getPropertiesList(
-		/** @noinspection PhpUnusedParameterInspection */ string $class_name
-	) : array {
+		/** @noinspection PhpUnusedParameterInspection to extend */ string $class_name
+	) : array
+	{
 		return [];
 	}
 
@@ -388,7 +386,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			$new_settings = Output_Setting\Set::conditionalOutputSettings($output_settings_list, $object);
 			if (
 				$new_settings
-				&& ($output_settings->name != $new_settings->name)
+				&& ($output_settings->name !== $new_settings->name)
 				&& (
 					!$output_settings->name
 					|| !((new Code($output_settings->conditions))->execute($object, true))
@@ -475,13 +473,14 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 */
 	public function onlyPropertiesAuto(array &$properties_filter, array $auto, array $properties)
 	{
-		if (isset($auto['@modifiable'])) {
-			foreach ($properties_filter as $key => $property_name) {
-				if (User_Annotation::of($properties[$property_name])->isModifiable()) {
-					continue;
-				}
-				unset($properties_filter[$key]);
+		if (!isset($auto['@modifiable'])) {
+			return;
+		}
+		foreach ($properties_filter as $key => $property_name) {
+			if (User_Annotation::of($properties[$property_name])->isModifiable()) {
+				continue;
 			}
+			unset($properties_filter[$key]);
 		}
 	}
 
@@ -564,11 +563,12 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 */
 	protected function selectPrintButton(Button $print_button, array $print_buttons)
 	{
-		if ($print_buttons) {
-			$first_button         = reset($print_buttons);
-			$print_button->link   = $first_button->link;
-			$print_button->target = $first_button->target;
+		if (!$print_buttons) {
+			return;
 		}
+		$first_button         = reset($print_buttons);
+		$print_button->link   = $first_button->link;
+		$print_button->target = $first_button->target;
 	}
 
 }

@@ -175,7 +175,6 @@ class Selection
 	{
 		if (!isset($this->list_controller)) {
 			$list_controllers = Main::$current->getController($this->class_name, Feature::F_LIST);
-			/** @noinspection PhpFieldAssignmentTypeMismatchInspection must match */
 			/** @noinspection PhpUnhandledExceptionInspection a controller is always a valid callable */
 			$this->list_controller = Builder::create($list_controllers[0]);
 		}
@@ -193,7 +192,7 @@ class Selection
 		if (!isset($this->list_settings)) {
 			$this->list_settings = List_Setting\Set::current($this->class_name);
 			$this->list_settings->cleanup();
-			$this->list_settings->maximum_displayed_lines_count = null;
+			$this->list_settings->maximum_displayed_lines_count = 0;
 		}
 		return $this->list_settings;
 	}
@@ -204,17 +203,19 @@ class Selection
 	 * - the search criterion in the current data list for the object
 	 * - the excluded_selection, select_all and selection selected elements from the form
 	 *
-	 * @param $search object|array|null Search array for filter, additional to filters get from data list
+	 * @param $search array|object|null Search array for filter, additional to filters get from data list
 	 * @return array|object
 	 */
-	public function getSearchFilter(object|array $search = null) : array|object
+	public function getSearchFilter(array|object $search = null) : array|object
 	{
 		if (!isset($this->search)) {
 			$this->search = $this->select_all
 				? $this->allButExcludedFilter()
 				: $this->selectedFilter();
 			$class = $this->getListSettings()->getClass();
-			Method_Annotation::callAll($class->getAnnotations('on_list'), $class->name, [&$this->search]);
+			/** @var $on_list_annotations Method_Annotation[] */
+			$on_list_annotations = $class->getAnnotations('on_list');
+			Method_Annotation::callAll($on_list_annotations, $class->name, [&$this->search]);
 		}
 		return $search
 			? ($this->search ? [Func::andOp([$search, $this->search])] : $search)
@@ -225,14 +226,11 @@ class Selection
 	/**
 	 * Gets search option
 	 *
-	 * @param $options Option|Option[] options to merge with the calculated filter options
+	 * @param $options Option[] options to merge with the calculated filter options
 	 * @return Option[]
 	 */
 	public function getSearchOptions(array $options = []) : array
 	{
-		if (!is_array($options)) {
-			$options = $options ? [$options] : [];
-		}
 		if (!isset($this->options)) {
 			$this->options = [$this->getListSettings()->sort];
 			if ($this->select_all && Limit::in($options)) {
@@ -251,10 +249,10 @@ class Selection
 	 * Restrictions others thant the number of read lines limit applied to the data list controller
 	 * will be applied here too.
 	 *
-	 * @param $properties_path string[] the list of the columns names : only those properties
+	 * @param $properties_path string[]|null the list of the columns names : only those properties
 	 *                         will be read. There are 'column.sub_column' to get values from linked
 	 *                         objects from the same data source
-	 * @param $search          object|array|null Search array for filter, associating properties names
+	 * @param $search          array|object|null Search array for filter, associating properties names
 	 *                         to matching search value too
 	 * @param $options         Option|Option[]|string|string[] some options for advanced search
 	 * @return List_Data A list of read records. Each record values (may be objects) are
@@ -262,7 +260,7 @@ class Selection
 	 * @return List_Data[]
 	 */
 	public function readDataSelect(
-		array $properties_path = null, object|array $search = null, array|Option|string $options = []
+		array $properties_path = null, array|object $search = null, array|Option|string $options = []
 	) : List_Data
 	{
 		$search  = $this->getSearchFilter($search);
@@ -292,7 +290,7 @@ class Selection
 	 * Beware : this may consume a lot of time and memory if many objects are selected
 	 * Do use only with limited sets
 	 *
-	 * @param $search  object|array|null optional additional filters
+	 * @param $search  array|object|null optional additional filters
 	 * @param $options Option|Option[]   optional options for advanced search
 	 * @return object[]
 	 */
@@ -310,7 +308,7 @@ class Selection
 	protected function removeSearchOptions(array &$options)
 	{
 		foreach ($options as $key1 => $option) {
-			if (is_string($option) && (substr($option, 0, 1) === '!')) {
+			if (is_string($option) && str_starts_with($option, '!')) {
 				unset($options[$key1]);
 				$remove_option_class = substr($option, 1);
 				foreach ($options as $key2 => $remove_option) {

@@ -42,7 +42,7 @@ class Html_Builder_Collection extends Collection
 	 *
 	 * @var boolean
 	 */
-	protected $no_add;
+	protected bool $no_add;
 
 	//------------------------------------------------------------------------------------ $no_delete
 	/**
@@ -50,7 +50,7 @@ class Html_Builder_Collection extends Collection
 	 *
 	 * @var boolean
 	 */
-	protected $no_delete;
+	protected bool $no_delete;
 
 	//------------------------------------------------------------------------------------- $pre_path
 	/**
@@ -64,7 +64,7 @@ class Html_Builder_Collection extends Collection
 	 *
 	 * @var boolean
 	 */
-	protected $read_only;
+	protected bool $read_only;
 
 	//----------------------------------------------------------------------------- $user_annotations
 	/**
@@ -72,7 +72,7 @@ class Html_Builder_Collection extends Collection
 	 *
 	 * @var List_Annotation
 	 */
-	protected $user_annotations;
+	protected List_Annotation $user_annotations;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -97,7 +97,7 @@ class Html_Builder_Collection extends Collection
 	 *
 	 * @return Unordered
 	 */
-	public function build()
+	public function build() : Unordered
 	{
 		if (!isset($this->template)) {
 			$this->template = new Html_Template();
@@ -105,7 +105,7 @@ class Html_Builder_Collection extends Collection
 		$table = parent::build();
 
 		if ($this->readOnly() || $this->noAdd()) {
-			$table->setData('no-add', true);
+			$table->setData('no-add');
 		}
 
 		/** @var $user_remove_annotations Method_Target_Annotation[] */
@@ -129,36 +129,34 @@ class Html_Builder_Collection extends Collection
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Item[]|List_[][]
 	 */
-	protected function buildBody()
+	protected function buildBody() : array
 	{
 		$body = parent::buildBody();
-		if (!($this->no_add || $this->read_only)) {
-			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
-			$add_row = Builder::create($this->class_name);
-			if (isA($add_row, Component::class)) {
-				/** @var $add_row Component */
-				$class_name = get_class($add_row);
-				/** @noinspection PhpUndefinedMethodInspection */
-				/** @see Component::getCompositeProperty */
-				/** @var $composite_property Reflection_Property */
-				$composite_property = $class_name::getCompositeProperty();
-				$composite_class_name = $composite_property->getType()->asString();
-				foreach ($this->template->objects as $object) {
-					if (is_a($object, $composite_class_name)) {
-						$add_row->setComposite($object);
-						break;
-					}
+		if ($this->no_add || $this->read_only) {
+			return $body;
+		}
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
+		$add_row = Builder::create($this->class_name);
+		if (isA($add_row, Component::class)) {
+			/** @var $add_row Component */
+			$class_name           = get_class($add_row);
+			$composite_property   = $class_name::getCompositeProperty();
+			$composite_class_name = $composite_property->getType()->asString();
+			foreach ($this->template->objects as $object) {
+				if (is_a($object, $composite_class_name)) {
+					$add_row->setComposite($object);
+					break;
 				}
 			}
-			if (($this->property instanceof Reflection_Property_Value) && isA($add_row, Component::class)) {
+			if ($this->property instanceof Reflection_Property_Value) {
 				/** @var $add_row Component */
 				$property = $this->property->getParentProperty();
 				$add_row->setComposite($property ? $property->value() : $this->property->getObject());
 			}
-			$row = new Item($this->buildRow($add_row));
-			$row->addClass('new');
-			$body[] = $row;
 		}
+		$row = new Item($this->buildRow($add_row));
+		$row->addClass('new');
+		$body[] = $row;
 		return $body;
 	}
 
@@ -170,11 +168,12 @@ class Html_Builder_Collection extends Collection
 	 * @param $property_path string
 	 * @return Item
 	 */
-	protected function buildCell($object, Reflection_Property $property, $property_path = null)
+	protected function buildCell(object $object, Reflection_Property $property, string $property_path)
+		: Item
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
 		$property_value = new Reflection_Property_Value($object, $property_path, $object, false, true);
-		$value = $property_value->value();
+		$value          = $property_value->value();
 		if (str_contains($this->pre_path, '[]')) {
 			$property_builder = new Html_Builder_Property();
 			$property_builder->setTemplate($this->template);
@@ -191,12 +190,14 @@ class Html_Builder_Collection extends Collection
 			($builder = Widget_Annotation::of($property)->value)
 			&& is_a($builder, Property::class, true)
 		) {
-			array_push($this->template->properties_prefix, $pre_path);
+			$this->template->properties_prefix[] = $pre_path;
 			/** @noinspection PhpUnhandledExceptionInspection $builder and $property are valid */
 			/** @var $builder Property */
 			$builder = Builder::create($builder, [$property_value, $value, $this->template]);
 			$builder->parameters[Feature::F_EDIT] = Feature::F_EDIT;
-			$builder->pre_path                    = $pre_path . '[]';
+			if (property_exists($builder, 'pre_path')) {
+				$builder->pre_path = $pre_path . '[]';
+			}
 			$value = $builder->buildHtml();
 			if ($builder instanceof Value_Widget) {
 				$value = (new Html_Builder_Property($property_value, $value, $pre_path . '[]'))
@@ -263,7 +264,7 @@ class Html_Builder_Collection extends Collection
 	 * @param $object object
 	 * @return Ordered
 	 */
-	protected function buildRow($object)
+	protected function buildRow(object $object) : Ordered
 	{
 		$row = parent::buildRow($object);
 		if (!$this->readOnly() && !$this->noDelete()) {
@@ -280,7 +281,7 @@ class Html_Builder_Collection extends Collection
 	 * @param $link_properties boolean
 	 * @return Reflection_Property[]
 	 */
-	public function getProperties($link_properties)
+	public function getProperties(bool $link_properties) : array
 	{
 		$properties = parent::getProperties($link_properties);
 		if ($this->readOnly()) {
@@ -301,9 +302,9 @@ class Html_Builder_Collection extends Collection
 	 *
 	 * @return User_Annotation
 	 */
-	private function getUserAnnotation()
+	private function getUserAnnotation() : User_Annotation
 	{
-		if (!$this->user_annotations) {
+		if (!isset($this->user_annotations)) {
 			$this->user_annotations = User_Annotation::of($this->property);
 		}
 		return $this->user_annotations;
@@ -314,7 +315,7 @@ class Html_Builder_Collection extends Collection
 	 * @param $property Reflection_Property
 	 * @return boolean
 	 */
-	protected function isPropertyVisible(Reflection_Property $property)
+	protected function isPropertyVisible(Reflection_Property $property) : bool
 	{
 		$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
 		return !$user_annotation->has(User_Annotation::HIDE_EDIT)
@@ -326,7 +327,7 @@ class Html_Builder_Collection extends Collection
 	/**
 	 * @return boolean
 	 */
-	protected function noAdd()
+	protected function noAdd() : bool
 	{
 		if (!isset($this->no_add)) {
 			$this->no_add = $this->getUserAnnotation()->has(User_Annotation::NO_ADD);
@@ -338,7 +339,7 @@ class Html_Builder_Collection extends Collection
 	/**
 	 * @return boolean
 	 */
-	protected function noDelete()
+	protected function noDelete() : bool
 	{
 		if (!isset($this->no_delete)) {
 			$this->no_delete = $this->getUserAnnotation()->has(User_Annotation::NO_DELETE);
@@ -350,7 +351,7 @@ class Html_Builder_Collection extends Collection
 	/**
 	 * @return boolean
 	 */
-	protected function readOnly()
+	protected function readOnly() : bool
 	{
 		if (!isset($this->read_only)) {
 			$this->read_only = $this->getUserAnnotation()->has(User_Annotation::READONLY);

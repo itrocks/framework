@@ -7,32 +7,32 @@ $(document).ready(function()
 	 *
 	 * @param $this jQuery
 	 */
-	var appendEmptyOperand = function($this)
+	const appendEmptyOperand = function($this)
 	{
-		var is_empty  = $this.hasClass('empty');
+		const is_empty  = $this.hasClass('empty')
 		if (is_empty && !$this.next().length) {
-			var $empty = $('<div class="empty operand">');
-			$this.after($empty);
-			$empty.build();
+			const $empty = $('<div class="empty operand">')
+			$this.after($empty)
+			$empty.build()
 		}
-	};
+	}
 
 	//------------------------------------------------------------------------------ dropFunctionInto
-	var dropFunctionInto = function($function, $into)
+	const dropFunctionInto = function($function, $into)
 	{
 		// TODO drop function
-	};
+	}
 
 	//------------------------------------------------------------------------------ dropPropertyInto
-	var dropPropertyInto = function($property, $into)
+	const dropPropertyInto = function($property, $into)
 	{
-		var $operand = $('<div>')
+		const $operand = $('<div>')
 			.addClass('property operand')
 			.attr('data-property', $property.data('property'))
-			.text($property.text());
-		$into.replaceWith($operand);
-		$operand.build();
-	};
+			.text($property.text())
+		$into.replaceWith($operand)
+		$operand.build()
+	}
 
 	//-------------------------------------------------------------------- .condition.editor .operand
 	$('body').build('call', '.condition.editor .operand', function()
@@ -48,28 +48,28 @@ $(document).ready(function()
 			//------------------------------------------------- .condition.editor .operand droppable drop
 			drop: function(event, ui)
 			{
-				var $draggable = ui.draggable;
-				var $this      = $(this);
-				appendEmptyOperand($this);
-				$this.removeClass('replace');
+				const $draggable = ui.draggable
+				const $this      = $(this)
+				appendEmptyOperand($this)
+				$this.removeClass('replace')
 				$draggable.data('property')
 					? dropPropertyInto($draggable, $this)
-					: dropFunctionInto($draggable, $this);
+					: dropFunctionInto($draggable, $this)
 			},
 
 			//-------------------------------------------------- .condition.editor .operand droppable out
 			out: function()
 			{
-				$(this).removeClass('replace');
+				$(this).removeClass('replace')
 			},
 
 			//------------------------------------------------- .condition.editor .operand droppable over
 			over: function()
 			{
-				$(this).addClass('replace');
+				$(this).addClass('replace')
 			}
 
-		});
+		})
 
 		//----------------------------------- .condition.editor fieldset ul.logical > li:before content
 		/**
@@ -87,8 +87,8 @@ $(document).ready(function()
 						content: ' + Q + tr('|or|', 'ITRocks\\Framework\\Feature\\Condition') + Q + ';\
 					}\
 				')
-				.appendTo('head');
+				.appendTo('head')
 		}
 
-	});
-});
+	})
+})

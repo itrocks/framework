@@ -102,7 +102,7 @@ class Application_Class_Tree_Filter
 	 * Filter application classes to keep only routes that go through checkpoints,
 	 * or all routes if no route has a checkpoint
 	 *
-	 * @return static
+	 * @return $this
 	 */
 	public function filter() : static
 	{
@@ -151,7 +151,7 @@ class Application_Class_Tree_Filter
 
 	//--------------------------------------------------------------------------------------- prepare
 	/**
-	 * @return static
+	 * @return $this
 	 */
 	public function prepare() : static
 	{

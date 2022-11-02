@@ -39,7 +39,7 @@ class Controller implements Default_Feature_Controller
 		);
 		// TODO Remove save() once we have a generic validator (parser) not depending of SQL that we could fire before save!
 		if (!is_null($did_change)) {
-			$list_settings->save($parameters['title'] ?? null);
+			$list_settings->save($parameters['title'] ?? '');
 		}
 
 		if (isset($parameters['remove_property'])) {

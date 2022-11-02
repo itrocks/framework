@@ -159,7 +159,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	/**
 	 * @return string
 	 */
-	public function build()
+	public function build() : string
 	{
 		switch (Link_Annotation::of($this->property)->value) {
 			case Link_Annotation::COLLECTION: return $this->buildCollection();
@@ -174,7 +174,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	/**
 	 * @return string
 	 */
-	private function buildCollection()
+	private function buildCollection() : string
 	{
 		if (!isset($this->template)) {
 			$this->template = new Html_Template();
@@ -195,7 +195,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	 * @param $format boolean
 	 * @return Element
 	 */
-	protected function buildFloat($format = true)
+	protected function buildFloat(bool $format = true) : Element
 	{
 		if ($format) {
 			$property = $this->property;
@@ -237,18 +237,20 @@ class Html_Builder_Property extends Html_Builder_Type
 	/**
 	 * @param $filters string[] the key is the name of the filter, the value is the name of the form
 	 *   containing its value
-	 * @param $as_string boolean true if the object should be used as a string
+	 * @param $as_string boolean|null true if the object should be used as a string
 	 * @return string
 	 */
-	public function buildObject(array $filters = null, $as_string = null)
+	public function buildObject(array $filters = null, bool $as_string = null) : string
 	{
 		if (!isset($filters)) {
 			$filters = Filters_Annotation::of($this->property)->parse($this->object);
 		}
-		$as_string = $as_string ?? (
-			$this->property->getAnnotation(Store_Annotation::ANNOTATION)->value
-			=== Store_Annotation::STRING
-		);
+		if (is_null($as_string)) {
+			$as_string = (
+				$this->property->getAnnotation(Store_Annotation::ANNOTATION)->value
+					=== Store_Annotation::STRING
+			);
+		}
 		return parent::buildObject($filters, $as_string);
 	}
 
@@ -256,7 +258,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	/**
 	 * @return string
 	 */
-	protected function buildSingle()
+	protected function buildSingle() : string
 	{
 		foreach ($this->property->getAnnotations('view_data') as $annotation) {
 			if (!$annotation->value) {
@@ -326,7 +328,9 @@ class Html_Builder_Property extends Html_Builder_Type
 	 *                        because the @ordered_values is automatically used when @values is set
 	 * @return Element
 	 */
-	protected function buildString($multiline = false, array $values = null, $ordered_values = false)
+	protected function buildString(
+		bool $multiline = false, array $values = null, bool $ordered_values = false
+	) : Element
 	{
 		$values_captions = [];
 		$values          = $this->property->getListAnnotation('values')->values();

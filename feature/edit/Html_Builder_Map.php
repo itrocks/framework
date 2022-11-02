@@ -11,6 +11,7 @@ use ITRocks\Framework\Tools\String_Class;
 use ITRocks\Framework\View\Html\Builder\Map;
 use ITRocks\Framework\View\Html\Dom\Button;
 use ITRocks\Framework\View\Html\Dom\Div;
+use ITRocks\Framework\View\Html\Dom\Element;
 use ITRocks\Framework\View\Html\Dom\List_\Item;
 
 /**
@@ -25,7 +26,7 @@ class Html_Builder_Map extends Map
 	 *
 	 * @var boolean
 	 */
-	private $no_add;
+	private bool $no_add;
 
 	//------------------------------------------------------------------------------------ $no_delete
 	/**
@@ -33,7 +34,7 @@ class Html_Builder_Map extends Map
 	 *
 	 * @var boolean
 	 */
-	private $no_delete;
+	private bool $no_delete;
 
 	//------------------------------------------------------------------------------------- $pre_path
 	/**
@@ -49,13 +50,13 @@ class Html_Builder_Map extends Map
 	 *
 	 * @var boolean
 	 */
-	private $read_only;
+	private bool $read_only;
 
 	//------------------------------------------------------------------------------------- $template
 	/**
 	 * @var Html_Template
 	 */
-	private $template = null;
+	private Html_Template $template;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -72,9 +73,9 @@ class Html_Builder_Map extends Map
 	//------------------------------------------------------------------------------------- buildBody
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return Item[]
+	 * @return Element[]
 	 */
-	protected function buildBody()
+	protected function buildBody() : array
 	{
 		$body = parent::buildBody();
 		if (!$this->readOnly() && !$this->noAdd()) {
@@ -91,9 +92,9 @@ class Html_Builder_Map extends Map
 	//------------------------------------------------------------------------------------- buildCell
 	/**
 	 * @param $object object
-	 * @return Item
+	 * @return Element
 	 */
-	protected function buildCell($object)
+	protected function buildCell(object $object) : Element
 	{
 		$property  = $this->property;
 		$pre_path  = $this->pre_path ?: $property->name;
@@ -125,7 +126,7 @@ class Html_Builder_Map extends Map
 	/**
 	 * @return boolean
 	 */
-	protected function noAdd()
+	protected function noAdd() : bool
 	{
 		if (!isset($this->no_add)) {
 			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
@@ -138,7 +139,7 @@ class Html_Builder_Map extends Map
 	/**
 	 * @return boolean
 	 */
-	protected function noDelete()
+	protected function noDelete() : bool
 	{
 		if (!isset($this->no_delete)) {
 			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
@@ -151,7 +152,7 @@ class Html_Builder_Map extends Map
 	/**
 	 * @return boolean
 	 */
-	protected function readOnly()
+	protected function readOnly() : bool
 	{
 		if (!isset($this->read_only)) {
 			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
@@ -163,9 +164,9 @@ class Html_Builder_Map extends Map
 	//----------------------------------------------------------------------------------- setTemplate
 	/**
 	 * @param $template Html_Template
-	 * @return Html_Builder_Map
+	 * @return $this
 	 */
-	public function setTemplate(Html_Template $template)
+	public function setTemplate(Html_Template $template) : static
 	{
 		$this->template = $template;
 		return $this;

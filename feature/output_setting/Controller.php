@@ -28,9 +28,7 @@ class Controller implements Default_Feature_Controller
 		: ?string
 	{
 		$parameters = $parameters->getObjects();
-		$feature    = isset($parameters[Feature::FEATURE])
-			? $parameters[Feature::FEATURE]
-			: Feature::F_OUTPUT;
+		$feature    = $parameters[Feature::FEATURE] ?? Feature::F_OUTPUT;
 		$controller_class = Getter::get($class_name, $feature, 'Controller', 'php')[0];
 		/** @noinspection PhpUnhandledExceptionInspection controller class must be valid */
 		/** @var $output_controller Output\Controller */

@@ -15,7 +15,7 @@ class Multiple
 	/**
 	 * @var object[]
 	 */
-	public $objects;
+	public array $objects;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -38,7 +38,7 @@ class Multiple
 	 */
 	public function __toString() : string
 	{
-		return strval(count($this->objects));
+		return count($this->objects);
 	}
 
 }

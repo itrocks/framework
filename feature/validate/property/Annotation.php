@@ -31,6 +31,7 @@ trait Annotation
 	 * Gets the value of the property from the last validated object
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
+	 * @noinspection PhpUnused not_validated.html
 	 * @return mixed
 	 */
 	public function getPropertyValue() : mixed

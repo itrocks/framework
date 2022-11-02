@@ -21,7 +21,9 @@ class Property_Edit_Controller implements Feature_Controller
 	 * @param $property_path string The property
 	 * @return Property
 	 */
-	private function customSettingsProperty($class_name, $feature, $property_path)
+	private function customSettingsProperty(
+		string $class_name, string $feature, string $property_path
+	) : Property
 	{
 		$output_settings = Set::current($class_name, $feature);
 		$output_settings->cleanup();

@@ -122,7 +122,7 @@ class Template
 	/**
 	 * @var boolean
 	 */
-	public $link_objects = true;
+	public bool $link_objects = true;
 
 	//-------------------------------------------------------------------------------- $main_template
 	/**

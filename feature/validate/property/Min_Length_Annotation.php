@@ -20,10 +20,10 @@ class Min_Length_Annotation extends Reflection\Annotation implements Property_Co
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    bool|string|null
 	 * @param $property Interfaces\Reflection_Property ie the contextual Reflection_Property object
 	 */
-	public function __construct($value, Interfaces\Reflection_Property $property)
+	public function __construct(bool|string|null $value, Interfaces\Reflection_Property $property)
 	{
 		parent::__construct($value);
 		$this->property = $property;

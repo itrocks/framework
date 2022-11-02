@@ -103,7 +103,7 @@ class Functions
 	 * @param $properties Reflection_Property[]|string[] filter the list of properties
 	 * @return string[]   filtered $properties
 	 */
-	protected function filterProperties($object, array $properties)
+	protected function filterProperties(object $object, array $properties) : array
 	{
 		foreach ($properties as $key => $property) {
 			if (!($property instanceof Reflection_Property)) {
@@ -202,7 +202,7 @@ class Functions
 			}
 			$condition_object = $condition;
 			$expression       = Expressions::$current->cache[$property_path];
-			$property_path    = is_a($expression->function, Now::class, true) ? 'now' : null;
+			$property_path    = is_a($expression->function, Now::class, true) ? 'now' : '';
 		}
 		else {
 			$condition_object = $this->getRootObject($template);
@@ -216,8 +216,7 @@ class Functions
 		$property = new Reflection_Property_Value(
 			$condition_object, $property_path, $object, true, true
 		);
-		$output = $this->getEditReflectionProperty($property, $property_path, true, true);
-		return $output;
+		return $this->getEditReflectionProperty($property, $property_path, true, true);
 	}
 
 	//----------------------------------------------------------------------------- getConditionLabel
@@ -229,7 +228,9 @@ class Functions
 	 * @param $resolve_expression_marker boolean
 	 * @return string
 	 */
-	public function getConditionLabel(Template $template, $resolve_expression_marker = true)
+	public function getConditionLabel(
+		Template $template, bool $resolve_expression_marker = true
+	) : string
 	{
 		$property_path = null;
 		foreach ($template->objects as $property_path_key => $object) {
@@ -382,9 +383,9 @@ class Functions
 	 * @return string
 	 */
 	public function getEdit(
-		Template $template, $name = null, $ignore_user = false, $can_always_be_null = false
+		Template $template, string $name, bool $ignore_user = false, bool $can_always_be_null = false
 	) {
-		if (isset($name)) {
+		if ($name !== '') {
 			$name = $this->escapeName($name);
 		}
 		$object = reset($template->objects);
@@ -413,11 +414,9 @@ class Functions
 		if (is_object($object) && isset($property_name) && is_string($property_name)) {
 			/** @noinspection PhpUnhandledExceptionInspection object */
 			$property = new Reflection_Property($object, $property_name);
-			if (isset($property)) {
-				return $this->getEditObjectProperty(
-					$object, $property_name, $property, $template, $name, $ignore_user, $can_always_be_null
-				);
-			}
+			return $this->getEditObjectProperty(
+				$object, $property_name, $property, $template, $name, $ignore_user, $can_always_be_null
+			);
 		}
 		// default html input widget
 		$input = new Input();
@@ -437,7 +436,7 @@ class Functions
 	 * @return string
 	 */
 	protected function getEditDefaultListData(
-		Default_List_Data $object, Template $template, $name, $ignore_user, $can_always_be_null
+		Default_List_Data $object, Template $template, string $name, $ignore_user, $can_always_be_null
 	) {
 		$class_name    = $object->element_class_name;
 		$property_name = prev($template->var_names);
@@ -467,8 +466,8 @@ class Functions
 	 * @return string
 	 */
 	protected function getEditObjectProperty(
-		$object, $property_name, Reflection_Property $property, Template $template, $name, $ignore_user,
-		$can_always_be_null
+		$object, string $property_name, Reflection_Property $property, Template $template, string $name,
+		$ignore_user, $can_always_be_null
 	) {
 		$property_value = $property->toReflectionPropertyValue($object, true);
 		if ($template->properties_prefix && !$name) {
@@ -500,8 +499,9 @@ class Functions
 	 * @return string
 	 */
 	protected function getEditReflectionProperty(
-		Reflection_Property $property, $name, $ignore_user, $can_always_be_null = false
-	) {
+		Reflection_Property $property, string $name, bool $ignore_user, bool $can_always_be_null = false
+	) : string
+	{
 		$property_edit             = new Html_Builder_Property($property);
 		$property_edit->conditions = [];
 		$property_edit->name       = $name ?: $property->path;
@@ -1114,7 +1114,7 @@ class Functions
 					if (isset($properties_title) && isset($properties_title[$property_path])) {
 						$property->display = $properties_title[$property_path];
 					}
-					if (isset($properties_tooltip) && isset($properties_tooltip[$property_path])) {
+					if ($properties_tooltip[$property_path] ?? false) {
 						$property->tooltip = $properties_tooltip[$property_path];
 					}
 					$result_properties[$property_path] = $property;

@@ -13,6 +13,9 @@ use ITRocks\Framework\Tools\Names;
  * - can contain multiple columns into $columns, each column is a content array
  * - can contain multiple content rows into $content
  * - can contain included sub-tabs into $includes
+ *
+ * @property int id  patch for output/object.html view
+ * @property int id2 patch for output/object.html view
  */
 class Tab
 {
@@ -107,9 +110,9 @@ class Tab
 	 * Add content to the tab (e.g. content is an array, new elements are added)
 	 *
 	 * @param $content mixed
-	 * @return Tab
+	 * @return $this
 	 */
-	public function add(mixed $content) : Tab
+	public function add(mixed $content) : static
 	{
 		if (is_array($this->content) && is_array($content)) {
 			$this->content = array_merge($this->content, $content);
@@ -126,6 +129,10 @@ class Tab
 	 */
 	public function filterVisibleProperties(bool $hide_empty_test = true)
 	{
+		if (isset($this->id)) {
+			// patch for output/object.html view
+			$this->id2 = $this->id;
+		}
 		if (isset($this->content) && $this->content) {
 			foreach ($this->content as $key => $element) {
 				if (($element instanceof Reflection_Property) && method_exists($element, 'isVisible')) {
@@ -185,9 +192,9 @@ class Tab
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object           object
 	 * @param $properties_title string[] key is the property path, value is the property display (tr)
-	 * @return Tab
+	 * @return $this
 	 */
-	public function propertiesToValues(object $object, array $properties_title) : Tab
+	public function propertiesToValues(object $object, array $properties_title) : static
 	{
 		$class_name = get_class($object);
 		foreach ($this->columns as $key => $column) {

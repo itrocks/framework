@@ -17,11 +17,11 @@ class Import_Settings extends Setting\Custom\Set
 	/**
 	 * @var Import_Class[]
 	 */
-	public $classes;
+	public array $classes;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
+	 * @param $class_name string|null
 	 */
 	public function __construct($class_name = null)
 	{
@@ -38,10 +38,10 @@ class Import_Settings extends Setting\Custom\Set
 	 *
 	 * @return integer number of changes made during cleanup : if 0, then cleanup was not necessary
 	 */
-	public function cleanup()
+	public function cleanup() : int
 	{
 		$changes_count = 0;
-		$class_name = $this->getClassName();
+		$class_name    = $this->getClassName();
 		foreach ($this->classes as $key => $class) {
 			if (
 				$class->property_path
@@ -63,9 +63,9 @@ class Import_Settings extends Setting\Custom\Set
 	 *
 	 * @param $class_name string
 	 * @param $feature    string
-	 * @return Import_Settings
+	 * @return static
 	 */
-	public static function current($class_name, $feature = null)
+	public static function current(string $class_name, string $feature = '') : static
 	{
 		if (!isset($feature)) {
 			$feature = 'import';
@@ -77,7 +77,7 @@ class Import_Settings extends Setting\Custom\Set
 	/**
 	 * @return string
 	 */
-	public function getClassName()
+	public function getClassName() : string
 	{
 		if (!parent::getClassName()) {
 			foreach ($this->classes as $class_key => $class) {
@@ -90,15 +90,6 @@ class Import_Settings extends Setting\Custom\Set
 		return parent::getClassName();
 	}
 
-	//------------------------------------------------------------------------------------ getSummary
-	/**
-	 * @return string
-	 */
-	public function getSummary()
-	{
-		return;
-	}
-
 	//---------------------------------------------------------------------------------- setConstants
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
@@ -106,15 +97,16 @@ class Import_Settings extends Setting\Custom\Set
 	 */
 	public function setConstants(array $constants)
 	{
-		$class_name = $this->getClassName();
-		$properties_alias = Import_Array::getPropertiesAlias($class_name);
-		$use_reverse_translation = Locale::current() ? true : false;
+		$class_name              = $this->getClassName();
+		$properties_alias        = Import_Array::getPropertiesAlias($class_name);
+		$use_reverse_translation = (bool)Locale::current();
 		foreach ($constants as $property_path => $value) {
 			$property_path = Import_Array::propertyPathOf(
 				$class_name, $property_path, $use_reverse_translation, $properties_alias
 			);
 			$property_name = (($i = strrpos($property_path, DOT)) === false)
-				? $property_path : substr($property_path, $i + 1);
+				? $property_path
+				: substr($property_path, $i + 1);
 			$master_path = substr($property_path, 0, $i);
 			if (isset($this->classes[$master_path])) {
 				/** @noinspection PhpUnhandledExceptionInspection class name and property are valid */

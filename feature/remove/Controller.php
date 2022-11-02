@@ -28,7 +28,7 @@ class Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
-		$parameters = $parameters->getObjects();
+		$objects = $parameters->getObjects();
 		$parameters['class_name']   = array_shift($objects);
 		$parameters['feature_name'] = array_shift($objects);
 		array_unshift($objects, new stdClass());

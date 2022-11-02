@@ -7,7 +7,7 @@ namespace ITRocks\Framework\Feature\Export\PDF;
 abstract class Border
 {
 
-	//---------------------------------------------------------------------------------------- BOTTOM
+	//------------------------------------------------------------------------------ Border constants
 	const BOTTOM  = 'B';
 	const LEFT    = 'L';
 	const RIGHT   = 'R';

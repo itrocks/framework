@@ -12,6 +12,6 @@ class Has_Collection
 	 * @link Collection
 	 * @var Simple_Component[]
 	 */
-	public $simple_collection;
+	public array $simple_collection;
 
 }

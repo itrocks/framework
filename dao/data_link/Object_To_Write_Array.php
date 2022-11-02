@@ -152,9 +152,9 @@ class Object_To_Write_Array
 	 * Build output properties values (all public properties)
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return static
+	 * @return $this
 	 */
-	public function build()
+	public function build() : static
 	{
 		if (!isset($this->class)) {
 			/** @noinspection PhpUnhandledExceptionInspection valid object */

@@ -12,6 +12,7 @@ $error_reporting = error_reporting(E_ALL & ~E_WARNING & ~E_DEPRECATED);
 
 // A patch because composer does not want to compile fpdi-pdf-parser's autoloader
 if (file_exists(__DIR__ . '/../../../../../vendor/setasign/fpdi-pdf-parser/src')) {
+	/** @noinspection PhpIncludeInspection fpdi-pdf-parser : file_exists */
 	require_once __DIR__ . '/../../../../../vendor/setasign/fpdi-pdf-parser/src/autoload.php';
 }
 
@@ -84,7 +85,7 @@ class PDF extends Fpdi
 	 * @return string
 	 * @throws Exception
 	 */
-	public function Output($name='doc.pdf', $dest='I')
+	public function Output($name = 'doc.pdf', $dest = 'I') : string
 	{
 		//Output PDF to some destination
 		//Finish document if necessary
@@ -98,7 +99,7 @@ class PDF extends Fpdi
 		$dest = strtoupper($dest);
 		// itrocks : here is the disabled code
 		/*
-		if ($dest[0] != 'F') {
+		if ($dest[0] !== 'F') {
 			$name = preg_replace('/[\s]+/', '_', $name);
 			$name = preg_replace('/[^a-zA-Z0-9_\.-]/', '', $name);
 		}
@@ -113,7 +114,6 @@ class PDF extends Fpdi
 			$byterange_string_len = strlen(TCPDF_STATIC::$byterange_string);
 			// define the ByteRange
 			$byte_range = array();
-			$byte_range[0] = 0;
 			$byte_range[1] = strpos($pdfdoc, TCPDF_STATIC::$byterange_string) + $byterange_string_len + 10;
 			$byte_range[2] = $byte_range[1] + $this->signature_max_length + 2;
 			$byte_range[3] = strlen($pdfdoc) - $byte_range[2];
@@ -135,7 +135,8 @@ class PDF extends Fpdi
 			$tempsign = TCPDF_STATIC::getObjFilename('sig', $this->file_id);
 			if (empty($this->signature_data['extracerts'])) {
 				openssl_pkcs7_sign($tempdoc, $tempsign, $this->signature_data['signcert'], array($this->signature_data['privkey'], $this->signature_data['password']), array(), PKCS7_BINARY | PKCS7_DETACHED);
-			} else {
+			}
+			else {
 				openssl_pkcs7_sign($tempdoc, $tempsign, $this->signature_data['signcert'], array($this->signature_data['privkey'], $this->signature_data['password']), array(), PKCS7_BINARY | PKCS7_DETACHED, $this->signature_data['extracerts']);
 			}
 			// read signature
@@ -157,35 +158,17 @@ class PDF extends Fpdi
 			$this->bufferlen = strlen($this->buffer);
 		}
 		switch($dest) {
-			case 'I': {
+			case 'I':
 				// Send PDF to the standard output
 				if (ob_get_contents()) {
 					$this->Error('Some data has already been output, can\'t send PDF file');
 				}
-				if (php_sapi_name() != 'cli') {
-					// send output to a browser
-					header('Content-Type: application/pdf');
-					if (headers_sent()) {
-						$this->Error('Some data has already been output to browser, can\'t send PDF file');
-					}
-					header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
-					//header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
-					header('Pragma: public');
-					header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-					header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-					header('Content-Disposition: inline; filename="'.basename($name).'"');
-					TCPDF_STATIC::sendOutputData($this->getBuffer(), $this->bufferlen);
-				} else {
+				if (php_sapi_name() === 'cli') {
 					echo $this->getBuffer();
+					break;
 				}
-				break;
-			}
-			case 'D': {
-				// download PDF as file
-				if (ob_get_contents()) {
-					$this->Error('Some data has already been output, can\'t send PDF file');
-				}
-				header('Content-Description: File Transfer');
+				// send output to a browser
+				header('Content-Type: application/pdf');
 				if (headers_sent()) {
 					$this->Error('Some data has already been output to browser, can\'t send PDF file');
 				}
@@ -194,24 +177,17 @@ class PDF extends Fpdi
 				header('Pragma: public');
 				header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
 				header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-				// force download dialog
-				if (!str_contains(php_sapi_name(), 'cgi')) {
-					header('Content-Type: application/force-download');
-					header('Content-Type: application/octet-stream', false);
-					header('Content-Type: application/download', false);
-					header('Content-Type: application/pdf', false);
-				} else {
-					header('Content-Type: application/pdf');
-				}
-				// use the Content-Disposition header to supply a recommended filename
-				header('Content-Disposition: attachment; filename="'.basename($name).'"');
-				header('Content-Transfer-Encoding: binary');
+				header('Content-Disposition: inline; filename="'.basename($name).'"');
 				TCPDF_STATIC::sendOutputData($this->getBuffer(), $this->bufferlen);
 				break;
-			}
+			case 'D':
+				// download PDF as file
+				$this->sendHeadersToBrowser($name);
+				TCPDF_STATIC::sendOutputData($this->getBuffer(), $this->bufferlen);
+				break;
 			case 'F':
 			case 'FI':
-			case 'FD': {
+			case 'FD':
 				// save PDF to a local file
 				$f = TCPDF_STATIC::fopenLocal($name, 'wb');
 				if (!$f) {
@@ -219,7 +195,7 @@ class PDF extends Fpdi
 				}
 				fwrite($f, $this->getBuffer(), $this->bufferlen);
 				fclose($f);
-				if ($dest == 'FI') {
+				if ($dest === 'FI') {
 					// send headers to browser
 					header('Content-Type: application/pdf');
 					header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
@@ -229,52 +205,27 @@ class PDF extends Fpdi
 					header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 					header('Content-Disposition: inline; filename="'.basename($name).'"');
 					TCPDF_STATIC::sendOutputData(file_get_contents($name), filesize($name));
-				} elseif ($dest == 'FD') {
+				}
+				elseif ($dest === 'FD') {
 					// send headers to browser
-					if (ob_get_contents()) {
-						$this->Error('Some data has already been output, can\'t send PDF file');
-					}
-					header('Content-Description: File Transfer');
-					if (headers_sent()) {
-						$this->Error('Some data has already been output to browser, can\'t send PDF file');
-					}
-					header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
-					header('Pragma: public');
-					header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-					header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-					// force download dialog
-					if (!str_contains(php_sapi_name(), 'cgi')) {
-						header('Content-Type: application/force-download');
-						header('Content-Type: application/octet-stream', false);
-						header('Content-Type: application/download', false);
-						header('Content-Type: application/pdf', false);
-					} else {
-						header('Content-Type: application/pdf');
-					}
-					// use the Content-Disposition header to supply a recommended filename
-					header('Content-Disposition: attachment; filename="'.basename($name).'"');
-					header('Content-Transfer-Encoding: binary');
+					$this->sendHeadersToBrowser($name);
 					TCPDF_STATIC::sendOutputData(file_get_contents($name), filesize($name));
 				}
 				break;
-			}
-			case 'E': {
+			case 'E':
 				// return PDF as base64 mime multi-part email attachment (RFC 2045)
 				$retval = 'Content-Type: application/pdf;'."\r\n";
 				$retval .= ' name="'.$name.'"'."\r\n";
 				$retval .= 'Content-Transfer-Encoding: base64'."\r\n";
 				$retval .= 'Content-Disposition: attachment;'."\r\n";
 				$retval .= ' filename="'.$name.'"'."\r\n\r\n";
-				$retval .= chunk_split(base64_encode($this->getBuffer()), 76, "\r\n");
+				$retval .= chunk_split(base64_encode($this->getBuffer()));
 				return $retval;
-			}
-			case 'S': {
+			case 'S':
 				// returns PDF as a string
 				return $this->getBuffer();
-			}
-			default: {
+			default:
 				$this->Error('Incorrect output destination: '.$dest);
-			}
 		}
 		return '';
 	}
@@ -296,9 +247,43 @@ class PDF extends Fpdi
 	 * @param $millimeters float
 	 * @return float
 	 */
-	public function millimetersToPoints($millimeters)
+	public function millimetersToPoints(float $millimeters) : float
 	{
 		return static::MILLIMETERS_TO_POINTS_RATIO * $millimeters;
+	}
+
+	//----------------------------------------------------------------------------- downloadPDFAsFile
+	/**
+	 * @param $name string
+	 * @throws Exception
+	 */
+	protected function sendHeadersToBrowser(string $name)
+	{
+		if (ob_get_contents()) {
+			$this->Error('Some data has already been output, can\'t send PDF file');
+		}
+		header('Content-Description: File Transfer');
+		if (headers_sent()) {
+			$this->Error('Some data has already been output to browser, can\'t send PDF file');
+		}
+		header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
+		//header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
+		header('Pragma: public');
+		header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+		header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+		// force download dialog
+		if (!str_contains(php_sapi_name(), 'cgi')) {
+			header('Content-Type: application/force-download');
+			header('Content-Type: application/octet-stream', false);
+			header('Content-Type: application/download', false);
+			header('Content-Type: application/pdf', false);
+		}
+		else {
+			header('Content-Type: application/pdf');
+		}
+		// use the Content-Disposition header to supply a recommended filename
+		header('Content-Disposition: attachment; filename="' . basename($name) . '"');
+		header('Content-Transfer-Encoding: binary');
 	}
 
 	//--------------------------------------------------------------------------------------- toColor

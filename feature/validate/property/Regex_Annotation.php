@@ -23,10 +23,10 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    ?string
+	 * @param $value    bool|string|null
 	 * @param $property Interfaces\Reflection_Property ie the contextual Reflection_Property object
 	 */
-	public function __construct(?string $value, Interfaces\Reflection_Property $property)
+	public function __construct(bool|string|null $value, Interfaces\Reflection_Property $property)
 	{
 		parent::__construct($value);
 		$this->property = $property;
@@ -51,7 +51,7 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	 */
 	public function reportMessage() : string
 	{
-		return (strlen($this->value) && ($this->valid == Result::ERROR))
+		return (strlen($this->value) && ($this->valid === Result::ERROR))
 			? 'has invalid format'
 			: '';
 	}

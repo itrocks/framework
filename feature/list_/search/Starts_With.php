@@ -21,7 +21,7 @@ class Starts_With implements Registerable
 	/**
 	 * @var boolean
 	 */
-	private $enabled = true;
+	private bool $enabled = true;
 
 	//----------------------------------------------------------------------------------- appendJoker
 	/**
@@ -59,9 +59,9 @@ class Starts_With implements Registerable
 	//------------------------------------------------------------------------------------ setEnabled
 	/**
 	 * @param $enabled boolean
-	 * @return boolean
+	 * @return boolean The last enabled state, i.e. before this call of setEnabled
 	 */
-	public function setEnabled($enabled = true)
+	public function setEnabled(bool $enabled = true) : bool
 	{
 		$last_enabled  = $this->enabled;
 		$this->enabled = $enabled;

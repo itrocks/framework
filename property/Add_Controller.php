@@ -20,7 +20,7 @@ class Add_Controller implements Feature_Controller
 	 * @param $class_name    string
 	 * @param $property_path string
 	 */
-	public function addPropertyToList($class_name, $property_path)
+	public function addPropertyToList(string $class_name, string $property_path)
 	{
 		$list_settings = List_Setting\Set::current($class_name);
 		$list_settings->addProperty($property_path);

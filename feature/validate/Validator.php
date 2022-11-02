@@ -56,10 +56,10 @@ class Validator implements Registerable
 
 	//---------------------------------------------------------------------------------------- $valid
 	/**
-	 * true if the last validated object was valid, else false
+	 * true if the last validated object was valid, else message string
 	 *
 	 * @read_only
-	 * @var string|null|true
+	 * @var string|true|null
 	 */
 	public bool|string|null $valid;
 
@@ -234,7 +234,7 @@ class Validator implements Registerable
 	 */
 	public function getConfirmLink() : string
 	{
-		$uri = lParse(SL . rParse($_SERVER['REQUEST_URI'], SL, 2), '?', 1, true);
+		$uri = lParse(SL . rParse($_SERVER['REQUEST_URI'], SL, 2), '?');
 		return $uri . (str_contains($uri, '?') ? '&' : '?') . 'confirm=1';
 	}
 
@@ -257,6 +257,7 @@ class Validator implements Registerable
 	/**
 	 * Return all annotations - and their messages - for the view
 	 *
+	 * @noinspection PhpUnused not_validated.html
 	 * @return Annotation[]
 	 */
 	public function getMessages() : array
@@ -268,6 +269,7 @@ class Validator implements Registerable
 	/**
 	 * Return all properties passed in POST originator form
 	 *
+	 * @noinspection PhpUnused not_validated.html
 	 * @return string[]
 	 */
 	public function getPostProperties() : array
@@ -392,7 +394,7 @@ class Validator implements Registerable
 	 * @param $only_properties    string[] property names if we want to check those properties only
 	 * @param $exclude_properties string[] property names if we don't want to check those properties
 	 * @param $component          boolean
-	 * @return string|null|true @values Result::const
+	 * @return string|true|null @values Result::const
 	 */
 	public function validate(
 		object $object, array $only_properties = [], array $exclude_properties = [],
@@ -422,7 +424,7 @@ class Validator implements Registerable
 	/**
 	 * @param $object     object
 	 * @param $annotation Reflection\Annotation|Annotation
-	 * @return string|null|true @values Result::const
+	 * @return string|true|null @values Result::const
 	 */
 	protected function validateAnnotation(
 		object $object, Reflection\Annotation|Annotation $annotation
@@ -450,7 +452,7 @@ class Validator implements Registerable
 	 *
 	 * @param $object      object
 	 * @param $annotations Reflection\Annotation[]|Annotation[]
-	 * @return string|null|true @values Result::const
+	 * @return string|true|null @values Result::const
 	 */
 	protected function validateAnnotations(object $object, array $annotations) : bool|string|null
 	{
@@ -473,7 +475,7 @@ class Validator implements Registerable
 	 * @param $only_properties    string[]
 	 * @param $exclude_properties string[]
 	 * @param $property           Reflection_Property
-	 * @return string|null|true @values Result::const
+	 * @return string|true|null @values Result::const
 	 */
 	private function validateComponent(
 		object $object,
@@ -514,9 +516,8 @@ class Validator implements Registerable
 					/** @var $annotation_property Reflection\Reflection_Property */
 					if (
 						isA($annotation, Property\Annotation::class)
-						&& $annotation->property
 						&& isA($annotation_property = $annotation->property, Reflection\Reflection_Property::class)
-						&& $annotation_property->root_class == $property_class_name
+						&& $annotation_property->root_class === $property_class_name
 					) {
 						$annotation = clone $annotation;
 						/** @noinspection PhpUnhandledExceptionInspection $class_name comes from an object */
@@ -537,7 +538,7 @@ class Validator implements Registerable
 	/**
 	 * @param $object object
 	 * @param $class  Reflection_Class
-	 * @return string|null|true @values Result::const
+	 * @return string|true|null @values Result::const
 	 */
 	protected function validateObject(object $object, Reflection_Class $class) : bool|string|null
 	{
@@ -552,7 +553,7 @@ class Validator implements Registerable
 	 * @param $only_properties    string[]
 	 * @param $exclude_properties string[]
 	 * @param $component          boolean
-	 * @return string|null|true @values Result::const
+	 * @return string|true|null @values Result::const
 	 */
 	protected function validateProperties(
 		object $object, array $properties, array $only_properties, array $exclude_properties,

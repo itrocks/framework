@@ -12,6 +12,6 @@ class Has_Map
 	 * @link Map
 	 * @var Simple[]
 	 */
-	public $simple_map;
+	public array $simple_map;
 
 }

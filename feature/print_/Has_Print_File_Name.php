@@ -14,6 +14,6 @@ interface Has_Print_File_Name
 	 * @param $objects array
 	 * @return string
 	 */
-	public function printFileName(array $objects);
+	public function printFileName(array $objects) : string;
 
 }

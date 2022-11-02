@@ -20,7 +20,7 @@ class Html_Template_Functions extends Functions
 	 * @param $properties Reflection_Property[]|string[] filter the list of properties
 	 * @return string[]   filtered $properties
 	 */
-	protected function filterProperties($object, array $properties)
+	protected function filterProperties(object $object, array $properties) : array
 	{
 		return $properties;
 	}
@@ -30,10 +30,10 @@ class Html_Template_Functions extends Functions
 	 * Return the current data as a field : editable in this case
 	 *
 	 * @param $template Template
-	 * @param $name     string|null The name of the field
-	 * @return mixed
+	 * @param $name     string The name of the field
+	 * @return string
 	 */
-	public function getField(Template $template, string $name = null)
+	public function getField(Template $template, string $name = '') : string
 	{
 		return $this->getEdit($template, $name);
 	}
@@ -47,7 +47,7 @@ class Html_Template_Functions extends Functions
 	 * @param $property Reflection_Property
 	 * @return boolean
 	 */
-	protected function isPropertyVisible(Reflection_Property $property)
+	protected function isPropertyVisible(Reflection_Property $property) : bool
 	{
 		return $property->isVisible(false)
 			&& !User_Annotation::of($property)->has(User_Annotation::HIDE_EDIT)

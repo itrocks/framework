@@ -3,22 +3,14 @@ namespace ITRocks\Framework\Feature\Output_Setting;
 
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
-use ITRocks\Framework\Reflection\Reflection_Property_Value;
-use ITRocks\Framework\Tools\Can_Be_Empty;
+use ITRocks\Framework\Setting;
+use ReflectionException;
 
 /**
  * Output setting widget property
  */
-class Property implements Can_Be_Empty
+class Property extends Setting\Property
 {
-
-	//-------------------------------------------------------------------------------------- $display
-	/**
-	 * Display must be stored already translated
-	 *
-	 * @var string
-	 */
-	public $display;
 
 	//----------------------------------------------------------------------------------- $hide_empty
 	/**
@@ -27,13 +19,7 @@ class Property implements Can_Be_Empty
 	 *
 	 * @var boolean
 	 */
-	public $hide_empty;
-
-	//----------------------------------------------------------------------------------------- $path
-	/**
-	 * @var string
-	 */
-	public $path;
+	public bool $hide_empty;
 
 	//------------------------------------------------------------------------------------ $read_only
 	/**
@@ -41,7 +27,7 @@ class Property implements Can_Be_Empty
 	 *
 	 * @var boolean
 	 */
-	public $read_only;
+	public bool $read_only;
 
 	//------------------------------------------------------------------------------------- $tab_name
 	/**
@@ -51,9 +37,9 @@ class Property implements Can_Be_Empty
 	 * Empty string ('') means 'out of tabs'
 	 * null means 'use the original value of @group of the matching property / class'
 	 *
-	 * @var string|null
+	 * @var string
 	 */
-	public $tab_name;
+	public string $tab_name = '';
 
 	//-------------------------------------------------------------------------------------- $tooltip
 	/**
@@ -61,71 +47,55 @@ class Property implements Can_Be_Empty
 	 *
 	 * @var string
 	 */
-	public $tooltip;
+	public string $tooltip;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name    string
-	 * @param $property_path string
-	 */
-	public function __construct($class_name = null, $property_path = null)
-	{
-		if (isset($class_name) && isset($property_path)) {
-			/** @noinspection PhpUnhandledExceptionInspection class name and property must be valid */
-			$property         = new Reflection_Property_Value($class_name, $property_path);
-			$this->display    = $property->display();
-			$this->path       = $property->path;
-			$user_annotation  = $property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->hide_empty = $user_annotation->has(User_Annotation::HIDE_EMPTY);
-			$this->read_only  = $user_annotation->has(User_Annotation::READONLY);
-			$this->tooltip    = $user_annotation->has(Tooltip_Annotation::ANNOTATION);
-		}
-	}
 
-	//------------------------------------------------------------------------------------ __toString
 	/**
-	 * @return string
+	 * @param $class_name    string|null
+	 * @param $property_path string|null
+	 * @throws ReflectionException
 	 */
-	public function __toString() : string
+	public function __construct(string $class_name = null, string $property_path = null)
 	{
-		return strval($this->display);
+		parent::__construct($class_name, $property_path);
+		if (!isset($this->property)) {
+			return;
+		}
+		$user_annotation  = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
+		$this->hide_empty = $user_annotation->has(User_Annotation::HIDE_EMPTY);
+		$this->read_only  = $user_annotation->has(User_Annotation::READONLY);
+		$this->tooltip    = $user_annotation->has(Tooltip_Annotation::ANNOTATION);
 	}
 
 	//--------------------------------------------------------------------------------- htmlHideEmpty
 	/**
+	 * @noinspection PhpUnused Property_edit.html
 	 * @return string
 	 */
-	public function htmlHideEmpty()
+	public function htmlHideEmpty() : string
 	{
 		return $this->hide_empty ? 'checked' : '';
 	}
 
 	//---------------------------------------------------------------------------------- htmlReadOnly
 	/**
+	 * @noinspection PhpUnused Property_edit.html
 	 * @return string
 	 */
-	public function htmlReadOnly()
+	public function htmlReadOnly() : string
 	{
 		return $this->read_only ? 'checked' : '';
 	}
 
 	//----------------------------------------------------------------------------------- htmlTooltip
 	/**
+	 * @noinspection PhpUnused Property_edit.html
 	 * @return string
 	 */
-	public function htmlTooltip()
+	public function htmlTooltip() : string
 	{
 		return $this->tooltip;
-	}
-
-	//--------------------------------------------------------------------------------------- isEmpty
-	/**
-	 * @return boolean
-	 */
-	public function isEmpty() : bool
-	{
-		return !(strval($this->display) || strval($this->path));
 	}
 
 }

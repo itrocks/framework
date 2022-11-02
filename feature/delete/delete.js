@@ -1,19 +1,19 @@
 $(document).ready(function()
 {
 
-	let closeWindows = function(class_name, identifier)
+	const closeWindows = function(class_name, identifier)
 	{
 		let selector = 'article[data-class=' + class_name.repl(BS, BS + BS) + ']'
 		if (identifier !== undefined) {
-			selector =  selector.substr(7)
+			selector  = selector.substring(7)
 			selector += parseInt(identifier) ? ('[data-id=' + identifier + ']') : identifier
 		}
 
 		// close main window
-		let $main = $('main, #main')
-		let $main_window = $main.children(selector)
+		const $main        = $('main, #main')
+		const $main_window = $main.children(selector)
 		if ($main_window.length) {
-			let $close_anchor = $main_window.find('.actions > .close > a')
+			const $close_anchor = $main_window.find('.actions > .close > a')
 			if ($close_anchor.length) {
 				$close_anchor.addClass('keep-response')
 				$close_anchor.click()
@@ -35,7 +35,7 @@ $(document).ready(function()
 				$(selector + ':not(.deleted)'),
 				$(selector.repl('][data-id=', '] > [data-id='))
 			]
-			for (let $source of $sources) {
+			for (const $source of $sources) {
 				const $replace = $source.closest('[data-delete-replace-by]')
 				if ($replace.length) {
 					const $element = $($replace.data('delete-replace-by'))
@@ -58,10 +58,10 @@ $(document).ready(function()
 	//--------------------------------------------------------------------- .confirmed.delete.message
 	$('body').build('call', '#responses > .deleted[data-class]', function()
 	{
-		let $message       = this
-		let class_name     = $message.data('class')
-		let identifier     = $message.data('id')
-		let set_class_name = $message.data('set')
+		const $message       = this
+		const class_name     = $message.data('class')
+		const identifier     = $message.data('id')
+		const set_class_name = $message.data('set')
 		if (!class_name) {
 			return
 		}
@@ -75,7 +75,7 @@ $(document).ready(function()
 
 		// unselect
 		$message.find('ul.deleted > li[data-id]').each(function() {
-			let id = $(this).data('id')
+			const id = $(this).data('id')
 			unselectFromList(class_name, id)
 		})
 	})

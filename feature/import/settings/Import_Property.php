@@ -15,14 +15,14 @@ class Import_Property
 	/**
 	 * @var string
 	 */
-	public $class;
+	public string $class;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class string
-	 * @param $name  string
+	 * @param $class string|null
+	 * @param $name  string|null
 	 */
-	public function __construct($class = null, $name = null)
+	public function __construct(string $class = null, string $name = null)
 	{
 		if (isset($class)) $this->class = $class;
 		if (isset($name))  $this->name  = $name;
@@ -33,7 +33,7 @@ class Import_Property
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Property
 	 */
-	public function toProperty()
+	public function toProperty() : Reflection_Property
 	{
 		/** @noinspection PhpUnhandledExceptionInspection property must be valid */
 		return new Reflection_Property($this->class, $this->name);

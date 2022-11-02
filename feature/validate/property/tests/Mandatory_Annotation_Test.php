@@ -72,9 +72,11 @@ class Mandatory_Annotation_Test extends Test
 	 */
 	public function testIsEmptyKo()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection constant*/
 		$annotation = Mandatory_Annotation::of(
 			$this->reflection_object->getProperty('filled_property')
 		);
+		/** @noinspection PhpPossiblePolymorphicInvocationInspection inspector bug */
 		$actual = $annotation->isEmpty($this);
 
 		static::assertFalse($actual);
@@ -86,10 +88,9 @@ class Mandatory_Annotation_Test extends Test
 	 */
 	public function testIsEmptyOk()
 	{
-		$annotation = Mandatory_Annotation::of(
-			$this->reflection_object->getProperty('empty_property')
-		);
-		/** @noinspection PhpPossiblePolymorphicInvocationInspection not polymorphic */
+		/** @noinspection PhpUnhandledExceptionInspection constant*/
+		$annotation = Mandatory_Annotation::of($this->reflection_object->getProperty('empty_property'));
+		/** @noinspection PhpPossiblePolymorphicInvocationInspection inspector bug */
 		$actual = $annotation->isEmpty($this);
 
 		static::assertTrue($actual);

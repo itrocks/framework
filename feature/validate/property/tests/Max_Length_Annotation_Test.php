@@ -74,10 +74,9 @@ class Max_Length_Annotation_Test extends Test
 	 */
 	public function testValidateFail()
 	{
-		$annotation = Max_Length_Annotation::of(
-			$this->reflection_object->getProperty('fail_property')
-		);
-		$actual = $annotation->validate($this);
+		/** @noinspection PhpUnhandledExceptionInspection constant */
+		$annotation = Max_Length_Annotation::of($this->reflection_object->getProperty('fail_property'));
+		$actual     = $annotation->validate($this);
 
 		static::assertFalse($actual);
 	}
@@ -88,6 +87,7 @@ class Max_Length_Annotation_Test extends Test
 	 */
 	public function testValidateSuccess()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$annotation = Max_Length_Annotation::of(
 			$this->reflection_object->getProperty('success_property')
 		);

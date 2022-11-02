@@ -24,15 +24,15 @@ class Test_Object
 	 * @validate validTrue
 	 * @var string
 	 */
-	protected $property = 'its-value';
+	protected string $property = 'its-value';
 
 	//------------------------------------------------------------------------------- notValidDynamic
 	/**
-	 * A validation function that returns true
+	 * A validation function that returns an equivalent of true
 	 *
-	 * @return boolean
+	 * @return string
 	 */
-	public static function notValidDynamic()
+	public static function notValidDynamic() : string
 	{
 		return self::NOT_VALID_DYNAMIC;
 	}
@@ -41,9 +41,9 @@ class Test_Object
 	/**
 	 * A validation function that returns false
 	 *
-	 * @return boolean
+	 * @return false
 	 */
-	public function notValidFalse()
+	public function notValidFalse() : bool
 	{
 		return false;
 	}
@@ -54,7 +54,7 @@ class Test_Object
 	 *
 	 * @return string
 	 */
-	public function notValidMessage()
+	public function notValidMessage() : string
 	{
 		return self::NOT_VALID_MESSAGE;
 	}
@@ -63,9 +63,9 @@ class Test_Object
 	/**
 	 * A validation function that returns true
 	 *
-	 * @return boolean
+	 * @return true
 	 */
-	public function validTrue()
+	public function validTrue() : bool
 	{
 		return true;
 	}

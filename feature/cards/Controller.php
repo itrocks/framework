@@ -31,43 +31,43 @@ class Controller extends List_\Controller implements Has_Selection_Buttons
 	/**
 	 * @var Color[]
 	 */
-	public $card_colors;
+	public array $card_colors;
 
 	//------------------------------------------------------------------------------ $card_properties
 	/**
 	 * @var Card[]
 	 */
-	public $card_properties;
+	public array $card_properties;
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * @var Reflection_Class
 	 */
-	public $class;
+	public Reflection_Class $class;
 
 	//---------------------------------------------------------------------------- $column_properties
 	/**
 	 * @var Column[]
 	 */
-	public $column_properties;
+	public array $column_properties;
 
 	//------------------------------------------------------------------------------ $edit_properties
 	/**
 	 * @var Edit[]
 	 */
-	public $edit_properties;
+	public array $edit_properties;
 
 	//----------------------------------------------------------------------------- $group_properties
 	/**
 	 * @var Group[]
 	 */
-	public $group_properties;
+	public array $group_properties;
 
 	//------------------------------------------------------------------------------- $sum_properties
 	/**
 	 * @var Sum[]
 	 */
-	public $sum_properties;
+	public array $sum_properties;
 
 	//----------------------------------------------------------------------------- getCardProperties
 	/**

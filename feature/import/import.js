@@ -3,9 +3,9 @@ $(document).ready(function()
 	//------------------------------------------------------------------------ article.import.preview
 	$('body').build('each', 'article.import.preview .block', function()
 	{
-		var $this    = $(this);
-		var $section = $this.find('> section:has(ul)');
-		var $li      = $section.find('> ul > li');
+		const $this    = $(this)
+		const $section = $this.find('> section:has(ul)')
+		const $li      = $section.find('> ul > li')
 
 		//------------------------------------------------------- li.draggable, .properties.droppable
 		/**
@@ -13,35 +13,35 @@ $(document).ready(function()
 		 */
 		$li.draggable({
 			containment: $this
-		});
+		})
 		$section.droppable({
 			accept: $li,
 
 			drop: function(event, ui)
 			{
 				// drop
-				var $draggable = ui.draggable;
-				var $droppable = $(this);
+				const $draggable = ui.draggable
+				const $droppable = $(this)
 				// old section value
-				var $input        = $draggable.closest('section').find('input');
-				var property_name = $draggable.attr('class').lParse(SP);
-				var new_val       = (',' + $input.val() + ',').repl(',' + property_name + ',', ',');
-				$input.val((new_val === ',') ? '' : new_val.substr(1, new_val.length - 2));
+				let   $input        = $draggable.closest('section').find('input')
+				const property_name = $draggable.attr('class').lParse(SP)
+				const new_val       = (',' + $input.val() + ',').repl(',' + property_name + ',', ',')
+				$input.val((new_val === ',') ? '' : new_val.substring(1, new_val.length - 1))
 				// move property
-				$draggable.appendTo($droppable.find('ul')).removeAttr('style');
+				$draggable.appendTo($droppable.find('ul')).removeAttr('style')
 				// new section value
-				$input = $($droppable.closest('section').find('input'));
-				$input.val($input.val() + ($input.val() ? ',' : '') + property_name);
+				$input = $($droppable.closest('section').find('input'))
+				$input.val($input.val() + ($input.val() ? ',' : '') + property_name)
 			}
-		});
+		})
 
 		//----------------------------------------------------------------------------- select.change()
 		// change color of 'if no value found'
 		$this.find('select').change(function()
 		{
-			var $this = $(this);
-			$this.attr('class', $this.find(':selected').attr('value'));
-		}).change();
+			const $this = $(this)
+			$this.attr('class', $this.find(':selected').attr('value'))
+		}).change()
 
-	});
-});
+	})
+})

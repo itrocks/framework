@@ -2,28 +2,28 @@ $(document).ready(function()
 {
 
 	//------------------------------------------------------------------------------------- className
-	var className = function($this)
+	const className = function($this)
 	{
-		return $this.closest('article.list').data('class').repl(BS, SL);
-	};
+		return $this.closest('article.list').data('class').repl(BS, SL)
+	}
 
 	//---------------------------------------------------------------------------------- propertyPath
-	var propertyPath = function($this)
+	const propertyPath = function($this)
 	{
-		return $this.closest('[data-property]').data('property');
-	};
+		return $this.closest('[data-property]').data('property')
+	}
 
 	//---------------------------------------------------------------------------------- article.list
 	$('body').build('each', 'article.list', function()
 	{
-		var $this = $(this);
+		const $this = $(this)
 
-		var callback_uri = window.app.uri_base + '/{className}/listSetting?as_widget'
-			+ window.app.andSID();
+		const callback_uri = window.app.uri_base + '/{className}/listSetting?as_widget'
+			+ window.app.andSID()
 
-		var list_property_uri = window.app.uri_base
+		const list_property_uri = window.app.uri_base
 			+ '/ITRocks/Framework/Feature/List_Setting/Property/edit/{className}/{propertyPath}?as_widget'
-			+ window.app.andSID();
+			+ window.app.andSID()
 
 		//--------------------------------------- (article.list h2, ul.list li.property a) modifiable
 		// list title (class name) double-click
@@ -32,12 +32,12 @@ $(document).ready(function()
 			aliases: { 'className': className },
 			target:  '#responses',
 			start: function() {
-				$(this).closest('article.list').find('> div.custom > ul.actions').css('display', 'none');
+				$(this).closest('article.list').find('> div.custom > ul.actions').css('display', 'none')
 			},
 			stop: function() {
-				$(this).closest('article.list').find('> div.custom > ul.actions').css('display', '');
+				$(this).closest('article.list').find('> div.custom > ul.actions').css('display', '')
 			}
-		});
+		})
 
 		// list column header (property path) double-click
 		$this.find('> form > table.list > thead > tr.title > th.property > a').modifiable({
@@ -46,7 +46,7 @@ $(document).ready(function()
 			aliases:   { 'className': className, 'propertyPath': propertyPath },
 			popup:     list_property_uri,
 			target:    '#responses'
-		});
-	});
+		})
+	})
 
-});
+})

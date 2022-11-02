@@ -8,21 +8,31 @@ use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting;
+use ITRocks\Framework\Setting\Has_Properties;
 use ReflectionException;
 
 /**
  * Data list settings : all that can be customized into a list view
+ *
+ * @property Property[] $properties
+ * @override $properties Property[]
  */
 class Set extends Setting\Custom\Set
 {
+	use Has_Properties;
+
+	//--------------------------------------------------------------------------------- AFTER, BEFORE
+	const AFTER  = 'after';
+	const BEFORE = 'before';
 
 	//---------------------------------------------------------------- $maximum_displayed_lines_count
 	/**
 	 * Maximum displayed lines count is the number of displayed lines on lists
+	 * 0 means undefined (=> take default value back)
 	 *
 	 * @var integer
 	 */
-	public $maximum_displayed_lines_count = 20;
+	public int $maximum_displayed_lines_count = 20;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -30,25 +40,7 @@ class Set extends Setting\Custom\Set
 	 *
 	 * @var Property[] key is the path of the property
 	 */
-	public $properties = [];
-
-	//------------------------------------------------------------------------------ $properties_path
-	/**
-	 * Properties path
-	 *
-	 * @deprecated stored into $property
-	 * @var string[] key is the column number (0..n)
-	 */
-	public $properties_path;
-
-	//----------------------------------------------------------------------------- $properties_title
-	/**
-	 * Properties title
-	 *
-	 * @deprecated stored into $property
-	 * @var string[] key is the property path
-	 */
-	public $properties_title = [];
+	public array $properties = [];
 
 	//--------------------------------------------------------------------------------------- $search
 	/**
@@ -56,7 +48,7 @@ class Set extends Setting\Custom\Set
 	 *
 	 * @var string[] key is the property path, value is the value or search expression
 	 */
-	public $search = [];
+	public array $search = [];
 
 	//----------------------------------------------------------------------------------------- $sort
 	/**
@@ -64,13 +56,13 @@ class Set extends Setting\Custom\Set
 	 *
 	 * @var Sort
 	 */
-	public $sort;
+	public Sort $sort;
 
 	//-------------------------------------------------------------------- $start_display_line_number
 	/**
 	 * @var integer
 	 */
-	public $start_display_line_number = 1;
+	public int $start_display_line_number = 1;
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
@@ -78,14 +70,14 @@ class Set extends Setting\Custom\Set
 	 *
 	 * @var string
 	 */
-	public $title;
+	public string $title = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
-	 * @param $setting    Setting
+	 * @param $class_name string|null
+	 * @param $setting    Setting|null
 	 */
-	public function __construct($class_name = null, Setting $setting = null)
+	public function __construct(string $class_name = null, Setting $setting = null)
 	{
 		parent::__construct($class_name, $setting);
 		if (!isset($this->sort)) {
@@ -97,36 +89,14 @@ class Set extends Setting\Custom\Set
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $add_property_path   string
-	 * @param $where               string 'after', 'before' or null
+	 * @param $where               string @values static::const,
 	 * @param $where_property_path string reference property path for $where
 	 */
-	public function addProperty($add_property_path, $where = 'after', $where_property_path = null)
-	{
+	public function addProperty(
+		string $add_property_path, string $where = self::AFTER, string $where_property_path = ''
+	) {
 		$this->initProperties();
-		/** @noinspection PhpUnhandledExceptionInspection ::class */
-		$add_property = isset($this->properties[$add_property_path])
-			? $this->properties[$add_property_path]
-			: Builder::create(Property::class, [$this->getClassName(), $add_property_path]);
-		$properties = [];
-		if (($where == 'before') && empty($where_property_path)) {
-			$properties[$add_property_path] = $add_property;
-		}
-		foreach ($this->properties as $property_path => $property) {
-			if (($where == 'before') && ($property_path == $where_property_path)) {
-				$properties[$add_property_path] = $add_property;
-			}
-			if ($property_path !== $add_property_path) {
-				$properties[$property_path] = $property;
-			}
-			if (($where == 'after') && ($property_path == $where_property_path)) {
-				$properties[$add_property_path] = $add_property;
-			}
-		}
-		if (($where == 'after') && empty($where_property_path)) {
-			$properties[$add_property_path] = $add_property;
-		}
-
-		$this->properties = $properties;
+		$this->commonAddProperty($add_property_path, $where, $where_property_path);
 	}
 
 	//--------------------------------------------------------------------------------------- cleanup
@@ -136,7 +106,7 @@ class Set extends Setting\Custom\Set
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return integer number of changes made during cleanup : if 0, then cleanup was not necessary
 	 */
-	public function cleanup()
+	public function cleanup() : int
 	{
 		$this->initProperties();
 		$class_name    = $this->getClassName();
@@ -163,16 +133,14 @@ class Set extends Setting\Custom\Set
 			}
 		}
 		// sort
-		if ($this->sort) {
-			$this->sort->class_name = Builder::className($this->sort->class_name);
-			foreach ($this->sort->columns as $key => $property_path) {
-				if (
-					!isset($this->properties[$property_path])
-					|| !Reflection_Property::exists($class_name, $property_path)
-				) {
-					unset($this->sort->columns[$key]);
-					$changes_count ++;
-				}
+		$this->sort->class_name = Builder::className($this->sort->class_name);
+		foreach ($this->sort->columns as $key => $property_path) {
+			if (
+				!isset($this->properties[$property_path])
+				|| !Reflection_Property::exists($class_name, $property_path)
+			) {
+				unset($this->sort->columns[$key]);
+				$changes_count ++;
 			}
 		}
 		if ($this->maximum_displayed_lines_count < 10) {
@@ -186,7 +154,7 @@ class Set extends Setting\Custom\Set
 	/**
 	 * @return string
 	 */
-	private function getDefaultTitle()
+	private function getDefaultTitle() : string
 	{
 		return ucfirst(Displays_Annotation::of($this->getClass())->value);
 	}
@@ -197,72 +165,31 @@ class Set extends Setting\Custom\Set
 	 * @param $filter_properties string[] property path
 	 * @return Property[]
 	 */
-	public function initProperties(array $filter_properties = null)
+	public function initProperties(array $filter_properties = []) : array
 	{
-		$class_name = $this->getClassName();
-
-		// TODO LOW this keeps compatibility with deprecated properties_path and properties_title
-		if (isset($this->properties_path) && (!isset($this->properties) || !$this->properties)) {
-			foreach ($this->properties_path as $property_path) {
-				/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
-				$property = new Property($class_name, $property_path);
-				if (isset($this->properties_title[$property_path])) {
-					$property->display = $this->properties_title[$property_path];
-				}
-				$property->path                   = $property_path;
-				$this->properties[$property_path] = $property;
-			}
-			unset($this->properties_path);
-			unset($this->properties_title);
+		if ($this->commonInitProperties($filter_properties)) {
+			return $this->properties;
 		}
-
-		if (!$this->properties) {
-			if ($filter_properties) {
-				foreach ($filter_properties as $property_path) {
-					/** @noinspection PhpUnhandledExceptionInspection ::class */
-					$this->properties[$property_path] = Builder::create(
-						Property::class, [$class_name, $property_path]
-					);
-				}
+		$class_name = $this->getClassName();
+		/** @noinspection PhpUnhandledExceptionInspection valid $class_name */
+		foreach (
+			List_Annotation::of(new Reflection_Class($class_name))->properties as $property_name
+		) {
+			try {
+				$property = new Reflection_Property($class_name, $property_name);
 			}
-			else {
-				/** @noinspection PhpUnhandledExceptionInspection valid $class_name */
-				foreach (
-					List_Annotation::of(new Reflection_Class($class_name))->properties as $property_name
-				) {
-					try {
-						$property = new Reflection_Property($class_name, $property_name);
-					}
-					catch (ReflectionException $exception) {
-						continue;
-					}
-					if ($property->isPublic() && !$property->isStatic()) {
-						/** @noinspection PhpUnhandledExceptionInspection ::class */
-						$this->properties[$property->path] = Builder::create(
-							Property::class, [$class_name, $property->path]
-						);
-					}
-				}
+			catch (ReflectionException) {
+				continue;
 			}
+			if ($property->isStatic() || !$property->isPublic()) {
+				continue;
+			}
+			/** @noinspection PhpUnhandledExceptionInspection ::class */
+			$this->properties[$property->path] = Builder::create(
+				Property::class, [$class_name, $property->path]
+			);
 		}
 		return $this->properties;
-	}
-
-	//--------------------------------------------------------------------------- propertiesParameter
-	/**
-	 * Returns a list of a given parameter taken from properties
-	 *
-	 * @example $properties_display = $list_settings->propertiesParameter('group_by');
-	 * @param $parameter string
-	 * @return array key is the property path, value is the parameter value
-	 */
-	public function propertiesParameter($parameter)
-	{
-		$result = [];
-		foreach ($this->properties as $property_path => $property) {
-			$result[$property_path] = $property->$parameter;
-		}
-		return $result;
 	}
 
 	//------------------------------------------------------------------------------- propertyGroupBy
@@ -272,39 +199,11 @@ class Set extends Setting\Custom\Set
 	 * @param $property_path string
 	 * @param $group_by      boolean
 	 */
-	public function propertyGroupBy($property_path, $group_by = false)
+	public function propertyGroupBy(string $property_path, bool $group_by = false)
 	{
 		$this->initProperties();
 		if (isset($this->properties[$property_path])) {
 			$this->properties[$property_path]->group_by = $group_by;
-		}
-	}
-
-	//--------------------------------------------------------------------------------- propertyTitle
-	/**
-	 * Sets the title of the property
-	 *
-	 * @param $property_path string
-	 * @param $title         string if empty or null, the title is removed to get back to default
-	 */
-	public function propertyTitle($property_path, $title = null)
-	{
-		$this->initProperties();
-		if (isset($this->properties[$property_path])) {
-			$this->properties[$property_path]->display = $title;
-		}
-		// TODO check what happens if an empty title is set : must be stored as empty, with default view
-	}
-
-	//-------------------------------------------------------------------------------- removeProperty
-	/**
-	 * @param $property_path string
-	 */
-	public function removeProperty($property_path)
-	{
-		$this->initProperties();
-		if (isset($this->properties[$property_path])) {
-			unset($this->properties[$property_path]);
 		}
 	}
 
@@ -321,7 +220,7 @@ class Set extends Setting\Custom\Set
 	/**
 	 * @param $property_path string
 	 */
-	public function reverse($property_path)
+	public function reverse(string $property_path)
 	{
 		$this->sort($property_path);
 		if (!in_array($property_path, $this->sort->reverse)) {
@@ -336,11 +235,9 @@ class Set extends Setting\Custom\Set
 	 *
 	 * @param $save_name string
 	 */
-	public function save($save_name = null)
+	public function save(string $save_name = '')
 	{
-		if ($this->sort) {
-			$this->sort->class_name = Builder::current()->sourceClassName($this->sort->class_name);
-		}
+		$this->sort->class_name = Builder::current()->sourceClassName($this->sort->class_name);
 		parent::save($save_name);
 	}
 
@@ -356,7 +253,7 @@ class Set extends Setting\Custom\Set
 	public function search(array $search)
 	{
 		foreach ($search as $property_path => $value) {
-			if (!strlen($value)) {
+			if (strval($value) === '') {
 				if (isset($this->search[$property_path])) {
 					unset($this->search[$property_path]);
 				}
@@ -371,11 +268,11 @@ class Set extends Setting\Custom\Set
 	/**
 	 * @param $property_path string
 	 */
-	public function sort($property_path)
+	public function sort(string $property_path)
 	{
 		$this->sort->addSortColumn($property_path);
-		if (in_array($property_path, $this->sort->reverse)) {
-			unset($this->sort->reverse[array_search($property_path, $this->sort->reverse)]);
+		if (in_array($property_path, $this->sort->reverse, true)) {
+			unset($this->sort->reverse[array_search($property_path, $this->sort->reverse, true)]);
 		}
 	}
 
@@ -384,14 +281,12 @@ class Set extends Setting\Custom\Set
 	 * @param $title string
 	 * @return string
 	 */
-	public function title($title = null)
+	public function title(string $title = '') : string
 	{
-		if (isset($title)) {
+		if ($title) {
 			$this->title = $title;
 		}
-		return empty($this->title)
-			? $this->getDefaultTitle()
-			: $this->title;
+		return $this->title ?: $this->getDefaultTitle();
 	}
 
 }

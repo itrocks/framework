@@ -41,14 +41,16 @@ class List_Controller extends List_\Controller
 	 * @param $properties_path string[] the list of the columns names : only those properties
 	 *                         will be read. There are 'column.sub_column' to get values from linked
 	 *                         objects from the same data source
-	 * @param $search          object|array source object for filter, set properties will be used for
+	 * @param $search          array|object source object for filter, set properties will be used for
 	 *                         search. Can be an array associating properties names to matching
 	 *                         search value too.
 	 * @param $options         Option[] some options for advanced search
 	 * @return List_Data A list of read records. Each record values (may be objects) are
 	 *         stored in the same order than columns.
 	 */
-	public function readDataSelect($class_name, array $properties_path, $search, array $options)
+	public function readDataSelect(
+		string $class_name, array $properties_path, array|object $search, array $options
+	) : List_Data
 	{
 		$filter = ['bridge' => false, 'status' => Func::notIn([Status::BUILT_IN])];
 		$search = $search ? Func::AndOp([$filter, $search]) : $filter;

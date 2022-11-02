@@ -18,11 +18,17 @@
 	<!--use ITRocks\Framework\Html\Engine-->
 	<article class="form {class.short.lower} list" data-class="{class}" data-feature="{@feature}" data-set="{@class}" id="{settings.setting.code}.{settings.setting.id}">
 		<form action="app://(@class.path)/(@feature)" autocomplete="off" method="post" target="#main">
+			<!--DEV--><header><h2>{title}</h2><!--END-->
 			{/feature/list_/header.html}
+			<!--DEV--></header><!--END-->
 			<table class="list" data-load-time="{load_time}" data-updated="{?~updated}">
+				<!--DEV--><thead><tr><th><!--END-->
 				{/feature/list_/head.html}
+				<!--DEV--></th></tr></thead><tbody><tr><td><!--END-->
 				{/feature/list_/body.html}
+				<!--DEV--></td></tr></tbody><tfoot><tr><td><!--END-->
 				{/feature/list_/foot.html}
+				<!--DEV--></td></tr></tfoot><!--END-->
 			</table>
 			{/feature/list_/footer.html}
 		</form>

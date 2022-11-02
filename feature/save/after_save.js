@@ -5,8 +5,7 @@ $(document).ready(function()
 	//--------------------------------------------------------------------------- a[after-save] click
 	$body.build('each', 'a.after-save', function()
 	{
-		let $anchor = $(this)
-
+		const $anchor = $(this)
 		const $window    = $('main > article')
 		const class_name = $anchor.data('class')
 		const id         = $anchor.data('id')
@@ -25,7 +24,7 @@ $(document).ready(function()
 	//--------------------------------------------------------- button[after-save] close / fill combo
 	$body.build('each', 'button.after-save', function()
 	{
-		let $button = $(this)
+		const $button = $(this)
 
 		if ($button.data('close')) {
 			const close = $button.data('close')

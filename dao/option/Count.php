@@ -15,6 +15,6 @@ class Count implements Option
 	/**
 	 * @var integer
 	 */
-	public int $count;
+	public int $count = 0;
 
 }

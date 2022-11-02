@@ -31,7 +31,7 @@ class Controller implements Default_Feature_Controller
 	 *
 	 * @var object[]
 	 */
-	protected $objects;
+	protected array $objects;
 
 	//--------------------------------------------------------------------------------------- confirm
 	/**
@@ -41,11 +41,12 @@ class Controller implements Default_Feature_Controller
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @param $class_name string
-	 * @return mixed
+	 * @return ?string
 	 */
-	protected function confirm(Parameters $parameters, $form, $files, $class_name)
+	protected function confirm(Parameters $parameters, array $form, array $files, string $class_name)
+		: ?string
 	{
-		$link = $parameters->uri->uri;
+		$link  = $parameters->uri->uri;
 		$link .= (str_contains($link, '?') ? '&' : '?') . static::CONFIRM;
 		$parameters->set('delete_link', $link);
 		$parameters->set('close_link', View::link($parameters->getMainObject()));
@@ -74,18 +75,19 @@ class Controller implements Default_Feature_Controller
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @param $class_name string
-	 * @return mixed
+	 * @return ?string
 	 */
-	protected function delete(Parameters $parameters, $form, $files, $class_name)
+	protected function delete(Parameters $parameters, array $form, array $files, string $class_name)
+		: ?string
 	{
 		$parameters = $parameters->getObjects();
 
 		try {
 			$deleted_objects = $this->deleteObjects($this->objects);
-			$deleted         = ($deleted_objects ? true : false);
+			$deleted         = (bool)$deleted_objects;
 		}
 		/** @noinspection PhpRedundantCatchClauseInspection This may be thrown */
-		catch (Mysql_Error_Exception $exception) {
+		catch (Mysql_Error_Exception) {
 			$deleted_objects = $this->objects;
 			$deleted         = false;
 		}
@@ -122,7 +124,7 @@ class Controller implements Default_Feature_Controller
 	 * @param $deleted_objects object[] key is the identifier of the object
 	 * @return object[] key is the identifier of the object
 	 */
-	protected function deleteObjects(array $deleted_objects)
+	protected function deleteObjects(array $deleted_objects) : array
 	{
 		Dao::begin();
 		foreach ($deleted_objects as $object) {
@@ -143,7 +145,7 @@ class Controller implements Default_Feature_Controller
 	 * @param $objects object[]
 	 * @return array ['object' => $locked_object object, 'lock_objects' => $lock_objects Lock_Objects[]]
 	 */
-	protected function lockedObjects(array $objects)
+	protected function lockedObjects(array $objects) : array
 	{
 		$locked_objects = [];
 		foreach ($objects as $object) {
@@ -163,7 +165,7 @@ class Controller implements Default_Feature_Controller
 	 * @param $deleted    boolean
 	 * @return string
 	 */
-	protected function message(array $objects, $class_name, $deleted)
+	protected function message(array $objects, string $class_name, bool $deleted) : string
 	{
 		$count = count($objects);
 		$class = Loc::tr(

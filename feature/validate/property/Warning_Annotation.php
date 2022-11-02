@@ -16,12 +16,12 @@ class Warning_Annotation extends Validate\Annotation\Warning_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value           ?string
+	 * @param $value           bool|string|null
 	 * @param $property        Reflection_Property the contextual Reflection_Property
 	 * @param $annotation_name string
 	 */
 	public function __construct(
-		?string $value, Reflection $property, string $annotation_name = self::ANNOTATION
+		bool|string|null $value, Reflection $property, string $annotation_name = self::ANNOTATION
 	) {
 		parent::__construct($value, $property, $annotation_name);
 		$this->property = $property;

@@ -98,6 +98,10 @@ article.list > form > table > tbody > tr {
 		> input {
 			margin: 0;
 		}
+
+		> label {
+			display: none;
+		}
 	}
 
 	&.more {

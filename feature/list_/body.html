@@ -10,7 +10,8 @@
 </head>
 <body>
 <article class="list">
-<form>
+<header><h2>{title}</h2></header>
+<form method="post">
 <table>
 <!--BEGIN-->
 
@@ -19,13 +20,14 @@
 		<tr class="{?objectClass}" data-id="{id}">
 			<th>
 				<!--selection_buttons?-->
-				<input type="checkbox" value="{id}">
+				<input id="select[{id}]" type="checkbox" value="{id}">
+				<label for="select[{id}]">|select|</label>
 				<!--end-->
 			</th>
 			<!--formatValuesEx:1-->
 			<td class="{path.@cssClass} {property.getType.@typeCss}">
 				<!--..class_name?-->
-				<a class="object" data-class="{..class_name.source}" data-id="{..id}" href="{..getOutputLinkProtocol}{..getOutputLink}" target="{?..getOutputLinkTarget}">{value.nbsp}</a>
+				<a class="object" data-class="{..class_name.source}" data-id="{..id}" href="app://(..getOutputLinkProtocol)(..getOutputLink)" target="{?..getOutputLinkTarget}">{value.nbsp}</a>
 				<!--end-->
 			</td>
 			<!--end-->
@@ -37,26 +39,26 @@
 		</tr>
 		<!--sample-->
 		<tr>
-			<th><input type="checkbox"></th>
+			<th><input id="select[1]" type="checkbox"><label for="select[1]">|select|</label></th>
 			<td class="column1 string"><a href="app://Class/2">code2</a></td>
 			<td class="column2 float">3,18</td>
 			<td class="column3 string">pending</td>
 		</tr>
 		<tr>
-			<th><input type="checkbox"></th>
+			<th><input id="select[2]" type="checkbox"><label for="select[2]">|select|</label></th>
 			<td class="column1 string"><a href="app://Class/3">code3</a></td>
 			<td class="column2 float">2,29</td>
 			<td class="column3 string">done</td>
 		</tr>
 		<tr>
-			<th><input type="checkbox"></th>
+			<th><input id="select[3]" type="checkbox"><label for="select[3]">|select|</label></th>
 			<td class="column1 string"><a href="app://Class/4">code4</a></td>
 			<td class="column2 float">12,39</td>
 			<td class="column3 string">pending</td>
 		</tr>
 		<!--end-->
 		<!--more?-->
-		<tr class="more"><td>
+		<tr class="more"><td colspan="4">
 			<span class="loading one">loading</span>
 			<span class="loading two">loading</span>
 			<span class="loading three">loading</span>

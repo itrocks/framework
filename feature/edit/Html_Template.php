@@ -37,45 +37,46 @@ class Html_Template extends Template
 	 *
 	 * @var array
 	 */
-	protected $cache = [];
+	protected array $cache = [];
 
 	//-------------------------------------------------------------------------------------- $form_id
 	/**
 	 * @var string
 	 */
-	protected $form_id;
+	protected string $form_id = '';
 
 	//--------------------------------------------------------------------------------- $link_objects
 	/**
 	 * @var boolean
 	 */
-	public  $link_objects = false;
+	public bool $link_objects = false;
 
 	//------------------------------------------------------------------------------------- getFormId
 	/**
 	 * @return string
 	 */
-	public function getFormId()
+	public function getFormId() : string
 	{
-		if (!$this->form_id) {
-			// search reference object for the form
-			reset($this->objects);
-			$count = count($this->objects) ?: 1;
-			while (--$count && !is_object(current($this->objects))) {
-				next($this->objects);
-			}
-			if (is_object(current($this->objects))) {
-				$class_name  = get_class(current($this->objects));
-				$short_class = Namespaces::shortClassName($class_name);
-			}
-			// can use the first var name, or 'unknown' if no object nor var name found
-			else {
-				$short_class = reset($this->var_names) ?: 'unknown';
-			}
-			$short_form_id = strtolower($short_class) . '_edit';
-			$this->form_id = $short_form_id . '_' . $this->nextFormCounter();
+		if ($this->form_id) {
+			return $this->form_id;
 		}
-		return strval($this->form_id);
+		// search reference object for the form
+		reset($this->objects);
+		$count = count($this->objects) ?: 1;
+		while (--$count && !is_object(current($this->objects))) {
+			next($this->objects);
+		}
+		if (is_object(current($this->objects))) {
+			$class_name  = get_class(current($this->objects));
+			$short_class = Namespaces::shortClassName($class_name);
+		}
+		// can use the first var name, or 'unknown' if no object nor var name found
+		else {
+			$short_class = reset($this->var_names) ?: 'unknown';
+		}
+		$short_form_id = strtolower($short_class) . '_edit';
+		$this->form_id = $short_form_id . '_' . $this->nextFormCounter();
+		return $this->form_id;
 	}
 
 	//---------------------------------------------------------------------------------- newFunctions
@@ -83,7 +84,7 @@ class Html_Template extends Template
 	 * @noinspection PhpDocMissingThrowsInspection class constant is valid
 	 * @return Html_Template_Functions
 	 */
-	protected function newFunctions()
+	protected function newFunctions() : Html_Template_Functions
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class constant is valid */
 		return Builder::create(Html_Template_Functions::class);
@@ -97,10 +98,10 @@ class Html_Template extends Template
 	 * @param $increment  boolean
 	 * @return integer
 	 */
-	public function nextCounter($field_name, $increment = true)
+	public function nextCounter(string $field_name, bool $increment = true) : int
 	{
 		$form    = $this->getFormId();
-		$counter = isset($this->cache[self::COUNTER]) ? $this->cache[self::COUNTER] : [];
+		$counter = $this->cache[self::COUNTER] ?? [];
 		if (!isset($counter[$form])) {
 			$counter[$form] = [];
 		}
@@ -114,16 +115,16 @@ class Html_Template extends Template
 
 	//------------------------------------------------------------------------------- nextFormCounter
 	/**
-	 * @return integer
+	 * @return string
 	 */
-	private function nextFormCounter()
+	private function nextFormCounter() : string
 	{
 		return uniqid();
 	}
 
 	//----------------------------------------------------------------------------- originValueAddDiv
 	/**
-	 * @param $value mixed
+	 * @param $value    mixed
 	 * @param $property Reflection_Property
 	 * @return mixed
 	 */
@@ -138,12 +139,10 @@ class Html_Template extends Template
 	 *
 	 * @return string updated content
 	 */
-	public function parse()
+	public function parse() : string
 	{
 		$this->getFormId();
-		$content = parent::parse();
-		$content = $this->replaceEditWindowsByForm($content);
-		return $content;
+		return $this->replaceEditWindowsByForm(parent::parse());
 	}
 
 	//------------------------------------------------------------------------------ parseLoopElement
@@ -156,10 +155,10 @@ class Html_Template extends Template
 	{
 		if ($loop->has_id && $loop->counter) {
 			if (
-				($expand_property_path = ($this->parameters[Parameter::EXPAND_PROPERTY_PATH] ?? false))
+				($expand_property_path = ($this->parameters[Parameter::EXPAND_PROPERTY_PATH] ?? ''))
 				&& isset($this->cache[self::PARSED_ID][$this->getFormId()])
 			) {
-				if (substr($expand_property_path, -1) === DOT) {
+				if (str_ends_with($expand_property_path, DOT)) {
 					$expand_property_path = substr($expand_property_path, 0, -1) . '[]';
 				}
 				$form_id = $this->getFormId();
@@ -187,7 +186,7 @@ class Html_Template extends Template
 		$property = $source_object = reset($this->objects);
 		if (
 			($property instanceof Reflection_Property_Value)
-			&& ($property_name == 'value')
+			&& ($property_name === 'value')
 			&& !User_Annotation::of($property)->has(User_Annotation::STRICT_READ_ONLY)
 		) {
 			if (
@@ -224,7 +223,7 @@ class Html_Template extends Template
 					$property_prefix = $this->properties_prefix
 						? $this->functions->getPropertyPrefix($this)
 						: '';
-					$property_prefix = ($property_prefix && $prefix)
+					$property_prefix = $property_prefix
 						? (
 							$property_prefix . (
 								str_contains($prefix, '[')
@@ -244,7 +243,7 @@ class Html_Template extends Template
 				else {
 					$id_value = '';
 				}
-				if ($property->getAnnotation('output')->value == 'string') {
+				if ($property->getAnnotation('output')->value === 'string') {
 					$property->setAnnotationLocal('var')->value = 'string';
 					$value    = isset($value) ? strval($value) : null;
 					$id_value = '';
@@ -275,7 +274,7 @@ class Html_Template extends Template
 	 * @param $content string
 	 * @return string
 	 */
-	protected function replaceEditWindowsByForm($content)
+	protected function replaceEditWindowsByForm(string $content) : string
 	{
 		$parser         = new Parser();
 		$parser->buffer =& $content;

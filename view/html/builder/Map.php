@@ -9,6 +9,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Dom\Anchor;
+use ITRocks\Framework\View\Html\Dom\Element;
 use ITRocks\Framework\View\Html\Dom\List_\Item;
 use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 
@@ -85,9 +86,9 @@ class Map
 
 	//------------------------------------------------------------------------------------- buildBody
 	/**
-	 * @return Item[]
+	 * @return Element[]
 	 */
-	protected function buildBody()
+	protected function buildBody() : array
 	{
 		$body = [];
 		foreach ($this->map as $object) {
@@ -99,9 +100,9 @@ class Map
 	//------------------------------------------------------------------------------------- buildCell
 	/**
 	 * @param $object object
-	 * @return Item
+	 * @return Element
 	 */
-	protected function buildCell($object)
+	protected function buildCell(object $object) : Element
 	{
 		if ($object instanceof Dao\File) {
 			$element = (new File($object, $this->property))->build();

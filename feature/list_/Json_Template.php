@@ -19,9 +19,9 @@ class Json_Template extends View\Json\Json_Template
 	 * @return string
 	 * @throws Json\Exception
 	 */
-	public function render()
+	public function render() : string
 	{
-		$json = new Json();
+		$json       = new Json();
 		$json_array = [];
 		$want_full_objects = isset($this->parameters['full']);
 
@@ -42,9 +42,7 @@ class Json_Template extends View\Json\Json_Template
 			$json_array[] = $std_object;
 		}
 
-		$result = $json->toJson($json_array);
-
-		return $result;
+		return $json->toJson($json_array);
 	}
 
 }

@@ -13,7 +13,7 @@ class Import_Preview
 	/**
 	 * @var array two dimensional array (keys are row, col) with written data as value
 	 */
-	public $data;
+	public array $data;
 
 	//------------------------------------------------------------------------------------ $first_row
 	/**
@@ -21,7 +21,7 @@ class Import_Preview
 	 *
 	 * @var integer
 	 */
-	public $first_row;
+	public int $first_row;
 
 	//---------------------------------------------------------------------------------- $last_column
 	/**
@@ -29,7 +29,7 @@ class Import_Preview
 	 *
 	 * @var integer
 	 */
-	public $last_column;
+	public int $last_column;
 
 	//------------------------------------------------------------------------------------- $last_row
 	/**
@@ -37,18 +37,18 @@ class Import_Preview
 	 *
 	 * @var integer
 	 */
-	public $last_row;
+	public int $last_row;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * @var string[] property names
 	 */
-	public $properties;
+	public array $properties;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $data       array
-	 * @param $properties string[]
+	 * @param $data       array|null
+	 * @param $properties string[]|null
 	 */
 	public function __construct(array $data = null, array $properties = null)
 	{
@@ -57,8 +57,8 @@ class Import_Preview
 		}
 		if (isset($data)) {
 			$this->data = $data;
-			$constants = Import_Array::getConstantsFromArray($data);
-			$row = current($data);
+			$constants  = Import_Array::getConstantsFromArray($data);
+			$row        = current($data);
 			if (!isset($this->properties)) {
 				foreach ($row as $column_number => $property_path) {
 					if (!isset($constants[$property_path])) {
@@ -68,8 +68,8 @@ class Import_Preview
 				next($data);
 			}
 			// next row is the first row (in 1..n keys instead of 0..n of the $data array)
-			$this->first_row = key($data) + 1;
-			$this->last_row = min($this->first_row + 10, count($this->data));
+			$this->first_row   = key($data) + 1;
+			$this->last_row    = min($this->first_row + 10, count($this->data));
 			$this->last_column = count($this->properties);
 		}
 	}

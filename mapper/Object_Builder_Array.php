@@ -578,13 +578,13 @@ class Object_Builder_Array
 		$property = $this->properties[$property_name] ?? null;
 		if (
 			!$property
-			&& (substr($property_name, -1) === '_')
+			&& (str_ends_with($property_name, '_'))
 			&& isset($this->properties[substr($property_name, 0, -1)])
 		) {
 			$build->fast_add = true;
 			$property        = $this->properties[substr($property_name, 0, -1)];
 		}
-		if (substr($property_name, 0, 3) === 'id_') {
+		if (str_starts_with($property_name, 'id_')) {
 			if (
 				!$this->buildIdProperty($build->object, $property_name, $value, $build->null_if_empty)
 				&& (
@@ -693,7 +693,7 @@ class Object_Builder_Array
 				if (isset($element)) {
 					/** @noinspection PhpExpressionResultUnusedInspection Call property getter if exist */
 					$object->$property_name;
-					array_push($object->$property_name, $element);
+					$object->$property_name[] = $element;
 					$is_null = false;
 				}
 			}
@@ -723,7 +723,7 @@ class Object_Builder_Array
 	 */
 	private function extractAsterisk(string &$property_name) : bool
 	{
-		if ($asterisk = (substr($property_name, -1) === '*')) {
+		if ($asterisk = str_ends_with($property_name, '*')) {
 			$property_name = substr($property_name, 0, -1);
 		}
 		return $asterisk;

@@ -56,7 +56,7 @@ class String_Class
 	function cleanWord()
 	{
 		return new String_Class(
-			preg_replace('#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\-\'\_\\\/]#', '', $this->value)
+			preg_replace('#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ_\-\'\\\/]#', '', $this->value)
 		);
 	}
 
@@ -344,7 +344,7 @@ class String_Class
 	 * @return String_Class
 	 * @todo remove and replace .twoLast by .last(2) (needs debugging of Html_Template)
 	 */
-	public function twoLast()
+	public function twoLast() : String_Class
 	{
 		return $this->last(2);
 	}

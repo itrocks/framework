@@ -26,7 +26,7 @@ trait Lockable
 	 * @user hidden
 	 * @var boolean
 	 */
-	public $locked;
+	public bool $locked = false;
 
 	//----------------------------------------------------------------------------------- isDeletable
 	/**
@@ -35,7 +35,7 @@ trait Lockable
 	 * @param $link Data_Link
 	 * @return boolean
 	 */
-	public function isDeletable(Data_Link $link)
+	public function isDeletable(Data_Link $link) : bool
 	{
 		return !(
 			($link instanceof Identifier_Map)
@@ -54,7 +54,7 @@ trait Lockable
 	 * @param $options array|Only[]
 	 * @return boolean
 	 */
-	public function isWritable(Data_Link $link, array &$options)
+	public function isWritable(Data_Link $link, array &$options) : bool
 	{
 		if ($this->isDeletable($link)) {
 			return true;
@@ -93,6 +93,9 @@ trait Lockable
 	}
 
 	//--------------------------------------------------------------------------- onDuplicateLockable
+	/**
+	 * @noinspection PhpUnused @duplicate
+	 */
 	public function onDuplicateLockable()
 	{
 		$this->locked = false;

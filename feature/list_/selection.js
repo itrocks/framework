@@ -251,7 +251,7 @@ $(document).ready(function()
 		$checkboxes.each(function() {
 			if (
 				(select_all[article_id] && ($.inArray(this.value, excluded_selection[article_id]) === -1))
-				|| $.inArray(this.value, selection[article_id]) !== -1
+				|| ($.inArray(this.value, selection[article_id]) !== -1)
 			) {
 				const $checkbox = $(this)
 				$checkbox.prop('checked', true)

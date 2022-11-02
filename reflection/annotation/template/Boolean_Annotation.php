@@ -26,7 +26,7 @@ class Boolean_Annotation extends Annotation
 	public function __construct(bool|null|string $value)
 	{
 		parent::__construct($value);
-		$this->value = ($value !== false) && ($value !== _FALSE) && !empty($value);
+		$this->value = ($value !== _FALSE) && !empty($value);
 	}
 
 }

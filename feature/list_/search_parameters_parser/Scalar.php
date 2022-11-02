@@ -3,8 +3,6 @@ namespace ITRocks\Framework\Feature\List_\Search_Parameters_Parser;
 
 /**
  * Wildcard search parameters parser
- *
- * @extends Search_Parameter_Parser
  */
 abstract class Scalar
 {
@@ -15,7 +13,7 @@ abstract class Scalar
 	 * @param $is_range_value boolean true if we parse a range value
 	 * @return string
 	 */
-	public static function applyScalar($search_value, $is_range_value = false)
+	public static function applyScalar(string $search_value, bool $is_range_value = false) : string
 	{
 		return Wildcard::applyWildcards($search_value, $is_range_value);
 	}

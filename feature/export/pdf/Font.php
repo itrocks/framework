@@ -7,12 +7,12 @@ namespace ITRocks\Framework\Feature\Export\PDF;
 abstract class Font
 {
 
-	//------------------------------------------------------------------------- font styles constants
+	//------------------------------------------------------------------------- Font styles constants
 	const BOLD   = 'B';
 	const ITALIC = 'I';
 	const NORMAL = '';
 
-	//----------------------------------------------------------------------- font families constants
+	//----------------------------------------------------------------------- Font families constants
 	const COURIER   = 'courier';
 	const DINGBATS  = 'zapfdingbats';
 	const HELVETICA = 'helvetica';
@@ -28,13 +28,13 @@ abstract class Font
 	 * @param $style string|string[] Font::NORMAL or (Font::BOLD and/or Font::ITALIC)
 	 * @return string
 	 */
-	public static function get($font, $style = self::NORMAL)
+	public static function get(string $font, array|string $style = self::NORMAL) : string
 	{
 		if (is_array($style)) {
 			sort($style);
 			$style = join('', $style);
 		}
-		return $font . ((!in_array($font, [self::DINGBATS, self::SYMBOL])) ? $style : '');
+		return $font . (in_array($font, [self::DINGBATS, self::SYMBOL]) ? '' : $style);
 	}
 
 }

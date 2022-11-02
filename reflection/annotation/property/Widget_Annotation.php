@@ -19,6 +19,9 @@ class Widget_Annotation extends Annotation implements Property_Context_Annotatio
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'widget';
 
+	//------------------------------------------------------------------------------------------ SORT
+	const SORT = 'sort';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value    ?string

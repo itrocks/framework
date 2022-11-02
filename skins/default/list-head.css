@@ -25,6 +25,8 @@ article.list > form > table > thead {
       padding: 0 .83em 0 .75em; }
       article.list > form > table > thead > tr.title > th.visible.lines > input {
         margin: 0; }
+      article.list > form > table > thead > tr.title > th.visible.lines > label {
+        display: none; }
     article.list > form > table > thead > tr.title > th:not(:first-child) > a {
       padding: 10px .75em 0 .5em;
       text-align: left; }

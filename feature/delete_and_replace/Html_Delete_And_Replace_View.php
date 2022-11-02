@@ -24,7 +24,7 @@ class Html_Delete_And_Replace_View implements View
 	 * @param $object object
 	 * @return string HTML combo-box with filters
 	 */
-	protected function getCombo($object)
+	protected function getCombo(object $object) : string
 	{
 		$class_name = get_class($object);
 		/** @noinspection PhpUnhandledExceptionInspection $class_name from existing object is valid */
@@ -42,7 +42,7 @@ class Html_Delete_And_Replace_View implements View
 	 * @param $object object
 	 * @return string[] combo filters
 	 */
-	protected function getFilters($object)
+	protected function getFilters(object $object) : array
 	{
 		$filters = ['id' => Func::notEqual(Dao::getObjectIdentifier($object))];
 		/** @noinspection PhpUnhandledExceptionInspection object */

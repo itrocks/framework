@@ -75,7 +75,7 @@ class Error_Handlers implements Activable, Configurable
 	 * @param $err_no        integer
 	 * @param $error_handler Error_Handler
 	 * @param $priority      integer
-	 * @return static
+	 * @return $this
 	 */
 	public function addHandler(
 		int $err_no, Error_Handler $error_handler, int $priority = Error_Handler_Priority::NORMAL

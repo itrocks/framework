@@ -81,11 +81,12 @@ function instanceIn($class_name_or_object, array $objects)
  *
  * All parent classes, interfaces and traits are scanned recursively
  *
- * @param $object     string|object
- * @param $class_name string|object|string[]|object[] If multiple, result is true for any of them
+ * @param $object     class-string<T>|T|null
+ * @param $class_name class-string<T>|T|class-string<T>[]|T[] If multiple, result is true for any of them
  * @return boolean
+ * @template T
  */
-function isA($object, $class_name)
+function isA(object|string|null $object, array|object|string $class_name)
 {
 	if (is_array($class_name)) {
 		foreach ($class_name as $a_class_name) {
@@ -93,38 +94,37 @@ function isA($object, $class_name)
 				return true;
 			}
 		}
+		return false;
+	}
+	if (is_string($object)) {
+		$object = Builder::className($object);
+	}
+	elseif (is_object($object)) {
+		$object = get_class($object);
 	}
 	else {
-		if (is_string($object)) {
-			$object = Builder::className($object);
+		return false;
+	}
+	if (is_object($class_name)) {
+		$class_name = get_class($class_name);
+	}
+	if (is_a($object, $class_name, true)) {
+		return true;
+	}
+	if (
+		   !class_exists($object)     && !interface_exists($object)     && !trait_exists($object)
+		|| !class_exists($class_name) && !interface_exists($class_name) && !trait_exists($class_name)
+	) {
+		return false;
+	}
+	$classes = class_parents($object) + class_uses($object);
+	while ($classes) {
+		$next_classes = [];
+		foreach ($classes as $class) {
+			if (is_a($class, $class_name, true)) return true;
+			$next_classes += class_uses($class);
 		}
-		elseif (is_object($object)) {
-			$object = get_class($object);
-		}
-		else {
-			return false;
-		}
-		if (is_object($class_name)) {
-			$class_name = get_class($class_name);
-		}
-		if (is_a($object, $class_name, true)) {
-			return true;
-		}
-		if (
-			   !class_exists($object)     && !interface_exists($object)     && !trait_exists($object)
-			|| !class_exists($class_name) && !interface_exists($class_name) && !trait_exists($class_name)
-		) {
-			return false;
-		}
-		$classes = class_parents($object) + class_uses($object);
-		while ($classes) {
-			$next_classes = [];
-			foreach ($classes as $class) {
-				if (is_a($class, $class_name, true)) return true;
-				$next_classes += class_uses($class);
-			}
-			$classes = $next_classes;
-		}
+		$classes = $next_classes;
 	}
 	return false;
 }

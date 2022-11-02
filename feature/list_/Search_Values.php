@@ -11,7 +11,7 @@ class Search_Values
 	/**
 	 * @var array[] Key is the class name, value is an array 'property_name' => 'value'
 	 */
-	private $search_values;
+	private array $search_values;
 
 	//------------------------------------------------------------------------------------------- get
 	/**
@@ -21,17 +21,12 @@ class Search_Values
 	 * @param $property_name string if set, gets the value of one of the search properties
 	 * @return string[]|string the search values for the class name, or the value for the property
 	 */
-	public function get($class_name, $property_name = null)
+	public function get(string $class_name, string $property_name = '') : array|string
 	{
-		if (isset($property_name)) {
-			return (
-				isset($this->search_values[$class_name])
-				&& isset($this->search_values[$class_name][$property_name])
-			) ? $this->search_values[$class_name][$property_name] : null;
+		if ($property_name === '') {
+			return $this->search_values[$class_name] ?? [];
 		}
-		else {
-			return isset($this->search_values[$class_name]) ? $this->search_values[$class_name] : [];
-		}
+		return $this->search_values[$class_name][$property_name] ?? '';
 	}
 
 	//---------------------------------------------------------------------------------------- remove
@@ -41,21 +36,19 @@ class Search_Values
 	 * @param $class_name    string
 	 * @param $property_name string
 	 */
-	public function remove($class_name, $property_name = null)
+	public function remove(string $class_name, string $property_name = '')
 	{
-		if (isset($property_name)) {
-			if (
-				isset($this->search_values[$class_name])
-				&& isset($this->search_values[$class_name][$property_name])
-			) {
-				unset($this->search_values[$class_name][$property_name]);
-				if (!$this->search_values[$class_name]) {
-					unset($this->search_values[$class_name]);
-				}
+		if ($property_name === '') {
+			if (isset($this->search_values[$class_name])) {
+				unset($this->search_values[$class_name]);
 			}
+			return;
 		}
-		elseif (isset($this->search_values[$class_name])) {
-			unset($this->search_values[$class_name]);
+		if ($this->search_values[$class_name][$property_name] ?? false) {
+			unset($this->search_values[$class_name][$property_name]);
+			if (!$this->search_values[$class_name]) {
+				unset($this->search_values[$class_name]);
+			}
 		}
 	}
 
@@ -67,7 +60,7 @@ class Search_Values
 	 * @param $property_name string
 	 * @param $value         string
 	 */
-	public function set($class_name, $property_name, $value)
+	public function set(string $class_name, string $property_name, string $value)
 	{
 		$this->search_values[$class_name][$property_name] = $value;
 	}

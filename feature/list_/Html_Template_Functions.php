@@ -26,8 +26,9 @@ class Html_Template_Functions extends Edit\Html_Template_Functions
 	 * @return string
 	 */
 	protected function getEditReflectionProperty(
-		Reflection_Property $property, $name, $ignore_user, $can_always_be_null = false
-	) {
+		Reflection_Property $property, string $name, bool $ignore_user, bool $can_always_be_null = false
+	) : string
+	{
 		// invisible property
 		if (Store_Annotation::of($property)->isFalse() || !$this->isPropertyVisible($property)) {
 			return '';
@@ -45,7 +46,7 @@ class Html_Template_Functions extends Edit\Html_Template_Functions
 	 * @param $property Reflection_Property
 	 * @return boolean
 	 */
-	protected function isPropertyVisible(Reflection_Property $property)
+	protected function isPropertyVisible(Reflection_Property $property) : bool
 	{
 		return $property->isVisible(false, false);
 	}

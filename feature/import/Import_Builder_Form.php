@@ -17,7 +17,7 @@ abstract class Import_Builder_Form
 	 * @param $files File[] must be set with same keys as $form['worksheets'] array has
 	 * @return Import
 	 */
-	public static function build(array $form, array $files)
+	public static function build(array $form, array $files) : Import
 	{
 		$import = new Import();
 		if (isset($form['worksheets'])) {

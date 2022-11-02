@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Feature\List_\Search_Parameters_Parser;
 
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Feature\List_\Exception;
 use ITRocks\Framework\Locale\Loc;
 
@@ -15,13 +14,14 @@ abstract class Type_Boolean
 	//----------------------------------------------------------------------------- applyBooleanValue
 	/**
 	 * @param $search_value string The source search value, as a string typed by the user
-	 * @return Func\Comparison|Logical|string|boolean The resulting dao-ready search expression, or false
+	 * @return false|Func\Comparison|Func\Logical|string The resulting dao-ready search expression, or false
 	 * @throws Exception
 	 */
-	public static function applyBooleanValue($search_value)
+	public static function applyBooleanValue(string $search_value)
+	: bool|Func\Comparison|Func\Logical|string
 	{
 		$search_value = trim($search_value);
-		if (!strlen($search_value)) {
+		if ($search_value === '') {
 			return '';
 		}
 		if (Wildcard::hasWildcard($search_value)) {
@@ -52,9 +52,9 @@ abstract class Type_Boolean
 	 * If expression is a boolean word, convert to corresponding boolean value
 	 *
 	 * @param $expression string The source expression
-	 * @return Func\Comparison|boolean The resulting dao-ready search expression or false if none
+	 * @return false|Func\Comparison The resulting dao-ready search expression or false if none
 	 */
-	public static function applyBooleanWord($expression)
+	public static function applyBooleanWord(string $expression) : bool|Func\Comparison
 	{
 		$word = Words::getCompressedWords([$expression])[0];
 
@@ -74,7 +74,7 @@ abstract class Type_Boolean
 	 * @param $value boolean
 	 * @return string a single character
 	 */
-	private static function getBooleanLetters($value)
+	private static function getBooleanLetters(bool $value) : string
 	{
 		static $letters;
 		if (!isset($letters)) {
@@ -96,13 +96,13 @@ abstract class Type_Boolean
 	 *
 	 * @return string[]
 	 */
-	private static function getBooleanWordsFalseToCompare()
+	private static function getBooleanWordsFalseToCompare() : array
 	{
-		static $words = null;
+		static $words;
 		if (!isset($words)) {
 			$words_references = [_FALSE, NO];
 			$words_localized  = [];
-			foreach($words_references as $word) {
+			foreach ($words_references as $word) {
 				$words_localized[] = Loc::tr($word);
 			}
 			// We can not translate directly 'n' that is confusing
@@ -119,9 +119,9 @@ abstract class Type_Boolean
 	 *
 	 * @return string[]
 	 */
-	private static function getBooleanWordsTrueToCompare()
+	private static function getBooleanWordsTrueToCompare() : array
 	{
-		static $words = null;
+		static $words;
 		if (!isset($words)) {
 			$words_references = [YES, _TRUE];
 			$words_localized  = [];

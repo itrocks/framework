@@ -22,7 +22,7 @@ class Database_Settings_Test extends Test
 	/**
 	 * @var Controller
 	 */
-	private $controller;
+	private Controller $controller;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -38,7 +38,7 @@ class Database_Settings_Test extends Test
 	/**
 	 * @param $class_name string
 	 */
-	public function runClass($class_name)
+	public function runClass(string $class_name)
 	{
 		$errors = [];
 		// get all settings related to list

@@ -8,7 +8,6 @@ use ITRocks\Framework\User;
  * User has a reset list setting property
  *
  * @extends User
- * @see User
  */
 trait User_Has
 {
@@ -19,6 +18,6 @@ trait User_Has
 	 * @values Reset::const
 	 * @var string
 	 */
-	public $reset_lists = '';
+	public string $reset_lists = '';
 
 }

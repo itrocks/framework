@@ -21,22 +21,22 @@ class Setting implements Validate\Except
 	/**
 	 * @var string
 	 */
-	public $code;
+	public string $code;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * @getter getValue
 	 * @max_length 1000000000
-	 * @var string|Custom\Set string if serialized (for storage)
+	 * @var Custom\Set|string|null string if serialized (for storage)
 	 */
-	public $value;
+	public Custom\Set|string|null $value = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $code  string|null
 	 * @param $value string|Custom\Set|null
 	 */
-	public function __construct(string $code = null, string|Custom\Set $value = null)
+	public function __construct(string $code = null, Custom\Set|string $value = null)
 	{
 		if (isset($code))  $this->code = $code;
 		if (isset($value)) $this->value = $value;

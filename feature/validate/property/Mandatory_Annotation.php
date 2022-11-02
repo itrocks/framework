@@ -17,10 +17,10 @@ class Mandatory_Annotation extends Property\Mandatory_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    bool|null|string
+	 * @param $value    bool|string|null
 	 * @param $property Interfaces\Reflection_Property ie the contextual Reflection_Property object
 	 */
-	public function __construct(bool|null|string $value, Interfaces\Reflection_Property $property)
+	public function __construct(bool|string|null $value, Interfaces\Reflection_Property $property)
 	{
 		parent::__construct($value, $property);
 		$this->property = $property;

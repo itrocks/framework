@@ -306,6 +306,30 @@ class Button
 		return $this->link;
 	}
 
+	//---------------------------------------------------------------------------------- insertBefore
+	/**
+	 * @param $buttons        Button[]
+	 * @param $button         Button
+	 * @param $before_feature string if empty, $button will be appended to buttons
+	 * @param $feature        string if empty, $button->feature will be used
+	 */
+	public static function insertBefore(
+		array &$buttons, Button $button, string $before_feature = '', string $feature = ''
+	) {
+		if (!isset($buttons[$before_feature])) {
+			$buttons[$feature ?: $button->feature] = $button;
+			return;
+		}
+		$new_buttons = [];
+		foreach ($buttons as $key => $button) {
+			if ($key === $before_feature) {
+				$new_buttons[$feature ?: $button->feature] = $button;
+			}
+			$new_buttons[$key] = $button;
+		}
+		$buttons = $new_buttons;
+	}
+
 	//------------------------------------------------------------------------------ setObjectContext
 	/**
 	 * @param $object object

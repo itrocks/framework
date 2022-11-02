@@ -12,6 +12,6 @@ class Has_Map_Into_Collection
 	 * @link Collection
 	 * @var Component_Has_Map[]
 	 */
-	public $collection_has_map;
+	public array $collection_has_map;
 
 }

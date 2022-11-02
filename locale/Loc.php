@@ -113,9 +113,9 @@ class Loc implements Registerable
 	/**
 	 * @param $value string class name taken from the import array
 	 */
-	public function classNameDisplayReverse(&$value)
+	public function classNameDisplayReverse(string &$value)
 	{
-		if (isset($value)) {
+		if ($value !== '') {
 			$value = explode(BS, $value);
 			foreach ($value as $key => $class_part) {
 				$value[$key] = Names::displayToClass(self::rtr($class_part));

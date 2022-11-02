@@ -5,7 +5,6 @@ use ITRocks\Framework\Feature\Validate\Property\Length_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tests\Test;
-use ReflectionException;
 
 /**
  * Class Length_Annotation_Tests
@@ -79,6 +78,7 @@ class Length_Annotation_Test extends Test
 	 */
 	public function testValidateFail()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$annotation = Length_Annotation::of($this->reflection_object->getProperty('fail_property'));
 		$actual     = $annotation->validate($this);
 
@@ -91,10 +91,9 @@ class Length_Annotation_Test extends Test
 	 */
 	public function testValidateSuccess()
 	{
-		$annotation = Length_Annotation::of(
-			$this->reflection_object->getProperty('success_property')
-		);
-		$actual = $annotation->validate($this);
+		/** @noinspection PhpUnhandledExceptionInspection constant */
+		$annotation = Length_Annotation::of($this->reflection_object->getProperty('success_property'));
+		$actual     = $annotation->validate($this);
 
 		static::assertTrue($actual);
 	}

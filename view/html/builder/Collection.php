@@ -115,7 +115,7 @@ class Collection
 	/**
 	 * @return Unordered
 	 */
-	public function build()
+	public function build() : Unordered
 	{
 		if ($this->sort) {
 			(new Mapper\Collection($this->collection))->sort();
@@ -167,7 +167,8 @@ class Collection
 	 * @param $property_path string
 	 * @return Item
 	 */
-	protected function buildCell($object, Reflection_Property $property, $property_path = null)
+	protected function buildCell(object $object, Reflection_Property $property, string $property_path)
+		: Item
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
 		$property_value = new Reflection_Property_Value($object, $property_path, $object, false, true);
@@ -306,7 +307,7 @@ class Collection
 	 * @param $object object
 	 * @return Ordered
 	 */
-	protected function buildRow($object)
+	protected function buildRow(object $object) : Ordered
 	{
 		$row = new Ordered();
 		foreach ($this->properties as $property_path => $property) {
@@ -356,7 +357,7 @@ class Collection
 	 * @param $link_properties boolean
 	 * @return Reflection_Property[]
 	 */
-	protected function getProperties($link_properties)
+	protected function getProperties(bool $link_properties) : array
 	{
 		$property_display_order = $this->property->getListAnnotations('display_order');
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */

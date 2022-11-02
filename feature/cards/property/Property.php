@@ -13,11 +13,11 @@ abstract class Property
 	/**
 	 * @var Reflection_Property
 	 */
-	public $property;
+	public Reflection_Property $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $property Reflection_Property
+	 * @param $property Reflection_Property|null
 	 */
 	public function __construct(Reflection_Property $property = null)
 	{

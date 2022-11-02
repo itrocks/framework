@@ -18,7 +18,7 @@ class Import
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//----------------------------------------------------------------------------------------- $file
 	/**
@@ -26,20 +26,20 @@ class Import
 	 * @mandatory
 	 * @var File
 	 */
-	public $file;
+	public File $file;
 
 	//--------------------------------------------------------------------------------------- $format
 	/**
 	 * @link Object
 	 * @var Import_Export_Format
 	 */
-	public $format;
+	public Import_Export_Format $format;
 
 	//----------------------------------------------------------------------------------- $worksheets
 	/**
 	 * @var Import_Worksheet[]
 	 */
-	public $worksheets = [];
+	public array $worksheets = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

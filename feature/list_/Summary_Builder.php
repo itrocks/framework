@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Feature\List_;
 
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Where;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Sql\Link;
 use ITRocks\Framework\Locale;
@@ -44,7 +44,7 @@ class Summary_Builder
 	/**
 	 * @var Joins
 	 */
-	private $joins;
+	private Joins $joins;
 
 	//------------------------------------------------------------------------------------- $sql_link
 	/**
@@ -52,15 +52,15 @@ class Summary_Builder
 	 *
 	 * @var Link
 	 */
-	private $sql_link;
+	private Link $sql_link;
 
 	//---------------------------------------------------------------------------------- $where_array
 	/**
 	 * Where array expression, keys are columns names
 	 *
-	 * @var array|Func\Where
+	 * @var array|Where|null
 	 */
-	private $where_array;
+	private array|Where|null $where_array;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -72,15 +72,15 @@ class Summary_Builder
 	 *   of column's var class.
 	 *
 	 * @param $class_name  string base object class name
-	 * @param $where_array array|Func\Where where array expression, keys are columns names
-	 * @param $sql_link    Link
-	 * @param $joins       Joins
+	 * @param $where_array array|Where|null where array expression, keys are columns names
+	 * @param $sql_link    Link|null
+	 * @param $joins       Joins|null
 	 */
 	public function __construct(
-		$class_name, $where_array = null, Link $sql_link = null, Joins $joins = null
+		string $class_name, array|Where $where_array = null, Link $sql_link = null, Joins $joins = null
 	) {
-		$this->joins       = $joins ? $joins : new Joins($class_name);
-		$this->sql_link    = $sql_link ? $sql_link : Dao::current();
+		$this->joins       = $joins    ?: new Joins($class_name);
+		$this->sql_link    = $sql_link ?: Dao::current();
 		$this->where_array = $where_array;
 	}
 
@@ -99,10 +99,10 @@ class Summary_Builder
 	 *
 	 * @return string|string[] if array, this is several clauses for an union-or.
 	 */
-	public function build()
+	public function build() : array|string
 	{
 		$where_array = $this->where_array;
-		if (($where_array instanceof Func\Logical) && $where_array->isOr()) {
+		if (($where_array instanceof Logical) && $where_array->isOr()) {
 			$str = [];
 			foreach ($where_array->arguments as $property_path => $argument) {
 				$str[] = LF . Loc::tr('where')
@@ -125,7 +125,7 @@ class Summary_Builder
 	 * @param $clause string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
 	 * @return string
 	 */
-	private function buildArray($path, array $array, $clause)
+	private function buildArray(string $path, array $array, string $clause) : string
 	{
 		$sql        = '';
 		$sql_close  = '';
@@ -164,6 +164,7 @@ class Summary_Builder
 							$build = $this->buildPath($path, $value, $sub_clause);
 						}
 						else {
+							/** @noinspection DuplicatedCode too much complicated to mutualise for 4 lines */
 							$prefix        = '';
 							$master_path   = (($i = strrpos($path, DOT)) !== false) ? substr($path, 0, $i) : '';
 							$property_name = ($i !== false) ? substr($path, $i + 1) : $path;
@@ -199,7 +200,9 @@ class Summary_Builder
 	 * @param $translate_flag integer flag for surrounding translation chars
 	 * @return string
 	 */
-	public function buildColumn($path, $prefix = '', $translate_flag = self::COMPLETE_TRANSLATE)
+	public function buildColumn(
+		string $path, string $prefix = '', int $translate_flag = self::COMPLETE_TRANSLATE
+	) : string
 	{
 		[$translation_delimiter, $sub_translation_delimiter]
 			= $this->getTranslationDelimiters($translate_flag);
@@ -216,7 +219,7 @@ class Summary_Builder
 	 * @param $object object The value is an object, which will be used for search
 	 * @return string
 	 */
-	private function buildObject($path, $object)
+	private function buildObject(string $path, object $object) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		$class = new Link_Class($object);
@@ -226,7 +229,7 @@ class Summary_Builder
 		);
 		if ($id) {
 			// object is linked to stored data : search with object identifier
-			return $this->buildValue($path, $id, ($path == 'id') ? '' : 'id_');
+			return $this->buildValue($path, $id, ($path === 'id') ? '' : 'id_');
 		}
 		// object is a search object : each property is a search entry, and must join table
 		$this->joins->add($path);
@@ -258,16 +261,16 @@ class Summary_Builder
 	 * @param $clause string For multiple where clauses, tell if they are linked with OR or AND
 	 * @return string
 	 */
-	private function buildPath($path, $value, $clause)
+	private function buildPath(int|string $path, mixed $value, string $clause) : string
 	{
-		if ($value instanceof Func\Where) {
+		if ($value instanceof Where) {
 			[$master_path, $foreign_column] = Builder::splitPropertyPath($path);
 			if ($foreign_column === 'id') {
 				$prefix = '';
 			}
 			else {
 				$properties = $this->joins->getProperties($master_path);
-				$property   = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
+				$property   = $properties[$foreign_column] ?? null;
 				$id_links   = [Link_Annotation::COLLECTION, Link_Annotation::MAP, Link_Annotation::OBJECT];
 				$prefix     = $property ? (Link_Annotation::of($property)->is($id_links) ? 'id_' : '') : '';
 			}
@@ -294,7 +297,9 @@ class Summary_Builder
 	 * @param $translate_flag integer flag for surrounding translation chars
 	 * @return string
 	 */
-	public function buildScalar($value, $property_path, $translate_flag = self::COMPLETE_TRANSLATE)
+	public function buildScalar(
+		string $value, string $property_path, int $translate_flag = self::COMPLETE_TRANSLATE
+	) : string
 	{
 		static $pattern
 			= '/([0-9%_]{4})-([0-9%_]{2})-([0-9%_]{2})(?:\s([0-9%_]{2}):([0-9%_]{2}):([0-9%_]{2}))?/x';
@@ -318,7 +323,7 @@ class Summary_Builder
 		}
 		elseif ($property && is_numeric($value)) {
 			$type_string = $property->getType()->asString();
-			if ($type_string == Type::BOOLEAN) {
+			if ($type_string === Type::BOOLEAN) {
 				return ($value ? Loc::tr(YES) : Loc::tr(NO));
 			}
 			return $value;
@@ -337,7 +342,7 @@ class Summary_Builder
 	 * @param $prefix string Prefix for column name
 	 * @return string
 	 */
-	private function buildValue($path, $value, $prefix = '')
+	private function buildValue(string $path, mixed $value, string $prefix = '') : string
 	{
 		$column  = $this->buildColumn($path, $prefix);
 		$is_like = Value::isLike($value);
@@ -378,7 +383,7 @@ class Summary_Builder
 	 * @param $translate_flag integer flag for surrounding translation chars
 	 * @return string[] [translation delimiter, sub translation delimiter] @example ['|', '¦']
 	 */
-	public function getTranslationDelimiters($translate_flag = self::COMPLETE_TRANSLATE)
+	public function getTranslationDelimiters(int $translate_flag = self::COMPLETE_TRANSLATE) : array
 	{
 		if (Locale::current()) {
 			$translation_delimiter     = (($translate_flag & self::MAIN_TRANSLATE) ? '|' : '');

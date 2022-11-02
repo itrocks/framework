@@ -20,7 +20,7 @@ class Save_Controller extends Save\Controller
 	 * @param $files  array
 	 * @return Built_Object[]
 	 */
-	protected function buildObjects($object, array $form, array $files)
+	protected function buildObjects(object $object, array $form, array $files) : array
 	{
 		$built_objects = parent::buildObjects($object, $form, $files);
 		$builder       = new Post_Files(get_class($object));

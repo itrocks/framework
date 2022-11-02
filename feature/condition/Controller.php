@@ -25,13 +25,13 @@ class Controller implements Default_Feature_Controller
 	/**
 	 * @var Mandatory_Annotation[]
 	 */
-	protected $mandatory_annotations = [];
+	protected array $mandatory_annotations = [];
 
 	//------------------------------------------------------------------------ $read_only_annotations
 	/**
 	 * @var User_Annotation[]
 	 */
-	protected $read_only_annotations = [];
+	protected array $read_only_annotations = [];
 
 	//---------------------------------------------------------------------------------- getCondition
 	/**
@@ -42,7 +42,7 @@ class Controller implements Default_Feature_Controller
 	 * @param $class_name string
 	 * @return Condition
 	 */
-	protected function getCondition($class_name)
+	protected function getCondition(string $class_name) : Condition
 	{
 		return new Condition($class_name, Func::andOp([]));
 	}
@@ -56,7 +56,7 @@ class Controller implements Default_Feature_Controller
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 */
-	protected function prepareProperties($class_name)
+	protected function prepareProperties(string $class_name)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		foreach ((new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]) as $property) {

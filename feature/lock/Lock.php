@@ -22,21 +22,20 @@ class Lock implements Registerable
 
 	//---------------------------------------------------------- afterEditControllerGetGeneralButtons
 	/**
-	 * @param $object Lockable
+	 * @noinspection PhpDocSignatureInspection filtered by Lockable
+	 * @param $object object|Lockable
 	 * @param $result Button[]
 	 */
-	public function afterEditControllerGetGeneralButtons($object, array &$result)
+	public function afterEditControllerGetGeneralButtons(object $object, array &$result)
 	{
 		if (!isA($object, Lockable::class) || !$object->locked) {
 			return;
 		}
-		if ($object->locked) {
-			if (isset($result[Feature::F_SAVE]) && !static::unlockedProperties($object)) {
-				unset($result[Feature::F_SAVE]);
-			}
-			if (isset($result[Feature::F_DELETE])) {
-				unset($result[Feature::F_DELETE]);
-			}
+		if (isset($result[Feature::F_SAVE]) && !static::unlockedProperties($object)) {
+			unset($result[Feature::F_SAVE]);
+		}
+		if (isset($result[Feature::F_DELETE])) {
+			unset($result[Feature::F_DELETE]);
 		}
 	}
 
@@ -45,7 +44,7 @@ class Lock implements Registerable
 	 * @param $class_name string
 	 * @param $result     Button[]
 	 */
-	public function afterListControllerGetSelectionButtons($class_name, array &$result)
+	public function afterListControllerGetSelectionButtons(string $class_name, array &$result)
 	{
 		if (!isA($class_name, Lockable::class)) {
 			return;
@@ -56,26 +55,16 @@ class Lock implements Registerable
 			Controller::FEATURE,
 			Target::RESPONSES
 		);
-		if (!isset($result[Feature::F_DELETE])) {
-			$result[Controller::FEATURE] = $lock_button;
-			return;
-		}
-		$buttons = [];
-		foreach ($result as $key => $button) {
-			if ($key === Feature::F_DELETE) {
-				$buttons[Controller::FEATURE] = $lock_button;
-			}
-			$buttons[$key] = $button;
-		}
-		$result = $buttons;
+		Button::insertBefore($result, $lock_button, Feature::F_DELETE);
 	}
 
 	//-------------------------------------------------------- afterOutputControllerGetGeneralButtons
 	/**
-	 * @param $object    Lockable
+	 * @noinspection PhpDocSignatureInspection filtered by Lockable
+	 * @param $object    object|Lockable
 	 * @param $joinpoint After_Method
 	 */
-	public function afterOutputControllerGetGeneralButtons($object, After_Method $joinpoint)
+	public function afterOutputControllerGetGeneralButtons(object $object, After_Method $joinpoint)
 	{
 		if (!isA($object, Lockable::class)) {
 			return;
@@ -126,15 +115,16 @@ class Lock implements Registerable
 	 * @param $properties        Reflection_Property[]
 	 */
 	public function beforeOutputControllerOnlyPropertiesAuto(
-		array &$properties_filter, array &$auto, array $properties
+		array &$properties_filter, array $auto, array $properties
 	) {
-		if (isset($auto['@unlocked'])) {
-			foreach ($properties_filter as $key => $property_name) {
-				if ($properties[$property_name]->getAnnotation('unlocked')->value) {
-					continue;
-				}
-				unset($properties_filter[$key]);
+		if (!isset($auto['@unlocked'])) {
+			return;
+		}
+		foreach ($properties_filter as $key => $property_name) {
+			if ($properties[$property_name]->getAnnotation('unlocked')->value) {
+				continue;
 			}
+			unset($properties_filter[$key]);
 		}
 	}
 
@@ -175,7 +165,7 @@ class Lock implements Registerable
 	 * @param $object object
 	 * @return string[]
 	 */
-	public static function unlockedProperties($object) : array
+	public static function unlockedProperties(object $object) : array
 	{
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		$properties     = (new Reflection_Class($object))->getProperties();

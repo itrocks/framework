@@ -167,7 +167,7 @@ class Export
 					if (in_array($value, $min_max_dates)) {
 						$value = null;
 					}
-					elseif (substr($value, -8) === '00:00:00') {
+					elseif (str_ends_with($value, '00:00:00')) {
 						$value = substr($value, 8, 2) . SL . substr($value, 5, 2) . SL . substr($value, 0, 4);
 					}
 					else {

@@ -41,7 +41,7 @@ class Stepper
 	 * @param $target     string
 	 * @param $data_post  array
 	 * @param $current    boolean
-	 * @return static
+	 * @return $this
 	 */
 	public function addStep(
 		int $sort_order, string $caption, string $link = '', string $css_class = '',

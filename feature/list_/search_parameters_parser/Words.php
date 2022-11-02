@@ -23,26 +23,25 @@ abstract class Words
 	 *
 	 * @param $expression string
 	 * @param $property   ?Reflection_Property
-	 * @return Func\Where|null
+	 * @return Func\Comparison|Func\Logical|null
 	 */
-	public static function applyWordMeaningEmpty($expression, ?Reflection_Property $property)
+	public static function applyWordMeaningEmpty(string $expression, ?Reflection_Property $property)
+		: Func\Comparison|Func\Logical|null
 	{
-		if (self::meansEmpty($expression)) {
-			$type = $property ? $property->getType() : new Type(Type::STRING);
-			if ($type->isString() || $type->isMultipleString()) {
-				if ($property && ($property->path || Null_Annotation::of($property)->value)) {
-					return Func::orOp([Func::equal(''), Func::isNull()]);
-				}
-				return Func::equal('');
-			}
-			elseif ($type->isDateTime()) {
-				return Func::orOp([Date_Time::min(), Date_Time::max(), Func::isNull()]);
-			}
-			else {
-				return Func::isNull();
-			}
+		if (!self::meansEmpty($expression)) {
+			return null;
 		}
-		return null;
+		$type = $property ? $property->getType() : new Type(Type::STRING);
+		if ($type->isString() || $type->isMultipleString()) {
+			if ($property && ($property->path || Null_Annotation::of($property)->value)) {
+				return Func::orOp([Func::equal(''), Func::isNull()]);
+			}
+			return Func::equal('');
+		}
+		elseif ($type->isDateTime()) {
+			return Func::orOp([Date_Time::min(), Date_Time::max(), Func::isNull()]);
+		}
+		return Func::isNull();
 	}
 
 	//---------------------------------------------------------------------------- getCompressedWords
@@ -52,7 +51,7 @@ abstract class Words
 	 * @param $words string[]
 	 * @return string[]
 	 */
-	public static function getCompressedWords(array $words)
+	public static function getCompressedWords(array $words) : array
 	{
 		array_walk($words, function(&$word) {
 			// TODO iconv with //TRANSLIT requires that locale is different than C or Posix. To Do: a better support!!
@@ -69,7 +68,7 @@ abstract class Words
 	 * @param $word string
 	 * @return boolean true if empty word
 	 */
-	public static function meansEmpty($word)
+	public static function meansEmpty(string $word) : bool
 	{
 		return in_array(
 			trim($word),

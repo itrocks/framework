@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Feature\List_;
 use ITRocks\Framework\Feature\List_Setting;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Reflection\Type;
 
@@ -17,23 +18,27 @@ use ITRocks\Framework\Reflection\Type;
 class Property extends List_Setting\Property
 {
 
+	//--------------------------------------------------------------------------------- REVERSE, SORT
+	const REVERSE = 'reverse';
+	const SORT    = 'sort';
+
 	//-------------------------------------------------------------------------------------- $reverse
 	/**
 	 * @var boolean
 	 */
-	public $reverse = false;
+	public bool $reverse = false;
 
 	//--------------------------------------------------------------------------------------- $search
 	/**
-	 * @var Reflection_Property_Value
+	 * @var Reflection_Property|Reflection_Property_Value
 	 */
-	public $search;
+	public Reflection_Property|Reflection_Property_Value $search;
 
 	//----------------------------------------------------------------------------------------- $sort
 	/**
-	 * @var integer 1..n if sort : then is the sort position, null if do not sort
+	 * @var integer 1..n if sort : then is the sort position, 0 if do not sort
 	 */
-	public $sort;
+	public int $sort = 0;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -42,15 +47,16 @@ class Property extends List_Setting\Property
 	 *
 	 * @var Type
 	 */
-	public $type;
+	public Type $type;
 
 	//----------------------------------------------------------------------------------- htmlReverse
 	/**
-	 * @return string @values reverse, sort
+	 * @noinspection PhpUnused head.html
+	 * @return string @values reverse,
 	 */
-	public function htmlReverse()
+	public function htmlReverse() : string
 	{
-		return ($this->reverse ? 'reverse' : '');
+		return ($this->reverse ? self::REVERSE : '');
 	}
 
 	//---------------------------------------------------------------------------------- htmlSortLink
@@ -58,13 +64,14 @@ class Property extends List_Setting\Property
 	 * Returns 'reverse' if current sort is not reverse : then a click send you to reverse.
 	 * Returns 'sort' if current sort is reverse : then a click send you to non-reverse.
 	 *
-	 * @return string @values reverse, sort
+	 * @noinspection PhpUnused head.html
+	 * @return string @values self::const
 	 */
-	public function htmlSortLink()
+	public function htmlSortLink() : string
 	{
-		return ($this->sort == 1)
-			? ($this->reverse ? 'sort' : 'reverse')
-			: ($this->reverse ? 'reverse' : 'sort');
+		return ($this->sort === 1)
+			? ($this->reverse ? self::SORT : self::REVERSE)
+			: ($this->reverse ? self::REVERSE : self::SORT);
 	}
 
 	//-------------------------------------------------------------------------------------------- tr

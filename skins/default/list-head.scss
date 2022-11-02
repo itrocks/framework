@@ -46,6 +46,10 @@ article.list > form > table > thead {
 					> input {
 						margin: 0;
 					}
+
+					> label {
+						display: none;
+					}
 				}
 
 				&:not(:first-child) > a {

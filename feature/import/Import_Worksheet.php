@@ -19,36 +19,37 @@ class Import_Worksheet
 	 *
 	 * @var string[]
 	 */
-	public $errors;
+	public array $errors;
 
 	//----------------------------------------------------------------------------------------- $file
 	/**
 	 * @var File
 	 */
-	public $file;
+	public File $file;
 
 	//-------------------------------------------------------------------------------------- $preview
 	/**
-	 * @getter getPreview
+	 * @getter
 	 * @var Import_Preview
 	 */
-	public $preview;
+	public Import_Preview $preview;
 
 	//------------------------------------------------------------------------------------- $settings
 	/**
 	 * @var Import_Settings
 	 */
-	public $settings;
+	public Import_Settings $settings;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name     string
-	 * @param $settings Import_Settings
-	 * @param $file     File
-	 * @param $preview  Import_Preview
+	 * @param $name     string|null
+	 * @param $settings Import_Settings|null
+	 * @param $file     File|null
+	 * @param $preview  Import_Preview|null
 	 */
 	public function __construct(
-		$name = null, Import_Settings $settings = null, $file = null, Import_Preview $preview = null
+		string $name = null, Import_Settings $settings = null, File $file = null,
+		Import_Preview $preview = null
 	) {
 		if (isset($file))     $this->file     = $file;
 		if (isset($name))     $this->name     = $name;
@@ -58,9 +59,10 @@ class Import_Worksheet
 
 	//------------------------------------------------------------------------------------ getPreview
 	/**
+	 * @noinspection PhpUnused @getter
 	 * @return Import_Preview
 	 */
-	protected function getPreview()
+	protected function getPreview() : Import_Preview
 	{
 		if (!isset($this->preview)) {
 			$this->preview = new Import_Preview($this->file->getCsvContent());
