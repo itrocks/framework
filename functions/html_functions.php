@@ -4,12 +4,13 @@
 /**
  * html_entity_decode with recursion
  *
- * @param $string   string|array
- * @param $flags    integer default is ENT_COMPAT | ENT_HTML401
- * @param $encoding string default is ini_get('default_charset')
- * @return string|array
+ * @param $string   array|string
+ * @param $flags    integer|null default is ENT_COMPAT | ENT_HTML401
+ * @param $encoding string|null  default is ini_get('default_charset')
+ * @return array|string
  */
-function htmlEntityDecode($string, $flags = null, $encoding = null)
+function htmlEntityDecode(array|string $string, int $flags = null, string $encoding = null)
+	: array|string
 {
 	if (!isset($flags)) {
 		$flags = ENT_COMPAT | ENT_HTML401;

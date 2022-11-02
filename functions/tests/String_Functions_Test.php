@@ -13,9 +13,9 @@ class String_Functions_Test extends Test
 	/**
 	 * Provides test data for testRemoveAccents().
 	 *
-	 * @return array
+	 * @return string[][]
 	 */
-	public function accentsProvider()
+	public function accentsProvider() : array
 	{
 		return [
 			['À', 'A'],
@@ -78,9 +78,6 @@ class String_Functions_Test extends Test
 	}
 
 	//----------------------------------------------------------------------- testBase64EncodeUrlSafe
-	/**
-	 * @see base64_decode_url_safe()
-	 */
 	public function testBase64EncodeUrlSafe()
 	{
 		static::assertEquals(
@@ -97,15 +94,12 @@ class String_Functions_Test extends Test
 	 * @param $string   string The string to replace accents in
 	 * @param $expected string The expected result for the given string
 	 */
-	public function testRemoveAccents($string, $expected)
+	public function testRemoveAccents(string $string, string $expected)
 	{
 		static::assertEquals($expected, removeAccents($string));
 	}
 
 	//-------------------------------------------------------------------------------- testStrReplace
-	/**
-	 * @see strReplace()
-	 */
 	public function testStrReplace()
 	{
 		$subject = 'This is a text where some things wanna be searched and replaced';

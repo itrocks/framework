@@ -13,7 +13,7 @@ class Type_Functions_Test extends Test
 	/**
 	 * @return array
 	 */
-	public function isStrictIntegerProvider()
+	public function isStrictIntegerProvider() : array
 	{
 		return [
 			/* subtitle,      [value,        results                                               ] */
@@ -94,7 +94,7 @@ class Type_Functions_Test extends Test
 	 * @param $value          mixed
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictInteger($value, $array_expected)
+	function testIsStrictInteger(mixed $value, array $array_expected)
 	{
 		static::assertEquals($array_expected[0], isStrictInteger($value));
 	}
@@ -105,7 +105,7 @@ class Type_Functions_Test extends Test
 	 * @param $value          mixed
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictNumeric($value, $array_expected)
+	function testIsStrictNumeric(mixed $value, array $array_expected)
 	{
 		static::assertEquals($array_expected[1], isStrictNumeric($value));
 	}
@@ -116,7 +116,7 @@ class Type_Functions_Test extends Test
 	 * @param $value          mixed
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictUnsignedInteger($value, $array_expected)
+	function testIsStrictUnsignedInteger(mixed $value, array $array_expected)
 	{
 		static::assertEquals($array_expected[2], isStrictUnsignedInteger($value));
 	}
@@ -127,7 +127,7 @@ class Type_Functions_Test extends Test
 	 * @param $value          mixed
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictUnsignedNumeric($value, $array_expected)
+	function testIsStrictUnsignedNumeric(mixed $value, array $array_expected)
 	{
 		static::assertEquals($array_expected[3], isStrictNumeric($value, true, false));
 	}
@@ -138,7 +138,7 @@ class Type_Functions_Test extends Test
 	 * @param $expected integer
 	 * @param $args     mixed
 	 */
-	function testMaxSet($expected, $args)
+	function testMaxSet(int $expected, mixed $args)
 	{
 		static::assertEquals($expected, call_user_func('maxSet', $args));
 	}
@@ -149,7 +149,7 @@ class Type_Functions_Test extends Test
 	 * @param $expected integer
 	 * @param $args     mixed
 	 */
-	function testMinSet($expected, $args)
+	function testMinSet(int $expected, mixed $args)
 	{
 		static::assertEquals($expected, call_user_func('minSet', $args));
 	}

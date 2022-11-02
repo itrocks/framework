@@ -13,13 +13,16 @@ use ITRocks\Framework\Builder;
  * @param $self       boolean get the object / class name itself
  * @return string[] keys and values are classes / traits / interfaces names
  */
-function classTree($object, $classes = true, $traits = true, $interfaces = true, $self = true)
+function classTree(
+	object|string $object, bool $classes = true, bool $traits = true, bool $interfaces = true,
+	bool $self = true
+) : array
 {
 	$class_name = is_object($object) ? get_class($object) : $object;
 	$tree = [];
 	if ($classes) {
 		$parent = get_parent_class($class_name);
-		if (isset($parent)) {
+		if ($parent) {
 			$tree = array_merge($tree, [$parent => $parent]);
 		}
 	}
@@ -49,7 +52,7 @@ function classTree($object, $classes = true, $traits = true, $interfaces = true,
  * @param $strict boolean true for strict comparison (type must be the same), else false
  * @return integer -1, 0 or 1
  */
-function cmp($v1, $v2, $strict = true)
+function cmp(mixed $v1, mixed $v2, bool $strict = true) : int
 {
 	if ($strict ? ($v1 === $v2) : ($v1 == $v2)) {
 		return 0;
@@ -61,11 +64,11 @@ function cmp($v1, $v2, $strict = true)
 /**
  * Returns if there is an instance of class in the given array of objects
  *
- * @param $class_name_or_object string|object
+ * @param $class_name_or_object object|string
  * @param $objects              object[]
- * @return object|null
+ * @return ?object
  */
-function instanceIn($class_name_or_object, array $objects)
+function instanceIn(object|string $class_name_or_object, array $objects) : ?object
 {
 	foreach ($objects as $object) {
 		if ($object instanceof $class_name_or_object) {
@@ -86,7 +89,7 @@ function instanceIn($class_name_or_object, array $objects)
  * @return boolean
  * @template T
  */
-function isA(object|string|null $object, array|object|string $class_name)
+function isA(object|string|null $object, array|object|string $class_name) : bool
 {
 	if (is_array($class_name)) {
 		foreach ($class_name as $a_class_name) {
@@ -157,7 +160,7 @@ function isInitialized(object $object, string $property_name) : bool
  * @param $value mixed
  * @return boolean
  */
-function isStrictInteger(mixed $value)
+function isStrictInteger(mixed $value) : bool
 {
 	return isStrictNumeric($value, false);
 }
@@ -214,7 +217,7 @@ function isStrictNumeric(mixed $value, bool $decimal_allowed = true, bool $signe
  * @param $value string
  * @return boolean
  */
-function isStrictUnsignedInteger($value)
+function isStrictUnsignedInteger(string $value) : bool
 {
 	return isStrictNumeric($value, false, false);
 }
@@ -224,9 +227,9 @@ function isStrictUnsignedInteger($value)
  * Returns the maximal value of $arguments
  *
  * @param $arguments float|float[]|integer|integer[]
- * @return integer|null null if there is not any real value into arguments
+ * @return float|integer|null null if there is not any real value into arguments
  */
-function maxSet($arguments)
+function maxSet(array|float|int $arguments) : float|int|null
 {
 	$maximum = null;
 	foreach (func_get_args() as $argument) {
@@ -245,9 +248,9 @@ function maxSet($arguments)
  * Returns the minimal value of $arguments
  *
  * @param $arguments float|float[]|integer|integer[]
- * @return integer|null null if there is not any real value into arguments
+ * @return float|integer|null null if there is not any real value into arguments
  */
-function minSet($arguments)
+function minSet(array|float|int $arguments) : float|int|null
 {
 	$minimum = null;
 	foreach (func_get_args() as $argument) {
@@ -261,10 +264,10 @@ function minSet($arguments)
 	return $minimum;
 }
 
-define('_ALL',       65535);
-define('_CLASS',     1);
-define('_INTERFACE', 2);
-define('_TRAIT',     4);
+const _ALL       = 65535;
+const _CLASS     = 1;
+const _INTERFACE = 2;
+const _TRAIT     = 4;
 
 //----------------------------------------------------------------------------------------- parents
 /**
@@ -272,16 +275,16 @@ define('_TRAIT',     4);
  *
  * Result order is : classes first, then interfaces and traits from the child to the parent
  *
- * @param $object string|object
+ * @param $object object|string
  * @param $filter integer _ALL, _CLASS | _INTERFACE | _TRAIT
  * @return string[]
  */
-function parents($object, $filter = _ALL)
+function parents(object|string $object, int $filter = _ALL) : array
 {
 	if (is_object($object)) $object = get_class($object);
 	$parents = class_parents($object);
 	$classes = [$object] + $parents;
-	$result = ($filter & _CLASS) ? $parents : [];
+	$result  = ($filter & _CLASS) ? $parents : [];
 	do {
 		$next_classes = [];
 		foreach ($classes as $class) {

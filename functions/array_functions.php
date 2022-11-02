@@ -13,8 +13,10 @@ use ITRocks\Framework\Debug\Dead_Or_Alive;
  * @return string[] The resulting array
  */
 function arrayCut(
-	$string, array $lengths, $ignore_characters = '', $get_trailing_characters_element = false
-) {
+	string $string, array $lengths, bool|string $ignore_characters = '',
+	bool $get_trailing_characters_element = false
+) : array
+{
 	if (is_bool($ignore_characters)) {
 		$get_trailing_characters_element = $ignore_characters;
 		$ignore_characters               = '';
@@ -45,7 +47,9 @@ function arrayCut(
  * @param $unset  string to display for not-set value (only for destination value and non-strict)
  * @return array
  */
-function arrayDiffCombined(array $array1, array $array2, $strict = false, $unset = 'UNSET')
+function arrayDiffCombined(
+	array $array1, array $array2, bool $strict = false, string $unset = 'UNSET'
+) : array
 {
 	$diff  = $strict
 		? arrayDiffRecursive($array1, $array2, true, true)
@@ -54,7 +58,7 @@ function arrayDiffCombined(array $array1, array $array2, $strict = false, $unset
 		? arrayDiffRecursive($array2, $array1, true, true)
 		: array_diff($array2, $array1);
 	foreach ($diff as $key => $element) {
-		$diff[$key] = [$element => isset($diff2[$key]) ? $diff2[$key] : $unset];
+		$diff[$key] = [$element => $diff2[$key] ?? $unset];
 	}
 	foreach ($diff2 as $key => $element) {
 		if (!isset($diff[$key])) {
@@ -70,9 +74,11 @@ function arrayDiffCombined(array $array1, array $array2, $strict = false, $unset
  * @param $array2    array
  * @param $strict    boolean Strict type matching
  * @param $show_type boolean Return each value type between brackets after each different value
- * @return array|boolean
+ * @return array|false
  */
-function arrayDiffRecursive(array $array1, array $array2, $strict = false, $show_type = false)
+function arrayDiffRecursive(
+	array $array1, array $array2, bool $strict = false, bool $show_type = false
+) : array|bool
 {
 	$diff = [];
 	foreach ($array1 as $key => $value) {
@@ -108,7 +114,7 @@ function arrayDiffRecursive(array $array1, array $array2, $strict = false, $show
 			}
 		}
 	}
-	return $diff ? $diff : false;
+	return $diff ?: false;
 }
 
 //--------------------------------------------------------------------------------- arrayFormRevert
@@ -131,38 +137,35 @@ function arrayDiffRecursive(array $array1, array $array2, $strict = false, $show
  * @param $case_3 boolean
  * @return array
  */
-function arrayFormRevert($array, $case_3 = true)
+function arrayFormRevert(mixed $array, bool $case_3 = true) : array
 {
-	if (is_array($array)) {
-		$result = [];
-		foreach ($array as $field_name => $sub_array) {
-			if (is_array($sub_array)) {
-				foreach ($sub_array as $n => $value) {
-					if (!is_array($value)) {
-						// case #1
-						$result[$n][$field_name] = $value;
-					}
-					else {
-						foreach ($value as $n2 => $value2) {
-							if (is_numeric($n2) || !$case_3) {
-								// case #2
-								$result[$n][$field_name][$n2] = $value2;
-							}
-							else {
-								// case #3
-								Dead_Or_Alive::isAlive('arrayFormRevert.case3');
-								$result[$n2][$field_name][$n] = $value2;
-							}
-						}
-					}
-				}
-			}
-		}
-		return $result;
-	}
-	else {
+	if (!is_array($array)) {
 		return $array;
 	}
+	$result = [];
+	foreach ($array as $field_name => $sub_array) {
+		if (!is_array($sub_array)) {
+			continue;
+		}
+		foreach ($sub_array as $n => $value) {
+			if (!is_array($value)) {
+				// case #1
+				$result[$n][$field_name] = $value;
+				continue;
+			}
+			foreach ($value as $n2 => $value2) {
+				if (is_numeric($n2) || !$case_3) {
+					// case #2
+					$result[$n][$field_name][$n2] = $value2;
+					continue;
+				}
+				// case #3
+				Dead_Or_Alive::isAlive('arrayFormRevert.case3');
+				$result[$n2][$field_name][$n] = $value2;
+			}
+		}
+	}
+	return $result;
 }
 
 //------------------------------------------------------------------------------------- arrayInsert
@@ -205,9 +208,9 @@ function arrayInsert(
  *
  * @param $array        array
  * @param $array_insert array
- * @param $key          string|boolean
+ * @param $key          boolean|string
  */
-function arrayInsertAfter(array &$array, array $array_insert, $key = false)
+function arrayInsertAfter(array &$array, array $array_insert, bool|string $key = false)
 {
 	$second_array = [];
 	if ($key !== false) {
@@ -226,9 +229,9 @@ function arrayInsertAfter(array &$array, array $array_insert, $key = false)
  *
  * @param $array        array
  * @param $array_insert array
- * @param $key          string|boolean
+ * @param $key          boolean|string
  */
-function arrayInsertBefore(array &$array, array $array_insert, $key = false)
+function arrayInsertBefore(array &$array, array $array_insert, bool|string $key = false)
 {
 	$second_array = [];
 	if ($key !== false) {
@@ -248,16 +251,16 @@ function arrayInsertBefore(array &$array, array $array_insert, $key = false)
  *
  * @param $array   array to insert the value into
  * @param $value   mixed the inserted value
- * @param $compare callable|string objects comparison function, if set
+ * @param $compare callable|string|null objects comparison function, if set
  * @return array $array with the inserted object
  */
-function arrayInsertSorted(array $array, $value, $compare = null)
+function arrayInsertSorted(array $array, mixed $value, callable|string $compare = null) : array
 {
 	$new_array = [];
-	$callable  = $compare ?: function ($value1, $value2) { return strcmp($value1, $value2); };
+	$callable  = $compare ?: function($value1, $value2) { return strcmp($value1, $value2); };
 	// copy existing values, and insert the new value at the right place
 	$inserted = false;
-	foreach ($array as $key => $existing_value) {
+	foreach ($array as $existing_value) {
 		// insert the new value before the existing value
 		if (!$inserted && ($callable($existing_value, $value) > 0)) {
 			$new_array[] = $value;
@@ -283,7 +286,7 @@ function arrayInsertSorted(array $array, $value, $compare = null)
  * @param $array array
  * @return boolean
  */
-function arrayIsCallable(array $array)
+function arrayIsCallable(array $array) : bool
 {
 	if (count($array) !== 2) {
 		return false;
@@ -299,7 +302,7 @@ function arrayIsCallable(array $array)
  * @param $recurse boolean
  * @return boolean
  */
-function arrayKeysAllNumeric(array $array, $recurse = false)
+function arrayKeysAllNumeric(array $array, bool $recurse = false) : bool
 {
 	foreach ($array as $key => $value) {
 		if (
@@ -322,36 +325,30 @@ function arrayKeysAllNumeric(array $array, $recurse = false)
  *
  * @param $array1 array
  * @param $array2 array
- * @param $clear  string You can tell a value that clears every data from $array1 before merge
+ * @param $clear  string|null You can tell a value that clears every data from $array1 before merge
  * @return array
  */
-function arrayMergeRecursive(array $array1, array $array2, $clear = null)
+function arrayMergeRecursive(array $array1, array $array2, string $clear = null) : array
 {
 	foreach ($array2 as $index => $value2) {
 		if ($clear && ($value2 === $clear)) {
 			$array1 = null;
 			unset($array2[$index]);
+			continue;
 		}
-		else {
-			$value1 = isset($array1[$index]) ? $array1[$index] : null;
-			if (is_numeric($index) && !is_array($value1) && !is_array($value2)) {
-				if (!in_array($value2, $array1)) {
-					$array1[] = $value2;
-				}
+		$value1 = $array1[$index] ?? null;
+		if (is_numeric($index) && !is_array($value1) && !is_array($value2)) {
+			if (!in_array($value2, $array1)) {
+				$array1[] = $value2;
 			}
-			elseif (is_array($value2)) {
-				$value2 = arrayMergeRecursive(is_array($value1) ? $value1 : [], $value2, $clear);
-				if (isset($value2)) {
-					$array1[$index] = $value2;
-				}
-				else {
-					unset($array1[$index]);
-				}
-			}
-			else {
-				$array1[$index] = $value2;
-			}
+			continue;
 		}
+		if (is_array($value2)) {
+			$value2         = arrayMergeRecursive(is_array($value1) ? $value1 : [], $value2, $clear);
+			$array1[$index] = $value2;
+			continue;
+		}
+		$array1[$index] = $value2;
 	}
 	return $array1;
 }
@@ -363,7 +360,7 @@ function arrayMergeRecursive(array $array1, array $array2, $clear = null)
  * @param $array array
  * @return array
  */
-function arrayNamedValues(array $array)
+function arrayNamedValues(array $array) : array
 {
 	$result = [];
 	foreach ($array as $key => $value) {
@@ -386,7 +383,7 @@ function arrayNamedValues(array $array)
  * @param $keys  integer[]|string[]|null[] multidimensional array keys
  * @param $init  mixed initial / default value
  */
-function arraySet(&$array, array $keys, $init)
+function arraySet(mixed &$array, array $keys, mixed $init)
 {
 	$has_element = true;
 	$where       =& $array;
@@ -409,13 +406,13 @@ function arraySet(&$array, array $keys, $init)
 /**
  * Returns the sum of all elements into a recursive (aka multidimensional) array
  *
- * @param $array array|number
- * @return number
+ * @param $array array|float|int
+ * @return float|int
  */
-function arraySumRecursive($array)
+function arraySumRecursive(array|float|int $array) : float|int
 {
 	if (is_array($array)) {
-		$sum = 0;
+		$sum = .0;
 		foreach (new RecursiveIteratorIterator(new RecursiveArrayIterator($array)) as $value) {
 			$sum += $value;
 		}
@@ -432,7 +429,7 @@ function arraySumRecursive($array)
  * @param $recurse boolean
  * @return array
  */
-function arrayToTree(array $array, $recurse = true)
+function arrayToTree(array $array, bool $recurse = true) : array
 {
 	$result     = [];
 	$sub_arrays = [];
@@ -458,7 +455,7 @@ function arrayToTree(array $array, $recurse = true)
  * @param $array array
  * @return array
  */
-function arrayUnnamedValues(array $array)
+function arrayUnnamedValues(array $array) : array
 {
 	$result = [];
 	foreach ($array as $key => $value) {
@@ -483,7 +480,7 @@ function arrayUnnamedValues(array $array)
  * @param $array     array The input array, can be an array of string or an array of array of string
  * @return array Return an array of array of string
  */
-function explodeStringInArrayToDoubleArray($delimiter, array $array)
+function explodeStringInArrayToDoubleArray(string $delimiter, array $array) : array
 {
 	$tab = [];
 	foreach ($array as $element) {
@@ -508,7 +505,7 @@ function explodeStringInArrayToDoubleArray($delimiter, array $array)
  * @param $array     array The input array.
  * @return array Return a larger array explode by delimiter.
  */
-function explodeStringInArrayToSimpleArray($delimiter, array $array)
+function explodeStringInArrayToSimpleArray(string $delimiter, array $array) : array
 {
 	$tab = [];
 	foreach ($array as $element) {
@@ -537,7 +534,7 @@ function explodeStringInArrayToSimpleArray($delimiter, array $array)
  * @param $compare callable|string|string[] objects comparison function or property(ies)
  * @return array $array with the inserted object
  */
-function objectInsertSorted(array $array, $object, $compare)
+function objectInsertSorted(array $array, object $object, array|callable|string $compare) : array
 {
 	$new_array = [];
 	/** @var $callable callable The callable function adapted to $compare */
@@ -595,7 +592,7 @@ function objectInsertSorted(array $array, $object, $compare)
  * @param $get_private boolean if
  * @return array
  */
-function objectToArray($object, $get_private = false)
+function objectToArray(array|object $object, $get_private = false) : array
 {
 	if (is_object($object)) {
 		if (isset($object->__objectToArray)) {
@@ -637,14 +634,13 @@ function objectToArray($object, $get_private = false)
  * @param $ignore_key string if set, this key is ignored and set as the 'main' value of a node
  * @return array
  */
-function treeToArray(array $array, $ignore_key = null)
+function treeToArray(array $array, string $ignore_key = '') : array
 {
 	$result = [];
 	foreach ($array as $key => $val) {
 		if (is_array($val)) {
 			foreach (treeToArray($val, $ignore_key) as $sub_key => $sub_val) {
-				$result[$key . ((strval($sub_key) === strval($ignore_key)) ? '' : (DOT . $sub_key))]
-					= $sub_val;
+				$result[$key . ((strval($sub_key) === $ignore_key) ? '' : (DOT . $sub_key))] = $sub_val;
 			}
 		}
 		else {
@@ -662,7 +658,7 @@ function treeToArray(array $array, $ignore_key = null)
  * @param $keys              integer|integer[]|string|string[]
  * @param $replacement_value mixed The value of the element is replaced by this one instead of unset
  */
-function unsetKeyRecursive(array &$array, $keys, $replacement_value = null)
+function unsetKeyRecursive(array &$array, array|int|string $keys, mixed $replacement_value = null)
 {
 	if (!is_array($keys)) {
 		$keys = [$keys];

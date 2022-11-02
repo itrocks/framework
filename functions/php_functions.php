@@ -5,11 +5,11 @@
  * Upgrade memory limit.
  * If $memory_limit is lower than memory_limit, will keep memory_limit.
  *
- * @param $memory_limit string|integer php memory limit in o / given unit
+ * @param $memory_limit string php memory limit in o / given unit
  *                      (eg '4294967296', '4096M', '4G'). 0 / -1 : no limit
  * @return boolean false if the new memory limit was a downgrade of the actual one (nothing done)
  */
-function upgradeMemoryLimit($memory_limit)
+function upgradeMemoryLimit(string $memory_limit) : bool
 {
 	$old_memory_limit = ini_get('memory_limit');
 	$m = ['G' => 1024 * 1024 * 1024, 'M' => 1024 * 1024, 'K' => 1024];
@@ -42,7 +42,7 @@ function upgradeMemoryLimit($memory_limit)
  * @param $time_limit integer php execution time limit in seconds (0 / -1 : no limit)
  * @return boolean false if the new time limit was a downgrade of the actual one (nothing done)
  */
-function upgradeTimeLimit($time_limit)
+function upgradeTimeLimit(int $time_limit) : bool
 {
 	if ($time_limit <= 0) {
 		$time_limit = 0;

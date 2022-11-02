@@ -14,7 +14,7 @@ class Array_Functions_Test extends Test
 	 * @return array
 	 * @see testArrayCut
 	 */
-	public function arrayCutProvider()
+	public function arrayCutProvider() : array
 	{
 		return [
 			'simple complete call' => [
@@ -56,11 +56,12 @@ class Array_Functions_Test extends Test
 	 * @dataProvider arrayCutProvider
 	 * @param $expected                        string[]
 	 * @param $lengths                         integer[]
-	 * @param $ignore_characters               string|boolean
+	 * @param $ignore_characters               boolean|string
 	 * @param $get_trailing_characters_element boolean
 	 */
 	public function testArrayCut(
-		$expected, $lengths, $ignore_characters = null, $get_trailing_characters_element = null
+		array $expected, array $lengths, bool|string $ignore_characters = '',
+		bool $get_trailing_characters_element = false
 	) {
 		$string = 'Word123456Last wordsTrailing things';
 		static::assertEquals(

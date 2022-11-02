@@ -7,16 +7,14 @@
  * @param $directory string
  * @return boolean true on success, or false on failure
  */
-function deleteDirectory($directory)
+function deleteDirectory(string $directory) : bool
 {
 	if (!file_exists($directory)) {
 		return true;
 	}
-
 	if (!is_dir($directory)) {
 		return false;
 	}
-
 	foreach (array_diff(scandir($directory), ['.', '..']) as $file) {
 		if (is_dir($target = ($directory . SL . $file))) {
 			deleteDirectory($target);
@@ -25,7 +23,6 @@ function deleteDirectory($directory)
 			unlink($target);
 		}
 	}
-
 	return rmdir($directory);
 }
 
@@ -34,7 +31,7 @@ function deleteDirectory($directory)
  * @param $directory string
  * @return boolean
  */
-function directoryIsEmpty($directory)
+function directoryIsEmpty(string $directory) : bool
 {
 	return is_dir($directory) && (count(scandir($directory)) === 2);
 }
@@ -46,12 +43,14 @@ function directoryIsEmpty($directory)
  * @param $directory     string
  * @param $search        string
  * @param $limit         integer T_DIR|T_FILE
- * @param $prefix_length integer remove characters from the start of each path (for relative read)
+ * @param $prefix_length integer|null remove characters from the start of each path (relative read)
  * @return string[] find paths
  */
-function findInDirectory($directory, $search, $limit = T_DIR | T_FILE, $prefix_length = null)
+function findInDirectory(
+	string $directory, string $search, int $limit = T_DIR | T_FILE, int $prefix_length = null
+) : array
 {
-	if (substr($directory, -1) === SL) {
+	if (str_ends_with($directory, SL)) {
 		$directory = substr($directory, 0, -1);
 	}
 	if (!isset($prefix_length)) {
@@ -96,7 +95,7 @@ if (!function_exists('opcache_invalidate')) {
  * @param $filename string
  * @param $data     string
  */
-function script_put_contents($filename, $data)
+function script_put_contents(string $filename, string $data)
 {
 	file_put_contents($filename, $data);
 	clearstatcache(true, $filename);
@@ -108,9 +107,9 @@ function script_put_contents($filename, $data)
  * Unlink a file like unlink() but throws no error if the file did not exist
  *
  * @param $filename string
- * @return boolean|null the unlink() call result (boolean), or null if the file did not exist
+ * @return ?boolean the unlink() call result (boolean), or null if the file did not exist
  */
-function unlinkIfExists($filename)
+function unlinkIfExists(string $filename) : ?bool
 {
 	clearstatcache(true, $filename);
 	return file_exists($filename) ? unlink($filename) : null;

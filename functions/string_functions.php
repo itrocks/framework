@@ -7,7 +7,7 @@
  * @param $string string
  * @return string
  */
-function base64_decode_url_safe($string)
+function base64_decode_url_safe(string $string) : string
 {
 	return base64_decode(strtr($string, ['-' => '+', '_' => '/', '.' => '=']));
 }
@@ -19,7 +19,7 @@ function base64_decode_url_safe($string)
  * @param $string string
  * @return string
  */
-function base64_encode_url_safe($string)
+function base64_encode_url_safe(string $string) : string
 {
 	return strtr(base64_encode($string), ['+' => '-', '/' => '_', '=' => '.']);
 }
@@ -31,26 +31,13 @@ function base64_encode_url_safe($string)
  * @param $string string
  * @return string
  */
-function cleanSpaces($string)
+function cleanSpaces(string $string) : string
 {
 	$string = str_replace(TAB, SP, trim($string));
 	while (str_contains($string, SP . SP)) {
 		$string = str_replace(SP . SP, SP, $string);
 	}
 	return $string;
-}
-
-//---------------------------------------------------------------------------------------- contains
-/**
- * Return true if $string contains $substring_to_search, false otherwise
- *
- * @param $string              string
- * @param $substring_to_search string string
- * @return boolean
- */
-function contains($string, $substring_to_search)
-{
-	return str_contains($string, $substring_to_search);
 }
 
 //------------------------------------------------------------------------- htmlSpecialCharsRecurse
@@ -75,7 +62,8 @@ function htmlSpecialCharsRecurse(array|string $value) : array|string
  * @param $complete_if_not boolean
  * @return string
  */
-function lLastParse($string, $separator, $count = 1, $complete_if_not = true)
+function lLastParse(string $string, string $separator, int $count = 1, bool $complete_if_not = true)
+	: string
 {
 	if ($count > 1) {
 		$string = lLastParse($string, $separator, $count - 1);
@@ -96,7 +84,8 @@ function lLastParse($string, $separator, $count = 1, $complete_if_not = true)
  * @param $complete_if_not boolean
  * @return string
  */
-function lParse($string, $separator, $count = 1, $complete_if_not = true)
+function lParse(string $string, string $separator, int $count = 1, bool $complete_if_not = true)
+	: string
 {
 	$i = -1;
 	while ($count--) {
@@ -114,7 +103,7 @@ function lParse($string, $separator, $count = 1, $complete_if_not = true)
  * @param $string string
  * @return integer
  */
-function maxRowLength($string)
+function maxRowLength(string $string) : int
 {
 	$length = 0;
 	$rows   = explode(LF, $string);
@@ -142,7 +131,9 @@ function maxRowLength($string)
  * @param $count           integer
  * @return string
  */
-function mLastParse($string, $begin_separator, $end_separator, $count = 1)
+function mLastParse(
+	string $string, array|string $begin_separator, array|string $end_separator, int $count = 1
+) : string
 {
 	// if $begin_separator is an array, rParse each $begin_separator element
 	if (is_array($begin_separator)) {
@@ -181,7 +172,9 @@ function mLastParse($string, $begin_separator, $end_separator, $count = 1)
  * @param $count           integer
  * @return string
  */
-function mParse($string, $begin_separator, $end_separator, $count = 1)
+function mParse(
+	string $string, array|string $begin_separator, array|string $end_separator, int $count = 1
+) : string
 {
 	// if $begin_separator is an array, rParse each $begin_separator element
 	if (is_array($begin_separator)) {
@@ -211,9 +204,9 @@ function mParse($string, $begin_separator, $end_separator, $count = 1)
  * @param $string string
  * @return string
  */
-function noQuotes($string)
+function noQuotes(string $string) : string
 {
-	return (in_array(substr($string, 0, 1), [DQ, Q]) && substr($string, -1) === $string[0])
+	return (str_contains(DQ . Q, substr($string, 0, 1)) && str_ends_with($string, $string[0]))
 		? substr($string, 1, -1)
 		: $string;
 }
@@ -225,7 +218,7 @@ function noQuotes($string)
  * @param $string string The string to remove accents in
  * @return string
  */
-function removeAccents($string)
+function removeAccents(string $string) : string
 {
 	$str_simplify = [
 		'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A',
@@ -258,7 +251,9 @@ function removeAccents($string)
  * @param $complete_if_not boolean
  * @return string
  */
-function rLastParse($string, $separator, $count = 1, $complete_if_not = false)
+function rLastParse(
+	string $string, string $separator, int $count = 1, bool $complete_if_not = false
+) : string
 {
 	$i = strrpos($string, $separator);
 	while (($count > 1) && ($i !== false)) {
@@ -277,7 +272,7 @@ function rLastParse($string, $separator, $count = 1, $complete_if_not = false)
  * @param $string string
  * @return string
  */
-function rowCount($string)
+function rowCount(string $string) : string
 {
 	return substr_count($string, LF) + 1;
 }
@@ -292,7 +287,8 @@ function rowCount($string)
  * @param $complete_if_not boolean
  * @return string
  */
-function rParse($string, $separator, $count = 1, $complete_if_not = false)
+function rParse(string $string, string $separator, int $count = 1, bool $complete_if_not = false)
+	: string
 {
 	$i = -1;
 	while ($count--) {
@@ -333,7 +329,7 @@ function strEndsWith(array|string $haystack, array|string $needle) : bool
  * @param $string2 string
  * @return boolean
  */
-function strFlexCmp($string1, $string2)
+function strFlexCmp(string $string1, string $string2) : bool
 {
 	return strcasecmp(removeAccents($string1), removeAccents($string2));
 }
@@ -345,7 +341,7 @@ function strFlexCmp($string1, $string2)
  * @param $uri string
  * @return string
  */
-function strFromUri($uri)
+function strFromUri(string $uri) : string
 {
 	return str_replace('-', SP, $uri);
 }
@@ -357,9 +353,9 @@ function strFromUri($uri)
  * @param $string string
  * @return boolean
  */
-function strHasAccent($string)
+function strHasAccent(string $string) : bool
 {
-	return (strpbrk($string, 'àáâãäåçèéêëìíîïðòóôõöùúûüýÿÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ') !== false);
+	return strpbrk($string, 'àáâãäåçèéêëìíîïðòóôõöùúûüýÿÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ');
 }
 
 //----------------------------------------------------------------------------------- strIsCapitals
@@ -369,11 +365,8 @@ function strHasAccent($string)
  * @param $string string
  * @return boolean
  */
-function strIsCapitals($string)
+function strIsCapitals(string $string) : bool
 {
-	if (!is_string($string)) {
-		$string = strval($string);
-	}
 	// TODO SM a better implementation using a multi-byte string library to take care of any letter
 	for ($i = 0; $i < strlen($string); $i ++) {
 		if (
@@ -383,7 +376,7 @@ function strIsCapitals($string)
 			return false;
 		}
 	}
-	return !empty($string);
+	return $string !== '';
 }
 
 //-------------------------------------------------------------------------------------- strReplace
@@ -394,7 +387,7 @@ function strIsCapitals($string)
  * @param $subject        string|string[] The text(s) where to make the replacement into
  * @return string|string[] The subject with applied replacements
  */
-function strReplace(array $search_replace, $subject)
+function strReplace(array $search_replace, array|string $subject) : array|string
 {
 	$search  = array_keys($search_replace);
 	$replace = array_values($search_replace);
@@ -415,7 +408,7 @@ function strReplace(array $search_replace, $subject)
  * @return string[]
  * @see str_replace
  */
-function strReplaceArray($search, $replace, array $subjects)
+function strReplaceArray(array|string $search, array|string$replace, array $subjects) : array
 {
 	foreach ($subjects as $key => $subject) {
 		$subjects[$key] = is_array($subject)
@@ -435,7 +428,7 @@ function strReplaceArray($search, $replace, array $subjects)
  * @param $subject        string   the text where to make the replacement into
  * @return string the subject with applied replacements
  */
-function strReplaceLoop(array $search_replace, $subject)
+function strReplaceLoop(array $search_replace, string $subject) : string
 {
 	do {
 		$found = false;
@@ -469,7 +462,8 @@ function strReplaceLoop(array $search_replace, $subject)
  * @param $joker    string if set, replace refused characters with this one
  * @return string
  */
-function strSimplify($string, $extended = false, $joker = null)
+function strSimplify(string $string, array|bool|string $extended = false, string $joker = '')
+	: string
 {
 	$result = '';
 	if ($extended && !is_string($extended)) {
@@ -491,7 +485,7 @@ function strSimplify($string, $extended = false, $joker = null)
 		) {
 			$result .= $c;
 		}
-		elseif (isset($joker)) {
+		elseif ($joker !== '') {
 			$result .= $joker;
 		}
 	}
@@ -528,7 +522,7 @@ function strStartsWith(array|string $haystack, array|string $needle) : bool
  * @param $joker  string if set, replace refused characters with this one instead of removing it
  * @return string
  */
-function strUri($string, $joker = null)
+function strUri(string $string, string $joker = '') : string
 {
 	$uri = strtolower(strSimplify(
 		str_replace([BS, Q, SP, ',', ':', ';'], '-', $string), '/-_{}.', $joker
@@ -545,7 +539,7 @@ function strUri($string, $joker = null)
  * @param $joker  string
  * @return string
  */
-function strUriElement($string, $joker = null)
+function strUriElement(string $string, string $joker = '') : string
 {
 	return str_replace(SL, '-', strUri($string, $joker));
 }
@@ -557,20 +551,15 @@ function strUriElement($string, $joker = null)
  * @param $string string
  * @return string
  */
-function ucfirsta($string)
+function ucfirsta(string $string) : string
 {
-	if (!is_string($string)) {
-		$string = strval($string);
-	}
 	if ($string[0] == "\xC3") {
 		if (ord($string[1]) >= 160) {
 			$string[1] = chr(ord($string[1]) - 32);
 		}
 		return $string;
 	}
-	else {
-		return ucfirst($string);
-	}
+	return ucfirst($string);
 }
 
 //------------------------------------------------------------------------------------------- words
@@ -579,9 +568,8 @@ function ucfirsta($string)
  * @param $lowercase boolean lowercase all words eg to get an unique version of 'Word' and 'word'
  * @return string[]
  */
-function words($string, $lowercase = false)
+function words(string $string, bool $lowercase = false) : array
 {
-	/** @noinspection SpellCheckingInspection this is not text */
 	static $word_separators = '²&~"#\'{([-|`_\\^@°)]+=}$£¤%*µ<>,?;.:/!§';
 	$words = explode(SP, str_replace(str_split($word_separators), SP, $string));
 	if ($lowercase) {

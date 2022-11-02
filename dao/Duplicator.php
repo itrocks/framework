@@ -100,7 +100,7 @@ class Duplicator
 			}
 			if (isA($object, $callback[0])) {
 				// TODO LOW check if this is used somewhere : if not, remove
-				if (contains($callback[1], ',')) {
+				if (str_contains($callback[1], ',')) {
 					$callbacks = explode(',', $callback[1]);
 					foreach ($callbacks as $callback_function) {
 						$callback_function = trim($callback_function);
