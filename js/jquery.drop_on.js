@@ -1,6 +1,6 @@
 (function($)
 {
-	let enhances = {}
+	const enhances = {}
 
 	/**
 	 * Associates a drop-on zone to a draggable object
@@ -20,7 +20,7 @@
 	 */
 	$.fn.dropOn = function(options, parameters)
 	{
-		let stop = function()
+		const stop = function()
 		{
 			$('#notifications .drop_on').animate({top: '-64px'}, 200)
 			setTimeout(() => { $('ul.drop_on').remove() }, 200)
@@ -47,8 +47,8 @@
 			return this
 		}
 
-		let $draggable = this
-		let settings   = $.extend({
+		const $draggable = this
+		const settings   = $.extend({
 			class:   undefined,
 			enhance: undefined,
 			id:      undefined,
@@ -65,13 +65,13 @@
 			settings.class = $draggable.data('class')
 		}
 		if (settings.class.startsWith(BS)) {
-			settings.class = settings.class.substr(1)
+			settings.class = settings.class.substring(1)
 		}
 		if ($draggable.data('id')) {
 			settings.id = $draggable.data('id')
 		}
 
-		let $drop_on = $('<ul class="drop_on"></ul>').css('top', '-64px')
+		const $drop_on = $('<ul class="drop_on"></ul>').css('top', '-64px')
 		for (let zone of settings.zones) {
 			if (typeof(zone) === 'string') {
 				zone = { action: zone }
@@ -89,7 +89,7 @@
 			if (!target) target = $draggable.data('target')
 			if (!target) target = settings.target
 			if (target)  target = ' target=' + DQ + target + DQ
-			let link = zone.link
+			const link = zone.link
 				.repl('app://',   app.uri_base + SL)
 				.repl('(class)', settings.class.repl(BS, SL))
 				.repl('(id)',    settings.id)

@@ -1,7 +1,7 @@
 (function()
 {
 
-	var z_index_counter = 10;
+	let z_index_counter = 10
 
 	//-------------------------------------------------------------------------------- zIndexOptimize
 	/**
@@ -9,41 +9,40 @@
 	 *
 	 * @example z-indexes 1, 2, 10, 35 will be replaced by 1, 2, 3, 4, z_index_counter will be 4
 	 */
-	var zIndexOptimize = function()
+	const zIndexOptimize = function()
 	{
 		// jQuery $element[integer z_index_attribute][integer counter_0_n]
-		var elements = [];
+		const elements = []
 		// integer z_index_attribute[integer counter_0_n]
-		var indexes = [];
+		const indexes = []
 		$('[style*=z-index]').each(function () {
-			var $element = $(this);
-			var index    = parseInt($element.css('z-index'));
+			const $element = $(this)
+			const index    = parseInt($element.css('z-index'))
 			if (elements[index] === undefined) {
-				elements[index] = [];
+				elements[index] = []
 			}
-			elements[index].push($element);
-			indexes.push(index);
-		});
-		indexes.sort();
-		z_index_counter = 0;
-		for (var index in indexes) if (indexes.hasOwnProperty(index)) {
-			index = indexes[index];
-			z_index_counter ++;
+			elements[index].push($element)
+			indexes.push(index)
+		})
+		indexes.sort()
+		z_index_counter = 0
+		for (let index of indexes) {
+			index = indexes[index]
+			z_index_counter ++
 			if (index === z_index_counter) {
-				continue;
+				continue
 			}
-			for (var $element in elements[index]) if (elements[index].hasOwnProperty($element)) {
-				$element = elements[index][$element];
-				$element.css('z-index', z_index_counter);
+			for (let $element of elements[index]) {
+				$element.css('z-index', z_index_counter)
 			}
 		}
-	};
+	}
 
 	//---------------------------------------------------------------------------------------- zIndex
 	window.zIndex = function()
 	{
-		return z_index_counter;
-	};
+		return z_index_counter
+	}
 
 	//------------------------------------------------------------------------------------- zIndexInc
 	/**
@@ -53,11 +52,11 @@
 	 */
 	window.zIndexInc = function()
 	{
-		z_index_counter ++;
+		z_index_counter ++
 		if (z_index_counter > 64) {
-			setTimeout(zIndexOptimize);
+			setTimeout(zIndexOptimize)
 		}
-		return z_index_counter;
-	};
+		return z_index_counter
+	}
 
-})();
+})()

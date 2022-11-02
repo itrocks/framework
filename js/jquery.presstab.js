@@ -6,26 +6,29 @@
 	 *
 	 * - Works with <textarea>
 	 */
-	$.fn.presstab = function()
+	$.fn.pressTab = function()
 	{
 		this.keydown(function(event)
 		{
 			if ((event.keyCode === 9) && !event.shiftKey) {
-				var selection_start = this.selectionStart;
-				var selection_end   = this.selectionEnd;
-				var scroll_top = this.scrollTop;
+				const selection_start = this.selectionStart
+				const selection_end   = this.selectionEnd
+				const scroll_top      = this.scrollTop
+
 				this.value = this.value.substring(0, selection_start)
 					+ "\t"
-					+ this.value.substring(selection_end, this.value.length);
-				this.focus();
-				this.selectionStart = selection_start + 1;
-				this.selectionEnd   = selection_start + 1;
-				this.scrollTop      = scroll_top;
-				event.preventDefault();
+					+ this.value.substring(selection_end, this.value.length)
+				this.focus()
+
+				this.selectionStart = selection_start + 1
+				this.selectionEnd   = selection_start + 1
+				this.scrollTop      = scroll_top
+
+				event.preventDefault()
 			}
-		});
+		})
 
-		return this;
-	};
+		return this
+	}
 
-})( jQuery );
+})( jQuery )

@@ -6,6 +6,6 @@ $(document).ready(function()
 		event:    'call',
 		priority: 1,
 		selector: 'select:not([data-ordered])'
-	});
+	})
 
-});
+})

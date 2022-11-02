@@ -20,19 +20,19 @@
 		 */
 		this.find('a[href*="?#"],a[href*="&#"],a[href*="?&"]').click(function(event)
 		{
-			var $this = $(this);
-			var href = $this.attr('href');
+			const $this = $(this)
+			const href = $this.attr('href')
 			if (href.indexOf('#') >= 0) {
-				event.preventDefault();
-				var index = href.indexOf('#');
-				var form_id = href.substr(index);
-				var $form = $(form_id);
-				$form.attr('action', href.substr(0, index).repl('?&', '?'));
-				$form.submit();
+				event.preventDefault()
+				const index = href.indexOf('#')
+				const form_id = href.substring(index)
+				const $form = $(form_id)
+				$form.attr('action', href.substring(0, index).repl('?&', '?'))
+				$form.submit()
 			}
-		});
+		})
 
-		return this;
-	};
+		return this
+	}
 
-})( jQuery );
+})( jQuery )

@@ -12,10 +12,10 @@ $(document).ready(function()
 		callback: function(event)
 		{
 			if ($(this).hasClass('disabled')) {
-				event.preventDefault();
-				event.stopImmediatePropagation();
+				event.preventDefault()
+				event.stopImmediatePropagation()
 			}
 		}
-	});
+	})
 
-});
+})

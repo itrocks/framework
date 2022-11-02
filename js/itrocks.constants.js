@@ -1,30 +1,30 @@
 
-AT = '@';
+AT = '@'
 
-BQ = '`';
+BQ = '`'
 
-BR = '<br>';
+BR = '<br>'
 
-BS = '\\';
+BS = '\\'
 
-CR = "\r";
+CR = "\r"
 
-CRLF = "\r\n";
+CRLF = "\r\n"
 
-DD = '..';
+DD = '..'
 
-DOT = '.';
+DOT = '.'
 
-DQ = '"';
+DQ = '"'
 
-LF = "\n";
+LF = "\n"
 
-Q = "'";
+Q = "'"
 
-PRE = '<pre>';
+PRE = '<pre>'
 
-SL = '/';
+SL = '/'
 
-SP = ' ';
+SP = ' '
 
-TAB = "\t";
+TAB = "\t"

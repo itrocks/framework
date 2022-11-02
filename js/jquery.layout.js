@@ -8,11 +8,11 @@
 	{
 
 		//------------------------------------------------------------------------------------ settings
-		var settings = $.extend({
+		const settings = $.extend({
 			help_class: 'helper'
-		}, options);
+		}, options)
 
-		return this;
-	};
+		return this
+	}
 
-})( jQuery );
+})( jQuery )

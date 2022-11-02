@@ -7,11 +7,11 @@ $(document).ready(function()
 	 */
 	$('body').build('each', 'input[class~=id][name]', function()
 	{
-		var $this = $(this);
-		var $next = $this.next('input');
+		const $this = $(this)
+		const $next = $this.next('input')
 		if ($next.length && $this.val()) {
-			$this.data('previous-value', [$this.val(), $next.val()]);
+			$this.data('previous-value', [$this.val(), $next.val()])
 		}
-	});
+	})
 
-});
+})

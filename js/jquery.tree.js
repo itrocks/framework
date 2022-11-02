@@ -5,15 +5,15 @@
 	{
 
 		//------------------------------------------------------------------------------------ settings
-		var settings = $.extend({
+		const settings = $.extend({
 			editable: false
-		}, options);
+		}, options)
 
 		if (settings.editable) {
-			this.find('li > span').attr('contenteditable', true);
+			this.find('li > span').attr('contenteditable', true)
 		}
 
-		return this;
-	};
+		return this
+	}
 
-})( jQuery );
+})( jQuery )

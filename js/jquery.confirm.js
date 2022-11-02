@@ -19,23 +19,23 @@
 		 * @param css_class {string}   The CSS class to apply to the button.
 		 * @returns {*|jQuery}
 		 */
-		var buildButton = function(label, callback, css_class)
+		const buildButton = function(label, callback, css_class)
 		{
-			var $link = $('<a>', {html: label}).on('click', callback);
+			const $link = $('<a>', {html: label}).on('click', callback)
 
 			return $('<li>')
 				.addClass(css_class)
-				.append($link);
-		};
+				.append($link)
+		}
 
 		//----------------------------------------------------------------------------------- closeDialog
 		/**
 		 * Close dialog box.
 		 */
-		var closeDialog = function()
+		const closeDialog = function()
 		{
-			$('#responses').empty();
-		};
+			$('#responses').empty()
+		}
 
 		//--------------------------------------------------------------------------------------- display
 		/**
@@ -43,10 +43,10 @@
 		 *
 		 * @param markup {object|string}
 		 */
-		var display = function(markup)
+		const display = function(markup)
 		{
-			$('#responses').html(markup);
-		};
+			$('#responses').html(markup)
+		}
 
 		//------------------------------------------------------------------------------------ openDialog
 		/**
@@ -58,34 +58,34 @@
 		 * @param ok_label    {string}   Label of the confirm button.
 		 * @param ko_label    {string}   Label of the cancel button.
 		 */
-		var openDialog = function(message, ok_callback, ko_callback, ok_label, ko_label)
+		const openDialog = function(message, ok_callback, ko_callback, ok_label, ko_label)
 		{
 			// Set default value of cancellation callback if not set.
 			if ((typeof ko_callback === 'undefined') || (ko_callback === null)) {
 				ko_callback = function() {
-					closeDialog();
-				};
+					closeDialog()
+				}
 			}
 
 			// Close dialog when running confirmation callback.
-			var callback = function() {
-				closeDialog();
-				ok_callback();
-			};
+			const callback = function() {
+				closeDialog()
+				ok_callback()
+			}
 
-			var ok_button = buildButton(ok_label, callback, 'output');
-			var ko_button = buildButton(ko_label, ko_callback, 'delete');
+			const ok_button = buildButton(ok_label, callback, 'output')
+			const ko_button = buildButton(ko_label, ko_callback, 'delete')
 
-			var html    = '<p>' + message + '</p>';
-			var buttons = $('<ul>')
+			const html    = '<p>' + message + '</p>'
+			const buttons = $('<ul>')
 				.addClass('general actions')
 				.css('text-align', 'right')
-				.append(ko_button, ok_button);
+				.append(ko_button, ok_button)
 
-			var wrapper = $('<div>').append(html, buttons);
+			const wrapper = $('<div>').append(html, buttons)
 
-			display(wrapper);
-		};
+			display(wrapper)
+		}
 
 		//--------------------------------------------------------------------------- removeConfirmedFlag
 		/**
@@ -93,10 +93,10 @@
 		 *
 		 * @param $object {object}
 		 */
-		var removeConfirmedFlag = function($object)
+		const removeConfirmedFlag = function($object)
 		{
-			$object.removeAttr('confirmed');
-		};
+			$object.removeAttr('confirmed')
+		}
 
 		//------------------------------------------------------------------------------ setConfirmedFlag
 		/**
@@ -104,10 +104,10 @@
 		 *
 		 * @param $object {object}
 		 */
-		var setConfirmedFlag = function($object)
+		const setConfirmedFlag = function($object)
 		{
-			$object.attr('confirmed', 'confirmed');
-		};
+			$object.attr('confirmed', 'confirmed')
+		}
 
 		//------------------------------------------------------------------------------- a.confirm click
 		/**
@@ -118,37 +118,37 @@
 		 */
 		this.find('a.confirm').bind('click', function(event)
 		{
-			var $link = $(this);
+			const $link = $(this)
 
 			if (!$link.attr('confirmed')) {
-				event.stopImmediatePropagation();
+				event.stopImmediatePropagation()
 
-				var message  = $link.attr('data-confirm-message');
-				var ok_label = $link.attr('data-confirm-ok');
-				var ko_label = $link.attr('data-confirm-cancel');
+				let   message  = $link.attr('data-confirm-message')
+				const ok_label = $link.attr('data-confirm-ok')
+				const ko_label = $link.attr('data-confirm-cancel')
 
 				if (!message) {
-					message = tr('|Do you confirm this action| : ') + $link.html();
+					message = tr('|Do you confirm this action| : ') + $link.html()
 				}
 
 				/**
 				 * Add a "confirmed" flag and re-trigger click event to keep normal process.
 				 */
-				var callback = function()
+				const callback = function()
 				{
-					setConfirmedFlag($link);
-					$link[0].click();
-				};
+					setConfirmedFlag($link)
+					$link[0].click()
+				}
 
-				openDialog(message, callback, null, ok_label, ko_label);
+				openDialog(message, callback, null, ok_label, ko_label)
 
-				return false;
+				return false
 			}
 
-			removeConfirmedFlag($link);
+			removeConfirmedFlag($link)
 
-			return event;
-		});
+			return event
+		})
 
 	}
-})( jQuery );
+})( jQuery )

@@ -14,9 +14,9 @@ $(document).ready(function()
 			return ''
 		}
 		const split = value.split(separator)
-		if (split[0] && (split[0].length < 2)) split[0] = split[0].padStart(2, 0)
-		if (split[1] && (split[1].length < 2)) split[1] = split[1].padStart(2, 0)
-		if (split[2] && (split[2].length < 2)) split[2] = split[2].padStart(2, 0)
+		if (split[0] && (split[0].length < 2)) split[0] = split[0].padStart(2, '0')
+		if (split[1] && (split[1].length < 2)) split[1] = split[1].padStart(2, '0')
+		if (split[2] && (split[2].length < 2)) split[2] = split[2].padStart(2, '0')
 		return split.join('')
 	}
 
@@ -37,19 +37,19 @@ $(document).ready(function()
 			.lParse(SP)
 		if (date.length < now.length) {
 			date = (date.length === 6)
-				? (date.substr(0, 4) + now.substr(4, 2) + date.substr(4))
-				: (date + now.substr(date.length))
+				? (date.substring(0, 4) + now.substring(4, 6) + date.substring(4))
+				: (date + now.substring(date.length))
 		}
 		if (time.length && (time.length < 4)) {
-			time += '0000'.substr(time.length)
+			time += '0000'.substring(time.length)
 		}
-		datetime = date.substr(0, 2) + SL + date.substr(2, 2) + SL + date.substr(4, 4)
+		datetime = date.substring(0, 2) + SL + date.substring(2, 4) + SL + date.substring(4, 8)
 		if (time.length) {
-			datetime += SP + time.substr(0, 2)
+			datetime += SP + time.substring(0, 2)
 			if (time.length > 2) {
-				datetime += ':' + time.substr(2, 2)
+				datetime += ':' + time.substring(2, 4)
 				if (time.length > 4) {
-					datetime += ':' + time.substr(4)
+					datetime += ':' + time.substring(4)
 				}
 			}
 		}
@@ -70,13 +70,13 @@ $(document).ready(function()
 		}
 
 		this.datepicker({
-			constrainInput: false,
-			dateFormat: dateFormatToDatepicker(window.app.date_format),
-			firstDay: 1,
-			showOn: 'button',
-			showOtherMonths: true,
+			constrainInput:    false,
+			dateFormat:        dateFormatToDatepicker(window.app.date_format),
+			firstDay:          1,
+			showOn:            'button',
+			showOtherMonths:   true,
 			selectOtherMonths: true,
-			showWeek: true
+			showWeek:          true
 		})
 
 		this.blur(function()

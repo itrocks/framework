@@ -19,54 +19,56 @@
 	{
 
 		//------------------------------------------------------------------------------------ settings
-		var settings = $.extend({
+		const settings = $.extend({
 			help_class: 'helper'
-		}, options);
+		}, options)
 
 		this.each(function()
 		{
-			var $this = $(this);
+			const $this = $(this)
 
-			var $focus;
+			let $focus
 
 			//-------------------------------------------------------------------------------------- blur
 			$this.blur(function()
 			{
-				var $this = $(this);
-				if ($this.val() === '') {
-					if ($this.attr('type') === 'password') {
-						var $container = $('<p>');
-						$container.append($this.clone());
-						var $helper = $($container.html().repl('type="password" ', 'type="text"'));
-						$helper.attr('name', '').data('password', true);
-						$this.hide().after($helper);
-						$this = $helper;
-						$this.focus($focus);
-					}
-					$this.val($this.attr('title'));
-					$this.addClass(settings.help_class);
+				let $this = $(this)
+				if ($this.val() !== '') {
+					return
 				}
-			});
+				if ($this.attr('type') === 'password') {
+					const $container = $('<p>')
+					$container.append($this.clone())
+					const $helper = $($container.html().repl('type="password" ', 'type="text"'))
+					$helper.attr('name', '').data('password', true)
+					$this.hide().after($helper)
+					$this = $helper
+					$this.focus($focus)
+				}
+				$this.val($this.attr('title'))
+				$this.addClass(settings.help_class)
+			})
 
 			//------------------------------------------------------------------------------------- focus
 			$this.focus($focus = function()
 			{
-				var $this = $(this);
-				if ($this.val() === $this.attr('title')) {
-					if ($this.data('password')) {
-						$this = $this.prev();
-						$this.next().remove();
-						$this.show().focus();
-					}
-					$this.val('');
-					$this.removeClass(settings.help_class);
+				let $this = $(this)
+				if ($this.val() !== $this.attr('title')) {
+					return
 				}
-			});
+				if ($this.data('password')) {
+					$this = $this.prev()
+					$this.next().remove()
+					$this.show().focus()
+				}
+				$this.val('')
+				$this.removeClass(settings.help_class)
+			})
 
-			$this.blur();
-		});
+			$this.blur()
+		})
 
-		return this;
-	};
+		return this
+	}
 
-})( jQuery );
+})( jQuery )

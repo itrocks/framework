@@ -58,14 +58,14 @@
 		// no callback => synchronous call
 		if (callback === undefined) {
 			call_settings['async']   = false
-			call_settings['error']   = function()     { result = text; }
-			call_settings['success'] = function(data) { result = data; cache[context][text] = result; }
+			call_settings['error']   = ()     => { result = text }
+			call_settings['success'] = (data) => { result = data; cache[context][text] = result }
 		}
 
 		// callback is set => asynchronous call
 		else {
-			call_settings['error']   = function() { callback(text); }
-			call_settings['success'] = function(result) {
+			call_settings['error']   = () => callback(text)
+			call_settings['success'] = (result) => {
 				cache[context][text] = result
 				if (!isNaN(options)) {
 					result = result.repl('$1', options)

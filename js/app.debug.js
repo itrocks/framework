@@ -1,34 +1,34 @@
 $(document).ready(function()
 {
-	return;
+	return
 
-	var DEBUG = ['fadeOut'];
+	const DEBUG = ['fadeOut']
 
 	if (DEBUG.indexOf('empty') > -1) {
-		var $_empty = $.fn.empty;
-		$.fn.empty  = function () {
+		const $_empty = $.fn.empty
+		$.fn.empty = function () {
 			console.debug('$.empty()')
-			console.trace();
-			return $_empty.call(this);
+			console.trace()
+			return $_empty.call(this)
 		}
 	}
 
 	if (DEBUG.indexOf('fadeOut') > -1) {
-		var $_fadeOut = $.fn.fadeOut;
-		$.fn.fadeOut  = function (duration, complete) {
+		const $_fadeOut = $.fn.fadeOut
+		$.fn.fadeOut = function (duration, complete) {
 			console.debug('$.fadeOut()')
-			console.trace();
-			return $_fadeOut.call(this, duration, complete);
+			console.trace()
+			return $_fadeOut.call(this, duration, complete)
 		}
 	}
 
 	if (DEBUG.indexOf('remove') > -1) {
-		var $_remove = $.fn.remove;
-		$.fn.remove  = function (selector) {
+		const $_remove = $.fn.remove
+		$.fn.remove = function (selector) {
 			console.debug('$.remove()')
-			console.trace();
-			return $_remove.call(this, selector);
+			console.trace()
+			return $_remove.call(this, selector)
 		}
 	}
 
-});
+})

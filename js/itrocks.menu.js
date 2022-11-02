@@ -1,6 +1,6 @@
 $(document).ready(function()
 {
-	var $body = $('body');
+	const $body = $('body')
 
 	//--------------------------------------------------------- header > .top.bar > button.menu click
 	/**
@@ -8,14 +8,14 @@ $(document).ready(function()
 	 */
 	$body.build('click', 'header > .top.bar > button.menu', function()
 	{
-		var $menu = $('nav#menu');
+		const $menu = $('nav#menu')
 		if ($menu.is(':visible')) {
-			$menu.css('display', '');
+			$menu.css('display', '')
 		}
 		else {
-			$menu.css('display', 'block');
+			$menu.css('display', 'block')
 		}
-	});
+	})
 
 	//----------------------------------------------------------------------------- article hide menu
 	/**
@@ -23,11 +23,11 @@ $(document).ready(function()
 	 */
 	$body.build('each', 'article', function()
 	{
-		var $menu = $('nav#menu');
+		const $menu = $('nav#menu')
 		if ($menu.is(':visible')) {
-			$menu.css('display', '');
+			$menu.css('display', '')
 		}
-	});
+	})
 
 	//--------------------------------------------------------------------------------- window.resize
 	/**
@@ -36,10 +36,10 @@ $(document).ready(function()
 	 */
 	$(window).resize(function()
 	{
-		var $menu = $('nav#menu');
+		const $menu = $('nav#menu')
 		if ($menu.is(':visible')) {
-			$menu.css('display', '');
+			$menu.css('display', '')
 		}
-	});
+	})
 
-});
+})

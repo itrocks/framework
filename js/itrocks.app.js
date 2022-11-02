@@ -17,64 +17,64 @@ App = function(
 
 	//----------------------------------------------------------------------------------- date_format
 	/**
-	 * @var string
+	 * @const string
 	 */
-	this.date_format = date_format;
+	this.date_format = date_format
 
 	//-------------------------------------------------------------------------------------- language
 	/**
-	 * @var string
+	 * @const string
 	 */
-	this.language = language;
+	this.language = language
 
 	//------------------------------------------------------------------------------------- PHPSESSID
 	/**
-	 * @var string
+	 * @const string
 	 */
-	this.PHPSESSID = PHPSESSID;
+	this.PHPSESSID = PHPSESSID
 
 	//----------------------------------------------------------------------------------- project_uri
 	/**
 	 * @example '/the/project/root/uri'
-	 * @var string
+	 * @const string
 	 */
-	this.project_uri = project_uri;
+	this.project_uri = project_uri
 
 	//----------------------------------------------------------------------------------- script_name
 	/**
 	 * @example 'itrocks'
-	 * @var string
+	 * @const string
 	 */
-	this.script_name = script_name;
+	this.script_name = script_name
 
 	//-------------------------------------------------------------------------------------- uri_base
 	/**
 	 * @example '/a/folder/itrocks'
 	 * @type string
 	 */
-	this.uri_base = uri_root + script_name;
+	this.uri_base = uri_root + script_name
 
 	//-------------------------------------------------------------------------------------- uri_root
 	/**
 	 * @example '/a/folder/'
-	 * @var string
+	 * @const string
 	 */
-	this.uri_root = uri_root;
+	this.uri_root = uri_root
 
 	//----------------------------------------------------------------------------------- use_cookies
 	/**
 	 * @type boolean
 	 */
-	this.use_cookies = use_cookies;
+	this.use_cookies = use_cookies
 
 	//--------------------------------------------------------------------------------------- user_id
 	/**
 	 *  @example 1
-	 *  @var integer|null
+	 *  @const integer|null
 	 */
-	this.user_id = (user_id === undefined) ? null : user_id;
+	this.user_id = (user_id === undefined) ? null : user_id
 
-};
+}
 
 //------------------------------------------------------------------------------------------ andSID
 /**
@@ -84,8 +84,8 @@ App = function(
  */
 App.prototype.addSID = function(uri)
 {
-	return uri + ((uri.indexOf('?') > -1) ? this.andSID() : this.askSID());
-};
+	return uri + ((uri.indexOf('?') > -1) ? this.andSID() : this.askSID())
+}
 
 //------------------------------------------------------------------------------------------ andSID
 /**
@@ -95,8 +95,8 @@ App.prototype.addSID = function(uri)
  */
 App.prototype.andSID = function()
 {
-	return this.use_cookies ? '' : ('&PHPSESSID=' + this.PHPSESSID);
-};
+	return this.use_cookies ? '' : ('&PHPSESSID=' + this.PHPSESSID)
+}
 
 //------------------------------------------------------------------------------------------ askAnd
 /**
@@ -108,8 +108,8 @@ App.prototype.andSID = function()
  */
 App.prototype.askAnd = function(uri, params)
 {
-	return params ? (uri + ((uri.indexOf('?') > -1) ? '&' : '?') + params) : uri;
-};
+	return params ? (uri + ((uri.indexOf('?') > -1) ? '&' : '?') + params) : uri
+}
 
 //------------------------------------------------------------------------------------------ askSID
 /**
@@ -119,8 +119,8 @@ App.prototype.askAnd = function(uri, params)
  */
 App.prototype.askSID = function()
 {
-	return this.use_cookies ? '' : ('?PHPSESSID=' + this.PHPSESSID);
-};
+	return this.use_cookies ? '' : ('?PHPSESSID=' + this.PHPSESSID)
+}
 
 /**
  * Gets session id expression
@@ -129,5 +129,5 @@ App.prototype.askSID = function()
  */
 App.prototype.askSIDand = function()
 {
-	return this.use_cookies ? '?' : ('?PHPSESSID=' + this.PHPSESSID + '&');
-};
+	return this.use_cookies ? '?' : ('?PHPSESSID=' + this.PHPSESSID + '&')
+}

@@ -1,42 +1,43 @@
 
-var more_request_headers = {};
-
-//---------------------------------------------------------------------------------- requestHeaders
-/**
- * Add 'beforeSend: requestHeaders' to your ajax calls to add information about the client
- *
- * @param request
- */
-var requestHeaders = function(request)
-{
-	request.setRequestHeader('screen-height', screen.height);
-	request.setRequestHeader('screen-width',  screen.width);
-	request.setRequestHeader('window-height', $(window).height());
-	request.setRequestHeader('window-width',  $(window).width());
-	for (var header in more_request_headers) if (more_request_headers.hasOwnProperty(header)) {
-		request.setRequestHeader(header, more_request_headers[header]);
-	}
-	more_request_headers = {};
-};
-
-//---------------------------------------------------------------------------- requestTargetHeaders
-var requestTargetHeaders = function($element)
-{
-	var target = $element.attr('target');
-	if (target.startsWith('#')) {
-		var $target = $(target);
-		if ((target === '#main') && !$target.length) {
-			$target = $('main');
-		}
-		if ($target.length) {
-			more_request_headers['target-height'] = $target.height();
-			more_request_headers['target-width']  = $target.width();
-		}
-	}
-};
-
 (function($)
 {
+
+	//-------------------------------------------------------------------------- more_request_headers
+	let more_request_headers = {}
+
+	//-------------------------------------------------------------------------------- requestHeaders
+	/**
+	 * Add 'beforeSend: requestHeaders' to your ajax calls to add information about the client
+	 *
+	 * @param request
+	 */
+	const requestHeaders = function(request)
+	{
+		request.setRequestHeader('screen-height', screen.height)
+		request.setRequestHeader('screen-width',  screen.width)
+		request.setRequestHeader('window-height', $(window).height())
+		request.setRequestHeader('window-width',  $(window).width())
+		for (const header in more_request_headers) if (more_request_headers.hasOwnProperty(header)) {
+			request.setRequestHeader(header, more_request_headers[header])
+		}
+		more_request_headers = {}
+	}
+
+//---------------------------------------------------------------------------- requestTargetHeaders
+	const requestTargetHeaders = function($element)
+	{
+		let target = $element.attr('target')
+		if (target.startsWith('#')) {
+			let $target = $(target)
+			if ((target === '#main') && !$target.length) {
+				$target = $('main')
+			}
+			if ($target.length) {
+				more_request_headers['target-height'] = $target.height()
+				more_request_headers['target-width']  = $target.width()
+			}
+		}
+	}
 
 	//--------------------------------------------------------------------------------------- xtarget
 	/**
@@ -58,10 +59,10 @@ var requestTargetHeaders = function($element)
 	$.fn.xtarget = function(options)
 	{
 
-		var last_history_entry;
+		let last_history_entry
 
 		//------------------------------------------------------------------------------------ settings
-		var settings = $.extend({
+		const settings = $.extend({
 			auto_empty:        {}, // { 'target-selector': 'zone(s)-to-empty-selector' }
 			auto_empty_except: undefined, // string : if set, selector for exception original link
 			closeable_popup:   'popup',
@@ -77,10 +78,10 @@ var requestTargetHeaders = function($element)
 			track:             true,
 			url_append:        '',
 			xtarget_from:      'xtarget.from'
-		}, options);
+		}, options)
 
 		//---------------------------------------------------------------------------------------- ajax
-		var ajax = {
+		const ajax = {
 
 			//------------------------------------------------------------------------------- ajax.target
 			target: undefined,
@@ -88,15 +89,15 @@ var requestTargetHeaders = function($element)
 			//----------------------------------------------------------------------------- ajax.complete
 			complete: function(xhr)
 			{
-				clearTimeout(xhr.time_out);
-				$('body').css({ cursor: 'auto' });
+				clearTimeout(xhr.time_out)
+				$('body').css({ cursor: 'auto' })
 			},
 
 			//-------------------------------------------------------------------------------- ajax.error
 			error: function(xhr, status, error)
 			{
 				if (settings.error !== undefined) {
-					settings.error(xhr, status, error);
+					settings.error(xhr, status, error)
 				}
 			},
 
@@ -109,71 +110,65 @@ var requestTargetHeaders = function($element)
 			{
 				// no history for popups
 				if ((settings.history.popup === undefined) && $target.hasClass('popup')) {
-					return;
+					return
 				}
 				// query type : get / post ?
-				var type = xhr.ajax.type;
-				if (type === undefined) type = xhr.call_type;
-				if (type === undefined) type = 'get';
+				let type = xhr.ajax.type
+				if (type === undefined) type = xhr.call_type
+				if (type === undefined) type = 'get'
 				// no history when no condition, or when post queries are all filtered
 				if (
 					(settings.history.condition === undefined)
 					|| !$target.find(settings.history.condition).length
 					|| ((type === 'post') && !settings.history.post)
 				) {
-					return;
+					return
 				}
 				// no history when do not match post conditions
-				var history_entry = xhr.from.href;
+				let history_entry = xhr.from.href
 				if ((type === 'post') && Array.isArray(settings.history.post)) {
-					var match_post = false;
-					for (var post_filter in settings.history.post) {
-						if (
-							settings.history.post.hasOwnProperty(post_filter)
-							&& history_entry.match(settings.history.post[post_filter])
-						) {
-							match_post = true;
-							break;
+					let match_post = false
+					for (const post_filter of settings.history.post) {
+						if (history_entry.match(post_filter)) {
+							match_post = true
+							break
 						}
 					}
 					if (!match_post) {
-						return;
+						return
 					}
 				}
 				// set document title
-				var title;
+				let title
 				if ((settings.history.title !== undefined) && settings.history.title) {
-					title = $target.find(settings.history.title).first().text();
+					title = $target.find(settings.history.title).first().text()
 					if (!title.length) {
-						title = xhr.from.href;
+						title = xhr.from.href
 					}
 				}
 				else {
-					title = xhr.from.href;
+					title = xhr.from.href
 				}
-				document.title = title;
+				document.title = title
 				// no history when the history entry is the same than the previous one was
 				if ((history_entry === undefined) || (history_entry === last_history_entry)) {
-					return;
+					return
 				}
 				// no history when do not match get conditions
-				for (var without_get_var in settings.history.without_get_vars) {
-					if (
-						settings.history.without_get_vars.hasOwnProperty(without_get_var)
-						&& history_entry.match(settings.history.without_get_vars[without_get_var])
-					) {
-						return;
+				for (const without_get_var of settings.history.without_get_vars) {
+					if (history_entry.match(without_get_var)) {
+						return
 					}
 				}
 				// history
-				last_history_entry = xhr.from.href;
+				last_history_entry = xhr.from.href
 				if (settings.url_append) {
 					history_entry = history_entry
 						.repl('?' + settings.url_append, '')
 						.repl('&' + settings.url_append)
 				}
 				try {
-					window.history.pushState({reload: true}, title, history_entry);
+					window.history.pushState({reload: true}, title, history_entry)
 				}
 				// known cases :
 				// - cross-domain : a page loaded from another domain
@@ -190,128 +185,128 @@ var requestTargetHeaders = function($element)
 			 */
 			popup: function($where, id)
 			{
-				var $body = $('body');
-				var $from = $where;
-				var left  = $where.offset().left;
-				var top   = $where.offset().top + $where.outerHeight();
-				if (id.substr(0, 1) === '_') {
-					$where = $($body.children(':last-child'));
+				const $body = $('body')
+				const $from = $where
+				const left  = $where.offset().left
+				const top   = $where.offset().top + $where.outerHeight()
+				if (id.startsWith('_')) {
+					$where = $($body.children(':last-child'))
 				}
 				if (id === '_blank') {
-					id = 'window' + ++window.id_index;
+					id = 'window' + ++window.id_index
 				}
-				var $target = $('<' + settings.popup_element + '>')
+				const $target = $('<' + settings.popup_element + '>')
 					.addClass(settings.closeable_popup)
-					.attr('id', id);
+					.attr('id', id)
 				if (settings.keep && $where.hasClass(settings.keep)) {
-					$target.addClass(settings.keep);
+					$target.addClass(settings.keep)
 				}
-				$target.data(settings.xtarget_from, $from);
+				$target.data(settings.xtarget_from, $from)
 				$where.hasClass('popup')
 					? $body.append($target)
-					: $where.after($target);
+					: $where.after($target)
 				if (($where !== $from) || $where.hasClass('popup')) {
-					$target.addClass('popup');
+					$target.addClass('popup')
 					if ($where.hasClass('right')) {
-						$target.css('right', $(window).width() - (left + $where.width()));
+						$target.css('right', $(window).width() - (left + $where.width()))
 					}
 					else {
-						$target.css('left', left);
+						$target.css('left', left)
 					}
-					$target.css('position', 'absolute');
-					$target.css('top',      top);
-					$target.css('z-index',  zIndex());
+					$target.css('position', 'absolute')
+					$target.css('top',      top)
+					$target.css('z-index',  zIndex())
 					if (settings.draggable_blank !== undefined) {
 						if (settings.draggable_blank === true) {
-							$target.draggable();
+							$target.draggable()
 						}
 						else {
-							$target.draggable({ handle: settings.draggable_blank });
+							$target.draggable({ handle: settings.draggable_blank })
 						}
 					}
 				}
 				setTimeout(function() {
-					var offset  = $target.offset();
-					var $window = $(window);
+					const offset  = $target.offset()
+					const $window = $(window)
 					if ((offset.left + $target.outerWidth()) > $window.outerWidth()) {
-						offset.left = Math.max(0, $window.outerWidth() - $target.outerWidth());
-						$target.css({ left: '', right: 0 });
+						offset.left = Math.max(0, $window.outerWidth() - $target.outerWidth())
+						$target.css({ left: '', right: 0 })
 					}
 					if ((offset.top + $target.outerHeight()) > $window.outerHeight()) {
-						offset.top = Math.max(0, $window.outerHeight() - $target.outerHeight());
-						$target.css('top', offset.top);
+						offset.top = Math.max(0, $window.outerHeight() - $target.outerHeight())
+						$target.css('top', offset.top)
 					}
 					if (window.scrollbar !== undefined) {
 						if (offset.left < window.scrollbar.left()) {
-							$target.css({ left: window.scrollbar.left(), right: '' });
+							$target.css({ left: window.scrollbar.left(), right: '' })
 						}
 						if (offset.top < window.scrollbar.top()) {
-							$target.css('top', window.scrollbar.top());
+							$target.css('top', window.scrollbar.top())
 						}
 					}
-				});
-				return $target;
+				})
+				return $target
 			},
 
 			//------------------------------------------------------------------------------ ajax.success
 			success: function(data, status, xhr)
 			{
-				var target       = xhr.from.target;
-				var focus        = (xhr.from.href ? xhr.from.href : xhr.from.action).rParse('#');
-				var $from        = $(xhr.from);
-				var $target      = $(target);
-				var build_target = false;
+				let   target       = xhr.from.target
+				const focus        = (xhr.from.href ? xhr.from.href : xhr.from.action).rParse('#')
+				const $from        = $(xhr.from)
+				let   $target      = $(target)
+				let   build_target = false
 				if (target.endsWith('main') && !$target.length) {
-					$target = $(target.startsWith('#') ? 'main' : '#main');
+					$target = $(target.startsWith('#') ? 'main' : '#main')
 				}
 				// popup a new element
 				if ($target.is('.' + settings.closeable_popup)) {
-					$target.remove();
-					$target = $(xhr.from.target);
+					$target.remove()
+					$target = $(xhr.from.target)
 				}
 				if (!$target.length) {
-					$target      = this.popup($from, xhr.from.target.substr(1));
-					build_target = true;
+					$target      = this.popup($from, xhr.from.target.substring(1))
+					build_target = true
 				}
-				var keep_scroll = new Keep_Scroll($target);
-				keep_scroll.keep();
-				$target = $target.htmlTarget(data);
+				const keep_scroll = new Keep_Scroll($target)
+				keep_scroll.keep()
+				$target = $target.htmlTarget(data)
 				$target.each(function() {
-					var $target = $(this);
+					const $target = $(this)
 					if ($target.find('form, .form').length && $target.closest('form').length) {
-						$target.css({ right: 0, top: $target.offset().top + 'px' });
-						$target.insertAfter($target.closest('form'));
+						$target.css({ right: 0, top: $target.offset().top + 'px' })
+						$target.insertAfter($target.closest('form'))
 					}
-				});
+				})
 				if (settings.show && $target.filter(':not(:visible)').length) {
-					$target.filter(':not(:visible)').show();
+					$target.filter(':not(:visible)').show()
 				}
 				// auto empty
 				if ((settings.auto_empty !== undefined) && !xhr.auto_empty_except) {
-					for (var key in settings.auto_empty) if (settings.auto_empty.hasOwnProperty(key)) {
-						var empty_target = settings.auto_empty[key];
+					for (const key in settings.auto_empty) if (settings.auto_empty.hasOwnProperty(key)) {
+						const empty_target = settings.auto_empty[key]
 						if (
 							($target.filter(key).length || $(target).is(key))
 							&& !$target.filter(empty_target).length
 						) {
-							$(empty_target).empty();
+							$(empty_target).empty()
 						}
 					}
 				}
 				// track window position to focus, if set
-				var $focus = focus.length ? $('#' + focus) : null;
+				const $focus = focus.length ? $('#' + focus) : null
 				if ($focus && $focus.length) {
 					if (
 						($focus.offset().left < window.scrollbar.left())
 						|| ($focus.offset().left > (window.scrollbar.left() + window.innerWidth))
 					) {
-						window.scrollbar.left($focus.offset().left);
+						window.scrollbar.left($focus.offset().left)
 					}
 					if (
 						($focus.offset().top < window.scrollbar.top())
 						|| ($focus.offset().top > (window.scrollbar.top() + window.innerHeight))
 					) {
-						window.scrollbar.top($focus.offset().top);
+						window.scrollbar.top($focus.offset().top)
 					}
 				}
 				// track window position to target
@@ -319,40 +314,40 @@ var requestTargetHeaders = function($element)
 					settings.track && xhr.from.target.startsWith('#') && (window.scrollbar !== undefined)
 				) {
 					$target.each(function() {
-						var $target = $(this);
+						const $target = $(this)
 						if ($target.offset().left < window.scrollbar.left()) {
-							window.scrollbar.left($target.offset().left);
+							window.scrollbar.left($target.offset().left)
 						}
 						if ($target.offset().top < window.scrollbar.top()) {
-							window.scrollbar.top($target.offset().top);
+							window.scrollbar.top($target.offset().top)
 						}
-					});
+					})
 				}
 				// change browser's URL and title, push URL into history
 				if (settings.history !== undefined) {
-					this.pushHistory(xhr, $target);
+					this.pushHistory(xhr, $target)
 				}
 				// If build plugin is active : build loaded DOM
 				if ($target.build !== undefined) {
 					build_target
 						? $target.build()
-						: $target.children().build();
+						: $target.children().build()
 				}
-				keep_scroll.serve();
+				keep_scroll.serve()
 				// on success callbacks
-				target = $target.last()[0];
+				target = $target.last()[0]
 				if (settings.success !== undefined) {
-					settings.success.call(target, data, status, xhr);
+					settings.success.call(target, data, status, xhr)
 				}
-				var on_success = $from.data('on-success');
+				const on_success = $from.data('on-success')
 				if (on_success !== undefined) {
-					on_success.call(target, data, status, xhr);
+					on_success.call(target, data, status, xhr)
 				}
 				if ($from.hasClass('disabled')) {
 					$from.removeClass('disabled progress')
 				}
 			}
-		};
+		}
 
 		//----------------------------------------------------------------------- hasFormReportValidity
 		/**
@@ -360,10 +355,10 @@ var requestTargetHeaders = function($element)
 		 *
 		 * @return boolean
 		 */
-		var hasFormCheckValidity = function()
+		const hasFormCheckValidity = function()
 		{
-			return (typeof document.createElement('form').checkValidity) === 'function';
-		};
+			return (typeof document.createElement('form').checkValidity) === 'function'
+		}
 
 		//----------------------------------------------------------------------- hasFormReportValidity
 		/**
@@ -371,10 +366,10 @@ var requestTargetHeaders = function($element)
 		 *
 		 * @return boolean
 		 */
-		var hasFormReportValidity = function()
+		const hasFormReportValidity = function()
 		{
-			return (typeof document.createElement('form').reportValidity) === 'function';
-		};
+			return (typeof document.createElement('form').reportValidity) === 'function'
+		}
 
 		//------------------------------------------------------------------------------ reportValidity
 		/**
@@ -383,21 +378,21 @@ var requestTargetHeaders = function($element)
 		 * @param form HTMLFormElement
 		 * @return boolean
 		 */
-		var reportValidity = function(form)
+		const reportValidity = function(form)
 		{
 			if (hasFormReportValidity()) {
-				return form.reportValidity();
+				return form.reportValidity()
 			}
 			else if (hasFormCheckValidity()) {
 				if (form.checkValidity()) {
-					return true;
+					return true
 				}
-				alert('Invalid data input');
-				return false;
+				alert('Invalid data input')
+				return false
 			}
 			// No check method, fallback to default behaviour
-			return true;
-		};
+			return true
+		}
 
 		//----------------------------------------------------------------------------------- urlAppend
 		/**
@@ -407,16 +402,16 @@ var requestTargetHeaders = function($element)
 		 * @param search string the '?var=value&var2=value2' part of the url, if set
 		 * @return string
 		 */
-		var urlAppend = function(url, search)
+		const urlAppend = function(url, search)
 		{
 			if (settings.url_append) {
 				url = url.lParse('#')
 					+ (search ? '&' : '?')
 					+ settings.url_append
-					+ ((url.indexOf('#') >= 0) ? '#' : '') + url.rParse('#');
+					+ ((url.indexOf('#') >= 0) ? '#' : '') + url.rParse('#')
 			}
-			return url;
-		};
+			return url
+		}
 
 		//------------------------------------------------------------------- $('a[target^='#']').click
 		/**
@@ -427,37 +422,37 @@ var requestTargetHeaders = function($element)
 		this.find('a[target^="#"]').add(this.filter('a[target^="#"]')).click(function(event)
 		{
 			if (event.ctrlKey) {
-				return;
+				return
 			}
 			if (event.which !== 2) {
-				var anchor = this;
+				const anchor = this
 				if (!anchor.href) {
-					return;
+					return
 				}
-				var is_javascript = (anchor.href.substr(0, 11) === 'javascript:');
-				event.preventDefault();
-				var executeClick = function() {
+				const is_javascript = anchor.href.startsWith('javascript:')
+				event.preventDefault()
+				const executeClick = function() {
 					// ensures that pending messages (blur on a combo) resolve before click
 					if (window.running_combo !== undefined) {
-						setTimeout(executeClick);
-						return;
+						setTimeout(executeClick)
+						return
 					}
 					if (is_javascript) {
-						eval(anchor.href.substr(11));
-						return;
+						eval(anchor.href.substring(11))
+						return
 					}
-					var $anchor = $(anchor);
-					var jax;
-					var xhr = undefined;
-					requestTargetHeaders($anchor);
+					const $anchor = $(anchor)
+					let   jax
+					let   xhr = undefined
+					requestTargetHeaders($anchor)
 					if ($anchor.hasClass(settings.submit)) {
-						$anchor.addClass('disabled progress');
-						var $parent_form = $anchor.closest('form');
+						$anchor.addClass('disabled progress')
+						const $parent_form = $anchor.closest('form')
 						if ($parent_form.length) {
 							/*
 							TODO: 97556 Rework required properties first
 							if (!reportValidity($parent_form[0])) {
-								return;
+								return
 							}
 							*/
 							if ($parent_form.ajaxSubmit !== undefined) {
@@ -465,8 +460,8 @@ var requestTargetHeaders = function($element)
 									beforeSend: requestHeaders,
 									type:       $parent_form.attr('type'),
 									url:        urlAppend(anchor.href, anchor.search)
-								}));
-								xhr = $parent_form.data('jqxhr');
+								}))
+								xhr = $parent_form.data('jqxhr')
 							}
 							else {
 								xhr = $.ajax(jax = $.extend(ajax, {
@@ -474,9 +469,9 @@ var requestTargetHeaders = function($element)
 									data:       $parent_form.serialize(),
 									type:       $parent_form.attr('method'),
 									url:        urlAppend(anchor.href, anchor.search)
-								}));
+								}))
 							}
-							xhr.call_type = $parent_form.attr('method');
+							xhr.call_type = $parent_form.attr('method')
 						}
 					}
 					else if ($anchor.data('post')) {
@@ -485,28 +480,28 @@ var requestTargetHeaders = function($element)
 							data:       $anchor.data('post'),
 							type:       'post',
 							url:        urlAppend(anchor.href, anchor.search)
-						}));
+						}))
 					}
 					if (!xhr) {
 						xhr = $.ajax(jax = $.extend(ajax, {
 							beforeSend: requestHeaders,
 							url:        urlAppend(anchor.href, anchor.search)
-						}));
+						}))
 					}
-					xhr.ajax     = jax;
-					xhr.from     = anchor;
-					xhr.mouse_x  = (document.mouse === undefined) ? event.pageX : document.mouse.x;
-					xhr.mouse_y  = (document.mouse === undefined) ? event.pageY : document.mouse.y;
-					xhr.time_out = setTimeout(function() { $('body').css({ cursor: 'wait' }); }, 500);
+					xhr.ajax     = jax
+					xhr.from     = anchor
+					xhr.mouse_x  = (document.mouse === undefined) ? event.pageX : document.mouse.x
+					xhr.mouse_y  = (document.mouse === undefined) ? event.pageY : document.mouse.y
+					xhr.time_out = setTimeout(() => $('body').css({ cursor: 'wait' }), 500)
 					xhr.auto_empty_except = (settings.auto_empty_except !== undefined)
-						&& $anchor.is(settings.auto_empty_except);
-				};
-				executeClick();
+						&& $anchor.is(settings.auto_empty_except)
+				}
+				executeClick()
 				if (is_javascript) {
-					return false;
+					return false
 				}
 			}
-		});
+		})
 
 		//---------------------------------------------------------------- $('form[target^='#']').click
 		/**
@@ -514,25 +509,25 @@ var requestTargetHeaders = function($element)
 		 */
 		this.find('form[target^="#"]').add(this.filter('form[target^="#"]')).submit(function(event)
 		{
-			var form  = this;
-			var $form = $(form);
-			var jax;
-			var xhr;
-			event.preventDefault();
-			var executeClick = function() {
+			const form  = this
+			const $form = $(form)
+			let   jax
+			let   xhr
+			event.preventDefault()
+			const executeClick = function() {
 				// ensures that pending messages (blur on a combo) resolve before click
 				if (window.running_combo !== undefined) {
-					setTimeout(executeClick);
-					return;
+					setTimeout(executeClick)
+					return
 				}
-				requestTargetHeaders($form);
+				requestTargetHeaders($form)
 				if ($form.ajaxSubmit !== undefined) {
 					$form.ajaxSubmit(jax = $.extend(ajax, {
 						beforeSend: requestHeaders,
 						type:       $form.attr('type'),
 						url:        urlAppend(form.action, form.action.indexOf('?') > -1)
-					}));
-					xhr = $form.data('jqxhr');
+					}))
+					xhr = $form.data('jqxhr')
 				}
 				else {
 					xhr = $.ajax(jax = $.extend(ajax, {
@@ -540,14 +535,14 @@ var requestTargetHeaders = function($element)
 						data:       $form.serialize(),
 						type:       $form.attr('method'),
 						url:        urlAppend(form.action, form.action.indexOf('?') > -1)
-					}));
+					}))
 				}
-				xhr.ajax     = jax;
-				xhr.from     = form;
-				xhr.time_out = setTimeout(function() { $('body').css({ cursor: 'wait' }); }, 500);
-			};
-			executeClick();
-		});
+				xhr.ajax     = jax
+				xhr.from     = form
+				xhr.time_out = setTimeout(() => $('body').css({ cursor: 'wait' }), 500)
+			}
+			executeClick()
+		})
 
 		//--------------------------------------------------------------------------- window onpopstate
 		if ((settings.history !== undefined) && (settings.history.condition !== undefined)) {
@@ -559,12 +554,12 @@ var requestTargetHeaders = function($element)
 					&& (event.originalEvent.state.reload !== undefined)
 					&& event.originalEvent.state.reload
 				) {
-					document.location.reload();
+					document.location.reload()
 				}
-			});
+			})
 		}
 
-		return this;
-	};
+		return this
+	}
 
-})( jQuery );
+})( jQuery )

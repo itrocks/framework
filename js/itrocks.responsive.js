@@ -1,16 +1,16 @@
-var phone_max_width = 469;
-var tab_max_width   = 1013;
+const phone_max_width = 469
+const tab_max_width   = 1013
 
 //----------------------------------------------------------------------------------------- isPhone
 function isPhone()
 {
-	return document.body.clientWidth <= phone_max_width;
+	return document.body.clientWidth <= phone_max_width
 }
 
 function isTab()
 {
 	return (document.body.clientWidth > phone_max_width)
-		&& (document.body.clientWidth <= tab_max_width);
+		&& (document.body.clientWidth <= tab_max_width)
 }
 
 $(document).ready(function()
@@ -21,9 +21,9 @@ $(document).ready(function()
 	{
 		if (isPhone()) {
 			if (!$('body.min-left').length) {
-				$('#menu .minimize').click();
+				$('#menu .minimize').click()
 			}
 		}
-	});
+	})
 
-});
+})

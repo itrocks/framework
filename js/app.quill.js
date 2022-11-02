@@ -139,7 +139,7 @@ $(document).ready(function()
 			// - button positions
 			let   $actions = $table_tools.children('li')
 			const $row     = $cell.closest('tr')
-			const $table   = $row.closest('table');
+			const $table   = $row.closest('table')
 			(() => {
 				const cell   = $cell.offset()
 				const offset = $quill.offset()

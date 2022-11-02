@@ -14,37 +14,37 @@
 	{
 
 		//------------------------------------------------------------------------------------ settings
-		var settings = $.extend({
+		const settings = $.extend({
 			empty: ' 0.,'
-		}, options);
+		}, options)
 
 		//---------------------------------------------------------------------------------- isValueSet
-		var isValueSet = function(value)
+		const isValueSet = function(value)
 		{
-			var empty  = settings.empty.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-			var regexp = new RegExp('/' + empty + '/');
-			return value.replace(regexp, '').length;
-		};
+			const empty  = settings.empty.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+			const regexp = new RegExp('/' + empty + '/')
+			return value.replace(regexp, '').length
+		}
 
 		//--------------------------------------------------------------------------------------- keyup
 		this.keyup(function(event)
 		{
-			var $this = $(this);
+			const $this = $(this)
 			if ($this.data('no-change-state')) {
-				return;
+				return
 			}
-			var is_set  = isValueSet($this.val());
-			var was_set = $this.data('change_state_was_set');
+			const is_set  = isValueSet($this.val())
+			let   was_set = $this.data('change_state_was_set')
 			if (was_set === undefined) {
-				was_set = ($this.val() === String.fromCharCode(event.keyCode));
+				was_set = ($this.val() === String.fromCharCode(event.keyCode))
 			}
 			if ((is_set && !was_set) || (was_set && !is_set)) {
-				$this.data('change_state_was_set', is_set);
-				$this.change();
+				$this.data('change_state_was_set', is_set)
+				$this.change()
 			}
-		});
+		})
 
-		return this;
-	};
+		return this
+	}
 
-})( jQuery );
+})( jQuery )

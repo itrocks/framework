@@ -8,99 +8,90 @@
  */
 String.prototype.flexCmp = function(text)
 {
-	var text1 = this.simple();
-	var text2 = text.simple();
-	return (text1 === text2) ? 0 : ((text1 < text2) ? -1 : 1);
-};
+	const text1 = this.simple()
+	const text2 = text.simple()
+	return (text1 === text2) ? 0 : ((text1 < text2) ? -1 : 1)
+}
 
 //-------------------------------------------------------------------------------------- lLastParse
 String.prototype.lLastParse = function(sep, cnt, complete_if_not)
 {
-	var str = this;
-	if (cnt             === undefined) cnt             = 1;
-	if (complete_if_not === undefined) complete_if_not = true;
+	let str = this
+	if (cnt             === undefined) cnt             = 1
+	if (complete_if_not === undefined) complete_if_not = true
 	if (cnt > 1) {
-		str = this.lLastParse(sep, cnt - 1);
+		str = this.lLastParse(sep, cnt - 1)
 	}
-	var i = str.lastIndexOf(sep);
+	const i = str.lastIndexOf(sep)
 	if (i === -1) {
-		return complete_if_not ? str : '';
+		return complete_if_not ? str : ''
 	}
-	else {
-		return str.substr(0, i);
-	}
-};
+	return str.substring(0, i)
+}
 
 //------------------------------------------------------------------------------------------ lParse
 String.prototype.lParse = function(sep, cnt, complete_if_not)
 {
-	if (cnt             === undefined) cnt             = 1;
-	if (complete_if_not === undefined) complete_if_not = true;
-	var i = -1;
+	if (cnt             === undefined) cnt             = 1
+	if (complete_if_not === undefined) complete_if_not = true
+	let i = -1
 	while (cnt --) {
-		i = this.indexOf(sep, i + 1);
+		i = this.indexOf(sep, i + 1)
 	}
 	if (i === -1) {
-		return complete_if_not ? this : '';
+		return complete_if_not ? this : ''
 	}
-	else {
-		return this.substr(0, i);
-	}
-};
+	return this.substring(0, i)
+}
 
 //-------------------------------------------------------------------------------------------- repl
 String.prototype.repl = function(from, to)
 {
-	var replaced = '';
-	var start    = 0;
-	var length   = from.length;
-	var i        = this.indexOf(from, start);
+	let   replaced = ''
+	let   start    = 0
+	const length   = from.length
+	let   i        = this.indexOf(from, start)
 	while (i > -1) {
 		if (i > start) {
-			replaced += this.substring(start, i);
+			replaced += this.substring(start, i)
 		}
-		replaced += to;
-		start     = i + length;
-		i         = this.indexOf(from, start);
+		replaced += to
+		start     = i + length
+		i         = this.indexOf(from, start)
 	}
-	replaced += this.substring(start);
-	return replaced;
-};
+	return replaced + this.substring(start)
+}
 
 //-------------------------------------------------------------------------------------- rLastParse
 String.prototype.rLastParse = function(sep, cnt, complete_if_not)
 {
-	var str = this;
-	if (cnt             === undefined) cnt             = 1;
-	if (complete_if_not === undefined) complete_if_not = false;
+	let str = this
+	if (cnt             === undefined) cnt             = 1
+	if (complete_if_not === undefined) complete_if_not = false
 	if (cnt > 1) {
-		str = this.rLastParse(sep, cnt - 1);
+		str = this.rLastParse(sep, cnt - 1)
 	}
-	var i = str.lastIndexOf(sep);
+	const i = str.lastIndexOf(sep)
 	if (i === -1) {
-		return complete_if_not ? str : '';
+		return complete_if_not ? str : ''
 	}
-	else {
-		return str.substr(i + sep.length);
-	}
-};
+	return str.substring(i + sep.length)
+}
 
 //------------------------------------------------------------------------------------------ rParse
 String.prototype.rParse = function(sep, cnt, complete_if_not)
 {
-	if (cnt             === undefined) cnt             = 1;
-	if (complete_if_not === undefined) complete_if_not = false;
-	var i = -1;
+	if (cnt             === undefined) cnt             = 1
+	if (complete_if_not === undefined) complete_if_not = false
+	let i = -1
 	while (cnt --) {
-		i = this.indexOf(sep, i + 1);
+		i = this.indexOf(sep, i + 1)
 	}
 	if (i === -1) {
-		return complete_if_not ? this : '';
+		return complete_if_not ? this : ''
 	}
-	else {
-		return this.substr(i + sep.length);
-	}
-};
+	return this.substring(i + sep.length)
+}
 
 //------------------------------------------------------------------------------------------ simple
 /**
@@ -111,23 +102,14 @@ String.prototype.rParse = function(sep, cnt, complete_if_not)
  */
 String.prototype.simple = function()
 {
-	return this.trim().toLowerCase().withoutAccents();
-};
-
-//-------------------------------------------------------------------------------------- startsWith
-if (!String.prototype.startsWith) {
-	String.prototype.startsWith = function(search, position)
-	{
-		position = position || 0;
-		return this.substr(position, search.length) === search;
-	};
+	return this.trim().toLowerCase().withoutAccents()
 }
 
 //----------------------------------------------------------------------------------------- ucfirst
 String.prototype.ucfirst = function()
 {
-	return this.charAt(0).toUpperCase() + this.slice(1);
-};
+	return this.charAt(0).toUpperCase() + this.slice(1)
+}
 
 //---------------------------------------------------------------------------------- withoutAccents
 /**
@@ -137,7 +119,7 @@ String.prototype.ucfirst = function()
  */
 String.prototype.withoutAccents = function()
 {
-	var str_simplify = {
+	const str_simplify = {
 		'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A',
 		'Ç': 'C',
 		'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E',
@@ -153,12 +135,12 @@ String.prototype.withoutAccents = function()
 		'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
 		'ý': 'y', 'ÿ': 'y',
 		'&': 'and'
-	};
-	var length = this.length;
-	var result = '';
-	for (var i = 0; i < length; i++) {
-		var char = str_simplify[this[i]];
-		result += (char === undefined) ? this[i] : char;
 	}
-	return result;
-};
+	const length = this.length
+	let   result = ''
+	for (let i = 0; i < length; i++) {
+		const char = str_simplify[this[i]]
+		result += (char === undefined) ? this[i] : char
+	}
+	return result
+}

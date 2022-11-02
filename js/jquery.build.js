@@ -6,7 +6,7 @@
 	 * key 1 : integer (priority) ; key 2 : arbitrary counter 0..n (push)
 	 * always sorted by priority
 	 */
-	window.jquery_build_callback = {};
+	let jquery_build_callback = {}
 
 	//-------------------------------------------------------------------------------------- Callback
 	/**
@@ -20,25 +20,25 @@
 	 * @param always     boolean
 	 * @param parameters array|mixed
 	 */
-	var Callback = function(event, selector, callback, priority, always, parameters)
+	const Callback = function(event, selector, callback, priority, always, parameters)
 	{
-		this.callback   = callback;
-		this.event      = event;
+		this.callback   = callback
+		this.event      = event
 		this.parameters = (parameters === undefined)
 			? null
-			: (((typeof parameters) === 'array') ? parameters : [parameters]);
-		this.priority   = priority;
-		this.selectors  = {};
+			: (((typeof parameters) === 'array') ? parameters : [parameters])
+		this.priority   = priority
+		this.selectors  = {}
 
-		var object    = this;
-		var selectors = chainedSelectors(selector);
+		const object    = this
+		const selectors = chainedSelectors(selector)
 		$.each(selectors, function(key, part) {
-			part = part.trim();
+			part = part.trim()
 			object.selectors[part] = always
 				? 'always'
-				: part.repl(' ', '>').split('>').pop().trim();
-		});
-	};
+				: part.repl(' ', '>').split('>').pop().trim()
+		})
+	}
 
 	//------------------------------------------------------------------------------- Callback.callIt
 	/**
@@ -46,19 +46,19 @@
 	 */
 	Callback.prototype.callIt = function($context)
 	{
-		var $elements = this.matchSelector($context);
+		const $elements = this.matchSelector($context)
 		if ($elements.length) {
 			if (this.event === 'call') {
-				this.callback.apply($elements, this.parameters);
+				this.callback.apply($elements, this.parameters)
 			}
 			else if (this.event === 'each') {
-				$elements.each(this.callback);
+				$elements.each(this.callback)
 			}
 			else {
-				$elements.on(this.event, this.callback);
+				$elements.on(this.event, this.callback)
 			}
 		}
-	};
+	}
 
 	//------------------------------------------------------------------------ Callback.matchSelector
 	/**
@@ -67,27 +67,25 @@
 	 */
 	Callback.prototype.matchSelector = function($context)
 	{
-		var $result = $();
+		let $result = $()
 		$.each(this.selectors, function(selector, end_selector) {
 			if (end_selector === 'always') {
 				if ((selector === 'body') || (selector === 'always') || $context.closest(selector).length) {
-					$result = $result.add($context);
+					$result = $result.add($context)
 				}
+				return;
 			}
-			else {
-				var $elements = $context.find(end_selector).filter(selector);
-				if ($elements.length) {
-					$result = $result.add($elements);
-				}
-				$elements = $context.filter(selector);
-				if ($elements.length) {
-					$result = $result.add($elements);
-				}
-
+			let $elements = $context.find(end_selector).filter(selector)
+			if ($elements.length) {
+				$result = $result.add($elements)
 			}
-		});
-		return $result;
-	};
+			$elements = $context.filter(selector)
+			if ($elements.length) {
+				$result = $result.add($elements)
+			}
+		})
+		return $result
+	}
 
 	//------------------------------------------------------------------------------- contextSelector
 	/**
@@ -99,23 +97,21 @@
 	 */
 	window.chainedSelectors = function(selector)
 	{
-		var selectors = Array.isArray(selector) ? selector : [selector];
-		var parts     = [''];
-		for (selector in selectors) if (selectors.hasOwnProperty(selector)) {
-			var add_parts = selectors[selector].split(',');
-			var new_parts = [];
-			var old_parts = parts;
-			for (var add_part in add_parts) if (add_parts.hasOwnProperty(add_part)) {
-				add_part = add_parts[add_part];
-				for (var old_part in old_parts) if (old_parts.hasOwnProperty(old_part)) {
-					old_part = old_parts[old_part];
-					new_parts.push((old_part + ' ' + add_part).trim().repl('  ', ' '));
+		const selectors = Array.isArray(selector) ? selector : [selector]
+		let   parts     = ['']
+		for (selector of selectors) {
+			const add_parts = selector.split(',')
+			const new_parts = []
+			const old_parts = parts
+			for (const add_part of add_parts) {
+				for (const old_part of old_parts) {
+					new_parts.push((old_part + ' ' + add_part).trim().repl('  ', ' '))
 				}
 			}
-			parts = new_parts;
+			parts = new_parts
 		}
-		return parts;
-	};
+		return parts
+	}
 
 	//----------------------------------------------------------------------------------- keySortPush
 	/**
@@ -130,22 +126,22 @@
 	 * @param key
 	 * @param value
 	 */
-	var keySortPush = function(object, key, value)
+	const keySortPush = function(object, key, value)
 	{
-		var array = object;
-		object = {};
-		for (var array_key in array) if (array.hasOwnProperty(array_key)) {
+		const array = object
+		object = {}
+		for (const array_key in array) if (array.hasOwnProperty(array_key)) {
 			if ((key !== undefined) && (array_key > key)) {
-				object[key] = value;
-				key         = undefined;
+				object[key] = value
+				key         = undefined
 			}
-			object[array_key] = array[array_key];
+			object[array_key] = array[array_key]
 		}
 		if (key !== undefined) {
-			object[key] = value;
+			object[key] = value
 		}
-		return object;
-	};
+		return object
+	}
 
 	//----------------------------------------------------------------------------------------- build
 	/**
@@ -161,57 +157,56 @@
 	 */
 	$.fn.build = function(event, selector, callback, parameters)
 	{
-		var $context = this;
+		const $context = this
 
 		// execute all callback functions
 		if (event === undefined) {
 			if ($context.length) {
-				var callbacks = window.jquery_build_callback;
-				for (var key in callbacks) if (callbacks.hasOwnProperty(key)) {
-					callbacks[key].callIt($context);
+				for (const callback of Object.values(jquery_build_callback)) {
+					callback.callIt($context)
 				}
 			}
-			return this;
+			return this
 		}
 
 		// add a callback function
-		var always   = false;
-		var priority = 1000;
+		let always   = false
+		let priority = 1000
 		if (callback === undefined) {
 			if (event.always !== undefined) {
-				always = event.always;
+				always = event.always
 			}
 			if (event.callback !== undefined) {
-				callback = event.callback;
+				callback = event.callback
 			}
 			if (
 				(event.priority !== undefined) && (event.priority !== false) && (event.priority !== true)
 			) {
-				priority = event.priority;
+				priority = event.priority
 			}
 			if (event.selector !== undefined) {
-				selector = event.selector;
+				selector = event.selector
 			}
-			event = (event.event === undefined) ? 'call' : event.event;
+			event = (event.event === undefined) ? 'call' : event.event
 		}
 		if (selector === undefined) {
-			selector = 'always';
+			selector = 'always'
 		}
 		if (((typeof parameters) === 'object') && parameters.priority) {
-			priority = parameters.priority;
-			delete parameters.priority;
+			priority = parameters.priority
+			delete parameters.priority
 			if (!Object.keys(parameters).length) {
-				parameters = undefined;
+				parameters = undefined
 			}
 		}
-		priority = (priority * 1000000) + Object.keys(window.jquery_build_callback).length;
-		callback = new Callback(event, selector, callback, priority, always, parameters);
-		window.jquery_build_callback = keySortPush(window.jquery_build_callback, priority, callback);
+		priority = (priority * 1000000) + Object.keys(jquery_build_callback).length
+		callback = new Callback(event, selector, callback, priority, always, parameters)
+		jquery_build_callback = keySortPush(jquery_build_callback, priority, callback)
 		if ($context.length) {
-			callback.callIt($context);
+			callback.callIt($context)
 		}
 
-		return this;
-	};
+		return this
+	}
 
-})( jQuery );
+})( jQuery )
