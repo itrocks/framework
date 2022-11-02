@@ -23,7 +23,7 @@ class Http
 	 *
 	 * @return string @values http, https
 	 */
-	public function getProtocol()
+	public function getProtocol() : string
 	{
 		// REQUEST_SCHEME is not 100% proof then use HTTPS.
 		// HTTPS is set only when https is used.

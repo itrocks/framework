@@ -1,8 +1,10 @@
 <?php
-namespace ITRocks\Framework;
+namespace ITRocks\Framework\Feature;
 
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\User;
 
 /**
  * Every _History class should extend this
@@ -21,15 +23,15 @@ abstract class History
 	/**
 	 * @default Date_Time::now
 	 * @link    DateTime
-	 * @var     Date_Time
+	 * @var     Date_Time|string
 	 */
-	public $date;
+	public Date_Time|string $date;
 
 	//------------------------------------------------------------------------------------ $new_value
 	/**
-	 * @var string|mixed
+	 * @var string
 	 */
-	public $new_value;
+	public string $new_value;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -40,19 +42,19 @@ abstract class History
 	 * @mandatory
 	 * @var       object
 	 */
-	public $object;
+	public object $object;
 
 	//------------------------------------------------------------------------------------ $old_value
 	/**
-	 * @var string|mixed
+	 * @var string
 	 */
-	public $old_value;
+	public string $old_value;
 
 	//-------------------------------------------------------------------------------- $property_name
 	/**
 	 * @var string
 	 */
-	public $property_name;
+	public string $property_name;
 
 	//----------------------------------------------------------------------------------------- $user
 	/**
@@ -60,17 +62,18 @@ abstract class History
 	 * @link    Object
 	 * @var     User
 	 */
-	public $user;
+	public User $user;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $object        object
-	 * @param $property_name string
+	 * @param $object        object|null
+	 * @param $property_name string|null
 	 * @param $old_value     mixed
 	 * @param $new_value     mixed
 	 */
 	public function __construct(
-		$object = null, $property_name = null, $old_value = null, $new_value = null
+		object $object = null, string $property_name = null, mixed $old_value = null,
+		mixed $new_value = null
 	) {
 		if (isset($object) && isset($property_name)) {
 			$this->object        = $object;
@@ -82,12 +85,6 @@ abstract class History
 				? Dao::getObjectIdentifier($new_value)
 				: strval($new_value);
 		}
-		if (is_null($this->date)) {
-			$this->date = Date_Time::now();
-		}
-		if (is_null($this->user)) {
-			$this->user = User::current();
-		}
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -96,32 +93,32 @@ abstract class History
 	 */
 	public function __toString() : string
 	{
-		return empty($this->date) ? '' : Loc::dateToLocale($this->date);
+		return Loc::dateToLocale($this->date);
 	}
 
 	//----------------------------------------------------------------------------------- hasNewValue
 	/**
 	 * @return boolean
 	 */
-	public function hasNewValue()
+	public function hasNewValue() : bool
 	{
-		return strlen($this->new_value);
+		return $this->new_value !== '';
 	}
 
 	//----------------------------------------------------------------------------------- hasOldValue
 	/**
 	 * @return boolean
 	 */
-	public function hasOldValue()
+	public function hasOldValue() : bool
 	{
-		return strlen($this->old_value);
+		return $this->old_value !== '';
 	}
 
 	//-------------------------------------------------------------------------------------- newClass
 	/**
 	 * @return string
 	 */
-	public function newClass()
+	public function newClass() : string
 	{
 		return $this->hasOldValue() ? 'change' : 'add';
 	}
@@ -130,7 +127,7 @@ abstract class History
 	/**
 	 * @return string
 	 */
-	public function oldClass()
+	public function oldClass() : string
 	{
 		return $this->hasNewValue() ? 'change' : 'remove';
 	}

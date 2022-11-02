@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework\History;
+namespace ITRocks\Framework\Feature\History;
 
 /**
  * Use it with classes which you want to save modifications history
@@ -16,6 +16,6 @@ interface Has_History
 	/**
 	 * @return string
 	 */
-	public function getHistoryClassName();
+	public function getHistoryClassName() : string;
 
 }

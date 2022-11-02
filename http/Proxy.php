@@ -5,7 +5,7 @@ namespace ITRocks\Framework\Http;
  * Http Proxy
  *
  * TODO SSL
- * TODO cookies translations when containing path= and domain= restrictions (eg automotoboutic.com)
+ * TODO cookies translations when containing path= and domain= restrictions (eg it.rocks)
  */
 class Proxy
 {
@@ -25,7 +25,7 @@ class Proxy
 	 *
 	 * @var string
 	 */
-	public $accept_charset = 'ISO-8859-1,utf-8;q=0.7,*;q=0.7';
+	public string $accept_charset = 'ISO-8859-1,utf-8;q=0.7,*;q=0.7';
 
 	//------------------------------------------------------------------------------------ $automatic
 	/**
@@ -35,7 +35,7 @@ class Proxy
 	 *
 	 * @var boolean
 	 */
-	public $automatic = true;
+	public bool $automatic = true;
 
 	//----------------------------------------------------------------------------------------- $data
 	/**
@@ -43,7 +43,7 @@ class Proxy
 	 *
 	 * @var string|string[]
 	 */
-	public $data = [];
+	public array|string $data = [];
 
 	//---------------------------------------------------------------------------------------- $errno
 	/**
@@ -51,7 +51,7 @@ class Proxy
 	 *
 	 * @var integer
 	 */
-	public $errno;
+	public int $errno;
 
 	//---------------------------------------------------------------------------------------- $error
 	/**
@@ -59,7 +59,7 @@ class Proxy
 	 *
 	 * @var string
 	 */
-	public $error;
+	public string $error;
 
 	//--------------------------------------------------------------------------------------- $method
 	/**
@@ -68,7 +68,7 @@ class Proxy
 	 * @values GET, POST
 	 * @var string
 	 */
-	public $method = Http::GET;
+	public string $method = Http::GET;
 
 	//------------------------------------------------------------------------------ $request_headers
 	/**
@@ -77,7 +77,7 @@ class Proxy
 	 *
 	 * @var string[]
 	 */
-	public $request_headers = [];
+	public array $request_headers = [];
 
 	//------------------------------------------------------------------------------------- $response
 	/**
@@ -85,7 +85,7 @@ class Proxy
 	 *
 	 * @var string
 	 */
-	private $response;
+	private string $response;
 
 	//----------------------------------------------------------------------------- $response_headers
 	/**
@@ -94,7 +94,7 @@ class Proxy
 	 *
 	 * @var string[]
 	 */
-	public $response_headers;
+	public array $response_headers;
 
 	//---------------------------------------------------------------------------------- $retry_count
 	/**
@@ -102,7 +102,7 @@ class Proxy
 	 *
 	 * @var integer
 	 */
-	public $retry_count = 0;
+	public int $retry_count = 0;
 
 	//---------------------------------------------------------------------------------- $retry_delay
 	/**
@@ -110,7 +110,7 @@ class Proxy
 	 *
 	 * @var integer milliseconds
 	 */
-	public $retry_delay = 1000;
+	public int $retry_delay = 1000;
 
 	//------------------------------------------------------------------------------------------ $url
 	/**
@@ -118,13 +118,13 @@ class Proxy
 	 *
 	 * @var string
 	 */
-	public $url = '';
+	public string $url = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $automatic boolean|string
 	 */
-	public function __construct($automatic = true)
+	public function __construct(bool|string $automatic = true)
 	{
 		$this->automatic = ($automatic === true);
 		if (is_string($automatic)) {
@@ -145,10 +145,10 @@ class Proxy
 	 * If prefix is given, this will return prefix[var]=val&prefix[var2]=val2&...
 	 *
 	 * @param $array  array|string data
-	 * @param $prefix string for internal use only (prefix on recursion)
+	 * @param $prefix string|null for internal use only (prefix on recursion)
 	 * @return string
 	 */
-	private function dataEncode($array, $prefix = null)
+	private function dataEncode(array|string $array, string $prefix = null) : string
 	{
 		$url = '';
 		if (!is_array($array)) {
@@ -189,7 +189,7 @@ class Proxy
 	 *
 	 * @param $buffer string
 	 */
-	public function debugRedirect(&$buffer)
+	public function debugRedirect(string $buffer)
 	{
 		if ($location = $this->getResponseHeader('Location')) {
 			$this->setResponse(
@@ -212,14 +212,14 @@ class Proxy
 	 * @param $deleted boolean if true, get deleted cookies too
 	 * @return Cookie[]
 	 */
-	public function getRequestCookies($deleted = true)
+	public function getRequestCookies(bool $deleted = true) : array
 	{
 		$cookies = [];
 		if (isset($this->request_headers['Cookie'])) {
 			foreach (explode('; ', $this->request_headers['Cookie']) as $text) {
 				$cookie = new Cookie();
 				[$cookie->name, $cookie->value] = explode('=', $text);
-				if ($deleted || !($cookie->value == 'deleted')) {
+				if ($deleted || !($cookie->value === 'deleted')) {
 					$cookies[] = $cookie;
 				}
 			}
@@ -233,10 +233,10 @@ class Proxy
 	 *
 	 * @return string
 	 */
-	public function getResponse()
+	public function getResponse() : string
 	{
 		$response = $this->response;
-		if ($this->getResponseHeader('Transfer-Encoding') == 'chunked') {
+		if ($this->getResponseHeader('Transfer-Encoding') === 'chunked') {
 			$new_response = '';
 			$length = strlen($response);
 			$position = 0;
@@ -253,10 +253,9 @@ class Proxy
 			} while ($size && ($position < $length));
 			$response = $new_response;
 		}
-		$response = ($this->getResponseHeader('Content-Encoding') === 'gzip')
+		return ($this->getResponseHeader('Content-Encoding') === 'gzip')
 			? gzinflate(substr($response, 10, -8))
 			: $response;
-		return $response;
 	}
 
 	//---------------------------------------------------------------------------- getResponseCookies
@@ -266,17 +265,17 @@ class Proxy
 	 * @param $deleted boolean if true, get deleted cookies too
 	 * @return Cookie[]
 	 */
-	public function getResponseCookies($deleted = true)
+	public function getResponseCookies(bool $deleted = true) : array
 	{
 		$cookies = [];
 		foreach ($this->response_headers as $header) {
 			$pos = strpos($header, ': ');
 			if ($pos !== false) {
-				$name = substr($header, 0, $pos);
+				$name  = substr($header, 0, $pos);
 				$value = substr($header, $pos + 2);
-				if ($name == 'Set-Cookie') {
+				if ($name === 'Set-Cookie') {
 					$cookie = Cookie::fromString($value);
-					if ($deleted || !($cookie->value == 'deleted')) {
+					if ($deleted || !($cookie->value === 'deleted')) {
 						$cookies[] = $cookie;
 					}
 				}
@@ -290,9 +289,9 @@ class Proxy
 	 * Get an HTTP response header from $response_headers
 	 *
 	 * @param $header string
-	 * @return string
+	 * @return ?string
 	 */
-	public function getResponseHeader($header)
+	public function getResponseHeader(string $header) : ?string
 	{
 		foreach ($this->response_headers as $response_header) {
 			$length = strlen($header) + 2;
@@ -309,7 +308,7 @@ class Proxy
 	 *
 	 * @param $header string
 	 */
-	public function removeResponseHeader($header)
+	public function removeResponseHeader(string $header)
 	{
 		$header .= ': ';
 		$length = strlen($header);
@@ -324,13 +323,15 @@ class Proxy
 	/**
 	 * Call HTTP request
 	 *
-	 * @param $url    string
-	 * @param $data   string|string[]
-	 * @param $method string GET, POST
-	 * @param $retry  integer
+	 * @param $url    string|null
+	 * @param $data   string|string[]|null
+	 * @param $method string|null GET, POST
+	 * @param $retry  integer|null
 	 * @return boolean true if job done, false if any error occurred
 	 */
-	public function request($url = null, $data = null, $method = null, $retry = null)
+	public function request(
+		string $url = null, array|string $data = null, string $method = null, int $retry = null
+	) : bool
 	{
 		if (isset($url))    $this->url    = $url;
 		if (isset($method)) $this->method = $method;
@@ -344,76 +345,73 @@ class Proxy
 		$host = $url['host'];
 		/** @noinspection PhpUsageOfSilenceOperatorInspection managed */
 		$f = @fsockopen(
-			(($url['scheme'] == 'https') ? 'ssl://' : '') . $host,
-			$url['port'] ? $url['port'] : (($url['scheme'] == 'https') ? 443 : 80),
+			(($url['scheme'] === 'https') ? 'ssl://' : '') . $host,
+			$url['port'] ?: (($url['scheme'] === 'https') ? 443 : 80),
 			$errno, $error, 30
 		);
-		if ($f) {
-			// parse and write request
-			$data = $this->dataEncode($this->data);
-			if ($this->method === Http::GET) {
-				if ($data && !str_contains($url['path'], '?')) {
-					$data = '?' . $data;
-				}
-				fputs($f, 'GET ' . $url['path'] . ($data ? $data : '') . ' HTTP/1.1' . CR . LF);
-			}
-			else {
-				fputs(
-					$f,
-					'POST ' . $url['path'] . (empty($url['query']) ? '' : ('?' . $url['query']))
-					. ' HTTP/1.1' . CR . LF
-				);
-			}
-			fputs($f, 'Host: ' . $host . CR . LF);
-			//fputs($f, 'X-Forwarded-For: ' . $_SERVER['REMOTE_ADDR'] . CR . LF);
-			if ($this->accept_charset) {
-				fputs($f, 'Accept-Charset: ' . $this->accept_charset . CR . LF);
-			}
-			foreach ($this->request_headers as $header => $value) {
-				if ($header == 'Content-Length') {
-					if ($this->method === Http::POST) {
-						fputs($f, 'Content-Length: ' . strlen($data) . CR . LF);
-					}
-				}
-				elseif (!in_array($header, ['Connection', 'Host'])) {
-					fputs($f, $header . ': ' . $value . CR . LF);
-				}
-			}
-			fputs($f, 'Connection: close' . CR . LF . CR . LF);
-			if ($this->method === Http::POST) {
-				fputs($f, $data);
-			}
-			// read and parse response
-			$result = '';
-			while (!feof($f)) {
-				/** @noinspection PhpUsageOfSilenceOperatorInspection retry if connexion reset by peer */
-				$result .= @fgets($f, 128);
-			}
-			fclose($f);
-			if (str_contains($result, CR . LF . CR . LF)) {
-				[$headers, $response] = explode(CR . LF . CR . LF, $result, 2);
-			}
-			else {
-				$headers = $response = '';
-			}
-			$this->response_headers = explode(CR . LF, $headers);
-			$this->response         = $response;
-			if ($retry && !$headers && !$response) {
-				if ($this->retry_delay) {
-					usleep($this->retry_delay * 1000);
-				}
-				trigger_error("$this->url : retry $retry of $this->retry_count");
-				$this->request(null, null, null, $retry - 1);
-			}
-			return true;
-		}
-		else {
+		if (!$f) {
 			$this->errno            = $errno;
 			$this->error            = $error;
 			$this->response_headers = [];
 			$this->response         = '';
 			return false;
 		}
+		// parse and write request
+		$data = $this->dataEncode($this->data);
+		if ($this->method === Http::GET) {
+			if ($data && !str_contains($url['path'], '?')) {
+				$data = '?' . $data;
+			}
+			fputs($f, 'GET ' . $url['path'] . ($data ?: '') . ' HTTP/1.1' . CR . LF);
+		}
+		else {
+			fputs(
+				$f,
+				'POST ' . $url['path'] . (empty($url['query']) ? '' : ('?' . $url['query']))
+				. ' HTTP/1.1' . CR . LF
+			);
+		}
+		fputs($f, 'Host: ' . $host . CR . LF);
+		if ($this->accept_charset) {
+			fputs($f, 'Accept-Charset: ' . $this->accept_charset . CR . LF);
+		}
+		foreach ($this->request_headers as $header => $value) {
+			if ($header === 'Content-Length') {
+				if ($this->method === Http::POST) {
+					fputs($f, 'Content-Length: ' . strlen($data) . CR . LF);
+				}
+			}
+			elseif (!in_array($header, ['Connection', 'Host'])) {
+				fputs($f, $header . ': ' . $value . CR . LF);
+			}
+		}
+		fputs($f, 'Connection: close' . CR . LF . CR . LF);
+		if ($this->method === Http::POST) {
+			fputs($f, $data);
+		}
+		// read and parse response
+		$result = '';
+		while (!feof($f)) {
+			/** @noinspection PhpUsageOfSilenceOperatorInspection retry if connexion reset by peer */
+			$result .= @fgets($f, 128);
+		}
+		fclose($f);
+		if (str_contains($result, CR . LF . CR . LF)) {
+			[$headers, $response] = explode(CR . LF . CR . LF, $result, 2);
+		}
+		else {
+			$headers = $response = '';
+		}
+		$this->response_headers = explode(CR . LF, $headers);
+		$this->response         = $response;
+		if ($retry && !$headers && !$response) {
+			if ($this->retry_delay) {
+				usleep($this->retry_delay * 1000);
+			}
+			trigger_error("$this->url : retry $retry of $this->retry_count");
+			$this->request(null, null, null, $retry - 1);
+		}
+		return true;
 	}
 
 	//---------------------------------------------------------------------------------- sendResponse
@@ -422,7 +420,7 @@ class Proxy
 	 *
 	 * @param $send_headers boolean if set to false, headers won't be sent before response html source
 	 */
-	public function sendResponse($send_headers = true)
+	public function sendResponse(bool $send_headers = true)
 	{
 		if ($send_headers) {
 			$this->sendResponseHeaders();
@@ -470,7 +468,7 @@ class Proxy
 	 * @param $headers string[]
 	 * @param $reset   boolean
 	 */
-	public function setRequestHeaders(array $headers = [], $reset = false)
+	public function setRequestHeaders(array $headers = [], bool $reset = false)
 	{
 		$this->request_headers = $reset ? $headers : array_merge($this->request_headers, $headers);
 	}
@@ -479,7 +477,7 @@ class Proxy
 	/**
 	 * @param $response string
 	 */
-	public function setResponse($response)
+	public function setResponse(string $response)
 	{
 		$this->response = ($this->getResponseHeader('Content-Encoding') === 'gzip')
 			? gzencode($response)
@@ -492,13 +490,13 @@ class Proxy
 	 * @param $cookies Cookie[]
 	 * @param $replace boolean
 	 */
-	public function setResponseCookies(array $cookies = [], $replace = true)
+	public function setResponseCookies(array $cookies = [], bool $replace = true)
 	{
 		if ($replace) {
 			foreach ($this->response_headers as $key => $header) {
 				$pos = strpos($header, ': ');
 				if ($pos !== false) {
-					if (substr($header, 0, $pos) == 'Set-Cookie') {
+					if (substr($header, 0, $pos) === 'Set-Cookie') {
 						unset($this->response_headers[$key]);
 					}
 				}
@@ -516,9 +514,9 @@ class Proxy
 	 * @param $create boolean if true, the header will be created if it did not exist
 	 * @return boolean true if one or several headers have been changed or created
 	 */
-	public function setResponseHeader($header, $value, $create = false)
+	public function setResponseHeader(string $header, string $value, bool $create = false) : bool
 	{
-		$found = false;
+		$found  = false;
 		$length = strlen($header) + 2;
 		foreach ($this->response_headers as $key => $response_header) {
 			if (substr($response_header, 0, $length) === ($header . ': ')) {
@@ -539,18 +537,18 @@ class Proxy
 	 *
 	 * @param $method string Http::GET or Http::POST
 	 */
-	public function setStandardRequestHeaders($method = Http::GET)
+	public function setStandardRequestHeaders(string $method = Http::GET)
 	{
 		$this->method = $method;
 		$this->request_headers = [
-			'Host'            => isset($_SERVER['HTTP_HOST'])       ? $_SERVER['HTTP_HOST'] : 'local',
-			'User-Agent'      => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'itrocks',
+			'Host'            => $_SERVER['HTTP_HOST']       ?? 'local',
+			'User-Agent'      => $_SERVER['HTTP_USER_AGENT'] ?? 'itrocks',
 			'Accept'          => 'text/html;q=0.9,*/*;q=0.8',
 			'Accept-Language' => 'fr-FR,q=0.8,en-US;q=0.6,en;q=0.4',
 			'Accept-Encoding' => 'gzip,deflate',
 			'Accept-Charset'  => 'utf-8;q=0.8,ISO-8859-1,utf-8;q=0.7,*;q=0.6'
 		];
-		if ($method == Http::POST) {
+		if ($method === Http::POST) {
 			$this->request_headers['Content-Type'] = 'application/x-www-form-urlencoded';
 			// content length will be automatically calculated when calling request()
 			$this->request_headers['Content-Length'] = 0;
@@ -564,10 +562,10 @@ class Proxy
 	 * @param $prefix      string
 	 * @param $default_uri string default uri if server's PATH_INFO is empty
 	 */
-	public function setUrlByPrefix($prefix, $default_uri = '')
+	public function setUrlByPrefix(string $prefix, string $default_uri = '')
 	{
 		$uri = isset($_SERVER['PATH_INFO']) ? substr($_SERVER['PATH_INFO'], 1) : '';
-		$this->url = $prefix . ($uri ? $uri : $default_uri);
+		$this->url = $prefix . ($uri ?: $default_uri);
 	}
 
 }

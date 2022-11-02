@@ -7,7 +7,7 @@ namespace ITRocks\Framework\Html;
 class Parser
 {
 
-	//-------------------------------------------------------------------- Tag positionning constants
+	//--------------------------------------------------------------------- Tag positioning constants
 	const AFTER  = 'after';
 	const BEFORE = 'before';
 
@@ -17,7 +17,7 @@ class Parser
 	 *
 	 * @var string
 	 */
-	public $buffer;
+	public string $buffer;
 
 	//----------------------------------------------------------------------------------------- $head
 	/**
@@ -25,7 +25,7 @@ class Parser
 	 *
 	 * @var string
 	 */
-	public $head;
+	public string $head;
 
 	//----------------------------------------------------------------------------------- $links_from
 	/**
@@ -33,9 +33,11 @@ class Parser
 	 *
 	 * @var string[]
 	 */
-	private $links_from = [
+	private array $links_from = [
 		'http://{site_url}//',
 		'http://{site_url}/',
+		'https://{site_url}//',
+		'https://{site_url}/',
 		' domain={site_domain};',
 		' path=/',
 		'/{site_path}'
@@ -45,9 +47,11 @@ class Parser
 	/**
 	 * Replacement texts for html, Location and Set-Cookies headers
 	 *
-	 * @var string[]
+	 * @var array string[]
 	 */
-	private $links_to = [
+	private array $links_to = [
+		'/',
+		'/',
 		'/',
 		'/',
 		'',
@@ -62,7 +66,7 @@ class Parser
 	 * @example 'tsm'
 	 * @var string
 	 */
-	public $proxy_path;
+	public string $proxy_path;
 
 	//-------------------------------------------------------------------------------------- $scripts
 	/**
@@ -70,40 +74,40 @@ class Parser
 	 *
 	 * @var string[]
 	 */
-	public $scripts;
+	public array $scripts;
 
 	//---------------------------------------------------------------------------------- $site_domain
 	/**
 	 * The original site domain name
 	 *
-	 * @example 'automotoboutic.com'
+	 * @example 'it.rocks'
 	 * @var string
 	 */
-	public $site_domain;
+	public string $site_domain;
 
 	//------------------------------------------------------------------------------------ $site_path
 	/**
 	 * The original site page path
 	 *
-	 * @example tapis-auto-sur-mesure-
+	 * @example my-great-product-
 	 * @var string
 	 */
-	public $site_path;
+	public string $site_path;
 
 	//------------------------------------------------------------------------------------- $site_url
 	/**
 	 * The original site base URL
 	 *
-	 * @example 'www.automotoboutic.com'
+	 * @example 'www.it.rocks'
 	 * @var string
 	 */
-	public $site_url;
+	public string $site_url;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $html_buffer string
 	 */
-	public function __construct($html_buffer = '')
+	public function __construct(string $html_buffer = '')
 	{
 		$this->buffer = $html_buffer;
 	}
@@ -115,7 +119,7 @@ class Parser
 	 * @param $selector   string the selector for elements
 	 * @param $attributes string[] added attributes $attribute_value = string[$attribute_name]
 	 */
-	public function addAttributes($selector, array $attributes)
+	public function addAttributes(string $selector, array $attributes)
 	{
 		$i = 0;
 		while (($i = $this->selectorPos($selector, $i)) !== false) {
@@ -138,7 +142,7 @@ class Parser
 	 *             tag
 	 * @return integer the position of the closed '</tag>' into buffer
 	 */
-	public function closingTag($tag, $i, $at = self::AFTER)
+	public function closingTag(string $tag, int $i, string $at = self::AFTER) : int
 	{
 		$j = strpos($this->buffer, '>', $i) + 1;
 		if (in_array($tag, ['img', 'input', 'meta'])) {
@@ -156,7 +160,7 @@ class Parser
 				$j = strpos($this->buffer, '>', $j2);
 				$skip ++;
 			}
-			elseif ($skip) {
+			else {
 				$skip --;
 				if ($skip && ($at === self::BEFORE) && ($j !== false)) {
 					$j = strpos($this->buffer, '>', $j);
@@ -173,13 +177,14 @@ class Parser
 	/**
 	 * Constructs search-and-replace string using proxy and original site information
 	 *
-	 * @param $proxy_path  string
-	 * @param $site_domain string
-	 * @param $site_url    string
-	 * @param $site_path   string
+	 * @param $proxy_path  string|null
+	 * @param $site_domain string|null
+	 * @param $site_url    string|null
+	 * @param $site_path   string|null
 	 */
 	public function constructLinks(
-		$proxy_path = null, $site_domain = null, $site_url = null, $site_path = null
+		string $proxy_path = null, string $site_domain = null, string $site_url = null,
+		string $site_path = null
 	) {
 		if (isset($proxy_path))  $this->proxy_path  = $proxy_path;
 		if (isset($site_domain)) $this->site_domain = $site_domain;
@@ -208,9 +213,9 @@ class Parser
 	 * @param $selector string
 	 * @return boolean
 	 */
-	public function contains($selector)
+	public function contains(string $selector) : bool
 	{
-		return ($this->selectorPos($selector) !== false);
+		return $this->selectorPos($selector) !== false;
 	}
 
 	//------------------------------------------------------------------------------------------- cut
@@ -223,7 +228,7 @@ class Parser
 	 *          and the '</div>'
 	 * @param $selector  string
 	 */
-	public function cut($selector)
+	public function cut(string $selector)
 	{
 		$parts = $this->selectorParts($selector);
 		$content_only = isset($parts[':']['content']);
@@ -246,7 +251,7 @@ class Parser
 	 * @example 'Custom products'
 	 * @param $module string
 	 */
-	public function cutModule($module)
+	public function cutModule(string $module)
 	{
 		$i = strpos($this->buffer, '<!-- MODULE ' . $module . ' -->') + strlen($module) + 16;
 		$j = strpos($this->buffer, '<!-- /MODULE ' . $module . ' -->');
@@ -272,9 +277,9 @@ class Parser
 	 *
 	 * @example 'string.title=Configuration :', 'li:alt'
 	 * @param $string string
-	 * @return string|null
+	 * @return ?string
 	 */
-	public function get($string)
+	public function get(string $string) : ?string
 	{
 		$pos      = 0;
 		$selector = null;
@@ -321,10 +326,10 @@ class Parser
 	public function headersToProxy(array &$headers)
 	{
 		foreach ($headers as $key => $value) {
-			if (substr($value, 0, 10) === 'Location: ') {
+			if (str_starts_with($value, 'Location: ')) {
 				$headers[$key] = str_replace($this->links_from, $this->links_to, $value);
 			}
-			elseif (substr($value, 0, 12) === 'Set-Cookie: ') {
+			elseif (str_starts_with($value, 'Set-Cookie: ')) {
 				$headers[$key] = str_replace($this->links_from, $this->links_to, $value);
 			}
 		}
@@ -343,12 +348,12 @@ class Parser
 		foreach (func_get_args() as $arg) {
 			$parts = $this->selectorParts($arg);
 			$tag = $this->partsTag($parts);
-			array_push($page_begin, $this->partsToHtml($parts));
-			if ($tag == 'html') {
-				array_push($page_begin, $this->head);
+			$page_begin[] = $this->partsToHtml($parts);
+			if ($tag === 'html') {
+				$page_begin[] = $this->head;
 			}
 			array_unshift($page_end, '</' . $tag . '>');
-			if ($tag == 'body') {
+			if ($tag === 'body') {
 				array_unshift($page_end, join(LF, $this->scripts));
 			}
 		}
@@ -373,7 +378,7 @@ class Parser
 	 * @param $selector    string the element selector where the merged html will be appended into
 	 * @param $merged_html string the merged html
 	 */
-	public function merge($selector, $merged_html)
+	public function merge(string $selector, string $merged_html)
 	{
 		$tag = $this->partsTag($this->selectorParts($selector));
 		// remove merged html before / after element
@@ -402,7 +407,7 @@ class Parser
 	 * @param $parts array string['#'|'.'|':'][integer]
 	 * @return string
 	 */
-	private function partsTag(array $parts)
+	private function partsTag(array $parts) : string
 	{
 		return isset($parts['<']) ? reset($parts['<']) : 'div';
 	}
@@ -412,7 +417,7 @@ class Parser
 	 * @param $parts array string['#'|'.'|':'][integer]
 	 * @return string html code for parts
 	 */
-	private function partsToHtml(array $parts)
+	private function partsToHtml(array $parts) : string
 	{
 		$attributes = ['#' => 'id', DOT => 'class'];
 		$html = '<' . $this->partsTag($parts);
@@ -432,10 +437,10 @@ class Parser
 	 *
 	 * @example remove('div.classed', '#id')
 	 * @param $selectors       string|string[]
-	 * @param $until_selectors string|string[]
-	 * @return integer index of the last removed element
+	 * @param $until_selectors string|string[]|null
+	 * @return bool|integer index of the last removed element
 	 */
-	public function remove($selectors, $until_selectors = null)
+	public function remove(array|string $selectors, array|string $until_selectors = null) : bool|int
 	{
 		if (!is_array($selectors)) {
 			$selectors = [$selectors];
@@ -471,10 +476,11 @@ class Parser
 	 * @param $selector       string The element selector may contain ':content' to replace the element
 	 *                        content and not the element itself.
 	 * @param $replacement    string replacement html string
-	 * @param $until_selector string force end of $selector to the beginning of this other selector
-	 * @return integer index of the replaced element
+	 * @param $until_selector string|null force end of $selector to the beginning of this other selector
+	 * @return bool|integer index of the replaced element
 	 */
-	public function replace($selector, $replacement, $until_selector = null)
+	public function replace(string $selector, string $replacement, string $until_selector = null)
+		: bool|int
 	{
 		$i = $this->remove($selector, $until_selector);
 		if ($i !== false) {
@@ -524,23 +530,23 @@ class Parser
 	 * @param $selector string
 	 * @return array string[][]
 	 */
-	private function selectorParts($selector)
+	private function selectorParts(string $selector) : array
 	{
-		$parts = [];
+		$parts  = [];
 		$length = strlen($selector);
-		$what = '<';
-		$begin = 0;
+		$what   = '<';
+		$begin  = 0;
 		$ignore = false;
 		for ($pos = 0; $pos < $length; $pos++) {
 			if (str_contains('#.:[]', $selector[$pos])) {
 				if ($pos) {
 					$content = substr($selector, $begin, $pos - $begin);
 					if ($what === '[') {
-						if ($selector[$pos] == ']') {
+						if ($selector[$pos] === ']') {
 							[$key, $value] = explode('=', $content);
 							if (
-								(($value[0] == Q) && ($value[strlen($value) - 1] == Q))
-								|| (($value[0] == DQ) && ($value[strlen($value) - 1] == DQ))
+								(($value[0] === Q) && ($value[strlen($value) - 1] === Q))
+								|| (($value[0] === DQ) && ($value[strlen($value) - 1] === DQ))
 							) {
 								$value = substr($value, 1, -1);
 							}
@@ -576,27 +582,27 @@ class Parser
 	 *
 	 * @param $selector string ie 'div#id.class1.class2'
 	 * @param $i        integer starting position for search
-	 * @return integer|boolean false if not found
+	 * @return boolean|integer false if not found
 	 */
-	public function selectorPos($selector, $i = 0)
+	public function selectorPos(string $selector, int $i = 0) : bool|int
 	{
-		$found = true;
+		$found      = true;
 		$attributes = ['#' => 'id', DOT => 'class', '[' => ''];
-		$parts = $this->selectorParts($selector);
-		$tag = $this->partsTag($parts);
+		$parts      = $this->selectorParts($selector);
+		$tag        = $this->partsTag($parts);
 		while (($i = $this->tagPos($tag, $i)) !== false) {
 			// check attributes into <element ...>
-			$j = strpos($this->buffer, '>', $i);
+			$j      = strpos($this->buffer, '>', $i);
 			$buffer = substr($this->buffer, $i, $j - $i + 1);
 			// check attributes
 			foreach ($parts as $what => $list) if (isset($attributes[$what])) {
 				$found = true;
-				$attr = ($what == '[') ? null : $attributes[$what];
+				$attr  = ($what === '[') ? null : $attributes[$what];
 				foreach ($list as $name => $part) {
 					if (isset($attr)) $name = $attr;
-					if ($name == 'content') {
-						$ci = $j + 1;
-						$cj = $this->closingTag($tag, $i, self::BEFORE);
+					if ($name === 'content') {
+						$ci      = $j + 1;
+						$cj      = $this->closingTag($tag, $i, self::BEFORE);
 						$content = substr($this->buffer, $ci, $cj - $ci);
 						if ($content !== $part) {
 							$found = false;
@@ -636,9 +642,9 @@ class Parser
 	 *
 	 * @param $tag string ie 'div'
 	 * @param $i   integer starting position for search
-	 * @return integer|boolean false if not found
+	 * @return boolean|integer false if not found
 	 */
-	public function tagPos($tag, $i = 0)
+	public function tagPos(string $tag, int $i = 0) : bool|int
 	{
 		$i1 = strpos($this->buffer, '<' . $tag . '>', $i);
 		$i2 = strpos($this->buffer, '<' . $tag . SP, $i);

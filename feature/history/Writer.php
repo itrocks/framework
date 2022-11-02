@@ -1,11 +1,11 @@
 <?php
-namespace ITRocks\Framework\History;
+namespace ITRocks\Framework\Feature\History;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
-use ITRocks\Framework\History;
+use ITRocks\Framework\Feature\History;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Stringable;
@@ -22,12 +22,12 @@ abstract class Writer
 	/**
 	 * @var Has_History
 	 */
-	private static $before_write;
+	private static Has_History $before_write;
 
 	//------------------------------------------------------------------------------------ afterWrite
 	/**
 	 * @param $object Has_History
-	 * @param $link Data_Link
+	 * @param $link   Data_Link
 	 */
 	public static function afterWrite(Has_History $object, Data_Link $link)
 	{
@@ -52,7 +52,7 @@ abstract class Writer
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object Has_History
-	 * @param $link Data_Link
+	 * @param $link   Data_Link
 	 */
 	public static function beforeWrite(Has_History $object, Data_Link $link)
 	{
@@ -81,7 +81,7 @@ abstract class Writer
 	 * @param $after  Has_History
 	 * @return History[]
 	 */
-	private static function createHistory(Has_History $before, Has_History $after)
+	private static function createHistory(Has_History $before, Has_History $after) : array
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid history class name */
 		$history_class = new Reflection_Class(Builder::className($after->getHistoryClassName()));
