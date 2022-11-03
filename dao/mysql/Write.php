@@ -10,7 +10,7 @@ use ITRocks\Framework\Dao\Event;
 use ITRocks\Framework\Dao\Event\Property_Add;
 use ITRocks\Framework\Dao\Event\Property_Remove;
 use ITRocks\Framework\Dao\Option;
-use ITRocks\Framework\History\Has_History;
+use ITRocks\Framework\Feature\History\Has_History;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Mapper\Null_Object;

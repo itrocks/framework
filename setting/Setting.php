@@ -27,9 +27,10 @@ class Setting implements Validate\Except
 	/**
 	 * @getter getValue
 	 * @max_length 1000000000
-	 * @var Custom\Set|string|null string if serialized (for storage)
+	 * @notice type must be string first, or it will crash !
+	 * @var string|Custom\Set|null string if serialized (for storage)
 	 */
-	public Custom\Set|string|null $value = null;
+	public string|Custom\Set|null $value = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
