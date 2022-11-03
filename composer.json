@@ -32,7 +32,7 @@
 		"itrocks/quill":                         "^2.0",
 		"itrocks/quill-better-table":            "^0.1",
 		"jquery/jquery-mousewheel":              "^3.1",
-		"jquery-form/form":                      "^4.3",
+		"jquery-form/form":                      "^3.0",
 		"kensnyder/quill-image-resize-module":   "^1.0",
 		"netcarver/textile":                     "^3.7",
 		"oomphinc/composer-installers-extender": "^2.0",
