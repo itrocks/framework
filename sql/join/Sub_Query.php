@@ -5,43 +5,43 @@ use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Join;
 
 /**
- * Sql subquery join
+ * Sql sub-query join
  */
-class Subquery extends Join
+class Sub_Query extends Join
 {
 
 	//---------------------------------------------------------------------------------------- $query
 	/**
 	 * @var Builder\Select|string
 	 */
-	public $query;
+	public Builder\Select|string $query;
 
 	//---------------------------------------------------------------------------------------- $where
 	/**
 	 * @var Builder\Where|string
 	 */
-	public $where;
+	public Builder\Where|string $where;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $query Builder\Select|string
-	 * @param $where Builder\Where|string
+	 * @param $query Builder\Select|string|null
+	 * @param $where Builder\Where|string|null
 	 */
-	public function __construct($query = null, $where = null)
-	{
+	public function __construct(
+		Builder\Select|string $query = null, Builder\Where|string $where = null
+	) {
 		if (isset($query)) $this->query = $query;
 		if (isset($where)) $this->where = $where;
-		if (!isset($this->mode)) $this->mode = Join::INNER;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
 	/**
 	 * @return string
 	 */
-	public function toSql()
+	public function toSql() : string
 	{
-		return LF . 'INNER JOIN (' . strval($this->query) . ') ' . $this->foreign_alias
-			. ' ON ' . strval($this->where);
+		return LF . 'INNER JOIN (' . $this->query . ') ' . $this->foreign_alias
+			. ' ON ' . $this->where;
 	}
 
 }

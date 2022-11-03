@@ -13,9 +13,10 @@ abstract class Controller
 	/**
 	 * @param $custom_settings Set
 	 * @param $parameters      array
-	 * @return Set
+	 * @return ?Set
 	 */
 	public static function applyParametersToCustomSettings(Set &$custom_settings, array $parameters)
+		: ?Set
 	{
 		$did_change = false;
 		if (isset($parameters['delete_name'])) {
@@ -24,7 +25,7 @@ abstract class Controller
 		}
 		// keep it last, as load name could be sent on every calls
 		if (isset($parameters['load_name'])) {
-			$feature = isset($parameters[Feature::FEATURE]) ? $parameters[Feature::FEATURE] : null;
+			$feature = $parameters[Feature::FEATURE] ?? null;
 			/** @see Set::load */
 			$custom_settings = call_user_func_array(
 				[get_class($custom_settings), 'load'],

@@ -6,7 +6,7 @@ $(document).ready(function()
 	//------------------------------------------------------------------------------- getEditorConfig
 	/**
 	 * @param type string
-	 * @returns {{customConfig: string}}
+	 * @return {{customConfig: string}}
 	 */
 	const getEditorConfig = function(type)
 	{

@@ -20,7 +20,6 @@ colpick Color Picker / colpick.com
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  -o-user-select: none;
   user-select: none; }
 
 /*Color selection box with gradients*/

@@ -13,7 +13,7 @@ class Map_Delete
 	/**
 	 * @var Reflection_Property
 	 */
-	private $property;
+	private Reflection_Property $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -30,7 +30,7 @@ class Map_Delete
 	 * @param $foreign_object object
 	 * @return string
 	 */
-	public function buildQuery($object, $foreign_object)
+	public function buildQuery(object $object, object $foreign_object) : string
 	{
 		[$table, $field1, $field2, $id1, $id2] = Map::sqlElementsOf(
 			$object, $this->property, $foreign_object

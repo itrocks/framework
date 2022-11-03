@@ -8,7 +8,7 @@
  * @example formElementsNames($('form').get(0)
  * @example formElementsNames(0)
  * @param form HTMLElement|integer
- * @returns String[]
+ * @return String[]
  */
 window.formElementsNames = (form) =>
 {

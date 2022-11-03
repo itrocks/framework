@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Sql\Builder;
 
-use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Pre_Load;
@@ -21,37 +20,37 @@ class Select
 	/**
 	 * @var string
 	 */
-	private $class_name;
+	private string $class_name;
 
 	//------------------------------------------------------------------------------ $columns_builder
 	/**
 	 * @var Columns
 	 */
-	private $columns_builder;
+	private Columns $columns_builder;
 
 	//-------------------------------------------------------------------------------------- $options
 	/**
 	 * @var Option[]
 	 */
-	private $options;
+	private array $options;
 
 	//--------------------------------------------------------------------------------------- $select
 	/**
 	 * @var string[]
 	 */
-	private $select;
+	private array $select;
 
 	//------------------------------------------------------------------------------- $tables_builder
 	/**
 	 * @var Tables
 	 */
-	private $tables_builder;
+	private Tables $tables_builder;
 
 	//-------------------------------------------------------------------------------- $where_builder
 	/**
 	 * @var Where
 	 */
-	private $where_builder;
+	private Where $where_builder;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -65,13 +64,14 @@ class Select
 	 * @param $class_name  string base object class name
 	 * @param $properties  string[]|Column[]|null properties paths list
 	 *                     (default : all table columns will be read)
-	 * @param $where_array array|object where array expression, keys are columns names,
-	 *                     or filter object
-	 * @param $sql_link    Link
+	 * @param $where_array array|object|null where array expression, keys are columns names, or filter
+	 *                     object
+	 * @param $sql_link    Link|null
 	 * @param $options     Option|Option[] DAO options can be used for complex queries building
 	 */
 	public function __construct(
-		$class_name, array $properties = null, $where_array = null, Link $sql_link = null, $options = []
+		string $class_name, array $properties = null, array|object $where_array = null,
+		Link $sql_link = null, array|Option $options = []
 	) {
 		if (!is_array($options)) {
 			$options = $options ? [$options] : [];
@@ -86,9 +86,9 @@ class Select
 		}
 
 		$this->class_name      = $class_name;
-		$this->columns_builder = new Columns($class_name, $properties, $joins);
+		$this->columns_builder = new Columns($properties, $joins);
 		$this->tables_builder  = new Tables($class_name, $joins);
-		$this->where_builder   = new Where($class_name, $where_array, $sql_link, $joins);
+		$this->where_builder   = new Where($where_array, $sql_link, $joins);
 		$this->options         = $options;
 	}
 
@@ -108,11 +108,11 @@ class Select
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string[]
 	 */
-	private function buildOptions()
+	private function buildOptions() : array
 	{
 		$options      = [];
 		$this->select = [];
-		if ($translate = Option\Translate::in($this->options)) {
+		if (Option\Translate::in($this->options)) {
 			$this->columns_builder->translate = [];
 		}
 		foreach ($this->options as $option) {
@@ -123,16 +123,14 @@ class Select
 				$this->select[30] = SP . 'DISTINCT';
 			}
 			elseif ($option instanceof Option\Group_By) {
-				$columns = new Columns($this->class_name, $option->properties ?: ['id'], $this->joins);
+				$columns = new Columns($option->properties ?: ['id'], $this->joins);
 				$columns->expand_objects  = false;
 				$columns->resolve_aliases = false;
 				$group_by                 = $columns->build();
 				$options[10] = LF . 'GROUP BY ' . $group_by;
 			}
 			elseif ($option instanceof Option\Having) {
-				$having = new Where(
-					$this->class_name, $option->conditions, $this->getSqlLink(), $this->joins
-				);
+				$having          = new Where($option->conditions, $this->getSqlLink(), $this->joins);
 				$having->keyword = 'HAVING';
 				$options[11]     = $having->build();
 				$this->columns_builder->null_columns = array_merge(
@@ -147,10 +145,7 @@ class Select
 			}
 			elseif ($option instanceof Option\Sort) {
 				$columns = new Columns(
-					$this->class_name,
-					$option->getColumns($this->class_name),
-					$this->joins,
-					['DESC' => $option->reverse]
+					$option->getColumns($this->class_name), $this->joins, ['DESC' => $option->reverse]
 				);
 				$columns->translate = $this->columns_builder->translate;
 				$columns->replaceProperties($this->columns_builder);
@@ -181,7 +176,7 @@ class Select
 	 *
 	 * @return string
 	 */
-	public function buildQuery()
+	public function buildQuery() : string
 	{
 		// Call of buildOptions() and buildWhere() before buildColumns(), as all joins must be done to
 		// correctly deal with all properties.
@@ -199,12 +194,13 @@ class Select
 	 * Finalize SQL query
 	 *
 	 * @param $columns string columns list, separated by ', '
-	 * @param $tables  string tables list, including joins, without 'FROM'
 	 * @param $where   string|string[] where clause, including ' WHERE ' or empty if no filter on read
+	 * @param $tables  string tables list, including joins, without 'FROM'
 	 * @param $options string[]
 	 * @return string
 	 */
-	private function finalize($columns, $where, $tables, array $options)
+	private function finalize(string $columns, array|string $where, string $tables, array $options)
+		: string
 	{
 		if (is_array($where)) {
 			$sql            = '';
@@ -248,7 +244,7 @@ class Select
 	/**
 	 * @return string
 	 */
-	public function getClassName()
+	public function getClassName() : string
 	{
 		return $this->class_name;
 	}
@@ -257,7 +253,7 @@ class Select
 	/**
 	 * @return Joins
 	 */
-	public function getJoins()
+	public function getJoins() : Joins
 	{
 		return $this->columns_builder->getJoins();
 	}
@@ -266,16 +262,16 @@ class Select
 	/**
 	 * @return Link
 	 */
-	public function getSqlLink()
+	public function getSqlLink() : Link
 	{
 		return $this->where_builder->getSqlLink();
 	}
 
 	//--------------------------------------------------------------------------------- getWhereArray
 	/**
-	 * @return array|Func\Where|null
+	 * @return array|object|null
 	 */
-	public function getWhereArray()
+	public function getWhereArray() : array|object|null
 	{
 		return $this->where_builder->getWhereArray();
 	}
@@ -284,16 +280,16 @@ class Select
 	/**
 	 * @return Where
 	 */
-	public function getWhereBuilder()
+	public function getWhereBuilder() : Where
 	{
 		return $this->where_builder;
 	}
 
 	//-------------------------------------------------------------------------------------- restrict
 	/**
-	 * @param $where_array array|object
+	 * @param $where_array array|object|null
 	 */
-	public function restrict($where_array)
+	public function restrict(array|object|null $where_array)
 	{
 		$this->where_builder->restrict($where_array);
 	}

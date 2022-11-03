@@ -27,7 +27,7 @@ class Join
 	 *
 	 * @var string
 	 */
-	public $foreign_alias;
+	public string $foreign_alias;
 
 	//-------------------------------------------------------------------------------- $foreign_class
 	/**
@@ -35,7 +35,7 @@ class Join
 	 *
 	 * @var string
 	 */
-	public $foreign_class;
+	public string $foreign_class;
 
 	//------------------------------------------------------------------------------- $foreign_column
 	/**
@@ -43,15 +43,15 @@ class Join
 	 *
 	 * @var string
 	 */
-	public $foreign_column;
+	public string $foreign_column;
 
 	//----------------------------------------------------------------------------- $foreign_property
 	/**
 	 * The property that matches the foreign column (if set)
 	 *
-	 * @var Reflection_Property
+	 * @var ?Reflection_Property
 	 */
-	public $foreign_property;
+	public ?Reflection_Property $foreign_property = null;
 
 	//-------------------------------------------------------------------------------- $foreign_table
 	/**
@@ -59,29 +59,21 @@ class Join
 	 *
 	 * @var string
 	 */
-	public $foreign_table;
+	public string $foreign_table = '';
 
 	//----------------------------------------------------------------------------------------- $like
 	/**
 	 * @var boolean[] key 0 : primary join, keys 1..n : secondary joins
 	 */
-	public $like = [];
-
-	//--------------------------------------------------------------------------------- $linked_class
-	/**
-	 * Linked class join
-	 *
-	 * @var Join
-	 */
-	public $linked_class;
+	public array $like = [];
 
 	//---------------------------------------------------------------------------------- $linked_join
 	/**
 	 * Linked join
 	 *
-	 * @var Join
+	 * @var ?Join
 	 */
-	public $linked_join;
+	public ?Join $linked_join = null;
 
 	//--------------------------------------------------------------------------------- $master_alias
 	/**
@@ -89,7 +81,7 @@ class Join
 	 *
 	 * @var string
 	 */
-	public $master_alias;
+	public string $master_alias = '';
 
 	//-------------------------------------------------------------------------------- $master_column
 	/**
@@ -97,7 +89,7 @@ class Join
 	 *
 	 * @var string
 	 */
-	public $master_column;
+	public string $master_column = '';
 
 	//------------------------------------------------------------------------------ $master_property
 	/**
@@ -105,7 +97,7 @@ class Join
 	 *
 	 * @var Reflection_Property
 	 */
-	public $master_property;
+	public Reflection_Property $master_property;
 
 	//----------------------------------------------------------------------------------------- $mode
 	/**
@@ -114,7 +106,7 @@ class Join
 	 * @values INNER, LEFT, OUTER, RIGHT
 	 * @var string
 	 */
-	public $mode;
+	public string $mode = '';
 
 	//------------------------------------------------------------------------------------ $secondary
 	/**
@@ -124,7 +116,7 @@ class Join
 	 *
 	 * @var string[]
 	 */
-	public $secondary = [];
+	public array $secondary = [];
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -133,7 +125,7 @@ class Join
 	 * @values SIMPLE, OBJECT
 	 * @var string
 	 */
-	public $type = self::SIMPLE;
+	public string $type = self::SIMPLE;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -148,7 +140,7 @@ class Join
 	/**
 	 * @return string
 	 */
-	public function foreignSql()
+	public function foreignSql() : string
 	{
 		return $this->foreign_alias . DOT . $this->foreign_column;
 	}
@@ -157,7 +149,7 @@ class Join
 	/**
 	 * @return string
 	 */
-	public function masterSql()
+	public function masterSql() : string
 	{
 		return $this->master_alias . DOT . $this->master_column;
 	}
@@ -166,20 +158,22 @@ class Join
 	/**
 	 * Generate a new Sql_Join instance, with initialization of all its properties
 	 *
-	 * @param $mode           integer
+	 * @param $mode           string
 	 * @param $master_alias   string
 	 * @param $master_column  string
 	 * @param $foreign_table  string
 	 * @param $foreign_alias  string
 	 * @param $foreign_column string
 	 * @param $type           string
-	 * @param $foreign_class  string
-	 * @return Join
+	 * @param $foreign_class  string|null
+	 * @return static
 	 */
 	public static function newInstance(
-		$mode, $master_alias, $master_column, $foreign_alias, $foreign_table, $foreign_column,
-		$type = self::SIMPLE, $foreign_class = null
-	) {
+		string $mode, string $master_alias, string $master_column, string $foreign_alias,
+		string $foreign_table, string $foreign_column, string $type = self::SIMPLE,
+		string $foreign_class = null
+	) : static
+	{
 		$sql_join = new Join();
 		$sql_join->foreign_alias  = $foreign_alias;
 		$sql_join->foreign_class  = isset($foreign_class)
@@ -198,7 +192,7 @@ class Join
 	/**
 	 * @return string
 	 */
-	public function toSql()
+	public function toSql() : string
 	{
 		$sign = ($this->like[0] ?? false) ? 'LIKE' : '=';
 		$sql = LF . $this->mode . ' JOIN ' . BQ . $this->foreign_table . BQ . SP . $this->foreign_alias

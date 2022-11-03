@@ -39,9 +39,9 @@ abstract class Builder
 	 * Array properties will return null as no column should be associated to them.
 	 *
 	 * @param $property Reflection_Property
-	 * @return string|null
+	 * @return ?string
 	 */
-	public static function buildColumnName(Reflection_Property $property)
+	public static function buildColumnName(Reflection_Property $property) : ?string
 	{
 		$type = $property->getType();
 		return $type->isBasic()
@@ -67,7 +67,7 @@ abstract class Builder
 	 * @param $column_names string[]
 	 * @return string
 	 */
-	public static function buildColumns(array $column_names)
+	public static function buildColumns(array $column_names) : string
 	{
 		$sql_columns = '';
 		$i = 0;
@@ -88,7 +88,7 @@ abstract class Builder
 	 * @param $id    integer|integer[]
 	 * @return string
 	 */
-	public static function buildDelete($class, $id)
+	public static function buildDelete(Reflection_Class|string $class, array|int $id) : string
 	{
 		if ($class instanceof Reflection_Class) {
 			$class = $class->name;
@@ -131,13 +131,13 @@ abstract class Builder
 	/**
 	 * Build the SET part of a SQL INSERT or UPDATE query
 	 *
-	 * @param $class            string|Reflection_Class
+	 * @param $class            Reflection_Class|string
 	 * @param $write            array the data to write for each column : key is the column name
 	 * @param $write_properties Reflection_Property[] key is the column name
 	 * @return string
 	 */
 	protected static function buildSet(
-		string|Reflection_Class $class, array $write, array $write_properties
+		Reflection_Class|string $class, array $write, array $write_properties
 	) : string
 	{
 		$sql     = BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'SET' . SP;
@@ -171,7 +171,7 @@ abstract class Builder
 	 * @return string
 	 */
 	public static function buildUpdate(
-		string|Reflection_Class $class, array $write, $id, array $write_properties = []
+		string|Reflection_Class $class, array $write, array|int $id, array $write_properties = []
 	) : string
 	{
 		$sql_update  = static::UPDATE . SP . static::buildSet($class, $write, $write_properties);
@@ -197,7 +197,7 @@ abstract class Builder
 	 * @param $values string[] keys are columns names
 	 * @return string
 	 */
-	public static function buildValues(array $values)
+	public static function buildValues(array $values) : string
 	{
 		return join(', ', array_map([Value::class, 'escape'], $values));
 	}
@@ -207,14 +207,12 @@ abstract class Builder
 	 * Same as get_object_vars, but for objects that may have AOP / identifiers : keep only read
 	 * properties values
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return array
 	 */
-	public static function getObjectVars($object)
+	public static function getObjectVars(object $object) : array
 	{
 		$vars = [];
-		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new ReflectionClass($object))->getProperties() as $property) {
 			$value = $property->getValue($object);
 			if (is_array($value)) {
@@ -238,11 +236,11 @@ abstract class Builder
 	 * @param $path string
 	 * @return array First element is the master property path, second element is the foreign property name
 	 */
-	public static function splitPropertyPath($path)
+	public static function splitPropertyPath(string $path) : array
 	{
 		// deal with "ITRocks\Framework\Locale\Translation(text=document.name,language='fr')"
 		if (($par = strpos($path, '(')) && ($dot = strpos($path, DOT))) {
-			while (($dot !== false) && ($par < $dot)) {
+			while ($par < $dot) {
 				$close = strpos($path, ')', $par);
 				$par   = strpos($path, '(', $close) ?: strlen($path);
 				$dot   = strpos($path, DOT, $close);

@@ -50,9 +50,9 @@ li.action.export > a,
 li.actions > ul > li.export > a,
 ul.actions > li.export > a {
   background-image: url("img/export-24.svg"); }
-li.action.fileexport > a,
-li.actions > ul > li.fileexport > a,
-ul.actions > li.fileexport > a {
+li.action.file-export > a,
+li.actions > ul > li.file-export > a,
+ul.actions > li.file-export > a {
   background-image: url("img/export-24.svg"); }
 li.action.import > a,
 li.actions > ul > li.import > a,
@@ -70,15 +70,15 @@ li.action.merge > a,
 li.actions > ul > li.merge > a,
 ul.actions > li.merge > a {
   background-image: url("img/merge-24.svg"); }
-li.action.outputnext > a,
-li.actions > ul > li.outputnext > a,
-ul.actions > li.outputnext > a {
+li.action.output-next > a,
+li.actions > ul > li.output-next > a,
+ul.actions > li.output-next > a {
   background-image: url("img/next-16.svg");
   font-size: 0;
   padding-left: 8px; }
-li.action.outputprevious > a,
-li.actions > ul > li.outputprevious > a,
-ul.actions > li.outputprevious > a {
+li.action.output-previous > a,
+li.actions > ul > li.output-previous > a,
+ul.actions > li.output-previous > a {
   background-image: url("img/previous-16.svg");
   font-size: 0;
   padding-left: 8px; }

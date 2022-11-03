@@ -52,7 +52,7 @@ interface Column extends Field
 	 * Gets the SQL version of the column definition
 	 *
 	 * @param $primary_key boolean if false, no PRIMARY KEY will be added to columns
-	 * @returns string
+	 * @return string
 	 */
 	public function toSql(bool $primary_key = true) : string;
 

@@ -23,6 +23,6 @@ trait Has
 	 * @user invisible
 	 * @var Setting\User[]
 	 */
-	public $settings;
+	public array $settings;
 
 }

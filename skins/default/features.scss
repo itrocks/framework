@@ -55,7 +55,7 @@ ul.actions > li {
 		background-image: url('img/export-24.svg');
 	}
 
-	&.fileexport > a {
+	&.file-export > a {
 		background-image: url('img/export-24.svg');
 	}
 
@@ -75,13 +75,13 @@ ul.actions > li {
 		background-image: url('img/merge-24.svg');
 	}
 
-	&.outputnext > a {
+	&.output-next > a {
 		background-image: url('img/next-16.svg');
 		font-size: 0;
 		padding-left: 8px;
 	}
 
-	&.outputprevious > a {
+	&.output-previous > a {
 		background-image: url('img/previous-16.svg');
 		font-size: 0;
 		padding-left: 8px;

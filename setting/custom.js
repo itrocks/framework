@@ -1,7 +1,7 @@
 $(document).ready(function()
 {
-	let $body = $('body')
-	let article_header = 'article[data-class] > form > header, article[data-class] > header'
+	const $body = $('body')
+	const article_header = 'article[data-class] > form > header, article[data-class] > header'
 
 	//------------------------------------------------------------- article[data-class] > header > h2
 	/**
@@ -9,12 +9,12 @@ $(document).ready(function()
 	 */
 	$body.build('click', [article_header, '> h2'], function()
 	{
-		let $this = $(this)
+		const $this = $(this)
 		if ($this.data('stop-click')) {
 			$this.data('stop-click', '')
 			return
 		}
-		let $select = $this.parent().find('ul.select')
+		const $select = $this.parent().find('ul.select')
 		if ($select.is(':visible')) {
 			$('body').click()
 		}
@@ -22,7 +22,7 @@ $(document).ready(function()
 			$select.css('left', $this.position().left.toString() + 'px')
 			$select.css('min-width', $this.width().toString() + 'px')
 			$select.fadeIn(200, function() {
-				let clickEvent = function() {
+				const clickEvent = function() {
 					$('body').off('click', clickEvent)
 					$select.fadeOut(200)
 				}
@@ -41,11 +41,11 @@ $(document).ready(function()
 
 			drag: function(event, ui)
 			{
-				let $helper    = $(ui.helper)
-				let $inside    = undefined
+				const $helper    = $(ui.helper)
+				let   $inside
 				$('article, nav#menu, #notifications > .drop-on > li').each(function() {
-					let $element  = $(this)
-					let offset    = $element.offset()
+					const $element  = $(this)
+					const offset    = $element.offset()
 					offset.right  = offset.left + $element.width()
 					offset.bottom = offset.top + $element.height()
 					if (
@@ -79,7 +79,7 @@ $(document).ready(function()
 						.removeClass('inside-' + $helper.data('$inside').attr('class'))
 					$helper.removeData('$inside')
 				}
-				$helper.fadeIn(200);
+				$helper.fadeIn(200)
 			},
 
 			start: function()
@@ -93,7 +93,7 @@ $(document).ready(function()
 			stop: function(event, ui)
 			{
 				$(this).dropOn('stop')
-				let $inside = ui.helper.data('$inside')
+				const $inside = ui.helper.data('$inside')
 				if ($inside && $inside.is('article')) {
 					$(this).find('a').click()
 				}
@@ -102,7 +102,7 @@ $(document).ready(function()
 
 			helper: function()
 			{
-				let $this = $(this)
+				const $this = $(this)
 				return $('<div class="custom select helper">')
 					.css('z-index', zIndexInc())
 					.text($this.text())
@@ -112,10 +112,10 @@ $(document).ready(function()
 	})
 
 	//------------------------------------------------------------------------------------ li.deleted
-	let selector = '#responses > li.deleted[data-class="ITRocks\\\\Framework\\\\Setting"][data-id]'
+	const selector = '#responses > li.deleted[data-class="ITRocks\\\\Framework\\\\Setting"][data-id]'
 	$body.build('call', selector, function()
 	{
-		let id = $(this).data('id')
+		const id = $(this).data('id')
 		$('ul.custom.select > li[data-class="ITRocks\\\\Framework\\\\Setting"][data-id=' + id + ']')
 			.remove()
 	})
@@ -123,7 +123,7 @@ $(document).ready(function()
 	//------------------------------------------------------------------- ul.custom.select mousewheel
 	$body.build('mousewheel', 'ul.custom.select', function(event)
 	{
-		let $custom = $(this)
+		const $custom = $(this)
 		$custom.scrollTop($custom.scrollTop() - (event.deltaFactor * event.deltaY))
 	})
 
@@ -131,11 +131,11 @@ $(document).ready(function()
 	/**
 	 * this: jQuery an unique 'ul.custom.select' element
 	 */
-	let resize = function()
+	const resize = function()
 	{
-		let $custom = $(this)
-		let $window = $(window)
-		let top     = $custom.scrollTop()
+		const $custom = $(this)
+		const $window = $(window)
+		const top     = $custom.scrollTop()
 		$custom.css('height', '')
 		if ($custom.offset().top + $custom.height() > $window.height()) {
 			$custom.css(
@@ -151,7 +151,7 @@ $(document).ready(function()
 	$(window).resize(function()
 	{
 		$('ul.custom.select').each(function() {
-			let $custom = $(this)
+			const $custom = $(this)
 			resize.call($custom)
 		})
 	})

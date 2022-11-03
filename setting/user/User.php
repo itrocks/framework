@@ -22,9 +22,9 @@ class User extends Setting
 	 * If null, then the user setting has been build "from scratch" (default setting).
 	 *
 	 * @link Object
-	 * @var Setting
+	 * @var ?Setting
 	 */
-	public $setting;
+	public ?Setting $setting;
 
 	//----------------------------------------------------------------------------------------- $user
 	/**
@@ -33,7 +33,7 @@ class User extends Setting
 	 * @mandatory false
 	 * @var Framework\User
 	 */
-	public $user;
+	public Framework\User $user;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

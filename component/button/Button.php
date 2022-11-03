@@ -10,6 +10,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Confirm\Confirm;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools;
+use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 
 /**
@@ -17,6 +18,9 @@ use ITRocks\Framework\View;
  */
 class Button
 {
+
+	//---------------------------------------------------------------------------------------- CLASS_
+	const CLASS_ = 'class';
 
 	//----------------------------------------------------------------------------------------- COLOR
 	const COLOR = 'color';
@@ -65,6 +69,7 @@ class Button
 	 * More classes for the button
 	 * This is css style, eg 'pressed' or 'if-edit-press'
 	 *
+	 * @getter
 	 * @user hidden
 	 * @var string
 	 */
@@ -250,9 +255,11 @@ class Button
 		elseif ($key === self::SUB_BUTTONS) {
 			$this->sub_buttons = array_merge($this->sub_buttons, $option);
 		}
-		elseif (($key === self::CLASS) || (is_numeric($key) && str_starts_with($option, DOT))) {
-			$this->class .= (isset($this->class) ? SP : '')
-				. (is_numeric($key) ? substr($option, 1) : $option);
+		elseif (($key === self::CLASS_) || (is_numeric($key) && str_starts_with($option, DOT))) {
+			$this->class .= (isset($this->class) ? SP : '') . str_replace(
+				'_', '-',
+				Names::methodToProperty(is_numeric($key) ? substr($option, 1) : $option)
+			);
 		}
 		elseif ($key === self::DATA) {
 			$this->data = array_merge($this->data, $option);
@@ -287,6 +294,15 @@ class Button
 	public function conditionsApplyTo(object $object) : bool
 	{
 		return (new Code($this->conditions))->execute($object, true);
+	}
+
+	//-------------------------------------------------------------------------------------- getClass
+	/**
+	 * @return string
+	 */
+	protected function getClass() : string
+	{
+		return $this->class ?: str_replace('_', '-', Names::methodToProperty($this->feature));
 	}
 
 	//--------------------------------------------------------------------------------------- getLink

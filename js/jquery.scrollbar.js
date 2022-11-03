@@ -378,7 +378,7 @@
 	 *
 	 * @param $elements jQuery
 	 * @param size      string @values height, width
-	 * @returns float|number
+	 * @return float|number
 	 */
 	const maxScroll = function($elements, size)
 	{

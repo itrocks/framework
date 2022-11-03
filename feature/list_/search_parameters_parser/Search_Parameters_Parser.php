@@ -120,10 +120,10 @@ class Search_Parameters_Parser
 	/**
 	 * @param $search_value string
 	 * @param $property     ?Reflection_Property
-	 * @return Logical
+	 * @return Logical|string
 	 * @throws Exception
 	 */
-	protected function applyAnd(string $search_value, ?Reflection_Property $property) : Logical
+	protected function applyAnd(string $search_value, ?Reflection_Property $property) : Logical|string
 	{
 		if (!str_contains($search_value, '&')) {
 			return $this->applyNot($search_value, $property);
@@ -221,11 +221,11 @@ class Search_Parameters_Parser
 	/**
 	 * @param $search_value string
 	 * @param $property     ?Reflection_Property
-	 * @return Func\Comparison|Func\Logical
+	 * @return Func\Comparison|Func\Logical|string
 	 * @throws Exception
 	 */
 	protected function applyNot(string $search_value, ?Reflection_Property $property)
-		: Func\Comparison|Func\Logical
+		: Func\Comparison|Func\Logical|string
 	{
 		if (!str_starts_with(trim($search_value), '!')) {
 			return $this->applyComplexValue($search_value, $property);
@@ -245,10 +245,10 @@ class Search_Parameters_Parser
 	/**
 	 * @param $search_value string
 	 * @param $property     ?Reflection_Property
-	 * @return Logical
+	 * @return Logical|string
 	 * @throws Exception
 	 */
-	protected function applyOr(string $search_value, ?Reflection_Property $property) : Logical
+	protected function applyOr(string $search_value, ?Reflection_Property $property) : Logical|string
 	{
 		if (!str_contains($search_value, ',')) {
 			return $this->applyAnd($search_value, $property);

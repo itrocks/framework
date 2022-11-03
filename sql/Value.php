@@ -24,8 +24,9 @@ abstract class Value
 	 * @return string
 	 */
 	public static function escape(
-		$value, $double_backquote = false, Reflection_Property $property = null
-	) {
+		mixed $value, bool $double_backquote = false, Reflection_Property $property = null
+	) : string
+	{
 		$type = $property?->getType();
 		// no is_numeric(), as sql numeric search make numeric conversion of string fields
 		// eg WHERE NAME = 500 instead of '500' will give you '500' and '500L', which is not correct

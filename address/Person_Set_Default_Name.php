@@ -17,7 +17,7 @@ trait Person_Set_Default_Name
 	/**
 	 * Returns name and first name and last name if the name is different
 	 *
-	 * @returns string
+	 * @return string
 	 */
 	public function __toString() : string
 	{

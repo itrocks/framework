@@ -32,15 +32,15 @@ class Columns implements With_Build_Column
 	 * - each element being an array : the main key is the expression to be appended to the properties
 	 * names in the array, ie 'DESC' => ['property.path.1', 'property2')
 	 *
-	 * @var array|null
+	 * @var array
 	 */
-	private $append;
+	private array $append;
 
 	//------------------------------------------------------------------------------- $expand_objects
 	/**
 	 * @var boolean
 	 */
-	public $expand_objects = true;
+	public bool $expand_objects = true;
 
 	//--------------------------------------------------------------------------------- $null_columns
 	/**
@@ -48,7 +48,7 @@ class Columns implements With_Build_Column
 	 *
 	 * @var string[]
 	 */
-	public $null_columns = [];
+	public array $null_columns = [];
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -56,39 +56,37 @@ class Columns implements With_Build_Column
 	 *
 	 * @var string[]|Column[]|null
 	 */
-	private $properties;
+	private ?array $properties;
 
 	//------------------------------------------------------------------------------ $resolve_aliases
 	/**
 	 * @var boolean
 	 */
-	public $resolve_aliases = true;
+	public bool $resolve_aliases = true;
 
 	//------------------------------------------------------------------------------------ $translate
 	/**
-	 * @var array|null if null, don't translate. If array : will be filled with something looking like
+	 * @var ?array if null, don't translate. If array : will be filled with something looking like
 	 *      ['field'] => ['t1.translation']
 	 */
-	public $translate = null;
+	public ?array $translate = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Construct the SQL columns list section of a query
 	 *
-	 * @param $class_name string
-	 * @param $properties string[]|Column[] properties paths list
+	 * @param $properties string[]|Column[]|null properties paths list
 	 * @param $joins      Joins
 	 * @param $append     array appends expressions to some SQL columns
 	 * - each element being a string is an expression to append to each column, ie 'DESC'
 	 * - each element being an array : the main key is the expression to be appended to the properties
 	 * names in the array, ie 'DESC' => ['property.path.1', 'property2')
 	 */
-	public function __construct(
-		$class_name, array $properties = null, Joins $joins = null, array $append = null
-	) {
-		$this->joins      = $joins ? $joins : new Joins($class_name);
-		$this->properties = $properties;
+	public function __construct(?array $properties, Joins $joins, array $append = [])
+	{
 		$this->append     = $append;
+		$this->joins      = $joins;
+		$this->properties = $properties;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -107,17 +105,15 @@ class Columns implements With_Build_Column
 	 * @param $property string property path
 	 * @return string the SQL expression to be appended to the column name (with needed spaces)
 	 */
-	private function append($property)
+	private function append(string $property) : string
 	{
 		$appended = '';
-		if (isset($this->append)) {
-			foreach ($this->append as $append_key => $append) {
-				if (is_string($append)) {
-					$appended .= SP . $append;
-				}
-				elseif (is_array($append) && in_array($property, $append)) {
-					$appended .= SP . $append_key;
-				}
+		foreach ($this->append as $append_key => $append) {
+			if (is_string($append)) {
+				$appended .= SP . $append;
+			}
+			elseif (is_array($append) && in_array($property, $append)) {
+				$appended .= SP . $append_key;
 			}
 		}
 		return $appended;
@@ -131,7 +127,7 @@ class Columns implements With_Build_Column
 	 * @return string
 	 * @todo factorize
 	 */
-	public function build()
+	public function build() : string
 	{
 		if (isset($this->properties)) {
 			$class_name     = isset($this->translate) ? $this->joins->getStartingClassName() : null;
@@ -156,7 +152,7 @@ class Columns implements With_Build_Column
 							$this->translate[$path] = $alias;
 						}
 					}
-					catch (ReflectionException $exception) {
+					catch (ReflectionException) {
 					}
 					$join = $this->joins->add($path);
 					$sql_columns .= ($join && ($join->type !== Join::LINK))
@@ -261,7 +257,9 @@ class Columns implements With_Build_Column
 	 * @param $first_property boolean
 	 * @return string
 	 */
-	private function buildDaoSelectFunction($path, Func\Column $function, &$first_property)
+	private function buildDaoSelectFunction(
+		string $path, Func\Column $function, bool &$first_property
+	) : string
 	{
 		$sql_columns = '';
 		if ($first_property) {
@@ -278,11 +276,11 @@ class Columns implements With_Build_Column
 	 * Build SQL query section for a single column
 	 *
 	 * @param $path           string the past of the matching property
-	 * @param $join           Join
+	 * @param $join           ?Join
 	 * @param $first_property boolean
 	 * @return string
 	 */
-	private function buildNextColumn($path, $join, &$first_property)
+	private function buildNextColumn(string $path, ?Join $join, bool &$first_property) : string
 	{
 		$sql_columns = '';
 		if ($first_property) {
@@ -299,23 +297,24 @@ class Columns implements With_Build_Column
 	 * @param $path              string
 	 * @param $property          Reflection_Property
 	 * @param $join              Join
-	 * @param $linked_join       Join
+	 * @param $linked_join       ?Join
 	 * @param $linked_properties Reflection_Property[]
 	 * @param $first_property    boolean
 	 * @return string
 	 */
 	private function buildObjectColumn(
-		$path, Reflection_Property $property, Join $join = null, Join $linked_join = null,
-		array $linked_properties = null, &$first_property = null
-	) {
+		string $path, Reflection_Property $property, Join $join, ?Join $linked_join,
+		array $linked_properties, bool &$first_property
+	) : string
+	{
 		$sql           = '';
-		$foreign_alias = (isset($linked_join) && isset($linked_properties[$property->name]))
+		$foreign_alias = ($linked_join && isset($linked_properties[$property->name]))
 			? $linked_join->foreign_alias
 			: $join->foreign_alias;
 		$column_name = Sql\Builder::buildColumnName($property);
 		if ($column_name) {
-			($first_property) ? ($first_property = false) : ($sql = ', ');
-			if ((substr($column_name, 0, 3) === 'id_') && Store_Annotation::of($property)->isString()) {
+			$first_property ? ($first_property = false) : ($sql = ', ');
+			if (str_starts_with($column_name, 'id_') && Store_Annotation::of($property)->isString()) {
 				$column_name = substr($column_name, 3);
 			}
 			$sql .= $foreign_alias . DOT . BQ . $column_name . BQ
@@ -337,7 +336,7 @@ class Columns implements With_Build_Column
 	 * @param $first_property boolean
 	 * @return string
 	 */
-	private function buildObjectColumns($path, Join $join, &$first_property)
+	private function buildObjectColumns(string $path, Join $join, bool &$first_property) : string
 	{
 		$sql_columns = '';
 
@@ -363,8 +362,8 @@ class Columns implements With_Build_Column
 					$path, $property, $join, $linked_join, $linked_properties, $first_property
 				);
 			}
-			($first_property) ? ($first_property = false) : ($sql_columns .= ', ');
-			$foreign_alias = isset($linked_join) ? $linked_join->foreign_alias : $join->foreign_alias;
+			$first_property ? ($first_property = false) : ($sql_columns .= ', ');
+			$foreign_alias = $linked_join ? $linked_join->foreign_alias : $join->foreign_alias;
 			if (!$properties && $class->isAbstract()) {
 				$sql_columns .= $foreign_alias . DOT . BQ . 'class' . BQ
 					. (
@@ -384,8 +383,8 @@ class Columns implements With_Build_Column
 		}
 
 		else {
-			($first_property) ? ($first_property = false) : ($sql_columns .= ', ');
-			$foreign_alias = isset($linked_join) ? $linked_join->foreign_alias : $join->foreign_alias;
+			$first_property ? ($first_property = false) : ($sql_columns .= ', ');
+			$foreign_alias = $linked_join ? $linked_join->foreign_alias : $join->foreign_alias;
 			$sql_columns  .= $foreign_alias . '.id'
 				. ($this->resolve_aliases ? (' AS ' . BQ . $path . BQ) : '');
 		}

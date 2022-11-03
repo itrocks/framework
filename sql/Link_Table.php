@@ -17,25 +17,25 @@ class Link_Table
 	/**
 	 * @var string
 	 */
-	private $foreign_column;
+	private string $foreign_column = '';
 
 	//-------------------------------------------------------------------------------- $master_column
 	/**
 	 * @var string
 	 */
-	private $master_column;
+	private string $master_column = '';
 
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * @var Reflection_Property
 	 */
-	private $property;
+	private Reflection_Property $property;
 
 	//---------------------------------------------------------------------------------------- $table
 	/**
 	 * @var string
 	 */
-	private $table;
+	private string $table = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -53,9 +53,9 @@ class Link_Table
 	 * Replace string definitions by their values
 	 *
 	 * @param $table string table name
-	 * @return mixed
+	 * @return string
 	 */
-	private function applyTableNameDefinitions($table)
+	private function applyTableNameDefinitions(string $table) : string
 	{
 		if (str_contains($table, '{')) {
 			$master_table  = Dao::storeNameOf($this->property->final_class);
@@ -83,7 +83,7 @@ class Link_Table
 	 * @param $foreign_table  string
 	 * @return string
 	 */
-	private function defaultStoreName($master_table, $foreign_table)
+	private function defaultStoreName(string $master_table, string $foreign_table) : string
 	{
 		[$left, $right] = ($master_table < $foreign_table)
 			? [$master_table, $foreign_table]
@@ -102,9 +102,9 @@ class Link_Table
 	/**
 	 * @return string
 	 */
-	function foreignColumn()
+	function foreignColumn() : string
 	{
-		if (!isset($this->foreign_column)) {
+		if (!$this->foreign_column) {
 			$this->foreign_column = 'id_' . Names::setToSingle(
 				Foreignlink_Annotation::of($this->property)->value
 			);
@@ -117,9 +117,9 @@ class Link_Table
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
-	function masterColumn()
+	function masterColumn() : string
 	{
-		if (!isset($this->master_column)) {
+		if (!$this->master_column) {
 			$foreign_property_name = Foreign_Annotation::of($this->property)->value;
 			$class = $this->property->getType()->asReflectionClass();
 			/** @noinspection PhpUnhandledExceptionInspection property_exists */
@@ -139,10 +139,9 @@ class Link_Table
 	/**
 	 * @return string
 	 */
-	function table()
+	function table() : string
 	{
-
-		if (!isset($this->table)) {
+		if (!$this->table) {
 			$table = $this->property->getAnnotation('set_store_name')->value;
 			if ($table && is_string($table)) {
 				$table       = $this->applyTableNameDefinitions($table);

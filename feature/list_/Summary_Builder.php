@@ -367,7 +367,7 @@ class Summary_Builder
 		if (is_null($property)) {
 			// property path can be an Expressions::MARKER or 'representative' view field name
 			try {
-				$property = new Reflection_Property($this->joins->getClass(''), $path);
+				$property = new Reflection_Property($this->joins->getClass(), $path);
 			}
 			catch (ReflectionException) {
 			}

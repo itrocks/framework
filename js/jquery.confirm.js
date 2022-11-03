@@ -17,7 +17,7 @@
 		 * @param label     {string}   Label of the button.
 		 * @param callback  {function} The callback to call on click.
 		 * @param css_class {string}   The CSS class to apply to the button.
-		 * @returns {*|jQuery}
+		 * @return {*|jQuery}
 		 */
 		const buildButton = function(label, callback, css_class)
 		{

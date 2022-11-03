@@ -24,61 +24,61 @@ class Authentication
 	 * @values self::const
 	 * @var string
 	 */
-	public $action;
+	public string $action;
 
 	//---------------------------------------------------------------------------------------- $https
 	/**
 	 * @var boolean
 	 */
-	public $https;
+	public bool $https;
 
 	//---------------------------------------------------------------------------------------- $login
 	/**
 	 * @var string
 	 */
-	public $login;
+	public string $login;
 
 	//-------------------------------------------------------------------------------------- $referer
 	/**
 	 * @var string
 	 */
-	public $referer;
+	public string $referer;
 
 	//------------------------------------------------------------------------------- $remote_address
 	/**
 	 * @var string
 	 */
-	public $remote_address;
+	public string $remote_address;
 
 	//---------------------------------------------------------------------------------- $remote_host
 	/**
 	 * @var string
 	 */
-	public $remote_host;
+	public string $remote_host;
 
 	//---------------------------------------------------------------------------------- $remote_port
 	/**
 	 * @var string
 	 */
-	public $remote_port;
+	public string $remote_port;
 
 	//--------------------------------------------------------------------------- $request_time_float
 	/**
 	 * @var float
 	 */
-	public $request_time_float;
+	public float $request_time_float;
 
 	//----------------------------------------------------------------------------------- $session_id
 	/**
 	 * @var string
 	 */
-	public $session_id;
+	public string $session_id;
 
 	//---------------------------------------------------------------------------------------- $token
 	/**
 	 * @var string
 	 */
-	public $token = '';
+	public string $token = '';
 
 	//----------------------------------------------------------------------------------------- $user
 	/**
@@ -86,13 +86,13 @@ class Authentication
 	 * @store string
 	 * @var User
 	 */
-	public $user;
+	public User $user;
 
 	//----------------------------------------------------------------------------------- $user_agent
 	/**
 	 * @var string
 	 */
-	public $user_agent;
+	public string $user_agent;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -102,26 +102,25 @@ class Authentication
 	 * @param $action string
 	 * @param $token  string
 	 */
-	public function __construct($login = null, $action = null, $token = null)
+	public function __construct(string $login = '', string $action = '', string $token = '')
 	{
-		if (isset($login)) {
-			$this->login = $login;
-			$this->user  = Dao::searchOne(['login' => $login], User::class);
-			if (isset($action)) {
-				$this->action = $action;
-			}
-			if (isset($token)) {
-				$this->token = $token;
-			}
-			$this->https              = !empty($_SERVER['HTTPS']);
-			$this->referer            = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-			$this->remote_address     = isset($_SERVER['REMOTE_ADDR'])  ? $_SERVER['REMOTE_ADDR']  : '';
-			$this->remote_host        = isset($_SERVER['REMOTE_HOST'])  ? $_SERVER['REMOTE_HOST']  : '';
-			$this->remote_port        = isset($_SERVER['REMOTE_PORT'])  ? $_SERVER['REMOTE_PORT']  : '';
-			$this->request_time_float = $_SERVER['REQUEST_TIME_FLOAT'];
-			$this->session_id         = session_id();
-			$this->user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+		if (!$login) {
+			return;
 		}
+
+		$this->action = $action;
+		$this->login  = $login;
+		$this->token  = $token;
+		$this->user   = Dao::searchOne(['login' => $login], User::class);
+
+		$this->https              = !empty($_SERVER['HTTPS']);
+		$this->referer            = $_SERVER['HTTP_REFERER'] ?? '';
+		$this->remote_address     = $_SERVER['REMOTE_ADDR']  ?? '';
+		$this->remote_host        = $_SERVER['REMOTE_HOST']  ?? '';
+		$this->remote_port        = $_SERVER['REMOTE_PORT']  ?? '';
+		$this->request_time_float = $_SERVER['REQUEST_TIME_FLOAT'];
+		$this->session_id         = session_id();
+		$this->user_agent         = $_SERVER['HTTP_USER_AGENT'] ?? '';
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -137,7 +136,7 @@ class Authentication
 	/**
 	 * @return boolean
 	 */
-	public function validateAuthentication()
+	public function validateAuthentication() : bool
 	{
 		return $this->action && $this->login;
 	}

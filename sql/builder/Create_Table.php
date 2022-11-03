@@ -14,7 +14,7 @@ class Create_Table
 	/**
 	 * @var Table
 	 */
-	private $table;
+	private Table $table;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -32,7 +32,7 @@ class Create_Table
 	 *
 	 * @return string[]
 	 */
-	public function build()
+	public function build() : array
 	{
 		$columns = [];
 		foreach ($this->table->getColumns() as $column) {

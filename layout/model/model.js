@@ -36,7 +36,7 @@ $(document).ready(function()
 	//----------------------------------------------------------------------------- pageLayoutInput
 	/**
 	 * @param $page jQuery the page
-	 * @returns jQuery the <input name="page[layout][.]"> of the page
+	 * @return jQuery the <input name="page[layout][.]"> of the page
 	 */
 	const pageLayoutInput = function($page)
 	{

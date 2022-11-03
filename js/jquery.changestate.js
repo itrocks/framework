@@ -8,7 +8,7 @@
 	 * "empty characters" can be configured into options.empty.
 	 *
 	 * @param options array
-	 * @returns jQuery
+	 * @return jQuery
 	 */
 	$.fn.changeState = function(options)
 	{

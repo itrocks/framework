@@ -37,13 +37,13 @@ class Where implements With_Build_Column
 	 *
 	 * @var string[]
 	 */
-	public $built_columns = [];
+	public array $built_columns = [];
 
 	//-------------------------------------------------------------------------------------- $keyword
 	/**
 	 * @var string
 	 */
-	public $keyword = 'WHERE';
+	public string $keyword = 'WHERE';
 
 	//------------------------------------------------------------------------------------- $sql_link
 	/**
@@ -51,15 +51,15 @@ class Where implements With_Build_Column
 	 *
 	 * @var Link
 	 */
-	private $sql_link;
+	private Link $sql_link;
 
 	//---------------------------------------------------------------------------------- $where_array
 	/**
 	 * Where array expression, keys are columns names
 	 *
-	 * @var array|Func\Where
+	 * @var array|object|null
 	 */
-	private $where_array;
+	private array|object|null $where_array;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -70,16 +70,14 @@ class Where implements With_Build_Column
 	 * column.foreign_column : column must be a property of class, foreign_column must be a property
 	 *   of the column's var class
 	 *
-	 * @param $class_name  string base object class name
-	 * @param $where_array array|Func\Where where array expression, keys are columns names
-	 * @param $sql_link    Link
+	 * @param $where_array array|object|null where array expression, keys are columns names
+	 * @param $sql_link    Link|null
 	 * @param $joins       Joins
 	 */
-	public function __construct(
-		$class_name, $where_array = null, Link $sql_link = null, Joins $joins = null
-	) {
-		$this->joins       = $joins ? $joins : new Joins($class_name);
-		$this->sql_link    = $sql_link ? $sql_link : Dao::current();
+	public function __construct(array|object|null $where_array, Link|null $sql_link, Joins $joins)
+	{
+		$this->joins       = $joins;
+		$this->sql_link    = $sql_link ?: Dao::current();
 		$this->where_array = $where_array;
 	}
 
@@ -101,7 +99,7 @@ class Where implements With_Build_Column
 	 * @return string|string[] if array, this is several WHERE clauses for an
 	 *         optimized-union-instead-of-or.
 	 */
-	public function build($union_optimization = false)
+	public function build(bool $union_optimization = false) : array|string
 	{
 		$where_array = $this->where_array;
 		if (
@@ -127,13 +125,13 @@ class Where implements With_Build_Column
 	/**
 	 * Build SQL WHERE section for multiple where clauses
 	 *
-	 * @param $path   string|Expression Base property path for values
+	 * @param $path   Expression|string Base property path for values
 	 *                (if keys are numeric or structure keywords)
 	 * @param $array  array An array of where conditions
 	 * @param $clause string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
 	 * @return string
 	 */
-	private function buildArray($path, array $array, $clause)
+	private function buildArray(Expression|string $path, array $array, string $clause) : string
 	{
 		$property_path = strval($path);
 		$sql           = '';
@@ -226,12 +224,14 @@ class Where implements With_Build_Column
 	 * Build SQL WHERE section for an object
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $path        string Base property path pointing to the object
+	 * @param $path        Expression|string Base property path pointing to the object
 	 * @param $object      object The value is an object, which will be used for search
 	 * @param $root_object boolean if true, this is the root object : @link classes do not apply
 	 * @return string
 	 */
-	private function buildObject($path, $object, $root_object = false)
+	private function buildObject(
+		Expression|string $path, object $object, bool $root_object = false
+	) : string
 	{
 		if ($path instanceof Expression) {
 			trigger_error(
@@ -280,14 +280,16 @@ class Where implements With_Build_Column
 	/**
 	 * Build SQL WHERE section for given path and value
 	 *
-	 * @param $path      string|integer|Expression Property path starting by a root class property
+	 * @param $path      integer|string|Expression Property path starting by a root class property
 	 *                   (may be a numeric key, or a structure keyword, or an Expression)
 	 * @param $value     mixed May be a value, or a structured array of multiple where clauses
 	 * @param $clause    string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
 	 * @param $root_path boolean
 	 * @return string
 	 */
-	private function buildPath($path, $value, $clause, $root_path = false)
+	private function buildPath(
+		int|Expression|string $path, mixed $value, string $clause, bool $root_path = false
+	) : string
 	{
 		$property_path = strval($path);
 
@@ -336,12 +338,12 @@ class Where implements With_Build_Column
 	/**
 	 * Build SQL WHERE section for a unique value
 	 *
-	 * @param $path   string|Expression search property path or Expression
+	 * @param $path   Expression|string search property path or Expression
 	 * @param $value  mixed search property value
 	 * @param $prefix string Prefix for column name @values '', 'id_'
 	 * @return string
 	 */
-	private function buildValue($path, $value, $prefix = '')
+	private function buildValue(Expression|string $path, mixed $value, string $prefix = '') : string
 	{
 		$column  = $this->buildWhereColumn($path, $prefix);
 		$is_like = Value::isLike($value);
@@ -352,11 +354,11 @@ class Where implements With_Build_Column
 	//------------------------------------------------------------------------------ buildWhereColumn
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $path   string|Expression The property path or Expression
+	 * @param $path   Expression|string The property path or Expression
 	 * @param $prefix string A prefix for the name of the column @values '', 'id_'
 	 * @return string The column name, with table alias and back-quotes @example 't0.id_thing'
 	 */
-	public function buildWhereColumn($path, $prefix = '')
+	public function buildWhereColumn(Expression|string $path, string $prefix = '') : string
 	{
 		if (Expressions::isFunction($path)) {
 			$path = Expressions::$current->cache[$path];
@@ -376,10 +378,10 @@ class Where implements With_Build_Column
 			: $this->joins->add($property_path);
 		$link_join = $this->joins->getIdLinkJoin($property_path);
 
-		if (isset($link_join)) {
+		if ($link_join) {
 			$column = $link_join->foreign_alias . '.id';
 		}
-		elseif (isset($join)) {
+		elseif ($join) {
 			if ($join->type === Join::LINK) {
 				$column = $join->foreign_alias . DOT . BQ . rLastParse($property_path, DOT, 1, true) . BQ;
 			}
@@ -419,7 +421,7 @@ class Where implements With_Build_Column
 	/**
 	 * @return Joins
 	 */
-	public function getJoins()
+	public function getJoins() : Joins
 	{
 		return $this->joins;
 	}
@@ -429,14 +431,13 @@ class Where implements With_Build_Column
 	 * Gets the property of a path
 	 *
 	 * @param $path string
-	 * @return Reflection_Property|null
+	 * @return ?Reflection_Property
 	 */
-	public function getProperty($path)
+	public function getProperty(string $path) : ?Reflection_Property
 	{
 		[$master_path, $foreign_column] = Builder::splitPropertyPath($path);
 		$properties = $this->joins->getProperties($master_path);
-		$property   = $properties[$foreign_column] ?? null;
-		return $property;
+		return $properties[$foreign_column] ?? null;
 	}
 
 	//------------------------------------------------------------------------------------ getSqlLink
@@ -445,25 +446,25 @@ class Where implements With_Build_Column
 	 *
 	 * @return Link
 	 */
-	public function getSqlLink()
+	public function getSqlLink() : Link
 	{
 		return $this->sql_link;
 	}
 
 	//--------------------------------------------------------------------------------- getWhereArray
 	/**
-	 * @return array|Func\Where|null
+	 * @return array|object|null
 	 */
-	public function getWhereArray()
+	public function getWhereArray() : array|object|null
 	{
 		return $this->where_array;
 	}
 
 	//-------------------------------------------------------------------------------------- restrict
 	/**
-	 * @param $where_array array|object
+	 * @param $where_array array|object|null
 	 */
-	public function restrict($where_array)
+	public function restrict(array|object|null $where_array)
 	{
 		$this->where_array = $this->where_array
 			? ['AND' => array_merge($where_array, [$this->where_array])]

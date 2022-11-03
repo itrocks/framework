@@ -89,9 +89,7 @@ class Condition extends Column
 	public function toSql(With_Build_Column $builder, string $property_path) : string
 	{
 		$starting_class    = $builder->getJoins()->getStartingClass();
-		$condition_builder = (new Builder\Where(
-			$starting_class->getName(), $this->condition, null, $builder->getJoins()
-		))->build();
+		$condition_builder = (new Builder\Where($this->condition, null, $builder->getJoins()))->build();
 
 		$condition = (substr($condition_builder, 1, 5) === 'WHERE')
 			? trim(substr($condition_builder, 6))

@@ -99,12 +99,7 @@ class Sql_Link_Restrictor implements Registerable
 		}
 		$where_array = call_user_func_array($restriction, [$class_name, $builder->getJoins()]);
 		if ($where_array) {
-			$where_builder = new Where(
-				$builder->getJoins()->getStartingClassName(),
-				$where_array,
-				$builder->getSqlLink(),
-				$builder->getJoins()
-			);
+			$where_builder = new Where($where_array, $builder->getSqlLink(), $builder->getJoins());
 			$this->current_restrictions[] = $where_builder->build();
 		}
 	}

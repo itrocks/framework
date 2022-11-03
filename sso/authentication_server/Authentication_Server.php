@@ -26,7 +26,7 @@ class Authentication_Server implements Configurable, Registerable
 	 *
 	 * @var Application[]
 	 */
-	static private $applications;
+	static private array $applications;
 
 	//----------------------------------------------------------------------------------------- $salt
 	/**
@@ -34,14 +34,14 @@ class Authentication_Server implements Configurable, Registerable
 	 *
 	 * @var string
 	 */
-	static private $salt;
+	static private string $salt;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $configuration array
 	 */
-	public function __construct($configuration)
+	public function __construct(mixed $configuration)
 	{
 		if (isset($configuration[self::APPLICATIONS])) {
 			foreach ($configuration[self::APPLICATIONS] as $application) {
@@ -101,7 +101,7 @@ class Authentication_Server implements Configurable, Registerable
 	 * @param $user User
 	 * @return string
 	 */
-	public static function buildToken($user)
+	public static function buildToken(User $user) : string
 	{
 		return sha1($user->login . session_id() . self::$salt);
 	}
@@ -111,15 +111,16 @@ class Authentication_Server implements Configurable, Registerable
 	 * Get the application that has given sentence
 	 *
 	 * @param $sentence string
-	 * @return Application|null
+	 * @return ?Application
 	 */
-	public function getApplicationBySentence($sentence)
+	public function getApplicationBySentence(string $sentence) : ?Application
 	{
-		if ($sentence) {
-			foreach (self::$applications as $application) {
-				if ($application->hasSentence($sentence)) {
-					return $application;
-				}
+		if (!$sentence) {
+			return null;
+		}
+		foreach (self::$applications as $application) {
+			if ($application->hasSentence($sentence)) {
+				return $application;
 			}
 		}
 		return null;
@@ -131,7 +132,7 @@ class Authentication_Server implements Configurable, Registerable
 	 *
 	 * @return string
 	 */
-	public function getToken()
+	public function getToken() : string
 	{
 		return self::buildToken(User::current());
 	}
@@ -141,9 +142,9 @@ class Authentication_Server implements Configurable, Registerable
 	 * Check if application is accessible for connected user
 	 *
 	 * @param $name string
-	 * @return Application|null
+	 * @return ?Application
 	 */
-	public function hasApplication($name)
+	public function hasApplication(string $name) : ?Application
 	{
 		foreach (self::$applications as $application) {
 			if ($application->name === $name) {
@@ -180,7 +181,7 @@ class Authentication_Server implements Configurable, Registerable
 	 * @param $token       string
 	 * @return boolean
 	 */
-	public function validateToken($application, $login, $token)
+	public function validateToken(Application $application, string $login, string $token) : bool
 	{
 		// search for an authentication with token
 		$search = [

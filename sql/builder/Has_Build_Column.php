@@ -27,20 +27,22 @@ trait Has_Build_Column
 	 * @param $as              boolean If false, prevent 'AS' clause to be added
 	 * @param $resolve_objects boolean If true, a property path for an object will be replace with a
 	 *                         CONCAT of its representative values
-	 * @param $join            Join For optimisation purpose, if join is already known
+	 * @param $join            Join|null For optimisation purpose, if join is already known
 	 * @return string
 	 */
-	public function buildColumn($path, $as = true, $resolve_objects = false, Join $join = null)
+	public function buildColumn(
+		string $path, bool $as = true, bool $resolve_objects = false, Join $join = null
+	) : string
 	{
 		if (str_contains($path, BQ)) {
 			// already built (called twice on Expression)
 			return $path;
 		}
-		if (!isset($join)) {
+		if (!$join) {
 			$join = $this->joins->add($path);
 		}
 		[$master_path, $column_name] = Sql\Builder::splitPropertyPath($path);
-		if (!isset($join)) {
+		if (!$join) {
 			$join = $this->joins->getJoin($master_path);
 		}
 		if (
@@ -62,7 +64,6 @@ trait Has_Build_Column
 			);
 		}
 		else {
-			$force_column = null;
 			$force_column = (
 				($property = $this->joins->getProperty($master_path, $column_name))
 				&& Store_Annotation::of($property)->isFalse()

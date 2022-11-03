@@ -2,7 +2,7 @@
 
 article div.accordion {
 
-  &:not(last-child) {
+  &:not(:last-child) {
     margin-top: 10px;
   }
 

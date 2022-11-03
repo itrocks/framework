@@ -15,7 +15,7 @@ class Tables
 	/**
 	 * @var string
 	 */
-	private $class_name;
+	private string $class_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -24,10 +24,10 @@ class Tables
 	 * @param $class_name string
 	 * @param $joins      Joins
 	 */
-	public function __construct($class_name, Joins $joins = null)
+	public function __construct(string $class_name, Joins $joins)
 	{
 		$this->class_name = $class_name;
-		$this->joins = $joins ? $joins : new Joins($class_name);
+		$this->joins      = $joins;
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -36,7 +36,7 @@ class Tables
 	 *
 	 * @return string
 	 */
-	public function build()
+	public function build() : string
 	{
 		$alias  = $this->joins->rootAlias();
 		$tables = BQ . Dao::current()->storeNameOf($this->class_name) . BQ . SP . $alias;
@@ -50,7 +50,7 @@ class Tables
 	/**
 	 * @return Joins
 	 */
-	public function getJoins()
+	public function getJoins() : Joins
 	{
 		return $this->joins;
 	}

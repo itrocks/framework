@@ -48,7 +48,7 @@
 	/**
 	 * Increments z-index counter and return the new value
 	 *
-	 * @returns integer
+	 * @return integer
 	 */
 	window.zIndexInc = function()
 	{

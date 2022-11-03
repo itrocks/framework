@@ -17,14 +17,14 @@ class Selected
 	 * @mandatory
 	 * @var boolean
 	 */
-	public $selected;
+	public bool $selected;
 
 	//-------------------------------------------------------------------------------------- $setting
 	/**
 	 * @mandatory
 	 * @var Setting
 	 */
-	public $setting;
+	public Setting $setting;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -33,7 +33,7 @@ class Selected
 	 * @param $setting Setting
 	 * @param $selected boolean
 	 */
-	public function __construct(Setting $setting, $selected = false)
+	public function __construct(Setting $setting, bool $selected = false)
 	{
 		$this->setting  = $setting;
 		$this->selected = $selected;
@@ -43,7 +43,7 @@ class Selected
 	/**
 	 * @return mixed
 	 */
-	public function id()
+	public function id() : mixed
 	{
 		return Dao::getObjectIdentifier($this->setting);
 	}
@@ -52,7 +52,7 @@ class Selected
 	/**
 	 * @return string
 	 */
-	public function selectedClass()
+	public function selectedClass() : string
 	{
 		return $this->selected ? 'selected' : '';
 	}

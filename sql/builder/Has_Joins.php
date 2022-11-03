@@ -15,13 +15,13 @@ trait Has_Joins
 	 *
 	 * @var Joins
 	 */
-	private $joins;
+	private Joins $joins;
 
 	//-------------------------------------------------------------------------------------- getJoins
 	/**
 	 * @return Joins
 	 */
-	public function getJoins()
+	public function getJoins() : Joins
 	{
 		return $this->joins;
 	}

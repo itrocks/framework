@@ -17,21 +17,21 @@ class Settings extends Set
 	/**
 	 * @param $elements Setting[]
 	 */
-	public function __construct(array $elements = null)
+	public function __construct(array $elements = [])
 	{
 		$settings = [];
-		if (isset($elements)) {
-			foreach ($elements as $setting) {
-				$settings[$setting->code] = $setting;
-			}
+		foreach ($elements as $setting) {
+			$settings[$setting->code] = $setting;
 		}
-		parent::__construct(Builder::className('ITRocks\Framework\Setting'), $settings);
+		parent::__construct(Builder::className(Setting::class), $settings);
 	}
 
 	//------------------------------------------------------------------------------------------- add
 	/**
 	 * Sets a value for a given setting
 	 *
+	 * @noinspection PhpDocSignatureInspection $code, $value Setting : specialize
+	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $code, $value : specialize
 	 * @param $code  integer|Setting|string
 	 * @param $value Setting|string
 	 * @return Setting
@@ -60,6 +60,7 @@ class Settings extends Set
 
 	//------------------------------------------------------------------------------------------- get
 	/**
+	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $code : specialize
 	 * @param $code int|string
 	 * @return ?Setting
 	 */

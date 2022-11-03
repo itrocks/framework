@@ -21,9 +21,9 @@ class Application
 	 * in seconds
 	 *
 	 * @example 600
-	 * @var string
+	 * @var int
 	 */
-	public $max_session_time;
+	public int $max_session_time = 0;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
@@ -32,7 +32,7 @@ class Application
 	 * @example stats
 	 * @var string
 	 */
-	public $name;
+	public string $name;
 
 	//------------------------------------------------------------------------------------- $redirect
 	/**
@@ -41,7 +41,7 @@ class Application
 	 * @example /home
 	 * @var string
 	 */
-	public $redirect;
+	public string $redirect;
 
 	//------------------------------------------------------------------------------------- $sentence
 	/**
@@ -50,7 +50,7 @@ class Application
 	 * @example This is the kindly deadly incredible sentence of security!
 	 * @var string
 	 */
-	private $sentence;
+	private string $sentence;
 
 	//------------------------------------------------------------------------------------------ $uri
 	/**
@@ -59,7 +59,7 @@ class Application
 	 * @example http://sebastien.meudec.com/my_path_to_get_token
 	 * @var string
 	 */
-	public $uri;
+	public string $uri;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -67,7 +67,7 @@ class Application
 	 *
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = [])
+	public function __construct(array $configuration = [])
 	{
 		foreach ($configuration as $property_name => $value) {
 			$this->$property_name = $value;
@@ -81,7 +81,7 @@ class Application
 	 * @param $sentence string
 	 * @return boolean
 	 */
-	public function hasSentence($sentence)
+	public function hasSentence(string $sentence) : bool
 	{
 		return $sentence && ($this->sentence === $sentence);
 	}
@@ -92,7 +92,7 @@ class Application
 	 *
 	 * @return string
 	 */
-	public function isValid()
+	public function isValid() : string
 	{
 		return $this->name && $this->sentence && $this->uri;
 	}

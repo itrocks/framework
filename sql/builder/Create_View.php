@@ -13,7 +13,7 @@ class Create_View
 	/**
 	 * @var View
 	 */
-	private $view;
+	private View $view;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -31,7 +31,7 @@ class Create_View
 	 *
 	 * @return string[]
 	 */
-	public function build()
+	public function build() : array
 	{
 		$queries[] = 'CREATE VIEW' . LF . BQ . $this->view->getName() . BQ . LF
 			. 'AS' . SP

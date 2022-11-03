@@ -57,13 +57,12 @@ class Check_Controller implements Feature_Controller
 			$object->response     = 'OK';
 			$object->session_id   = session_id();
 			$object->session_name = session_name();
-			return json_encode($object);
 		}
 		else {
 			header($_SERVER['SERVER_PROTOCOL'] . SP . '403 Forbidden', true, 403);
 			$object->response = 'Forbidden';
-			return json_encode($object);
 		}
+		return json_encode($object);
 	}
 
 }

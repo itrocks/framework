@@ -1,4 +1,4 @@
-article div.accordion:not(last-child) {
+article div.accordion:not(:last-child) {
   margin-top: 10px; }
 article div.accordion div.accordion-header {
   display: flex;

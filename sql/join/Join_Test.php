@@ -8,7 +8,6 @@ use ITRocks\Framework\Tests\Objects\Order;
 use ITRocks\Framework\Tests\Objects\Order_Line;
 use ITRocks\Framework\Tests\Objects\Salesman;
 use ITRocks\Framework\Tests\Test;
-use ReflectionException;
 
 /**
  * Sql joins tests
@@ -17,9 +16,6 @@ class Join_Test extends Test
 {
 
 	//-------------------------------------------------------------------------------- testCollection
-	/**
-	 * @throws ReflectionException
-	 */
 	public function testCollection()
 	{
 		$assume = Join::newInstance(
@@ -68,9 +64,6 @@ class Join_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------------- testJoin
-	/**
-	 * @throws ReflectionException
-	 */
 	public function testJoin()
 	{
 		$assume = Join::newInstance(
@@ -94,16 +87,13 @@ class Join_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------------- testMap
-	/**
-	 * @throws ReflectionException
-	 */
 	public function testMap()
 	{
 		$assume = Join::newInstance(
 			Join::LEFT, 't1', 'id_salesman', 't2', 'test_salesmen', 'id', Join::SIMPLE, Salesman::class
 		);
 		$assume->linked_join = Join::newInstance(
-			Join::LEFT, 't0', 'id', 't1', 'test_orders_salesmen', 'id_order', Join::SIMPLE
+			Join::LEFT, 't0', 'id', 't1', 'test_orders_salesmen', 'id_order'
 		);
 		$assume->master_property = new Reflection_Property(Order::class, 'salesmen');
 
@@ -117,7 +107,7 @@ class Join_Test extends Test
 				'salesmen'      => $assume,
 				'salesmen.name' => null
 			],
-			$joins = Joins::newInstance(Order::class)
+			Joins::newInstance(Order::class)
 				->addMultiple(['date', 'number', 'salesmen.name'])
 				->getJoins(),
 			'one-level map property (Order::salesmen.name)'
@@ -125,9 +115,6 @@ class Join_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------ testObject
-	/**
-	 * @throws ReflectionException
-	 */
 	public function testObject()
 	{
 		$assume = Join::newInstance(
@@ -150,9 +137,6 @@ class Join_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testReverse
-	/**
-	 * @throws ReflectionException
-	 */
 	public function testReverse()
 	{
 		$assume = Join::newInstance(
@@ -201,7 +185,7 @@ class Join_Test extends Test
 			Join::LEFT, 't1', 'id_order', 't2', 'test_orders', 'id', Join::SIMPLE, Order::class
 		);
 		$assume->linked_join = Join::newInstance(
-			Join::LEFT, 't0', 'id', 't1', 'test_orders_salesmen', 'id_salesman', Join::SIMPLE
+			Join::LEFT, 't0', 'id', 't1', 'test_orders_salesmen', 'id_salesman'
 		);
 		$assume->master_property = new Reflection_Property(Order::class, 'salesmen');
 

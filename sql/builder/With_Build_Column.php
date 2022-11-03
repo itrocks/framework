@@ -13,18 +13,20 @@ interface With_Build_Column
 	//----------------------------------------------------------------------------------- buildColumn
 	/**
 	 * @param $path            string  The path of the property
-	 * @param $join            Join    For optimisation purpose, if join is already known
 	 * @param $as              boolean If false, prevent 'AS' clause to be added
 	 * @param $resolve_objects boolean If true, a property path for an object will be replace with a
 	 *                         CONCAT of its representative values
+	 * @param $join            Join|null For optimisation purpose, if join is already known
 	 * @return string
 	 */
-	public function buildColumn($path, $as = true, $resolve_objects = false, Join $join = null);
+	public function buildColumn(
+		string $path, bool $as = true, bool $resolve_objects = false, Join $join = null
+	) : string;
 
 	//-------------------------------------------------------------------------------------- getJoins
 	/**
 	 * @return Joins
 	 */
-	public function getJoins();
+	public function getJoins() : Joins;
 
 }

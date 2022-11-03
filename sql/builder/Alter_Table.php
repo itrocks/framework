@@ -18,7 +18,7 @@ class Alter_Table
 	 *
 	 * @var Column[]
 	 */
-	private $add_columns = [];
+	private array $add_columns = [];
 
 	//----------------------------------------------------------------------------- $add_foreign_keys
 	/**
@@ -26,7 +26,7 @@ class Alter_Table
 	 *
 	 * @var Foreign_Key[]
 	 */
-	private $add_foreign_keys = [];
+	private array $add_foreign_keys = [];
 
 	//-------------------------------------------------------------------------------- $alter_columns
 	/**
@@ -34,7 +34,7 @@ class Alter_Table
 	 *
 	 * @var Column[] key is the old name of the column
 	 */
-	private $alter_columns = [];
+	private array $alter_columns = [];
 
 	//---------------------------------------------------------------------------- $drop_foreign_keys
 	/**
@@ -44,22 +44,22 @@ class Alter_Table
 	 *
 	 * @var Foreign_Key[]
 	 */
-	private $drop_foreign_keys = [];
+	private array $drop_foreign_keys = [];
 
 	//---------------------------------------------------------------------------- $set_character_set
 	/**
 	 * Alter table character set (ie UTF8)
 	 *
 	 * @example DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci
-	 * @var string
+	 * @var ?string
 	 */
-	private $set_character_set = null;
+	private ?string $set_character_set = null;
 
 	//---------------------------------------------------------------------------------------- $table
 	/**
 	 * @var Table
 	 */
-	private $table;
+	private Table $table;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -99,7 +99,7 @@ class Alter_Table
 	 * @param $old_column_name string
 	 * @param $column          Column
 	 */
-	public function alterColumn($old_column_name, Column $column)
+	public function alterColumn(string $old_column_name, Column $column)
 	{
 		$this->alter_columns[$old_column_name] = $column;
 	}
@@ -123,7 +123,7 @@ class Alter_Table
 	 * @param $alter_primary_key boolean if false, will not send the PRIMARY KEY field modifier
 	 * @return string[]
 	 */
-	public function build($lock = false, $alter_primary_key = true)
+	public function build(bool $lock = false, bool $alter_primary_key = true) : array
 	{
 		$table_name = $this->table->getName();
 		$alter       = '';
@@ -179,7 +179,7 @@ class Alter_Table
 	 * @param $notice string @values Maintainer::const local
 	 * @return boolean true if table structure modification will not crash or break stored data
 	 */
-	public function check(mysqli $mysqli, $notice)
+	public function check(mysqli $mysqli, string $notice) : bool
 	{
 		$result = true;
 		// all checks must be done, so do not use || or && operations
@@ -203,7 +203,7 @@ class Alter_Table
 	 * @param $notice string @values Maintainer::const local
 	 * @return boolean true if adding foreign keys will not result in SQL errors because of orphans
 	 */
-	protected function checkForeignKeys(mysqli $mysqli, $notice)
+	protected function checkForeignKeys(mysqli $mysqli, string $notice) : bool
 	{
 		$orphans_count = 0;
 		$table_name    = $this->table->getName();
@@ -301,8 +301,9 @@ class Alter_Table
 	 * @return boolean true if data will not be destroyed by the types modifications
 	 */
 	protected function checkTypes(
-		/** @noinspection PhpUnusedParameterInspection */ mysqli $mysqli, $notice
-	) {
+		/** @noinspection PhpUnusedParameterInspection */ mysqli $mysqli, string $notice
+	) : bool
+	{
 		// TODO search data that will be broken by the reduction
 		/*
 		if ($this->alter_columns) {
@@ -325,8 +326,9 @@ class Alter_Table
 	 * @return boolean true if data will not be destroyed by the values modifications
 	 */
 	protected function checkValues(
-		/** @noinspection PhpUnusedParameterInspection */ mysqli $mysqli, $notice
-	) {
+		/** @noinspection PhpUnusedParameterInspection */ mysqli $mysqli, string $notice
+	) : bool
+	{
 		// TODO compare old and new column values : if some are removed, check if they were used
 		return true;
 	}
@@ -350,7 +352,7 @@ class Alter_Table
 	 *
 	 * @return boolean
 	 */
-	public function isReady()
+	public function isReady() : bool
 	{
 		return $this->add_columns
 			|| $this->add_foreign_keys
@@ -364,7 +366,7 @@ class Alter_Table
 	 * @param $character_set string
 	 * @param $collate       string
 	 */
-	public function setCharacterSet($character_set, $collate)
+	public function setCharacterSet(string $character_set, string $collate)
 	{
 		$this->set_character_set = "DEFAULT CHARSET=$character_set COLLATE=$collate";
 	}
@@ -374,7 +376,7 @@ class Alter_Table
 	 * @param $lock_tables string a list of table names, back-quoted and separated by ', '
 	 * @param $table       string a table name
 	 */
-	protected function sqlAddLockTable(&$lock_tables, $table)
+	protected function sqlAddLockTable(string &$lock_tables, string $table)
 	{
 		if (!str_contains($lock_tables, BQ . $table . BQ)) {
 			$lock_tables .= ', ' . BQ . $table . BQ . ' WRITE';

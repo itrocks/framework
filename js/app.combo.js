@@ -34,7 +34,7 @@ $(document).ready(function()
 	 * Returns false if do not match or if there is no data value
 	 *
 	 * @param $element string
-	 * @returns boolean
+	 * @return boolean
 	 */
 	const comboMatches = function($element)
 	{

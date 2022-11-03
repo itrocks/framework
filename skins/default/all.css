@@ -9,7 +9,7 @@
 @import '../../../../vendor/components/jqueryui/themes/smoothness/jquery-ui.css';
 @import '../../../../vendor/components/jqueryui/themes/smoothness/theme.css';
 @import '../../../../vendor/bappli/document-designer/skins/default.css';
-@import '../../../../vendor/quilljs/quill/quill.snow.css';
+@import '../../../../vendor/itrocks/quill/dist/quill.snow.css';
 
 @import 'html.css';
 

@@ -6,7 +6,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Feature\List_\Summary_Builder;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Sql\Builder;
-use ITRocks\Framework\Sql\Join\Subquery;
+use ITRocks\Framework\Sql\Join\Sub_Query;
 
 /**
  * Is greatest is a condition used to get the record where the column has the greatest value
@@ -64,7 +64,7 @@ class Is_Greatest implements Where_Inner
 			$class_name, $properties, null, $builder->getSqlLink(), [Dao::groupBy($this->properties)]
 		);
 		// join
-		$join = new Subquery($sub_builder);
+		$join = new Sub_Query($sub_builder);
 		$joins->addJoin($join);
 		// where
 		$where = '';

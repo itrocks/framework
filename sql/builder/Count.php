@@ -17,13 +17,13 @@ class Count
 	/**
 	 * @var Tables
 	 */
-	private $tables_builder;
+	private Tables $tables_builder;
 
 	//-------------------------------------------------------------------------------- $where_builder
 	/**
 	 * @var Where
 	 */
-	private $where_builder;
+	private Where $where_builder;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -41,14 +41,14 @@ class Count
 	 * @param $options     Option|Option[] DAO options can be used for complex queries building
 	 */
 	public function __construct(
-		$class_name, $where_array = null, Link $sql_link = null, $options = []
+		string $class_name, array|object $where_array, Link $sql_link, array|Option $options = []
 	) {
 		if (!is_array($options)) {
 			$options = $options ? [$options] : [];
 		}
 		$joins = new Joins($class_name, [], strval(Link_Property_Name::in($options)));
 		$this->tables_builder = new Tables($class_name, $joins);
-		$this->where_builder  = new Where($class_name, $where_array, $sql_link, $joins);
+		$this->where_builder  = new Where($where_array, $sql_link, $joins);
 	}
 
 	//------------------------------------------------------------------------------------ buildQuery
@@ -57,11 +57,11 @@ class Count
 	 *
 	 * @return string
 	 */
-	public function buildQuery()
+	public function buildQuery() : string
 	{
 		// call buildWhere() before buildTables(), to get joins ready
-		$where   = $this->where_builder->build(true);
-		$tables  = $this->tables_builder->build();
+		$where  = $this->where_builder->build(true);
+		$tables = $this->tables_builder->build();
 		return $this->finalize($where, $tables);
 	}
 
@@ -69,11 +69,11 @@ class Count
 	/**
 	 * Finalize SQL query
 	 *
-	 * @param $tables  string tables list, including joins, without 'FROM'
-	 * @param $where   string|string[] where clause, including ' WHERE ' or empty if no filter on read
+	 * @param $where  string|string[] where clause, including ' WHERE ' or empty if no filter on read
+	 * @param $tables string tables list, including joins, without 'FROM'
 	 * @return string
 	 */
-	private function finalize($where, $tables)
+	private function finalize(array|string $where, string $tables) : string
 	{
 		if (is_array($where)) {
 			$sql = '';
@@ -95,7 +95,7 @@ class Count
 	/**
 	 * @return Joins
 	 */
-	public function getJoins()
+	public function getJoins() : Joins
 	{
 		return $this->where_builder->getJoins();
 	}
@@ -104,7 +104,7 @@ class Count
 	/**
 	 * @return Link
 	 */
-	public function getSqlLink()
+	public function getSqlLink() : Link
 	{
 		return $this->where_builder->getSqlLink();
 	}

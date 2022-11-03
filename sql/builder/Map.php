@@ -23,7 +23,9 @@ abstract class Map
 	 * @return array [string $table, string $master_column, string $foreign_column,
 	 *               integer $id_object, integer $id_foreign_object]
 	 */
-	public static function sqlElementsOf($object, $property, $foreign_object)
+	public static function sqlElementsOf(
+		object $object, Reflection_Property $property, object $foreign_object
+	) : array
 	{
 		// build table and fields
 		$sql_link = new Link_Table($property);

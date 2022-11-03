@@ -16,12 +16,15 @@ class Buttons
 	//------------------------------------------------------------------------------------ getButtons
 	/**
 	 * @param $object_class object|string
-	 * @param $feature_name string
+	 * @param $feature_name string|null
 	 * @param $caption      string custom element caption (eg 'custom list' or 'custom form')
 	 * @param $target       string target component name
 	 * @return Button[]
 	 */
-	public function getButtons($caption, $object_class, $feature_name = null, $target = Target::MAIN)
+	public function getButtons(
+		string $caption, object|string $object_class, string $feature_name = null,
+		string $target = Target::MAIN
+	) : array
 	{
 		$link = $feature_name ? View::link($object_class, $feature_name) : View::link($object_class);
 		return [

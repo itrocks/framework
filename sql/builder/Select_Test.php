@@ -390,7 +390,6 @@ class Select_Test extends Test
 	//-------------------------------------------------------------------- testQuoteSalesmanStoreName
 	public function testQuoteSalesmanStoreName()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$store_name = Store_Name_Annotation::of(new Reflection_Class(Quote_Salesman::class))->value;
 		static::assertEquals('test_quote_salesmen', $store_name, __METHOD__);
 	}

@@ -24,21 +24,21 @@ abstract class Set
 	 *
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//-------------------------------------------------------------------------------------- $setting
 	/**
 	 * @store false Setting\Custom\Set is always saved into a Setting, we must not save it again
 	 * @var Setting
 	 */
-	public $setting;
+	public Setting $setting;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
-	 * @param $setting    Setting
+	 * @param $class_name string|null
+	 * @param $setting    Setting|null
 	 */
-	public function __construct($class_name = null, Setting $setting = null)
+	public function __construct(string $class_name = null, Setting $setting = null)
 	{
 		if (isset($class_name)) {
 			$this->setClassName($class_name);
@@ -55,7 +55,7 @@ abstract class Set
 	 *
 	 * @return integer number of changes made during cleanup : if 0, then cleanup was not necessary
 	 */
-	public abstract function cleanup();
+	public abstract function cleanup() : int;
 
 	//--------------------------------------------------------------------------------------- current
 	/**
@@ -146,7 +146,7 @@ abstract class Set
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Class
 	 */
-	public function getClass()
+	public function getClass() : Reflection_Class
 	{
 		/** @noinspection PhpUnhandledExceptionInspection */
 		return new Reflection_Class($this->getClassName());
@@ -156,7 +156,7 @@ abstract class Set
 	/**
 	 * @return string
 	 */
-	public function getClassName()
+	public function getClassName() : string
 	{
 		return Builder::className($this->class_name);
 	}
@@ -186,7 +186,7 @@ abstract class Set
 	/**
 	 * @return string
 	 */
-	public function getSourceClassName()
+	public function getSourceClassName() : string
 	{
 		// TODO LOWEST remove : this is for unserialize() compatibility with old public $class_name
 		if (!isset($this->class_name) && isset(get_object_vars($this)['class_name'])) {
@@ -253,7 +253,7 @@ abstract class Set
 	 * @param $selected_settings Selected[]
 	 * @return static[]
 	 */
-	public function selectedSettingsToCustomSettings(array $selected_settings)
+	public function selectedSettingsToCustomSettings(array $selected_settings) : array
 	{
 		$custom_settings = [];
 		foreach ($selected_settings as $selected_setting) {
@@ -266,7 +266,7 @@ abstract class Set
 	/**
 	 * @param $class_name string
 	 */
-	public function setClassName($class_name)
+	public function setClassName(string $class_name)
 	{
 		$this->class_name = Builder::current()->sourceClassName($class_name);
 	}
