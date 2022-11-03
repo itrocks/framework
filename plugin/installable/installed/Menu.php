@@ -15,19 +15,19 @@ class Menu extends Installed
 	/**
 	 * @var string
 	 */
-	public $block_title;
+	public string $block_title;
 
 	//--------------------------------------------------------------------------------- $item_caption
 	/**
 	 * @var string
 	 */
-	public $item_caption;
+	public string $item_caption;
 
 	//------------------------------------------------------------------------------------ $item_link
 	/**
 	 * @var string
 	 */
-	public $item_link;
+	public string $item_link;
 
 	//------------------------------------------------------------------------------------------- add
 	/**
@@ -36,7 +36,7 @@ class Menu extends Installed
 	 * @param $item_caption string
 	 * @return static
 	 */
-	public function add($block_title, $item_link, $item_caption)
+	public function add(string $block_title, string $item_link, string $item_caption) : static
 	{
 		return $this->addProperties(
 			['block_title' => $block_title, 'item_link' => $item_link, 'item_caption' => $item_caption]
@@ -50,7 +50,7 @@ class Menu extends Installed
 	 * @param $item_caption string
 	 * @return static
 	 */
-	public function remove($block_title, $item_link, $item_caption)
+	public function remove(string $block_title, string $item_link, string $item_caption) : static
 	{
 		return $this->removeProperties(
 			['block_title' => $block_title, 'item_link' => $item_link, 'item_caption' => $item_caption]

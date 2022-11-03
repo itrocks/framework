@@ -15,13 +15,13 @@ class Builder extends Installed
 	/**
 	 * @var string
 	 */
-	public $added_class;
+	public string $added_class;
 
 	//----------------------------------------------------------------------------------- $base_class
 	/**
 	 * @var string
 	 */
-	public $base_class;
+	public string $base_class;
 
 	//------------------------------------------------------------------------------------------- add
 	/**
@@ -29,7 +29,7 @@ class Builder extends Installed
 	 * @param $added_class string
 	 * @return static
 	 */
-	public function add($base_class, $added_class)
+	public function add(string $base_class, string $added_class) : static
 	{
 		return $this->addProperties(['base_class' => $base_class, 'added_class' => $added_class]);
 	}
@@ -38,9 +38,9 @@ class Builder extends Installed
 	/**
 	 * @param $base_class  string
 	 * @param $added_class string
-	 * @return static
+	 * @return ?static
 	 */
-	public function remove($base_class, $added_class)
+	public function remove(string $base_class, string $added_class) : ?static
 	{
 		return $this->removeProperties(['base_class' => $base_class, 'added_class' => $added_class]);
 	}

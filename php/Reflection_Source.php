@@ -309,8 +309,7 @@ class Reflection_Source
 					if (!$guard) {
 						trigger_error(
 							'Guard woke up on ' . $require_name
-							. ' into ' . $this->file_name . ' line ' . $token[2],
-							E_USER_NOTICE
+							. ' into ' . $this->file_name . ' line ' . $token[2]
 						);
 					}
 				}

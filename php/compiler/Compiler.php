@@ -142,7 +142,7 @@ class Compiler extends Cache
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $configuration array string[integer $wave_number][]
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
 		$this->full        = isset($_GET['Z']);
 		$this->text_output = new Text_Output(!isset($_POST['verbose']));

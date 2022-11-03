@@ -30,7 +30,7 @@ class Exhaustive_Class
 	 *
 	 * @var Assembled[]|Replaced[]|Source[]
 	 */
-	public $assembly;
+	public array $assembly;
 
 	//----------------------------------------------------------------------------- $class_components
 	/**
@@ -38,7 +38,7 @@ class Exhaustive_Class
 	 *
 	 * @var array string[][]
 	 */
-	protected $class_components = [];
+	protected array $class_components = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -54,7 +54,7 @@ class Exhaustive_Class
 	 * @param $files File[]
 	 * @return Assembled[]|Replaced[]|Source[]
 	 */
-	protected function assemblyFiles(array $files)
+	protected function assemblyFiles(array $files) : array
 	{
 		$assembly = [];
 		// First pass : Builder
@@ -83,7 +83,7 @@ class Exhaustive_Class
 	 * @param $annotation_name string
 	 * @return array string[][] value lists
 	 */
-	protected function classAnnotationValueLists($class_name, $annotation_name)
+	protected function classAnnotationValueLists(string $class_name, string $annotation_name) : array
 	{
 		$value_lists = [];
 		foreach ($this->classComponents($class_name) as $component) {
@@ -101,7 +101,7 @@ class Exhaustive_Class
 	 * @param $class_name string
 	 * @return string[] key is annotation name without @, value is the raw value of the annotation
 	 */
-	public function classAnnotations($class_name)
+	public function classAnnotations(string $class_name) : array
 	{
 		$annotations            = [];
 		$property_names         = $this->classPropertyNames($class_name);
@@ -125,7 +125,7 @@ class Exhaustive_Class
 	 * @param $recurse    integer for internal use only
 	 * @return string[] parent/trait component class names
 	 */
-	protected function classComponents($class_name, $recurse = 0)
+	protected function classComponents(string $class_name, int $recurse = 0) : array
 	{
 		if (isset($this->class_components[$class_name])) {
 			return $this->class_components[$class_name];
@@ -140,7 +140,7 @@ class Exhaustive_Class
 				try {
 					$components = (new Reflection_Class($class_name))->getTraitNames();
 				}
-				catch (ReflectionException $exception) {
+				catch (ReflectionException) {
 					$components = [];
 				}
 			}
@@ -191,7 +191,7 @@ class Exhaustive_Class
 	 * @param $class_name string
 	 * @return string[]
 	 */
-	protected function classPropertyNames($class_name)
+	protected function classPropertyNames(string $class_name) : array
 	{
 		$property_names = [];
 		$components     = $this->classComponents($class_name);
@@ -200,7 +200,7 @@ class Exhaustive_Class
 			try {
 				$class = new Reflection_Class($component);
 			}
-			catch (ReflectionException $exception) {
+			catch (ReflectionException) {
 				continue;
 			}
 			foreach ($class->getProperties([]) as $property) {
@@ -220,7 +220,7 @@ class Exhaustive_Class
 	 * @param $class_name string
 	 * @return string[] file names
 	 */
-	protected function exhaustiveClassFiles($class_name)
+	protected function exhaustiveClassFiles(string $class_name) : array
 	{
 		$files     = [];
 		$file_name = strtolower(str_replace(BS, SL, Namespaces::applicationNamespace($class_name)))
@@ -237,7 +237,7 @@ class Exhaustive_Class
 	 * @param $annotation_name string
 	 * @return array string[][] string $value[string $file_name][]
 	 */
-	protected function exhaustiveValueLists($class_name, $annotation_name)
+	protected function exhaustiveValueLists(string $class_name, string $annotation_name) : array
 	{
 		$lists       = [];
 		$class_names = $this->classComponents($class_name);
@@ -259,7 +259,7 @@ class Exhaustive_Class
 	 * @param $class_name string
 	 * @return string
 	 */
-	protected function parentClassName($class_name)
+	protected function parentClassName(string $class_name) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection must exist */
 		$class = new Reflection_Class($class_name);

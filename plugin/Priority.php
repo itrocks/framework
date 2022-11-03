@@ -26,10 +26,9 @@ abstract class Priority
 
 	//----------------------------------------------------------------------------- orderedPriorities
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string[] key from 0 to N, values are the lowercase priority constant values
 	 */
-	public static function orderedPriorities()
+	public static function orderedPriorities() : array
 	{
 		return array_values((new Reflection_Class(__CLASS__))->getConstants());
 	}

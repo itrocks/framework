@@ -57,9 +57,9 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
-	 * @var Reflection_Method|false|null
+	 * @var Interfaces\Reflection_Method|false|null
 	 */
-	public Reflection_Method|false|null $parent;
+	public Interfaces\Reflection_Method|false|null $parent;
 
 	//----------------------------------------------------------------------------- $prototype_string
 	/**
@@ -217,9 +217,9 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 
 	//------------------------------------------------------------------------------------- getParent
 	/**
-	 * @return ?Reflection_Method
+	 * @return ?Interfaces\Reflection_Method
 	 */
-	public function getParent() : ?Reflection_Method
+	public function getParent() : ?Interfaces\Reflection_Method
 	{
 		if (!isset($this->parent)) {
 			$this->parent = false;

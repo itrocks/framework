@@ -9,6 +9,7 @@ use ITRocks\Framework\PHP\Dependency\Cache;
 use ITRocks\Framework\PHP\Dependency\Declaration;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ReflectionException;
 
 /**
  * This stores a dependency between two class names
@@ -47,9 +48,9 @@ class Dependency
 	/**
 	 * Name of the class that has a dependency
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	public $class_name;
+	public ?string $class_name;
 
 	//---------------------------------------------------------------------------------- $declaration
 	/**
@@ -57,13 +58,13 @@ class Dependency
 	 * @values Declaration::const
 	 * @var string
 	 */
-	public $declaration;
+	public string $declaration;
 
 	//----------------------------------------------------------------------------- $dependency_class
 	/**
 	 * @var string[]
 	 */
-	static $dependency_class;
+	static array $dependency_class = [];
 
 	//------------------------------------------------------------------------------ $dependency_name
 	/**
@@ -71,7 +72,7 @@ class Dependency
 	 *
 	 * @var string
 	 */
-	public $dependency_name;
+	public string $dependency_name;
 
 	//------------------------------------------------------------------------------------ $file_name
 	/**
@@ -79,7 +80,7 @@ class Dependency
 	 *
 	 * @var string
 	 */
-	public $file_name;
+	public string $file_name;
 
 	//----------------------------------------------------------------------------------------- $line
 	/**
@@ -87,7 +88,7 @@ class Dependency
 	 *
 	 * @var integer
 	 */
-	public $line;
+	public int $line;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -104,11 +105,12 @@ class Dependency
 	 * - 'use' for a 'use Dependency_Name' into the class
 	 * - 'var' for a '@var ...' into the source code (property doc comment)
 	 *
+	 * @noinspection PhpVarTagWithoutVariableNameInspection inspector bug
 	 * @values bridge_feature, class, compatibility, declaration, extends, feature, implements,
 	 *         namespace_use, new, param, return, set, static, store, use, var
 	 * @var string
 	 */
-	public $type;
+	public string $type;
 
 	//--------------------------------------------------------------- classesWithPropertiesUsingClass
 	/**
@@ -157,7 +159,7 @@ class Dependency
 					['dependency_name' => Func::equal($dependency_name), 'type' => Dependency::T_SET],
 					Dependency::class
 				);
-				return $dependency ? $dependency->class_name : null;
+				return $dependency?->class_name;
 			}
 		}
 		return static::$dependency_class[$dependency_name] ?? null;
@@ -221,7 +223,9 @@ class Dependency
 		foreach (Dependency\Cache::INDEXES as $index) {
 			if (isset($what[$index])) {
 				$key = $what[$index];
+				/** @noinspection PhpIllegalStringOffsetInspection Inspector bug ? It works */
 				if (isset(Dependency\Cache::$$index[$key])) {
+					/** @noinspection PhpIllegalStringOffsetInspection Inspector bug ? It works */
 					$dependencies = Dependency\Cache::$$index[$key];
 					return $dependencies[$type] ?? null;
 				}
@@ -242,6 +246,7 @@ class Dependency
 		// store null result into matching cache
 		foreach (Dependency\Cache::INDEXES as $index) {
 			if (isset($what[$index])) {
+				/** @noinspection PhpIllegalStringOffsetInspection Inspector bug ? It works */
 				Dependency\Cache::$$index[$what[$index]] = [];
 			}
 		}
@@ -279,7 +284,7 @@ class Dependency
 	 * @param $class_names string|string[]
 	 * @return Reflection_Property[]
 	 */
-	public static function propertiesUsingClass($class_names) : array
+	public static function propertiesUsingClass(array|string $class_names) : array
 	{
 		$properties = [];
 		foreach ((is_array($class_names) ? $class_names : [$class_names]) as $class_name) {

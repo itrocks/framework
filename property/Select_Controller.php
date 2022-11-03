@@ -33,27 +33,27 @@ class Select_Controller implements Feature_Controller
 
 	//---------------------------------------------------------------------- $composite_link_property
 	/**
-	 * @var Reflection\Reflection_Property
+	 * @var ?Reflection\Reflection_Property
 	 */
-	protected $composite_link_property = null;
+	protected ?Reflection\Reflection_Property $composite_link_property = null;
 
 	//--------------------------------------------------------------------------- $composite_property
 	/**
-	 * @var Reflection\Reflection_Property
+	 * @var ?Reflection\Reflection_Property
 	 */
-	protected $composite_property = null;
+	protected ?Reflection\Reflection_Property $composite_property = null;
 
 	//------------------------------------------------------------------------------------------ $for
 	/**
-	 * @var string @values Feature::const
+	 * @var ?string @values Feature::const
 	 */
-	protected $for = null;
+	protected ?string $for = null;
 
 	//----------------------------------------------------------------------------------- $root_class
 	/**
-	 * @var Reflection_Class
+	 * @var ?Reflection_Class
 	 */
-	protected $root_class = null;
+	protected ?Reflection_Class $root_class = null;
 
 	//------------------------------------------------------------------------------ filterProperties
 	/**
@@ -64,7 +64,8 @@ class Select_Controller implements Feature_Controller
 	 * @param $display_full_path boolean
 	 * @return Reflection_Property[]
 	 */
-	protected function filterProperties(array $source_properties, $display_full_path = false)
+	protected function filterProperties(array $source_properties, bool $display_full_path = false)
+		: array
 	{
 		$properties = [];
 		/** @var $source_properties Reflection_Property[] */
@@ -100,13 +101,14 @@ class Select_Controller implements Feature_Controller
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class                Reflection_Class
-	 * @param $composite_class_name string
+	 * @param $composite_class_name string|null
 	 * @param $display_full_path    boolean
 	 * @return Reflection_Property[]|null[]
 	 */
 	public function getProperties(
-		Reflection_Class $class, $composite_class_name = null, $display_full_path = false
-	) {
+		Reflection_Class $class, string $composite_class_name = null, bool $display_full_path = false
+	) : array
+	{
 		if (isset($composite_class_name) && isA($class->name, Component::class)) {
 			$composite_properties = call_user_func(
 				[$class->name, 'getCompositeProperties'],
@@ -144,7 +146,7 @@ class Select_Controller implements Feature_Controller
 	 * @param $class Reflection_Class
 	 * @return Reflection_Property[]
 	 */
-	protected function getReverseProperties(Reflection_Class $class)
+	protected function getReverseProperties(Reflection_Class $class) : array
 	{
 		// class and its parents
 		$base_class     = Builder::current()->sourceClassName($class->name);

@@ -398,7 +398,7 @@ abstract class Names
 	 * @param $check_class boolean false if you don't want to check for existing classes
 	 * @return string
 	 */
-	public static function setToClass($class_name, $check_class = true)
+	public static function setToClass(string $class_name, bool $check_class = true) : string
 	{
 		if (isset(self::$sets[$class_name])) {
 			return self::$sets[$class_name];

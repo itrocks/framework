@@ -17,13 +17,13 @@ interface IManager
 	 * @param $class_name string
 	 * @return Activable
 	 */
-	public function activate($class_name);
+	public function activate(string $class_name) : Activable;
 
 	//------------------------------------------------------------------------------- activatePlugins
 	/**
-	 * @param $level string
+	 * @param $level string|null
 	 */
-	public function activatePlugins($level = null);
+	public function activatePlugins(string $level = null);
 
 	//------------------------------------------------------------------------------------ addPlugins
 	/**
@@ -32,7 +32,7 @@ interface IManager
 	 * @param $level   string
 	 * @param $plugins Plugin[]
 	 */
-	public function addPlugins($level, array $plugins);
+	public function addPlugins(string $level, array $plugins);
 
 	//------------------------------------------------------------------------------------------- get
 	/**

@@ -82,9 +82,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * This parent is originally set as the parent class name, but is replaced by the replacement
 	 * class name from Builder if there is one by getParent() and getParentName()
 	 *
-	 * @var Interfaces\Reflection_Class|bool|string|null
+	 * @var bool|Interfaces\Reflection_Class|string|null
 	 */
-	private Interfaces\Reflection_Class|bool|string|null $parent;
+	private bool|Interfaces\Reflection_Class|string|null $parent;
 
 	//---------------------------------------------------------------------------- $parent_class_name
 	/**
@@ -285,7 +285,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return array Constant name in key, constant value in value
 	 */
-	public function getConstants($flags = [T_EXTENDS, T_USE]) : array
+	public function getConstants(array|int $flags = [T_EXTENDS, T_USE]) : array
 	{
 		if (!$this->constants) {
 			$this->scanUntilClassEnds();
@@ -475,7 +475,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $flags integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE, self::T_DOCEXTENDS
 	 * @return Reflection_Method[] key is the name of the method
 	 */
-	public function getMethods($flags = null) : array
+	public function getMethods(array|int $flags = null) : array
 	{
 		if (!isset($this->methods)) {
 			$this->scanUntilClassEnds();
@@ -638,7 +638,8 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $final_class Reflection_Class|null force the final class to this name (mostly for internal use)
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function getProperties($flags = null, Reflection_Class $final_class = null) : array
+	public function getProperties(array|int $flags = null, Reflection_Class $final_class = null)
+		: array
 	{
 		if (!isset($flags)) {
 			$flags = [T_EXTENDS, T_USE];

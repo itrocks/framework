@@ -31,8 +31,9 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return array Constant name in key, constant value in value
+	 * @todo migrate to int, for php 8.0 hard typing full compatibility
 	 */
-	public function getConstants($flags = [T_EXTENDS, T_USE]) : array;
+	public function getConstants(array|int $flags = [T_EXTENDS, T_USE]) : array;
 
 	//-------------------------------------------------------------------------------- getConstructor
 	/**
@@ -86,7 +87,7 @@ interface Reflection_Class extends Reflection
 	 * @return Reflection_Method[] key is the method name
 	 * integer
 	 */
-	public function getMethods($flags = null) : array;
+	public function getMethods(array|int $flags = null) : array;
 
 	//------------------------------------------------------------------------------ getNamespaceName
 	/**
@@ -116,7 +117,7 @@ interface Reflection_Class extends Reflection
 	 *                     flags @default [T_EXTENDS, T_USE] @values T_EXTENDS, T_USE, self::T_SORT
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function getProperties($flags = null) : array;
+	public function getProperties(array|int $flags = null) : array;
 
 	//----------------------------------------------------------------------------------- getProperty
 	/**

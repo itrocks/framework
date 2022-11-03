@@ -22,7 +22,7 @@ class Remove_Controller extends Remove\Controller
 	 * @param $class_name    string
 	 * @param $property_path string
 	 */
-	public function removePropertyFromList($class_name, $property_path)
+	public function removePropertyFromList(string $class_name, string $property_path)
 	{
 		$list_settings = List_Setting\Set::current($class_name);
 		$list_settings->removeProperty($property_path);

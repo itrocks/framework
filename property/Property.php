@@ -16,24 +16,25 @@ class Property implements Field
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
-	 * @var Reflection_Class
+	 * @var Reflection_Class|string
 	 */
-	public $class;
+	public Reflection_Class|string $class;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * @var Type
 	 */
-	private $type;
+	private Type $type;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name  string
-	 * @param $type  Type
-	 * @param $class Reflection_Class
+	 * @param $name  string|null
+	 * @param $type  Type|null
+	 * @param $class Reflection_Class|null
 	 */
-	public function __construct($name = null, $type = null, $class = null)
-	{
+	public function __construct(
+		string $name = null, Type $type = null, Reflection_Class $class = null
+	) {
 		if ($name != null) {
 			$this->name = $name;
 		}
@@ -49,7 +50,7 @@ class Property implements Field
 	/**
 	 * @return string
 	 */
-	public function display()
+	public function display() : string
 	{
 		return Names::propertyToDisplay($this->name);
 	}

@@ -17,14 +17,14 @@ class Post
 	/**
 	 * @var array string[][] $install[$class_name][$property_name]
 	 */
-	public $install_properties = [];
+	public array $install_properties = [];
 
 	//------------------------------------------------------------------------------------------- get
 	/**
 	 * @param $default boolean
-	 * @return Post
+	 * @return ?Post
 	 */
-	public static function get($default = true)
+	public static function get(bool $default = true) : ?Post
 	{
 		return Session::current()->get(static::class, $default);
 	}
@@ -35,7 +35,7 @@ class Post
 	 *
 	 * @param $reset_when_done boolean
 	 */
-	public function install($reset_when_done = true)
+	public function install(bool $reset_when_done = true)
 	{
 		$this->installProperties($reset_when_done);
 
@@ -50,13 +50,14 @@ class Post
 	 *
 	 * @param $reset_when_done boolean
 	 */
-	public function installProperties($reset_when_done = true)
+	public function installProperties(bool $reset_when_done = true)
 	{
 		foreach ($this->install_properties as $class_name => $properties) {
 			Dao::begin();
 			foreach (Dao::readAll($class_name) as $object) {
 				foreach ($properties as $property_name => $install) {
 					if ($install === 'calculate') {
+						/** @noinspection PhpExpressionResultUnusedInspection force call of @getter */
 						$object->$property_name;
 					}
 				}
@@ -73,7 +74,7 @@ class Post
 	/**
 	 * @return boolean
 	 */
-	public function isEmpty()
+	public function isEmpty() : bool
 	{
 		return !$this->install_properties;
 	}
@@ -87,7 +88,7 @@ class Post
 	 * @param $class_name string
 	 * @param $trait_name string
 	 */
-	public function willInstallProperties($class_name, $trait_name)
+	public function willInstallProperties(string $class_name, string $trait_name)
 	{
 		$properties = [];
 		/** @noinspection PhpUnhandledExceptionInspection trait must be valid */

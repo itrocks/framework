@@ -18,14 +18,14 @@ class Dependency extends Installed
 	 * @link Object
 	 * @var Feature
 	 */
-	public $dependency;
+	public Feature $dependency;
 
 	//------------------------------------------------------------------------------------------- add
 	/**
 	 * @param $dependency string|Feature
 	 * @return static
 	 */
-	public function add($dependency)
+	public function add(string|Feature $dependency) : static
 	{
 		if (is_string($dependency)) {
 			$dependency = Dao::searchOne(['plugin_class_name' => $dependency], Feature::class);
@@ -38,7 +38,7 @@ class Dependency extends Installed
 	 * @param $dependency string|Feature
 	 * @return static
 	 */
-	public function remove($dependency)
+	public function remove(string|Feature $dependency) : static
 	{
 		if (is_string($dependency)) {
 			$dependency = Dao::searchOne(['plugin_class_name' => $dependency], Feature::class);

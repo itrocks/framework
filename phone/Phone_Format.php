@@ -35,7 +35,7 @@ class Phone_Format implements Configurable
 	/**
 	 * @param $configuration string[]
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
 		foreach ($configuration as $property_name => $value) {
 			$this->$property_name = $value;

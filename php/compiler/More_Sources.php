@@ -13,20 +13,20 @@ class More_Sources
 	/**
 	 * @var Reflection_Source[]
 	 */
-	public $added = [];
+	public array $added = [];
 
 	//-------------------------------------------------------------------------------------- $sources
 	/**
 	 * @var Reflection_Source[]
 	 */
-	public $sources;
+	public array $sources;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $sources      Reflection_Source[]
 	 * @param $more_sources Reflection_Source[]
 	 */
-	public function __construct(array& $sources, array& $more_sources = null)
+	public function __construct(array& $sources, array& $more_sources = [])
 	{
 		$this->sources =& $sources;
 		if ($more_sources) {
@@ -38,11 +38,12 @@ class More_Sources
 	/**
 	 * @param $source         Reflection_Source
 	 * @param $class_name     string class name of the first class name in the source
-	 * @param $file_name      string if set, name of the file in case o class name being null
+	 * @param $file_name      string|null if set, name of the file in case o class name being null
 	 * @param $add_to_sources boolean if true, add source to $this->sources too
 	 */
 	public function add(
-		Reflection_Source $source, $class_name, $file_name = null, $add_to_sources = false
+		Reflection_Source $source, string $class_name, string $file_name = null,
+		bool $add_to_sources = false
 	) {
 		$add_key               = ($class_name ?: $file_name);
 		$this->added[$add_key] = $source;

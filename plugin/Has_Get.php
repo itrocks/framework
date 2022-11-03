@@ -23,7 +23,7 @@ trait Has_Get
 	 * @param $default boolean if false, will not instantiate a non-registered plugin
 	 * @return Plugin|static|null null only if default is false and the plugin is not registered
 	 */
-	public static function get($default = true)
+	public static function get(bool $default = true) : Plugin|static|null
 	{
 		return ($default || static::registered())
 			? Session::current()->plugins->get(Builder::className(static::class))
@@ -34,7 +34,7 @@ trait Has_Get
 	/**
 	 * @return boolean
 	 */
-	public static function registered()
+	public static function registered() : bool
 	{
 		return Session::current()->plugins->has(Builder::className(static::class));
 	}

@@ -16,7 +16,7 @@ class Paths_Test extends Test
 	 *
 	 * @return array string[][] each string[] is a collection of possible full names for a class
 	 */
-	public function classProvider()
+	public function classProvider() : array
 	{
 		// Each data set is composed of [class_name, expected_result].
 		return [
@@ -37,7 +37,7 @@ class Paths_Test extends Test
 	 *
 	 * @return array string[][] each string[] is a collection of possible full names for a class
 	 */
-	public function fileProvider()
+	public function fileProvider() : array
 	{
 		// Each data set is composed of [source_file, expected_result].
 		return [
@@ -61,7 +61,7 @@ class Paths_Test extends Test
 	 * @param $class_name string The test data
 	 * @param $expected   string Expected result for given data
 	 */
-	public function testClassToPathToClass($class_name, $expected)
+	public function testClassToPathToClass(string $class_name, string $expected)
 	{
 		$actual = Compiler::cacheFileNameToClass(
 			basename(Compiler::classToCacheFilePath($class_name))
@@ -78,7 +78,7 @@ class Paths_Test extends Test
 	 * @param $source_file string The given source file
 	 * @param $expected    string The expected result for the given source file
 	 */
-	public function testSourceFileToPathToSourceFile($source_file, $expected)
+	public function testSourceFileToPathToSourceFile(string $source_file, string $expected)
 	{
 		$actual = Compiler::cacheFileNameToSourceFile(
 			Compiler::sourceFileToCacheFileName($source_file)

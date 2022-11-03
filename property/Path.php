@@ -15,13 +15,13 @@ class Path
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
 	 * @var string
 	 */
-	public $property_path;
+	public string $property_path;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -38,7 +38,7 @@ class Path
 	/**
 	 * @return boolean
 	 */
-	public function exists()
+	public function exists() : bool
 	{
 		$property_class_name = $this->toPropertyClassName();
 		return Reflection_Property::exists(reset($property_class_name), end($property_class_name));
@@ -49,7 +49,7 @@ class Path
 	 * @return Reflection_Class|Reflection_Property
 	 * @throws ReflectionException
 	 */
-	public function toPropertyClass()
+	public function toPropertyClass() : Reflection_Class|Reflection_Property
 	{
 		$property_class_name = $this->toPropertyClassName();
 		return (count($property_class_name) > 1)
@@ -61,7 +61,7 @@ class Path
 	/**
 	 * @return string[] [$class_name[, $property_path]]
 	 */
-	public function toPropertyClassName()
+	public function toPropertyClassName() : array
 	{
 		$class_name    = $this->class_name;
 		$property_path = $this->property_path;

@@ -128,7 +128,7 @@ class Reflection_Class extends ReflectionClass
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return array Constant name in key, constant value in value
 	 */
-	public function getConstants($flags = [T_EXTENDS, T_IMPLEMENTS, T_USE]) : array
+	public function getConstants(array|int|null $flags = [T_EXTENDS, T_IMPLEMENTS, T_USE]) : array
 	{
 		$constants = parent::getConstants();
 		$flags     = array_flip($flags);
@@ -336,7 +336,7 @@ class Reflection_Class extends ReflectionClass
 	 * @param $flags integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return Reflection_Method[] key is the name of the method
 	 */
-	public function getMethods($flags = null) : array
+	public function getMethods(array|int $flags = null) : array
 	{
 		$methods = [];
 		foreach (parent::getMethods() as $method) {
@@ -451,7 +451,7 @@ class Reflection_Class extends ReflectionClass
 	 * @return Reflection_Property[] key is the name of the property
 	 */
 	public function getProperties(
-		$flags = null, ?string $final_class = null, int $visibility_flags = null
+		array|int $flags = null, ?string $final_class = null, int $visibility_flags = null
 	) : array
 	{
 		if (!isset($flags)) {

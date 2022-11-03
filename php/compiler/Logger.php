@@ -23,7 +23,7 @@ class Logger implements Registerable
 	 *
 	 * @var boolean
 	 */
-	private $log_flag = false;
+	private bool $log_flag = false;
 
 	//------------------------------------------------------------------------------- onCompileSource
 	/**

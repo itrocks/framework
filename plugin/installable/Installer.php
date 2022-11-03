@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Plugin\Installable;
 
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Component\Tab;
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Builder\Assembled;
 use ITRocks\Framework\Configuration\File\Builder\Replaced;
@@ -44,19 +43,19 @@ class Installer
 	 *
 	 * @var File[] File[string $file_name]
 	 */
-	protected $files = [];
+	protected array $files = [];
 
 	//----------------------------------------------------------------------- $modified_built_classes
 	/**
 	 * @var string[]
 	 */
-	protected $modified_built_classes = [];
+	protected array $modified_built_classes = [];
 
 	//---------------------------------------------------------------------------- $plugin_class_name
 	/**
 	 * @var string
 	 */
-	public $plugin_class_name;
+	public string $plugin_class_name;
 
 	//-------------------------------------------------------------------------------- addLocalAccess
 	/**
@@ -85,12 +84,13 @@ class Installer
 	 * Add the a Activable / Configurable / Registrable plugin into the config.php configuration file
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $plugin_class_name string|Plugin
+	 * @param $plugin_class_name Plugin|string
 	 * @param $configuration     mixed
 	 * @param $priority_value    string If forced priority only @values Priority::const
 	 */
-	public function addPlugin($plugin_class_name, $configuration = null, $priority_value = null)
-	{
+	public function addPlugin(
+		Plugin|string $plugin_class_name, mixed $configuration = null, string $priority_value = ''
+	) {
 		if (!is_string($plugin_class_name)) {
 			$plugin_class_name = get_class($plugin_class_name);
 		}
@@ -113,7 +113,7 @@ class Installer
 	 * @param $base_class_name         string          Class name (real class) to be 'improved'
 	 * @param $added_interfaces_traits string|string[] Interface, trait, or class annotation
 	 */
-	public function addToClass($base_class_name, $added_interfaces_traits)
+	public function addToClass(string $base_class_name, array|string $added_interfaces_traits)
 	{
 		$this->modified_built_classes[$base_class_name] = $base_class_name;
 		$file  = $this->openFile(File\Builder::class);
@@ -176,7 +176,7 @@ class Installer
 	 * @param $link string
 	 * @return boolean
 	 */
-	public function hasMenuLink($link)
+	public function hasMenuLink(string $link) : bool
 	{
 		return $this->openFile(Menu::class)->hasLink($link);
 	}
@@ -187,7 +187,7 @@ class Installer
 	 * @param $plugin   Installable|string plugin to install
 	 * @param $features Feature[]
 	 */
-	public function install($plugin, array $features = [])
+	public function install(Installable|string $plugin, array $features = [])
 	{
 		$plugin_class_name         = is_string($plugin) ? $plugin : get_class($plugin);
 		$stacked_plugin_class_name = $this->plugin_class_name;
@@ -221,6 +221,7 @@ class Installer
 				Will_Call::add(explode('::', $feature_install->value), $feature_install->delay);
 			}
 			else {
+				/** @noinspection PhpUnhandledExceptionInspection must be valid */
 				$feature_install->call(
 					$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance(),
 					[__METHOD__]
@@ -294,6 +295,7 @@ class Installer
 	{
 		if (!$file_name) {
 			/** @see File::defaultFileName() */
+			/** @noinspection PhpUndefinedMethodInspection class-string */
 			$file_name = $file_class::defaultFileName();
 		}
 		if (!isset($this->files[$file_name])) {
@@ -312,7 +314,7 @@ class Installer
 	 * @param $plugin Installable|string
 	 * @return Installable
 	 */
-	protected function pluginObject($plugin)
+	protected function pluginObject(Installable|string $plugin) : Installable
 	{
 		if (is_string($plugin)) {
 			/** @noinspection PhpUnhandledExceptionInspection $plugin must be a valid class name */
@@ -341,7 +343,7 @@ class Installer
 	 * @param $base_class_name           string
 	 * @param $removed_interfaces_traits string[]
 	 */
-	public function removeFromClass($base_class_name, array $removed_interfaces_traits)
+	public function removeFromClass(string $base_class_name, array $removed_interfaces_traits)
 	{
 		$this->modified_built_classes[$base_class_name] = $base_class_name;
 		// mark interfaces / traits as removed, without removing them
@@ -406,7 +408,7 @@ class Installer
 	 * @param $plugin_class_name string
 	 * @return boolean true if the plugin had no dependency anymore, false if was dependent
 	 */
-	public function removePlugin($plugin_class_name)
+	public function removePlugin(string $plugin_class_name) : bool
 	{
 		$removed = (new Installed\Plugin($this->plugin_class_name))->remove($plugin_class_name);
 		if (!$removed || !$removed->features) {
@@ -427,7 +429,7 @@ class Installer
 	 * @param $old_menu string
 	 * @param $new_menu string
 	 */
-	public function renameMenu($old_menu, $new_menu)
+	public function renameMenu(string $old_menu, string $new_menu)
 	{
 		// TODO rename menu, and update installed menus structure too
 	}
@@ -460,7 +462,7 @@ class Installer
 	 * @param $plugin_class_name Installable|string plugin object or class name
 	 * @param $features          Feature[]
 	 */
-	public function uninstall($plugin_class_name, array $features = [])
+	public function uninstall(Installable|string $plugin_class_name, array $features = [])
 	{
 		if (isset($features[$plugin_class_name])) {
 			return;
@@ -480,6 +482,7 @@ class Installer
 		}
 
 		foreach (Feature_Uninstall_Annotation::allOf($plugin_class) as $feature_install) {
+			/** @noinspection PhpUnhandledExceptionInspection must be valid */
 			$feature_install->call(
 				$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance(),
 				[__METHOD__]
@@ -547,7 +550,8 @@ class Installer
 	 * @param $features          Feature[] key is Feature::$plugin_class_name only if recurse
 	 * @return Feature[]
 	 */
-	public function willInstall($plugin_class_name, $recurse = true, array $features = [])
+	public function willInstall(string $plugin_class_name, bool $recurse = true, array $features = [])
+		: array
 	{
 		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		$includes = Feature_Include_Annotation::allOf(new Reflection_Class($plugin_class_name));
@@ -578,7 +582,9 @@ class Installer
 	 * @param $features          Feature[] key is Feature::$plugin_class_name only if recurse
 	 * @return Feature[]
 	 */
-	public function willUninstall($plugin_class_name, $recurse = true, array $features = [])
+	public function willUninstall(
+		string $plugin_class_name, bool $recurse = true, array $features = []
+	) : array
 	{
 		$dependency_search = ['dependency.plugin_class_name' => $plugin_class_name];
 		/** @var $dependents Installed\Dependency[] */

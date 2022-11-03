@@ -21,7 +21,7 @@ class Search_Controller extends Select_Controller
 	/**
 	 * @var integer
 	 */
-	protected $max_depth = 5;
+	protected int $max_depth = 5;
 
 	//------------------------------------------------------------------------------------------- run
 	/**
@@ -52,8 +52,8 @@ class Search_Controller extends Select_Controller
 		$top_property->class = $class_name;
 		$objects             = $parameters->getObjects();
 		array_unshift($objects, $top_property);
-		$objects['class_name']        = $class_name;
-		$objects['properties']        = $properties;
+		$objects['class_name'] = $class_name;
+		$objects['properties'] = $properties;
 
 		return View::run($objects, $form, $files, Property::class, 'select');
 	}
@@ -69,7 +69,8 @@ class Search_Controller extends Select_Controller
 	 * @return Reflection_Property[]
 	 */
 	protected function searchProperties(
-		$class_name, $search, array $exclude_properties = [], $prefix = '', $depth = 0
+		string $class_name, string $search, array $exclude_properties = [], string $prefix = '',
+		int $depth = 0
 	) {
 		/** @noinspection PhpUnhandledExceptionInspection verified $class_name */
 		$class            = new Reflection_Class($class_name);
@@ -123,7 +124,6 @@ class Search_Controller extends Select_Controller
 						$exclude_sub_properties = $is_component
 							? call_user_func([$property_class, 'getCompositeProperties'], $class_name)
 							: [];
-						$parent_classes[] = $class_name;
 						$sub_properties   = $this->searchProperties(
 							$type->getElementTypeAsString(), $search,
 							$exclude_sub_properties, $property->name . DOT, $depth + 1
@@ -145,8 +145,7 @@ class Search_Controller extends Select_Controller
 
 			}
 		}
-		$properties = array_merge($first_properties, $properties, $more_properties);
-		return $properties;
+		return array_merge($first_properties, $properties, $more_properties);
 	}
 
 }

@@ -15,14 +15,14 @@ class Plugin extends Installed
 	/**
 	 * @var string
 	 */
-	public $plugin_class_name;
+	public string $plugin_class_name;
 
 	//------------------------------------------------------------------------------------------- add
 	/**
 	 * @param $plugin_class_name string
 	 * @return static
 	 */
-	public function add($plugin_class_name)
+	public function add(string $plugin_class_name) : static
 	{
 		return $this->addProperties(['plugin_class_name' => $plugin_class_name]);
 	}
@@ -30,9 +30,9 @@ class Plugin extends Installed
 	//---------------------------------------------------------------------------------------- remove
 	/**
 	 * @param $plugin_class_name string
-	 * @return static
+	 * @return ?static
 	 */
-	public function remove($plugin_class_name)
+	public function remove(string $plugin_class_name) : ?static
 	{
 		return $this->removeProperties(['plugin_class_name' => $plugin_class_name]);
 	}

@@ -25,7 +25,7 @@ abstract class Installed
 	 * @store false
 	 * @var Feature
 	 */
-	protected $feature;
+	protected Feature $feature;
 
 	//------------------------------------------------------------------------------------- $features
 	/**
@@ -33,15 +33,15 @@ abstract class Installed
 	 * @set_store_name {master}_features
 	 * @var Feature[]
 	 */
-	public $features;
+	public array $features;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Installed constructor.
 	 *
-	 * @param $feature_plugin Feature|Installable|string
+	 * @param $feature_plugin Feature|Installable|string|null
 	 */
-	public function __construct($feature_plugin = null)
+	public function __construct(Feature|Installable|string $feature_plugin = null)
 	{
 		$this->feature = ($feature_plugin instanceof Feature)
 			? $feature_plugin
@@ -51,10 +51,10 @@ abstract class Installed
 	//--------------------------------------------------------------------------------- addProperties
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $property_values mixed[]
+	 * @param $property_values array
 	 * @return static installed element after count increment (1..n)
 	 */
-	protected function addProperties(array $property_values)
+	protected function addProperties(array $property_values) : static
 	{
 		$installed = Dao::searchOne($property_values, static::class);
 
@@ -89,10 +89,11 @@ abstract class Installed
 	/**
 	 * Search for a $plugin_class_name parameter into the call stack, and get the matching RAD feature
 	 *
-	 * @param $plugin_class_name Installable|string if null, will get it from the call stack nearest argument
+	 * @param $plugin_class_name Installable|string|null if null, will get it from the call stack
+	 *                           nearest argument
 	 * @return Feature
 	 */
-	public function pluginClassNameFeature($plugin_class_name = null)
+	public function pluginClassNameFeature(Installable|string $plugin_class_name = null) : Feature
 	{
 		if (!$plugin_class_name) {
 			$call_stack        = new Call_Stack();
@@ -107,10 +108,10 @@ abstract class Installed
 
 	//------------------------------------------------------------------------------ removeProperties
 	/**
-	 * @param $property_values mixed[]
-	 * @return static|null removed element after count decrement (0..n). Null if was not installed
+	 * @param $property_values array
+	 * @return ?static removed element after count decrement (0..n). Null if was not installed
 	 */
-	protected function removeProperties(array $property_values)
+	protected function removeProperties(array $property_values) : ?static
 	{
 		$property_values['features'] = [$this->feature];
 		$installed = Dao::searchOne($property_values, static::class);

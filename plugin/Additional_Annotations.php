@@ -15,13 +15,13 @@ abstract class Additional_Annotations
 	/**
 	 * @var string[]
 	 */
-	private static $additional_annotations = [];
+	private static array $additional_annotations = [];
 
 	//----------------------------------------------------------------- $shutdown_function_registered
 	/**
 	 * @var boolean
 	 */
-	private static $shutdown_function_registered = false;
+	private static bool $shutdown_function_registered = false;
 
 	//------------------------------------------------------------------- enableAdditionalAnnotations
 	/**
@@ -76,8 +76,9 @@ abstract class Additional_Annotations
 	 * @param $annotation_name  string
 	 * @param $annotation_class string
 	 */
-	public static function setAnnotation($context, $annotation_name, $annotation_class)
-	{
+	public static function setAnnotation(
+		string $context, string $annotation_name, string $annotation_class
+	) {
 		// register the shutdown function
 		self::registerShutdownFunction();
 		// add annotation
@@ -92,7 +93,7 @@ abstract class Additional_Annotations
 	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_PROPERTY
 	 * @param $annotations_classes string[] key is the annotation name, value is the annotation class
 	 */
-	public static function setAnnotations($context, array $annotations_classes)
+	public static function setAnnotations(string $context, array $annotations_classes)
 	{
 		// register the shutdown function
 		self::registerShutdownFunction();

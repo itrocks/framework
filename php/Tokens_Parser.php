@@ -69,7 +69,7 @@ trait Tokens_Parser
 		// calculate context
 		$where = '';
 		$context = array_slice($this->tokens, $this->token_debug);
-		array_walk_recursive($context, function(&$value) use(&$where) {
+		array_walk_recursive($context, function($value) use(&$where) {
 			if (is_string($value)) {
 				$where .= $value;
 			}

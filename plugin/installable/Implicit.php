@@ -19,21 +19,21 @@ class Implicit implements Installable
 	/**
 	 * @var Reflection_Class
 	 */
-	public $class;
+	public Reflection_Class $class;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
-	 * @values T_TRAIT
+	 * @values T_CLASS, T_TRAIT
 	 * @var integer
 	 */
-	public $type;
+	public int $type;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class Reflection_Class|string
 	 */
-	public function __construct($class)
+	public function __construct(Reflection_Class|string $class)
 	{
 		if (is_string($class)) {
 			/** @noinspection PhpUnhandledExceptionInspection $class must be valid */

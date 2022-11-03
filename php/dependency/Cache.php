@@ -25,13 +25,13 @@ class Cache
 	/**
 	 * @var Dependency[] key is the class name of the dependency
 	 */
-	public static $class_name = [];
+	public static array $class_name = [];
 
 	//------------------------------------------------------------------------------ $dependency_name
 	/**
 	 * @var Dependency[] key is the name of the dependency
 	 */
-	public static $dependency_name = [];
+	public static array $dependency_name = [];
 
 	//-------------------------------------------------------------------------------------- generate
 	/**

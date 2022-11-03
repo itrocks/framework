@@ -21,7 +21,7 @@ class Configurable_Exception extends Exception
 	 * @param $previous Throwable|null
 	 */
 	public function __construct(
-		Plugin $plugin, $message = '', $code = 0, Throwable $previous = null
+		Plugin $plugin, string $message = '', int $code = 0, Throwable $previous = null
 	) {
 		$message = '[' . get_class($plugin) . ']' . SP . $message;
 		parent::__construct($message, $code, $previous);

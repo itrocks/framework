@@ -13,7 +13,7 @@ class Register
 	/**
 	 * @var IWeaver
 	 */
-	public $aop;
+	public IWeaver $aop;
 
 	//-------------------------------------------------------------------------------- $configuration
 	/**
@@ -22,27 +22,27 @@ class Register
 	 * @setter
 	 * @var array|string
 	 */
-	public $configuration;
+	public array|string $configuration;
 
 	//------------------------------------------------------------------------------------------ $get
 	/**
 	 * @var boolean
 	 */
-	private $get;
+	private bool $get;
 
 	//---------------------------------------------------------------------------------------- $level
 	/**
 	 * @values core, highest, higher, high, normal, low, lower, lowest
 	 * @var string
 	 */
-	public $level;
+	public string $level;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $configuration array|string
-	 * @param $aop           IWeaver
+	 * @param $configuration array|string|null
+	 * @param $aop           IWeaver|null
 	 */
-	public function __construct($configuration = null, IWeaver $aop = null)
+	public function __construct(mixed $configuration = null, IWeaver $aop = null)
 	{
 		if (isset($aop))           $this->aop           = $aop;
 		if (isset($configuration)) $this->configuration = $configuration;
@@ -52,20 +52,21 @@ class Register
 	/**
 	 * @return array|string
 	 */
-	protected function getConfiguration()
+	protected function getConfiguration() : array|string
 	{
-		if (!$this->get) {
-			if (!is_array($this->configuration)) {
-				$this->configuration = isset($this->configuration) ? [$this->configuration => true] : [];
-			}
-			foreach ($this->configuration as $key => $value) {
-				if (is_numeric($key) && is_string($value)) {
-					unset($this->configuration[$key]);
-					$this->configuration[$value] = true;
-				}
-			}
-			$this->get = true;
+		if ($this->get) {
+			return $this->configuration;
 		}
+		if (!is_array($this->configuration)) {
+			$this->configuration = isset($this->configuration) ? [$this->configuration => true] : [];
+		}
+		foreach ($this->configuration as $key => $value) {
+			if (is_numeric($key) && is_string($value)) {
+				unset($this->configuration[$key]);
+				$this->configuration[$value] = true;
+			}
+		}
+		$this->get = true;
 		return $this->configuration;
 	}
 
@@ -77,7 +78,7 @@ class Register
 	 * @param $annotation_name  string
 	 * @param $annotation_class string
 	 */
-	public function setAnnotation($context, $annotation_name, $annotation_class)
+	public function setAnnotation(string $context, string $annotation_name, string $annotation_class)
 	{
 		Additional_Annotations::setAnnotation($context, $annotation_name, $annotation_class);
 	}
@@ -90,7 +91,7 @@ class Register
 	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_PROPERTY
 	 * @param $annotations_classes string[] key is the annotation name, value is the annotation class
 	 */
-	public function setAnnotations($context, array $annotations_classes)
+	public function setAnnotations(string $context, array $annotations_classes)
 	{
 		Additional_Annotations::setAnnotations($context, $annotations_classes);
 	}
@@ -99,7 +100,7 @@ class Register
 	/**
 	 * @param $configuration array|string
 	 */
-	protected function setConfiguration($configuration)
+	protected function setConfiguration(array|string $configuration)
 	{
 		$this->configuration = $configuration;
 		$this->get           = false;

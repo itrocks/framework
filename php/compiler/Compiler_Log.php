@@ -17,20 +17,20 @@ class Compiler_Log
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//------------------------------------------------------------------------------------ $date_time
 	/**
 	 * @link DateTime
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $date_time;
+	public Date_Time|string $date_time;
 
 	//------------------------------------------------------------------------------------------ $log
 	/**
 	 * @link Object
 	 * @var Entry
 	 */
-	public $log;
+	public Entry $log;
 
 }

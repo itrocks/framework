@@ -85,16 +85,16 @@ class Manager implements IManager
 	 * @param $class_name string
 	 * @return Activable
 	 */
-	public function activate($class_name) : Activable
+	public function activate(string $class_name) : Activable
 	{
 		return $this->get($class_name);
 	}
 
 	//------------------------------------------------------------------------------- activatePlugins
 	/**
-	 * @param $level string
+	 * @param $level string|null
 	 */
-	public function activatePlugins($level = null)
+	public function activatePlugins(string $level = null)
 	{
 		foreach ($this->plugins_tree as $tree_level => $plugins) {
 			foreach (array_keys($plugins) as $class_name) {
@@ -115,7 +115,7 @@ class Manager implements IManager
 	 * @param $level   string
 	 * @param $plugins Plugin[]
 	 */
-	public function addPlugins($level, array $plugins)
+	public function addPlugins(string $level, array $plugins)
 	{
 		if (!isset($this->plugins_tree[$level])) {
 			$this->plugins_tree[$level] = [];
@@ -137,12 +137,12 @@ class Manager implements IManager
 	 * @param $level      string|null
 	 * @param $register   boolean
 	 * @param $activate   boolean
-	 * @return T|null
+	 * @return ?T
 	 * @template T
 	 */
 	public function get(
 		string $class_name, string $level = null, bool $register = false, bool $activate = false
-	) : object|null
+	) : ?object
 	{
 		/** @var $plugin Plugin|boolean|string */
 		if (isset($this->plugins[$class_name])) {
