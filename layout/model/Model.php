@@ -32,16 +32,16 @@ abstract class Model
 	 * @user invisible
 	 * @var string
 	 */
-	public $class_name = '';
+	public string $class_name = '';
 
 	//------------------------------------------------------------------------------------- $document
 	/**
 	 * @link Object
 	 * @setter
 	 * @user readonly
-	 * @var Feature_Class
+	 * @var ?Feature_Class
 	 */
-	public $document;
+	public ?Feature_Class $document;
 
 	//---------------------------------------------------------------------------------------- $pages
 	/**
@@ -51,7 +51,7 @@ abstract class Model
 	 * @user hide_edit, hide_output
 	 * @var Page[]
 	 */
-	public $pages;
+	public array $pages;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -131,6 +131,7 @@ abstract class Model
 
 	//---------------------------------------------------------------------------------- setClassName
 	/**
+	 * @noinspection PhpUnused @setter
 	 * @param $value string
 	 */
 	protected function setClassName(string $value)
@@ -146,6 +147,7 @@ abstract class Model
 
 	//----------------------------------------------------------------------------------- setDocument
 	/**
+	 * @noinspection PhpUnused @setter
 	 * @param $value Feature_Class|null
 	 */
 	protected function setDocument(Feature_Class $value = null)

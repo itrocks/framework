@@ -61,10 +61,10 @@ class Cut_Iterations
 				$element = next($iteration->elements);
 				continue;
 			}
-			$has_line_empty     = false;
-			$last_line_empty    = true;
-			$next_element       = null;
-			$next_iteration     = null;
+			$has_line_empty  = false;
+			$last_line_empty = true;
+			$next_element    = null;
+			$next_iteration  = null;
 			[$text, $separator, $begin, $end] = $element->isFormatted()
 				? [substr($element->text, 3, -4), BR, P, _P]
 				: [$element->text, LF, '', ''];

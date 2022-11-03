@@ -34,19 +34,19 @@ class Date_Format
 	 * @example 'd/m/Y' for the french date format, or 'm/d/Y' for the english one
 	 * @var string
 	 */
-	public $format;
+	public string $format;
 
 	//--------------------------------------------------------------------------------- $show_seconds
 	/**
 	 * @var boolean
 	 */
-	public $show_seconds = false;
+	public bool $show_seconds = false;
 
 	//------------------------------------------------------------------------------------ $show_time
 	/**
 	 * @var string @values always, auto, never
 	 */
-	public $show_time = self::TIME_AUTO;
+	public string $show_time = self::TIME_AUTO;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -56,14 +56,12 @@ class Date_Format
 	 *
 	 * @param $format string eg 'd/m/Y' for the french date format, or 'm/d/Y' for the english one
 	 */
-	public function __construct($format = null)
+	public function __construct(string $format = '')
 	{
-		if (isset($format)) {
-			$this->format = $format;
+		if ($format === '') {
+			$format = 'Y-m-d';
 		}
-		if (!isset($this->format)) {
-			$this->format = 'Y-m-d';
-		}
+		$this->format = $format;
 	}
 
 	//---------------------------------------------------------------------------------- advancedDate
@@ -72,7 +70,7 @@ class Date_Format
 	 * @param $joker  string if set, the character that replaces missing values, instead of current
 	 * @return string the complete locale date eg 2015-30-25
 	 */
-	private function advancedDate($date, $joker = null)
+	private function advancedDate(string $date, string $joker = '') : string
 	{
 		// two values with a middle slash
 		if (substr_count($date, SL) == 1) {
@@ -119,7 +117,7 @@ class Date_Format
 	 * @return string
 	 * @throws Exception
 	 */
-	public function appendMax($date)
+	public function appendMax(string $date) : string
 	{
 		return Date_Time::fromISO($date, true)->toISO();
 	}
@@ -134,7 +132,7 @@ class Date_Format
 	 * @param $joker string if set, the character that replaces missing values, instead of current
 	 * @return string ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
 	 */
-	public function toIso($date, $max = false, $joker = null)
+	public function toIso(string $date, bool $max = false, string $joker = '') : string
 	{
 		if (empty($date)) {
 			return '0000-00-00';
@@ -153,13 +151,7 @@ class Date_Format
 				$datetime = DateTime::createFromFormat($this->format, $date);
 				return $datetime ? $datetime->format('Y-m-d') : $date;
 			}
-			else {
-				return $date . SP . (
-					$joker
-						? ($joker . $joker . ':' . $joker . $joker . ':' . $joker . $joker)
-						: '00:00:00'
-				);
-			}
+			return $date . SP . '00:00:00';
 		}
 		elseif (str_contains($date, SP)) {
 			[$date, $time] = explode(SP, $date);
@@ -183,10 +175,10 @@ class Date_Format
 	/**
 	 * Takes an ISO date and make it locale. Use self::SHOW_TIME to display (or not) time
 	 *
-	 * @param $date string|Date_Time ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
+	 * @param $date Date_Time|string|null ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
 	 * @return string '25/12/2011' '25/12/2001 12:20' '25/12/2001 12:20:16'
 	 */
-	public function toLocale($date)
+	public function toLocale(Date_Time|string|null $date) : string
 	{
 		// in case of $date being an object, ie Date_Time, get an ISO date only
 		if ($date instanceof DateTime) {
@@ -228,10 +220,10 @@ class Date_Format
 	/**
 	 * Takes an ISO date possibly having wildcards and make it like locale
 	 *
-	 * @param $date string|Date_Time ie '2001-12-25' '2001-__-25 12:20:00' '2001-12-25 %%:20:16'
+	 * @param $date Date_Time|string ie '2001-12-25' '2001-__-25 12:20:00' '2001-12-25 %%:20:16'
 	 * @return string '25/12/2011' '25/??/2001 12:20' '25/12/2001 12:20:16'
 	 */
-	private function toLocaleFromDateWithWildcard($date)
+	private function toLocaleFromDateWithWildcard(Date_Time|string $date) : string
 	{
 		static $sub_pattern_date = '([0-9%_]{4}) - ([0-9%_]{2}) - ([0-9%_]{2})';
 		static $sub_pattern_time = '([0-9%_]{2}) (?::([0-9%_]{2}))? (?::([0-9%_]{2}))?';

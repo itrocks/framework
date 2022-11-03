@@ -11,6 +11,6 @@ class Final_Image extends Image
 	/**
 	 * @var Property
 	 */
-	public $property;
+	public Property $property;
 
 }

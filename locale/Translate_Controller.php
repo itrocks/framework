@@ -15,7 +15,7 @@ class Translate_Controller implements Feature_Controller
 	/**
 	 * @var string
 	 */
-	public $context;
+	public string $context;
 
 	//--------------------------------------------------------------------------------------- $format
 	/**
@@ -27,19 +27,19 @@ class Translate_Controller implements Feature_Controller
 	 * @value json,
 	 * @var string
 	 */
-	public $format;
+	public string $format;
 
 	//------------------------------------------------------------------------------------- $language
 	/**
 	 * @var string
 	 */
-	public $language;
+	public string $language;
 
 	//----------------------------------------------------------------------------------------- $text
 	/**
 	 * @var string
 	 */
-	public $text;
+	public string $text;
 
 	//------------------------------------------------------------------------------- parseParameters
 	/**
@@ -47,13 +47,13 @@ class Translate_Controller implements Feature_Controller
 	 * @param $parameters Parameters optional ['text', 'context', 'language'] or [0=>, 1=>, 2=>]
 	 * @param $form       string[]   optional [string $text, string $context, string $language]
 	 */
-	protected function parseParameters(Parameters $parameters, $form)
+	protected function parseParameters(Parameters $parameters, array $form)
 	{
 		if (isset($form['text'])) {
 			$this->text     = $form['text'];
-			$this->context  = isset($form['context'])  ? $form['context']  : '';
-			$this->language = isset($form['language']) ? $form['language'] : '';
-			$this->format   = isset($form['format'])   ? $form['format']   : '';
+			$this->context  = $form['context']  ?? '';
+			$this->language = $form['language'] ?? '';
+			$this->format   = $form['format']   ?? '';
 		}
 		elseif ($parameters->has('text')) {
 			$this->text     = $parameters->getRawParameter('text');
@@ -93,7 +93,7 @@ class Translate_Controller implements Feature_Controller
 	 * @param $language string
 	 * @return string
 	 */
-	protected function setLanguage($language)
+	protected function setLanguage(string $language) : string
 	{
 		if ($language) {
 			$old_language = Locale::current()->language;
@@ -110,7 +110,7 @@ class Translate_Controller implements Feature_Controller
 	 * @param $translation string
 	 * @return string
 	 */
-	protected function toJson($translation)
+	protected function toJson(string $translation) : string
 	{
 		$json = [
 			'context'     => Locale::current()->translations->last_context,
@@ -124,7 +124,7 @@ class Translate_Controller implements Feature_Controller
 	 * @input $this->context, $this->text
 	 * @return string
 	 */
-	protected function translate()
+	protected function translate() : string
 	{
 		if (str_contains($this->text, PIPE)) {
 			$translator  = new Html_Translator();

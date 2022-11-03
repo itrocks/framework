@@ -22,7 +22,7 @@ class Snap_Line extends Element implements Has_Init
 	 * @values self::const local
 	 * @var string
 	 */
-	public $direction;
+	public string $direction;
 
 	//------------------------------------------------------------------------------------------ init
 	/**
@@ -48,7 +48,7 @@ class Snap_Line extends Element implements Has_Init
 	/**
 	 * @return boolean
 	 */
-	public function isHorizontal()
+	public function isHorizontal() : bool
 	{
 		return $this->direction === self::HORIZONTAL;
 	}
@@ -57,7 +57,7 @@ class Snap_Line extends Element implements Has_Init
 	/**
 	 * @return boolean
 	 */
-	public function isVertical()
+	public function isVertical() : bool
 	{
 		return $this->direction === self::VERTICAL;
 	}

@@ -11,6 +11,6 @@ class Final_Text extends Text
 	/**
 	 * @var Property|Text
 	 */
-	public $property;
+	public Property|Text $property;
 
 }

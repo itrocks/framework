@@ -28,7 +28,7 @@ class Generate_Groups
 	 *
 	 * @var float
 	 */
-	public $bottom_margin = .5;
+	public float $bottom_margin = .5;
 
 	//--------------------------------------------------------------------------------------- $groups
 	/**
@@ -36,7 +36,7 @@ class Generate_Groups
 	 *
 	 * @var Group[] key is a 'property.path' string
 	 */
-	protected $groups;
+	protected array $groups;
 
 	//---------------------------------------------------------------------------------- $page_margin
 	/**
@@ -46,7 +46,7 @@ class Generate_Groups
 	 *
 	 * @var float
 	 */
-	public $page_margin = 10;
+	public float $page_margin = 10;
 
 	//---------------------------------------------------------------------------------- enlargeGroup
 	/**
@@ -102,7 +102,7 @@ class Generate_Groups
 		}
 		foreach ($this->groups as $group) {
 			$this->enlargeGroup($group);
-			array_push($page->groups, $group);
+			$page->groups[] = $group;
 		}
 	}
 
@@ -149,11 +149,11 @@ class Generate_Groups
 	/**
 	 * Store a field containing a property path into a group, if needed
 	 *
-	 * @param $field         Field|Property|Text
+	 * @param $field         Field
 	 * @param $property_path string 'property.path'
 	 * @return Group
 	 */
-	protected function propertyGroup(Field $field, $property_path) : Group
+	protected function propertyGroup(Field $field, string $property_path) : Group
 	{
 		if (isset($this->groups[$property_path])) {
 			$group = $this->groups[$property_path];

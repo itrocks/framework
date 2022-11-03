@@ -23,7 +23,7 @@ class Data
 	 * @mandatory
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//------------------------------------------------------------------------------------- $language
 	/**
@@ -31,7 +31,7 @@ class Data
 	 * @mandatory
 	 * @var Language
 	 */
-	public $language;
+	public Language $language;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -40,14 +40,14 @@ class Data
 	 * @setter
 	 * @var object
 	 */
-	public $object;
+	public object $object;
 
 	//-------------------------------------------------------------------------------- $property_name
 	/**
 	 * @mandatory
 	 * @var string
 	 */
-	public $property_name;
+	public string $property_name;
 
 	//---------------------------------------------------------------------------------- $translation
 	/**
@@ -56,7 +56,7 @@ class Data
 	 * @multiline
 	 * @var string
 	 */
-	public $translation = '';
+	public string $translation = '';
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -75,7 +75,7 @@ class Data
 	/**
 	 * @return object
 	 */
-	protected function getObject()
+	protected function getObject() : object
 	{
 		if (!is_object($this->object) && !empty($this->id_object) && $this->class_name) {
 			$this->object = Dao::read($this->id_object, $this->class_name);
@@ -88,7 +88,7 @@ class Data
 	/**
 	 * @param $value object
 	 */
-	protected function setObject($value)
+	protected function setObject(object $value)
 	{
 		$this->class_name = Builder::current()->sourceClassName(get_class($value));
 		$this->object     = $value;
@@ -100,10 +100,10 @@ class Data
 	 *
 	 * @param $object        object
 	 * @param $property_name string
-	 * @param $language      string
+	 * @param $language      string|null
 	 * @return string
 	 */
-	public static function tr($object, $property_name, $language = null)
+	public static function tr(object $object, string $property_name, string $language = null) : string
 	{
 		if (!$language) {
 			$language = Loc::language();

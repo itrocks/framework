@@ -23,7 +23,7 @@ class Form_Controller implements Feature_Controller
 	 * @param $parameters array
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, array $parameters)
+	public function getGeneralButtons(object $object, array $parameters) : array
 	{
 		return (new Edit\Controller)->getGeneralButtons($object, $parameters);
 	}

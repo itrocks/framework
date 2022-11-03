@@ -35,7 +35,7 @@ class Text_To_Lines implements Registerable
 				continue;
 			}
 			// ==... => double-line
-			if (substr(ltrim($element->text), 0, 2) === '==') {
+			if (str_starts_with(ltrim($element->text), '==')) {
 				if (str_replace(['=', SP], '', $element->text)) {
 					continue;
 				}
@@ -43,7 +43,7 @@ class Text_To_Lines implements Registerable
 				$elements[]     = $this->toHorizontalLine($element, .3);
 			}
 			// --... => simple-line
-			if (substr(ltrim($element->text), 0, 2) === '--') {
+			if (str_starts_with(ltrim($element->text), '--')) {
 				if (str_replace(['-', SP], '', $element->text)) {
 					continue;
 				}
@@ -76,7 +76,7 @@ class Text_To_Lines implements Registerable
 	 * @param $vertical_shift integer
 	 * @return Element
 	 */
-	public function toHorizontalLine(Element $element, $vertical_shift = 0)
+	public function toHorizontalLine(Element $element, int $vertical_shift = 0) : Element
 	{
 		$line = new Horizontal_Line($element->page);
 		$line->group     = $element->group;

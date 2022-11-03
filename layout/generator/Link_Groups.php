@@ -17,7 +17,7 @@ class Link_Groups
 	/**
 	 * @var array Group[][] : keys are property.path and page number
 	 */
-	protected $links;
+	protected array $links;
 
 	//----------------------------------------------------------------------------------------- group
 	/**

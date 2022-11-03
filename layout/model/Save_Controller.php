@@ -15,6 +15,7 @@ class Save_Controller extends Save\Controller
 
 	//---------------------------------------------------------------------------------- buildObjects
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @param $form   array
 	 * @param $files  array
@@ -22,6 +23,7 @@ class Save_Controller extends Save\Controller
 	 */
 	protected function buildObjects(object $object, array $form, array $files) : array
 	{
+		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		$built_objects = parent::buildObjects($object, $form, $files);
 		$builder       = new Post_Files(get_class($object));
 		$form          = $builder->appendToForm($form, $files);

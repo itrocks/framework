@@ -22,7 +22,7 @@ class From_Json
 	 *
 	 * @var array string[$class_name string][string integer|string]
 	 */
-	public $builder = [
+	public array $builder = [
 		Draw\Horizontal_Line::class => ['class' => 'horizontal line field'],
 		Draw\Rectangle::class       => ['class' => 'rectangle field'],
 		Draw\Snap_Line::class       => ['class' => 'snap line'],
@@ -40,7 +40,7 @@ class From_Json
 	 *
 	 * @var string[]
 	 */
-	public $ignore = ['snap'];
+	public array $ignore = ['snap'];
 
 	//------------------------------------------------------------------------------------ $translate
 	/**
@@ -49,7 +49,7 @@ class From_Json
 	 *
 	 * @var string[] $field_name => $property_name
 	 */
-	public $translate = [
+	public array $translate = [
 		'field' => 'property_path'
 	];
 
@@ -59,7 +59,7 @@ class From_Json
 	 * @param $json string
 	 * @return Page
 	 */
-	public function build($json)
+	public function build(string $json) : Page
 	{
 		$page = new Page();
 		foreach (json_decode($json) as $raw_element) {
@@ -127,9 +127,7 @@ class From_Json
 	{
 		$class_name = get_class($element);
 		foreach ($raw_element as $field_name => $value) {
-			$property_name = isset($this->translate[$field_name])
-				? $this->translate[$field_name]
-				: $field_name;
+			$property_name = $this->translate[$field_name] ?? $field_name;
 			if (property_exists($class_name, $property_name)) {
 				$element->$property_name = $value;
 			}

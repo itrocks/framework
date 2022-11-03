@@ -9,6 +9,9 @@ use ITRocks\Framework\Layout\Structure\Element;
 class Vertical_Line extends Element
 {
 
+	//----------------------------------------------------------------------------------- DUMP_SYMBOL
+	const DUMP_SYMBOL = '|';
+
 	//--------------------------------------------------------------------------------------- $height
 	/**
 	 * The height of the object, in mm
@@ -17,9 +20,6 @@ class Vertical_Line extends Element
 	 * @todo remove this default value when height is always set for the rectangle by the designer
 	 * @var float
 	 */
-	public $height = 25;
-
-	//----------------------------------------------------------------------------------- DUMP_SYMBOL
-	const DUMP_SYMBOL = '|';
+	public float $height = 25;
 
 }

@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\Mapper\Component;
-use ITRocks\Framework\Tools\Has_Ordering;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\View;
 
@@ -16,20 +15,18 @@ use ITRocks\Framework\View;
  *
  * Page ordering : 1 (first), 2, 3, ..., default is 0 (middle), ..., -3, -2, -1 (last).
  *
- * @override ordering @var string
- * @property string ordering
+ * @sort ordering
  */
 abstract class Page
 {
 	use Component;
-	use Has_Ordering;
 
 	//----------------------------------------------------------------------------------- $background
 	/**
 	 * @link Object
-	 * @var File
+	 * @var ?File
 	 */
-	public $background;
+	public ?File $background;
 
 	//------------------------------------------------------------------------------------ $font_size
 	/**
@@ -37,7 +34,7 @@ abstract class Page
 	 *
 	 * @var float
 	 */
-	public $font_size;
+	public float $font_size;
 
 	//--------------------------------------------------------------------------------------- $layout
 	/**
@@ -47,7 +44,7 @@ abstract class Page
 	 * @max_length 1000000000
 	 * @var string
 	 */
-	public $layout;
+	public string $layout;
 
 	//---------------------------------------------------------------------------------------- $model
 	/**
@@ -55,7 +52,17 @@ abstract class Page
 	 * @link Object
 	 * @var Model
 	 */
-	public $model;
+	public Model $model;
+
+	//------------------------------------------------------------------------------------- $ordering
+	/**
+	 * @customized
+	 * @empty_check false
+	 * @no_autowidth
+	 * @user hide_output
+	 * @var string
+	 */
+	public string $ordering;
 
 	//--------------------------------------------------------------------------------- $ratio_height
 	/**
@@ -64,7 +71,7 @@ abstract class Page
 	 * @store false
 	 * @var float
 	 */
-	public $ratio_height;
+	public float $ratio_height;
 
 	//---------------------------------------------------------------------------------- $ratio_width
 	/**
@@ -73,7 +80,7 @@ abstract class Page
 	 * @store false
 	 * @var float
 	 */
-	public $ratio_width;
+	public float $ratio_width;
 
 	//---------------------------------------------------------------------------------- $view_height
 	/**
@@ -83,7 +90,7 @@ abstract class Page
 	 * @unit px
 	 * @var integer
 	 */
-	public $view_height;
+	public int $view_height;
 
 	//----------------------------------------------------------------------------------- $view_width
 	/**
@@ -93,14 +100,14 @@ abstract class Page
 	 * @unit px
 	 * @var integer
 	 */
-	public $view_width;
+	public int $view_width;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $ordering integer ordering number, eg page number (see constants)
-	 * @param $layout   string raw layout of the page
+	 * @param $ordering integer|null ordering number, eg page number (see constants)
+	 * @param $layout   string|null raw layout of the page
 	 */
-	public function __construct($ordering = null, $layout = null)
+	public function __construct(int $ordering = null, string $layout = null)
 	{
 		if (isset($ordering)) {
 			$this->ordering = $ordering;
@@ -116,16 +123,16 @@ abstract class Page
 	 */
 	public function __toString() : string
 	{
-		return strval($this->model) . SP . strval($this->ordering);
+		return $this->model . SP . $this->ordering;
 	}
 
 	//---------------------------------------------------------------------------- backgroundImageUrl
 	/**
 	 * @return string
 	 */
-	public function backgroundImageUrl()
+	public function backgroundImageUrl() : string
 	{
-		$hash = $this->background ? $this->background->hash : null;
+		$hash = $this->background?->hash;
 		return Paths::$uri_base . View::link($this, 'background', null, $hash);
 	}
 
@@ -133,9 +140,9 @@ abstract class Page
 	/**
 	 * Get ordering caption (eg first, middle, last page), or page number if free ordering number
 	 *
-	 * @return integer|string @example 'last'
+	 * @return string @example 'last'
 	 */
-	abstract public function orderingCaption();
+	abstract public function orderingCaption() : string;
 
 	//---------------------------------------------------------------------------- orderingToSortable
 	/**
@@ -143,7 +150,7 @@ abstract class Page
 	 *
 	 * @return integer
 	 */
-	abstract protected function orderingToSortable();
+	abstract protected function orderingToSortable() : int;
 
 	//------------------------------------------------------------------------------------------ sort
 	/**
@@ -156,7 +163,7 @@ abstract class Page
 	 * @param $objects_having_ordering static[]
 	 * @return static[]
 	 */
-	public static function sort(array $objects_having_ordering)
+	public static function sort(array $objects_having_ordering) : array
 	{
 		uasort($objects_having_ordering, function (Page $object1, Page $object2) {
 			return cmp($object1->orderingToSortable(), $object2->orderingToSortable());

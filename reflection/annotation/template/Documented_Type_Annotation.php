@@ -30,7 +30,10 @@ class Documented_Type_Annotation extends Annotation
 	 */
 	public function __construct(?string $value)
 	{
-		$value        = strval($value);
+		$value = strval($value);
+		if ($add_null = str_starts_with($value, '?')) {
+			$value = substr($value, 1);
+		}
 		$position     = strpos($value, SP);
 		$end_position = strpos($value, '|');
 		if (($position === false) || ($end_position !== false) && ($end_position < $position)) {
@@ -42,7 +45,7 @@ class Documented_Type_Annotation extends Annotation
 			$this->documentation = '';
 		}
 		else {
-			parent::__construct(substr($value, 0, $position));
+			parent::__construct(substr($value, 0, $position) . ($add_null ? '|null' : ''));
 			$this->documentation = trim(substr($value, $position + 1));
 		}
 	}

@@ -17,9 +17,9 @@ abstract class Element
 	 * If the element has been identified by Associate_Groups or Generate_Groups to be inside a group,
 	 * it will be set here (and the element added to Group::$elements)
 	 *
-	 * @var Group|null
+	 * @var ?Group
 	 */
-	public $group;
+	public ?Group $group;
 
 	//--------------------------------------------------------------------------------------- $height
 	/**
@@ -27,15 +27,15 @@ abstract class Element
 	 *
 	 * @var float
 	 */
-	public $height;
+	public float $height;
 
 	//------------------------------------------------------------------------------------ $iteration
 	/**
 	 * If the element has been associated to an iteration of a group, this iteration will be set here
 	 *
-	 * @var Iteration|null
+	 * @var Iteration
 	 */
-	public $iteration;
+	public ?Iteration $iteration;
 
 	//----------------------------------------------------------------------------------------- $left
 	/**
@@ -43,7 +43,7 @@ abstract class Element
 	 *
 	 * @var float
 	 */
-	public $left;
+	public float $left;
 
 	//----------------------------------------------------------------------------------------- $page
 	/**
@@ -52,7 +52,7 @@ abstract class Element
 	 * @mandatory
 	 * @var Page
 	 */
-	public $page;
+	public Page $page;
 
 	//------------------------------------------------------------------------------------------ $top
 	/**
@@ -60,7 +60,7 @@ abstract class Element
 	 *
 	 * @var float
 	 */
-	public $top;
+	public float $top;
 
 	//---------------------------------------------------------------------------------------- $width
 	/**
@@ -68,7 +68,7 @@ abstract class Element
 	 *
 	 * @var float
 	 */
-	public $width;
+	public float $width;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -92,7 +92,7 @@ abstract class Element
 	/**
 	 * @return float
 	 */
-	public function bottom()
+	public function bottom() : float
 	{
 		return $this->top + $this->height;
 	}
@@ -105,6 +105,7 @@ abstract class Element
 	 * @return static
 	 */
 	public function cloneWithContext(Page $page, Group $group = null, Iteration $iteration = null)
+		: static
 	{
 		$element            = clone $this;
 		$element->page      = $page;
@@ -118,7 +119,7 @@ abstract class Element
 	 * @param $level integer
 	 * @return string
 	 */
-	public function dump($level = 0)
+	public function dump(int $level = 0) : string
 	{
 		$dump_symbol = (($level > -1) ? (static::DUMP_SYMBOL . SP) : '');
 		return str_repeat(SP, max(0, $level) * 2) . $dump_symbol . get_class($this) . ' : '
@@ -129,7 +130,7 @@ abstract class Element
 	/**
 	 * @return float
 	 */
-	public function hotX()
+	public function hotX() : float
 	{
 		return $this->left;
 	}
@@ -141,7 +142,7 @@ abstract class Element
 	 * @param $group Group
 	 * @return boolean
 	 */
-	public function insideGroup(Group $group)
+	public function insideGroup(Group $group) : bool
 	{
 		return ($this === $group) || ($this->group && $this->group->insideGroup($group));
 	}
@@ -150,7 +151,7 @@ abstract class Element
 	/**
 	 * @return float
 	 */
-	public function right()
+	public function right() : float
 	{
 		return $this->left + $this->width;
 	}

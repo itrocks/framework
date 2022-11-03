@@ -14,13 +14,13 @@ class Translations_Controller implements Feature_Controller
 	/**
 	 * @var string
 	 */
-	public $language;
+	public string $language;
 
 	//----------------------------------------------------------------------------------------- $text
 	/**
 	 * @var string
 	 */
-	public $text;
+	public string $text;
 
 	//------------------------------------------------------------------------------- parseParameters
 	/**
@@ -28,11 +28,11 @@ class Translations_Controller implements Feature_Controller
 	 * @param $parameters Parameters optional ['text', 'language'] or [0=>, 1=>]
 	 * @param $form       string[]   optional [string $text, string $language]
 	 */
-	protected function parseParameters(Parameters $parameters, $form)
+	protected function parseParameters(Parameters $parameters, array $form)
 	{
 		if (isset($form['text'])) {
 			$this->text     = $form['text'];
-			$this->language = isset($form['language']) ? $form['language'] : '';
+			$this->language = $form['language'] ?? '';
 		}
 		elseif ($parameters->has('text')) {
 			$this->text     = $parameters->getRawParameter('text');

@@ -9,17 +9,16 @@ use ITRocks\Framework\Layout\Structure\Element;
 class Rectangle extends Element
 {
 
+	//----------------------------------------------------------------------------------- DUMP_SYMBOL
+	const DUMP_SYMBOL = ']';
+
 	//--------------------------------------------------------------------------------------- $height
 	/**
 	 * The height of the object, in mm
 	 * With default value
 	 *
-	 * @todo remove this default value when height is always set for the rectangle by the designer
 	 * @var float
 	 */
-	public $height = 12.5;
-
-	//----------------------------------------------------------------------------------- DUMP_SYMBOL
-	const DUMP_SYMBOL = ']';
+	public float $height = 12.5;
 
 }

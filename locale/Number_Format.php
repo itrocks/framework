@@ -50,9 +50,9 @@ class Number_Format
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $parameters integer[]|string[]
+	 * @param $parameters int[]|string[]
 	 */
-	public function __construct($parameters = [])
+	public function __construct(array $parameters = [])
 	{
 		foreach ($parameters as $key => $value) {
 			$this->$key = $value;
@@ -86,7 +86,8 @@ class Number_Format
 	 */
 	public function floatToLocale(
 		?float $float, int $decimal_minimal_count = null, int $decimal_maximal_count = null
-	) {
+	) : string
+	{
 		$float = number_format(
 			$float,
 			$decimal_maximal_count ?? $this->decimal_maximal_count,

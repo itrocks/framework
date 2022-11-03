@@ -26,8 +26,10 @@ class Generate_Controller implements Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files) : string
 	{
 		$display_model = $parameters->getMainObject(Display_Model::class);
-		$exporter      = Builder::create(Output_Exporter::class);
-		$object        = Builder::create($display_model->class_name);
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$exporter = Builder::create(Output_Exporter::class);
+		/** @noinspection PhpUnhandledExceptionInspection must be a valid class */
+		$object = Builder::create($display_model->class_name);
 
 		$generator = new Output_Generator($display_model, $exporter);
 		$structure = $generator->generate($object);

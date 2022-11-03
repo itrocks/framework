@@ -42,9 +42,9 @@ class Entry implements Validate\Except
 	 * @component
 	 * @integrated alias
 	 * @link Object
-	 * @var Data
+	 * @var ?Data
 	 */
-	public $data;
+	public ?Data $data;
 
 	//------------------------------------------------------------------------------------- $duration
 	/**
@@ -54,7 +54,7 @@ class Entry implements Validate\Except
 	 *
 	 * @var float
 	 */
-	public $duration;
+	public float $duration = .0;
 
 	//------------------------------------------------------------------------------- $duration_start
 	/**
@@ -64,7 +64,7 @@ class Entry implements Validate\Except
 	 * @store false
 	 * @var float
 	 */
-	protected $duration_start;
+	protected float $duration_start;
 
 	//--------------------------------------------------------------------------------- $memory_usage
 	/**
@@ -73,56 +73,55 @@ class Entry implements Validate\Except
 	 * @max_length 7
 	 * @var integer
 	 */
-	public $memory_usage;
+	public int $memory_usage;
 
 	//------------------------------------------------------------------------------ $mysql_thread_id
 	/**
 	 * @var integer
 	 */
-	public $mysql_thread_id;
+	public int $mysql_thread_id;
 
 	//----------------------------------------------------------------------------------- $process_id
 	/**
 	 * @var integer
 	 */
-	public $process_id;
+	public int $process_id;
 
 	//----------------------------------------------------------------------------------- $session_id
 	/**
 	 * @var string
 	 */
-	public $session_id;
+	public string $session_id;
 
 	//---------------------------------------------------------------------------------------- $start
 	/**
 	 * @link DateTime
 	 * @show_seconds
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $start;
+	public Date_Time|string $start;
 
 	//----------------------------------------------------------------------------------------- $stop
 	/**
 	 * @link DateTime
 	 * @show_seconds
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $stop;
+	public Date_Time|string $stop;
 
 	//------------------------------------------------------------------------------------------ $uri
 	/**
 	 * @max_length 255
 	 * @var string
 	 */
-	public $uri;
+	public string $uri;
 
 	//----------------------------------------------------------------------------------------- $user
 	/**
 	 * @link Object
-	 * @null
-	 * @var User
+	 * @var ?User
 	 */
-	public $user;
+	public ?User $user;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

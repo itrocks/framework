@@ -28,7 +28,7 @@ class Translator_Test extends Test
 	/**
 	 * @var Translator
 	 */
-	public $translator;
+	public Translator $translator;
 
 	//---------------------------------------------------------------------------- setTranslatorCache
 	/**
@@ -85,9 +85,9 @@ class Translator_Test extends Test
 	/**
 	 * @dataProvider translateWithPluralProvider
 	 * @param $expected string
-	 * @param $context  array
+	 * @param $context  string
 	 */
-	public function testTranslateWithPlural($expected, $context)
+	public function testTranslateWithPlural(string $expected, string $context)
 	{
 		$text = 'the text to translate';
 		static::setTranslatorCache(
@@ -113,7 +113,7 @@ class Translator_Test extends Test
 	 * @see testTranslateWithPlural
 	 * return array
 	 */
-	public function translateWithPluralProvider()
+	public function translateWithPluralProvider() : array
 	{
 		return [
 			'no-context'          => ['the default text', ''],
@@ -128,20 +128,22 @@ class Translator_Test extends Test
 		];
 	}
 
-	public function toLocalProvider(): array
+	//------------------------------------------------------------------------------- toLocalProvider
+	public function toLocalProvider() : array
 	{
-			return [
-				['91,85', '91.8500', new Type(Type::FLOAT)]
-			];
+		return [
+			['91,85', '91.8500', new Type(Type::FLOAT)]
+		];
 	}
 
+	//---------------------------------------------------------------------------------- testToLocale
 	/**
 	 * @dataProvider toLocalProvider
 	 * @param $expected string
-	 * @param $value mixed
-	 * @param $type Type|null
+	 * @param $value    mixed
+	 * @param $type     Type|null
 	 */
-	public function testToLocale($expected, $value, Type $type = null)
+	public function testToLocale(string $expected, mixed $value, Type $type = null)
 	{
 		$local = new Locale([
 			Locale::DATE     => 'd/m/Y',

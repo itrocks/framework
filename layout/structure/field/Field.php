@@ -17,26 +17,26 @@ abstract class Field extends Element
 	 * @max_length 6
 	 * @var string
 	 */
-	public $color = '000000';
+	public string $color = '000000';
 
 	//------------------------------------------------------------------------------------ $font_size
 	/**
 	 * @var float
 	 */
-	public $font_size;
+	public float $font_size;
 
 	//---------------------------------------------------------------------------------- $font_weight
 	/**
-	 * @var boolean
+	 * @var string
 	 */
-	public $font_weight = '';
+	public string $font_weight = '';
 
 	//----------------------------------------------------------------------------------- $text_align
 	/**
 	 * @values self::const local
 	 * @var string
 	 */
-	public $text_align;
+	public string $text_align;
 
 	//------------------------------------------------------------------------------------------ hotX
 	/**
@@ -44,7 +44,7 @@ abstract class Field extends Element
 	 *
 	 * @return float
 	 */
-	public function hotX()
+	public function hotX() : float
 	{
 		switch ($this->text_align) {
 			case static::CENTER: return $this->left + ($this->width / 2);

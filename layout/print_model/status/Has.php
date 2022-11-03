@@ -18,7 +18,7 @@ trait Has
 	 * @values Status::const
 	 * @var string
 	 */
-	public $status = Status::CUSTOM;
+	public string $status = Status::CUSTOM;
 
 	//----------------------------------------------------------------------------- setStatusToCustom
 	/**

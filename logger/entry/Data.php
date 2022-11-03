@@ -20,7 +20,7 @@ class Data implements Validate\Except
 	 * @max_length 65000
 	 * @var string
 	 */
-	public $arguments;
+	public string $arguments;
 
 	//---------------------------------------------------------------------------------------- $entry
 	/**
@@ -28,37 +28,38 @@ class Data implements Validate\Except
 	 * @link Object
 	 * @var Entry
 	 */
-	public $entry;
+	public Entry $entry;
 
 	//---------------------------------------------------------------------------------------- $files
 	/**
 	 * @max_length 65000
 	 * @var string
 	 */
-	public $files;
+	public string $files;
 
 	//----------------------------------------------------------------------------------------- $form
 	/**
 	 * @max_length 1000000
 	 * @var string
 	 */
-	public $form;
+	public string $form;
 
 	//--------------------------------------------------------------------------- $request_identifier
 	/**
 	 * @var string
 	 */
-	public $request_identifier;
+	public string $request_identifier = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $arguments          array
-	 * @param $form               array
-	 * @param $files              array[]
-	 * @param $request_identifier string
+	 * @param $arguments          array|null
+	 * @param $form               array|null
+	 * @param $files              array[]|null
+	 * @param $request_identifier string|null
 	 */
 	public function __construct(
-		array $arguments = null, array $form = null, array $files = null, $request_identifier = null
+		array $arguments = null, array $form = null, array $files = null,
+		string $request_identifier = null
 	) {
 		if (isset($arguments) && !isset($this->arguments)) {
 			if (isset($arguments['as_widget'])) {
@@ -112,7 +113,7 @@ class Data implements Validate\Except
 	 * @param $value array
 	 * @return string
 	 */
-	private function serialize(array $value)
+	private function serialize(array $value) : string
 	{
 		$json = json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 		return ($json === '[]') ? '' : $json;

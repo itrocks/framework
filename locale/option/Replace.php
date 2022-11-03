@@ -25,7 +25,7 @@ class Replace extends Option
 	 *
 	 * @var string[]|object[] [key => value]
 	 */
-	public $replace = [];
+	public array $replace = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -45,7 +45,7 @@ class Replace extends Option
 	 * @param $translation string
 	 * @return string
 	 */
-	public function afterTranslation($translation)
+	public function afterTranslation(string $translation) : string
 	{
 		krsort($this->replace);
 		foreach ($this->replace as $key => $value) {

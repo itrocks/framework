@@ -24,12 +24,10 @@ class Plugin implements Installable
 
 	//--------------------------------------------------------------------------------------- install
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection ::class is known
 	 * @param $installer Installer
 	 */
 	public function install(Installer $installer)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection ::class is known */
 		$installer->addMenu(
 			['Administration' => [View::link(Print_Model::class, Feature::F_LIST) => 'Print models']]
 		);

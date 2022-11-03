@@ -13,7 +13,7 @@ class Language
 	//-------------------------------------------------------------------------------- Language codes
 	// FIXME 'be' is the Belarusian LANGUAGE code. But BE is the belgium COUNTRY code
 	// The extension .be at the end of an url is a country not a language
-	// Country  Codes are Uppercases https://www.w3schools.com/tags/ref_country_codes.asp
+	// Country  Codes are uppercases https://www.w3schools.com/tags/ref_country_codes.asp
 	// Language Codes are lowercases https://www.w3schools.com/tags/ref_language_codes.asp
 	// Please respect ISO 639-1 : https://fr.wikipedia.org/wiki/Liste_des_codes_ISO_639-1
 	const BE = 'be';
@@ -33,11 +33,9 @@ class Language
 	 *
 	 * @return string
 	 */
-	public function flag()
+	public function flag() : string
 	{
-		return isset(static::FLAGS[$this->code])
-			? static::FLAGS[$this->code]
-			: $this->code;
+		return static::FLAGS[$this->code] ?? $this->code;
 	}
 
 }

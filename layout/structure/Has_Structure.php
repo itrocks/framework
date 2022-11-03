@@ -13,11 +13,11 @@ trait Has_Structure
 	/**
 	 * @var Structure
 	 */
-	public $structure;
+	public Structure $structure;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $structure Structure
+	 * @param $structure Structure|null
 	 */
 	public function __construct(Structure $structure = null)
 	{

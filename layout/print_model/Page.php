@@ -29,10 +29,10 @@ class Page extends Model\Page
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $ordering integer ordering number, eg page number (see constants)
-	 * @param $layout   string raw layout of the page
+	 * @param $ordering integer|null ordering number, eg page number (see constants)
+	 * @param $layout   string|null  raw layout of the page
 	 */
-	public function __construct($ordering = null, $layout = null)
+	public function __construct(int $ordering = null, string $layout = null)
 	{
 		$this->ratio_height = 297;
 		$this->ratio_width  = 210;
@@ -46,7 +46,7 @@ class Page extends Model\Page
 	/**
 	 * @return string
 	 */
-	public function caption()
+	public function caption() : string
 	{
 		switch ($this->ordering) {
 			case static::ALL:    return 'all pages';
@@ -60,9 +60,9 @@ class Page extends Model\Page
 
 	//------------------------------------------------------------------------------------- getLayout
 	/**
-	 * @returns string
+	 * @return string
 	 */
-	protected function getLayout()
+	protected function getLayout() : string
 	{
 		if (($this->layout === '[]') || !$this->layout) {
 			$this->layout = json_encode([
@@ -79,9 +79,9 @@ class Page extends Model\Page
 	/**
 	 * Get ordering caption (first, middle, last page), or page number if free ordering number
 	 *
-	 * @return integer|string @example 'last'
+	 * @return string @example 'last'
 	 */
-	public function orderingCaption()
+	public function orderingCaption() : string
 	{
 		switch ($this->ordering) {
 			case static::ALL:    return 'all';
@@ -104,7 +104,7 @@ class Page extends Model\Page
 	 * @example -1 => 1999 (last)
 	 * @return integer
 	 */
-	protected function orderingToSortable()
+	protected function orderingToSortable() : int
 	{
 		$ordering = $this->ordering;
 		if ($ordering === static::UNIQUE) {

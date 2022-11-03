@@ -25,19 +25,19 @@ class Translator
 	/**
 	 * @var array[] string[][] string $translation[string $text][string $context]
 	 */
-	protected $cache = [];
+	protected array $cache = [];
 
 	//------------------------------------------------------------------------------------- $composer
 	/**
 	 * @var Translation_String_Composer
 	 */
-	public $composer;
+	public Translation_String_Composer $composer;
 
 	//------------------------------------------------------------------------------------- $language
 	/**
 	 * @var string
 	 */
-	public $language;
+	public string $language;
 
 	//--------------------------------------------------------------------------------- $last_context
 	/**
@@ -45,14 +45,14 @@ class Translator
 	 *
 	 * @var string
 	 */
-	public $last_context;
+	public string $last_context;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $language string
+	 * @param $language string|null
 	 */
-	public function __construct($language = null)
+	public function __construct(string $language = null)
 	{
 		if (isset($language)) {
 			$this->language = $language;
@@ -68,32 +68,33 @@ class Translator
 	 * @param $context      string
 	 * @return boolean true if plural has been applied
 	 */
-	protected function applyPlural(array &$translations, &$translation, &$context)
+	protected function applyPlural(array &$translations, string &$translation, string &$context)
+		: bool
 	{
-		$plural = str_contains($context, '*');
-		if ($plural) {
-			if (isset($translations['*'])) {
-				$translation = $translations['*'];
-			}
-			$filter_translations = false;
-			foreach (array_keys($translations) as $translation_context) {
-				if (str_contains($translation_context, '*')) {
-					$filter_translations = true;
-					break;
-				}
-			}
-			if ($filter_translations) {
-				$filtered_translations = [];
-				foreach ($translations as $translation_context => $translation_text) {
-					if (str_contains($translation_context, '*')) {
-						$filtered_translations[str_replace('*', '', $translation_context)] = $translation_text;
-					}
-				}
-				$translations = $filtered_translations;
-			}
-			$context = str_replace('*', '', $context);
+		if (!str_contains($context, '*')) {
+			return false;
 		}
-		return $plural;
+		if (isset($translations['*'])) {
+			$translation = $translations['*'];
+		}
+		$filter_translations = false;
+		foreach (array_keys($translations) as $translation_context) {
+			if (str_contains($translation_context, '*')) {
+				$filter_translations = true;
+				break;
+			}
+		}
+		if ($filter_translations) {
+			$filtered_translations = [];
+			foreach ($translations as $translation_context => $translation_text) {
+				if (str_contains($translation_context, '*')) {
+					$filtered_translations[str_replace('*', '', $translation_context)] = $translation_text;
+				}
+			}
+			$translations = $filtered_translations;
+		}
+		$context = str_replace('*', '', $context);
+		return true;
 	}
 
 	//----------------------------------------------------------------------------- chooseTranslation
@@ -118,7 +119,7 @@ class Translator
 	 * @param $context      string The context we want to translate from
 	 * @return string The chosen translation
 	 */
-	private function chooseTranslation(array $translations, $context)
+	private function chooseTranslation(array $translations, string $context) : string
 	{
 		$translation        = '';
 		$this->last_context = '';
@@ -147,7 +148,7 @@ class Translator
 	 * @param $text string
 	 * @return string
 	 */
-	private function defaultTranslation($text)
+	private function defaultTranslation(string $text) : string
 	{
 		return str_ends_with($text, AT) ? strUri(rtrim($text, AT)) : str_replace('_', SP, $text);
 	}
@@ -164,7 +165,7 @@ class Translator
 			/** @optimization */
 			$dao->query(strReplace(
 				['translations' => $dao->storeNameOf(Translation::class)],
-				"DELETE FROM `translations` WHERE translation = ''"
+				"DELETE FROM `translations` WHERE `translation` = ''"
 			));
 		}
 		else {
@@ -193,9 +194,10 @@ class Translator
 	 * @return string|string[]
 	 */
 	public function reverse(
-		$translation, $context = '', $context_property_path = '', array $limit_to = null,
-		$allow_multiple = false
-	) {
+		string $translation, string $context = '', string $context_property_path = '',
+		array $limit_to = [], bool $allow_multiple = false
+	) : array|string
+	{
 		if (Wildcard::containsWildcards($translation)) {
 			$translation = str_replace(['?', '*'], ['_', '%'], $translation);
 			return $this->reverseWithWildcards($translation, $context, $context_property_path, $limit_to);
@@ -213,7 +215,7 @@ class Translator
 		$search['language']    = $this->language;
 		$search['translation'] = strtolower($translation);
 		$search['context']     = $context;
-		if (isset($limit_to)) {
+		if ($limit_to) {
 			$search['text'] = Func::in($limit_to);
 		}
 		$texts = Dao::search($search, Translation::class);
@@ -270,11 +272,12 @@ class Translator
 	 * @return string|string[]
 	 */
 	protected function reverseWithWildcards(
-		$translation, $context, $context_property_path, array $limit_to = null
-	) {
+		string $translation, string $context, string $context_property_path, array $limit_to = []
+	) : array|string
+	{
 		$limit  = static::MAX_WILDCARD_REVERSE_TRANSLATIONS + 1;
 		$search = ['translation' => $translation];
-		if (isset($limit_to)) {
+		if ($limit_to) {
 			$search['text'] = Func::in($limit_to);
 		}
 		$texts = [];
@@ -290,7 +293,7 @@ class Translator
 			// disable infinite recursion caused by translation-has-wildcards (limitation, but security)
 			if (!Wildcard::containsWildcards($found_translation->translation)) {
 				$more_texts = $this->reverse(
-					$found_translation->translation, $context, $context_property_path, null, true
+					$found_translation->translation, $context, $context_property_path, [], true
 				);
 				if (is_array($more_texts)) {
 					$texts = array_merge($texts, $more_texts);
@@ -310,7 +313,7 @@ class Translator
 	 * @param $context   string
 	 * @return string
 	 */
-	private function separatedTranslations($text, $separator, $context)
+	private function separatedTranslations(string $text, string $separator, string $context) : string
 	{
 		preg_match_all('/(?<before>\s*)' . preg_quote($separator). '(?<after>\s*)/', $text, $spaces);
 		$sentences            = explode($separator, $text);
@@ -341,7 +344,7 @@ class Translator
 	 * @param $translation string
 	 * @param $context     string
 	 */
-	public function setTranslation($text, $translation, $context = '')
+	public function setTranslation(string $text, string $translation, string $context = '')
 	{
 		$this->cache[strtolower($text)][$context] = $translation;
 	}
@@ -352,7 +355,7 @@ class Translator
 	 * @param $text string
 	 * @return string
 	 */
-	private function storeDefaultTranslation($text)
+	private function storeDefaultTranslation(string $text) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$translation = Builder::create(
@@ -434,7 +437,7 @@ class Translator
 	 * @param $objects boolean if true, will return Translation objects instead of texts
 	 * @return string[]|Translation[] $translation[$context]|Translation[]
 	 */
-	public function translations($text, $objects = false)
+	public function translations(string $text, bool $objects = false) : array
 	{
 		if (str_ends_with($text, AT)) {
 			$str_uri = true;

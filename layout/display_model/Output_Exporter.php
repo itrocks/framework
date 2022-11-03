@@ -14,7 +14,7 @@ class Output_Exporter implements Output
 	/**
 	 * @var Structure
 	 */
-	public $structure;
+	public Structure $structure;
 
 	//------------------------------------------------------------------------------------ exportHtml
 	/**

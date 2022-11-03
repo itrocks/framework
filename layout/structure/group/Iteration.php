@@ -77,9 +77,8 @@ class Iteration extends Element
 	 * @param $iteration Iteration|null
 	 * @return static
 	 */
-	public function cloneWithContext(
-		Page $page, Group $group = null, Iteration $iteration = null
-	) : static
+	public function cloneWithContext(Page $page, Group $group = null, Iteration $iteration = null)
+		: static
 	{
 		/** @var $iteration Iteration PhpStorm bug */
 		$iteration = parent::cloneWithContext($page, $group, $iteration);
@@ -110,7 +109,7 @@ class Iteration extends Element
 	 * @param $level integer
 	 * @return string
 	 */
-	public function dump($level = 0) : string
+	public function dump(int $level = 0) : string
 	{
 		$dump = parent::dump($level) . SP . '(' . $this->number . ')' . LF;
 		foreach ($this->elements as $element) {

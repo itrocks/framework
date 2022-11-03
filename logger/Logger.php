@@ -18,13 +18,13 @@ class Logger implements Registerable
 	/**
 	 * @var integer
 	 */
-	private $anti_loop = 0;
+	private int $anti_loop = 0;
 
 	//------------------------------------------------------------------------------------ $log_entry
 	/**
 	 * @var Entry
 	 */
-	public $log_entry;
+	public Entry $log_entry;
 
 	//--------------------------------------------------------------------------------- getIdentifier
 	/**
@@ -35,7 +35,7 @@ class Logger implements Registerable
 	 */
 	public function getIdentifier()
 	{
-		return Dao::getObjectIdentifier($this->log_entry);
+		return isset($this->log_entry) ? Dao::getObjectIdentifier($this->log_entry) : null;
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -71,13 +71,14 @@ class Logger implements Registerable
 	 * @param $post  array
 	 * @param $files array[]
 	 */
-	public function start($uri, array $get, array $post, array $files)
+	public function start(string $uri, array $get, array $post, array $files)
 	{
-		if (!$this->anti_loop) {
-			$this->log_entry = new Entry($uri, $get, $post, $files);
-			Dao::write($this->log_entry);
+		if ($this->anti_loop) {
+			return;
 		}
-		$this->anti_loop++;
+		$this->log_entry = new Entry($uri, $get, $post, $files);
+		Dao::write($this->log_entry);
+		$this->anti_loop ++;
 	}
 
 	//------------------------------------------------------------------------------------------ stop
@@ -86,11 +87,12 @@ class Logger implements Registerable
 	 */
 	public function stop()
 	{
-		$this->anti_loop--;
-		if (!$this->anti_loop) {
-			$this->log_entry->stop();
-			Dao::write($this->log_entry, Dao::only('duration', 'memory_usage', 'stop'));
+		$this->anti_loop --;
+		if ($this->anti_loop) {
+			return;
 		}
+		$this->log_entry->stop();
+		Dao::write($this->log_entry, Dao::only('duration', 'memory_usage', 'stop'));
 	}
 
 }

@@ -24,7 +24,7 @@ class Dispatch_Iterations_On_Pages
 	 *
 	 * @var Page[]
 	 */
-	protected $pages = [];
+	protected array $pages = [];
 
 	//----------------------------------------------------------------------------------------- group
 	/**

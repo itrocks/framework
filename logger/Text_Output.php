@@ -11,19 +11,19 @@ class Text_Output
 	/**
 	 * @var boolean
 	 */
-	private $quiet = false;
+	private bool $quiet;
 
 	//-------------------------------------------------------------------------------------- $started
 	/**
 	 * @var boolean true is start as been called
 	 */
-	private $started = false;
+	private bool $started = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $quiet boolean
 	 */
-	public function __construct($quiet = false)
+	public function __construct(bool $quiet = false)
 	{
 		$this->quiet = $quiet;
 	}
@@ -52,7 +52,7 @@ class Text_Output
 	 * @param $message  string
 	 * @param $new_line boolean
 	 */
-	public function log($message = null, $new_line = true)
+	public function log(string $message, bool $new_line = true)
 	{
 		if ($this->quiet) return;
 
@@ -74,19 +74,19 @@ class Text_Output
 	 * @param $step    string
 	 * @param $total   string
 	 */
-	public function progress($message, $step, $total)
+	public function progress(string $message, string $step, string $total)
 	{
 		if ($_SERVER['REMOTE_ADDR'] == 'console') {
 			$this->log(sprintf("\r%s%d%%", $message, $step * 100 / $total), $step == $total);
 		}
 		elseif ($step == 1) {
-			$this->log($message, true);
+			$this->log($message);
 		}
 		elseif ($step % 100) {
 			$this->log('.', false);
 		}
 		else {
-			$this->log(round($step * 100 / $total) . '%', true);
+			$this->log(round($step * 100 / $total) . '%');
 		}
 	}
 

@@ -74,7 +74,7 @@ class Text_Templating
 	 */
 	protected function text(Text $element)
 	{
-		if (substr($element->text, 0, 1) === '#') {
+		if (str_starts_with($element->text, '#')) {
 			foreach (static::PAGE_SIMPLE_PATHS as $simple_path => $extended_path) {
 				if ($element->text === $simple_path) {
 					$element->text = $extended_path;

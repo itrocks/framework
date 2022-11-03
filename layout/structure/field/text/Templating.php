@@ -19,7 +19,7 @@ trait Templating
 	 *
 	 * @var string[]
 	 */
-	private $property_paths;
+	private array $property_paths;
 
 	//--------------------------------------------------------------------------------- propertyPaths
 	/**
@@ -27,7 +27,7 @@ trait Templating
 	 *
 	 * @return string[]
 	 */
-	public function propertyPaths()
+	public function propertyPaths() : array
 	{
 		if (isset($this->property_paths)) {
 			return $this->property_paths;

@@ -134,7 +134,7 @@ class Group extends Element
 	 * @param $detail boolean
 	 * @return string
 	 */
-	public function dump($level = 0, bool $detail = true) : string
+	public function dump(int $level = 0, bool $detail = true) : string
 	{
 		if ($detail) {
 			$dump = parent::dump($level) . LF;
@@ -168,9 +168,9 @@ class Group extends Element
 	 * Gets the linked group into this page, if exist
 	 *
 	 * @param $page Page
-	 * @return Group|null
+	 * @return ?Group
 	 */
-	public function linkOnPage(Page $page) : Group|null
+	public function linkOnPage(Page $page) : ?Group
 	{
 		return $this->links[strval($page->number)] ?? null;
 	}

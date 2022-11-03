@@ -1,10 +1,6 @@
 <?php
 namespace ITRocks\Framework\Locale;
 
-use ITRocks\Framework\AOP\Joinpoint\Around_Method;
-use ITRocks\Framework\Plugin\Register;
-use ITRocks\Framework\Plugin\Registerable;
-
 /**
  * Compose translations with dynamic elements with separated translations
  *
@@ -16,7 +12,7 @@ use ITRocks\Framework\Plugin\Registerable;
  * '¦Sales orders¦ list' will be dynamically translated : first 'Sales orders', then '$1 list'
  * '¦Sales¦ ¦orders¦ list' will translate 'Sales' then 'orders' then '$1 $2 list'
  */
-class Translation_String_Composer implements Registerable
+class Translation_String_Composer
 {
 
 	//------------------------------------------------------------------------------------- holePipes
@@ -32,7 +28,7 @@ class Translation_String_Composer implements Registerable
 	 * @param $context    string
 	 * @return string[] key is $1, $2, $3, until $F. Value is the matching translated text.
 	 */
-	protected function holePipes(&$text, Translator $translator, $context)
+	protected function holePipes(string &$text, Translator $translator, string $context)
 	{
 		$elements = [];
 		$i        = 0;
@@ -64,7 +60,7 @@ class Translation_String_Composer implements Registerable
 	 * @param $text string
 	 * @return string[] key is $!1, $!2, $!3, ... until $!F. Value is the matching text.
 	 */
-	protected function ignore(&$text)
+	protected function ignore(string &$text) : array
 	{
 		$elements = [];
 		$i        = 0;
@@ -94,7 +90,7 @@ class Translation_String_Composer implements Registerable
 	 * @param $text string
 	 * @return string[] key is $<1, $<2, $<3, ... until $<F. Value is the matching tag.
 	 */
-	protected function ignoreTags(&$text)
+	protected function ignoreTags(string &$text) : array
 	{
 		$elements     = [];
 		$i            = 0;
@@ -118,20 +114,15 @@ class Translation_String_Composer implements Registerable
 
 	//----------------------------------------------------------------------------------- onTranslate
 	/**
-	 * @param $text      string|string[] type string[] is deprecated (to be removed)
-	 * @param $object    Translator
-	 * @param $context   string
-	 * @param $joinpoint mixed @deprecated
+	 * @param $text    string|string[] type string[] is deprecated (to be removed)
+	 * @param $object  Translator
+	 * @param $context string
 	 * @return ?string
 	 */
-	public function onTranslate($text, Translator $object, $context, Around_Method $joinpoint = null)
+	public function onTranslate(array|string $text, Translator $object, string $context)
 		: ?string
 	{
-		if ($joinpoint instanceof Around_Method) {
-			return $joinpoint->process($text, $context);
-		}
 		static $top_call = true;
-		$context = isset($context) ? $context : '';
 		if (
 			$top_call
 			&& (str_contains($text, '¦') || str_contains($text, '!') || str_contains($text, '<'))
@@ -162,16 +153,6 @@ class Translation_String_Composer implements Registerable
 			return null;
 		}
 		return $translation;
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @deprecated
-	 * @param $register Register
-	 */
-	public function register(Register $register)
-	{
-		// TODO : implements Registerable and register() have to be removed
 	}
 
 }

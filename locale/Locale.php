@@ -22,6 +22,7 @@ use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\Updater\Updatable;
+use ITRocks\Framework\View\User_Error_Exception;
 
 /**
  * A Locale object has all locale features, useful for specific locale conversions
@@ -42,13 +43,13 @@ class Locale implements Configurable, Registerable, Updatable
 	 * @setter setDateFormat
 	 * @var Date_Format
 	 */
-	public $date_format;
+	public Date_Format $date_format;
 
 	//----------------------------------------------------------------------------- $format_translate
 	/**
 	 * @var boolean
 	 */
-	public $format_translate = true;
+	public bool $format_translate = true;
 
 	//------------------------------------------------------------------------------------- $language
 	/**
@@ -56,26 +57,26 @@ class Locale implements Configurable, Registerable, Updatable
 	 * @setter setLanguage
 	 * @var string
 	 */
-	public $language;
+	public string $language;
 
 	//-------------------------------------------------------------------------------- $number_format
 	/**
 	 * @setter setNumberFormat
 	 * @var Number_Format
 	 */
-	public $number_format;
+	public Number_Format $number_format;
 
 	//--------------------------------------------------------------------------------- $translations
 	/**
 	 * @var Translator
 	 */
-	public $translations;
+	public Translator $translations;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $configuration array
+	 * @param $configuration array|null
 	 */
-	public function __construct($configuration = null)
+	public function __construct(mixed $configuration = null)
 	{
 		$current = self::current();
 		if (!isset($current)) {
@@ -91,7 +92,7 @@ class Locale implements Configurable, Registerable, Updatable
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current ?Locale
+	 * @param $set_current Locale|null
 	 * @return ?static
 	 */
 	public static function current(Locale $set_current = null) : ?static
@@ -106,10 +107,10 @@ class Locale implements Configurable, Registerable, Updatable
 	 * Change an ISO value into a locale formatted value, knowing its method
 	 *
 	 * @param $method Reflection_Method
-	 * @param $value  string
+	 * @param $value  mixed
 	 * @return string
 	 */
-	public function methodToLocale(Reflection_Method $method, $value)
+	public function methodToLocale(Reflection_Method $method, mixed $value) : string
 	{
 		return $this->toLocale($value, new Type($method->returns()));
 	}
@@ -119,10 +120,12 @@ class Locale implements Configurable, Registerable, Updatable
 	 * Change a locale value into an ISO formatted value, knowing its property
 	 *
 	 * @param $property Reflection_Property
-	 * @param $value    string
-	 * @return string|integer|float|Date_Time
+	 * @param $value    string|null
+	 * @return Date_Time|float|integer|string
+	 * @throws User_Error_Exception
 	 */
-	public function propertyToIso(Reflection_Property $property, $value = null)
+	public function propertyToIso(Reflection_Property $property, string $value = null)
+		: Date_Time|float|int|string
 	{
 		if (($property instanceof Reflection_Property_Value) && !isset($value)) {
 			$value = $property->value();
@@ -145,10 +148,10 @@ class Locale implements Configurable, Registerable, Updatable
 	 * Change an ISO value into a locale formatted value, knowing its property
 	 *
 	 * @param $property Reflection_Property
-	 * @param $value    string
+	 * @param $value    string|null
 	 * @return mixed
 	 */
-	public function propertyToLocale(Reflection_Property $property, $value = null) : mixed
+	public function propertyToLocale(Reflection_Property $property, string $value = null) : mixed
 	{
 		$called_user_getter = false;
 		if ($property instanceof Reflection_Property_Value) {
@@ -166,12 +169,12 @@ class Locale implements Configurable, Registerable, Updatable
 		if (is_null($value) && $type->isNumeric() && Mandatory_Annotation::of($property)->value) {
 			$value = 0;
 		}
-		if (Encrypt_Annotation::of($property)->value ?: Password_Annotation::of($property)->value) {
+		if (Encrypt_Annotation::of($property)->value || Password_Annotation::of($property)->value) {
 			$value = strlen($value) ? str_repeat('*', strlen(Password::UNCHANGED)) : '';
 		}
 		elseif ($type->isDateTime() && (($value instanceof Date_Time) || !$called_user_getter)) {
 			$this->date_format->show_seconds = $property->getAnnotation('show_seconds')->value;
-			$this->date_format->show_time    = $property->getAnnotation('show_time')->value;
+			$this->date_format->show_time    = $property->getAnnotation('show_time')->value ?: '';
 			// force call of toLocale(), needed for date-times
 			$called_user_getter = false;
 		}
@@ -244,7 +247,7 @@ class Locale implements Configurable, Registerable, Updatable
 	/**
 	 * @param $date_format Date_Format|string if string, must be a date format (ie 'd/m/Y')
 	 */
-	public function setDateFormat($date_format)
+	public function setDateFormat(Date_Format|string $date_format)
 	{
 		$this->date_format = ($date_format instanceof Date_Format)
 			? $date_format
@@ -255,7 +258,7 @@ class Locale implements Configurable, Registerable, Updatable
 	/**
 	 * @param $language string
 	 */
-	public function setLanguage($language)
+	public function setLanguage(string $language)
 	{
 		$this->language     = $language;
 		$this->translations = new Translator($this->language);
@@ -265,9 +268,9 @@ class Locale implements Configurable, Registerable, Updatable
 	/**
 	 * Set locale's number format
 	 *
-	 * @param $number_format Number_Format|array
+	 * @param $number_format Number_Format|int[]|string[]
 	 */
-	public function setNumberFormat($number_format)
+	public function setNumberFormat(array|Number_Format $number_format)
 	{
 		$this->number_format = ($number_format instanceof Number_Format)
 			? $number_format
@@ -275,12 +278,14 @@ class Locale implements Configurable, Registerable, Updatable
 	}
 
 	//----------------------------------------------------------------------------------------- toIso
+
 	/**
 	 * Change a locale value into an ISO formatted value, knowing its data type
 	 *
 	 * @param $value string
 	 * @param $type  Type|null
 	 * @return float|integer|string
+	 * @throws User_Error_Exception
 	 */
 	public function toIso(string $value, Type $type = null) : float|int|string
 	{
@@ -306,16 +311,16 @@ class Locale implements Configurable, Registerable, Updatable
 	/**
 	 * Change an ISO value into a locale formatted value, knowing its data type
 	 *
-	 * @param $type  Type
-	 * @param $value string
-	 * @return string
+	 * @param $type  Type|null
+	 * @param $value mixed
+	 * @return ?string
 	 * @todo When hard typing will be enabled on all properties, simplify numeric tests (no string)
 	 */
-	public function toLocale($value, Type $type = null)
+	public function toLocale(mixed $value, Type $type = null) : ?string
 	{
 		if (isset($type)) {
 			if ($type->isBoolean()) {
-				if (is_null($value)) {
+				if (!isset($value)) {
 					return $value;
 				}
 				return $value ? $this->translations->translate(YES) : $this->translations->translate(NO);

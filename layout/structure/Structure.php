@@ -17,13 +17,13 @@ class Structure
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//---------------------------------------------------------------------------------------- $pages
 	/**
 	 * @var Page[] Page[string $page_number] key is the page number or Page constant value
 	 */
-	public $pages;
+	public array $pages;
 
 	//---------------------------------------------------------------------------------- $pages_count
 	/**
@@ -31,7 +31,7 @@ class Structure
 	 *
 	 * @var integer
 	 */
-	public $pages_count;
+	public int $pages_count;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

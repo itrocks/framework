@@ -19,7 +19,7 @@ class Context extends Option
 	/**
 	 * @var string
 	 */
-	public $context;
+	public string $context;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -27,7 +27,7 @@ class Context extends Option
 	 *
 	 * @param $context string
 	 */
-	public function __construct($context)
+	public function __construct(string $context)
 	{
 		$this->context = $context;
 	}

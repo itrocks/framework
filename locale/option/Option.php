@@ -16,7 +16,7 @@ abstract class Option
 	 * @param $translation string
 	 * @return string
 	 */
-	public function afterTranslation($translation)
+	public function afterTranslation(string $translation) : string
 	{
 		return $translation;
 	}

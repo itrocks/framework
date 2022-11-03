@@ -47,7 +47,7 @@ class Text extends Field implements Has_Init
 	 * @param $level integer
 	 * @return string
 	 */
-	public function dump($level = 0) : string
+	public function dump(int $level = 0) : string
 	{
 		return parent::dump($level) . ' = ' . $this->text;
 	}

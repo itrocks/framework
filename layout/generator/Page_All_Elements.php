@@ -23,7 +23,7 @@ class Page_All_Elements
 						foreach ($all_page::ALL_ELEMENT_PROPERTIES as $element_property) {
 							foreach ($all_page->$element_property as $element) {
 								/** @var $element Element */
-								array_push($page->$element_property, $element->cloneWithContext($page));
+								$page->$element_property[] = $element->cloneWithContext($page);
 							}
 						}
 						$copied = true;

@@ -25,14 +25,15 @@ trait Has_Features
 	 * @user invisible
 	 * @var Feature[]
 	 */
-	public $features;
+	public array $features;
 
 	//------------------------------------------------------------------------------ filterByFeatures
 	/**
+	 * @noinspection PhpUnused @filter
 	 * @param $options array
 	 * @return array search criterion to filter the print model
 	 */
-	public static function filterByFeatures(array &$options)
+	public static function filterByFeatures(array &$options) : array
 	{
 		if (!Group_By::in($options)) {
 			$options[] = new Group_By();

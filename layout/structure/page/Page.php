@@ -26,9 +26,9 @@ class Page
 
 	//----------------------------------------------------------------------------------- $background
 	/**
-	 * @var File
+	 * @var ?File
 	 */
-	public $background;
+	public ?File $background;
 
 	//------------------------------------------------------------------------------------- $elements
 	/**
@@ -36,7 +36,7 @@ class Page
 	 *
 	 * @var Element[]
 	 */
-	public $elements = [];
+	public array $elements = [];
 
 	//--------------------------------------------------------------------------------------- $groups
 	/**
@@ -44,13 +44,13 @@ class Page
 	 *
 	 * @var Group[]
 	 */
-	public $groups = [];
+	public array $groups = [];
 
 	//--------------------------------------------------------------------------------------- $height
 	/**
 	 * @var float
 	 */
-	public $height = 297;
+	public float $height = 297;
 
 	//--------------------------------------------------------------------------------------- $number
 	/**
@@ -60,9 +60,9 @@ class Page
 	 * they will be replaced by final pages during the generation process.
 	 *
 	 * @signed
-	 * @var integer|string
+	 * @var string|integer
 	 */
-	public $number;
+	public string|int $number;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -70,13 +70,13 @@ class Page
 	 *
 	 * @var Property[]
 	 */
-	public $properties = [];
+	public array $properties = [];
 
 	//---------------------------------------------------------------------------------------- $width
 	/**
 	 * @var float
 	 */
-	public $width = 210;
+	public float $width = 210;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -91,7 +91,7 @@ class Page
 	/**
 	 * @return Element[]
 	 */
-	public function allButGroups()
+	public function allButGroups() : array
 	{
 		return array_merge($this->elements, $this->properties);
 	}
@@ -100,7 +100,7 @@ class Page
 	/**
 	 * @return Element[]
 	 */
-	public function allElements()
+	public function allElements() : array
 	{
 		return array_merge($this->elements, $this->groups, $this->properties);
 	}
@@ -114,7 +114,7 @@ class Page
 	 * @param $number integer
 	 * @return static
 	 */
-	public function cloneWithNumber($number)
+	public function cloneWithNumber(int $number) : static
 	{
 		$page         = clone $this;
 		$page->number = $number;
@@ -133,7 +133,7 @@ class Page
 	/**
 	 * @return string
 	 */
-	public function dump()
+	public function dump() : string
 	{
 		$dump = '########## ' . $this->number . LF . LF;
 		foreach ($this->allElements() as $element) {
@@ -146,7 +146,7 @@ class Page
 	/**
 	 * @return boolean true if the page contains no visible elements / properties
 	 */
-	public function isEmpty()
+	public function isEmpty() : bool
 	{
 		$count_elements = count($this->elements);
 		foreach ($this->elements as $element) {

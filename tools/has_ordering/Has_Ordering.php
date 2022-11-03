@@ -18,7 +18,7 @@ trait Has_Ordering
 	 * @user hide_output
 	 * @var integer
 	 */
-	public $ordering;
+	public int $ordering;
 
 	//--------------------------------------------------------------------------------------- reorder
 	/**

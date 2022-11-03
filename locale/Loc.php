@@ -13,6 +13,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template\Functions;
 use ITRocks\Framework\View\User_Error_Exception;
@@ -64,7 +65,7 @@ class Loc implements Registerable
 	 * @param $result array[]
 	 * @return array[]
 	 */
-	public function afterHtmlTemplateFunctionsToEditPropertyExtra(array $result)
+	public function afterHtmlTemplateFunctionsToEditPropertyExtra(array $result) : array
 	{
 		/** @var $property      Reflection_Property */
 		/** @var $property_path string */
@@ -77,34 +78,35 @@ class Loc implements Registerable
 	//------------------------------------------------------- beforeObjectBuilderArrayBuildBasicValue
 	/**
 	 * @param $property Reflection_Property
-	 * @param $value    boolean|integer|float|string|array
+	 * @param $value    boolean|integer|float|string|array|null
 	 * @throws ReflectionException
 	 */
 	public function beforeObjectBuilderArrayBuildBasicValue(
-		Reflection_Property $property, &$value
+		Reflection_Property $property, array|bool|int|float|string|null &$value
 	) {
-		if (isset($value)) {
-			if (is_array($value) && !empty($value)) {
-				if (Link_Annotation::of($property)->isCollection()) {
-					$class      = new Reflection_Class($property->getType()->getElementTypeAsString());
-					$properties = $class->getProperties();
-					reset($value);
-					if (!is_numeric(key($value))) {
-						$value = arrayFormRevert($value);
-					}
-					foreach ($value as $key => $element) {
-						foreach ($element as $property_name => $property_value) {
-							if (isset($property_value) && isset($properties[$property_name])) {
-								$value[$key][$property_name] = self::propertyToIso(
-									$properties[$property_name], $property_value
-								);
-							}
-						}
-					}
+		if (!isset($value)) {
+			return;
+		}
+		if (empty($value) || !is_array($value)) {
+			$value = self::propertyToIso($property, $value);
+			return;
+		}
+		if (!Link_Annotation::of($property)->isCollection()) {
+			return;
+		}
+		$class      = new Reflection_Class($property->getType()->getElementTypeAsString());
+		$properties = $class->getProperties();
+		reset($value);
+		if (!is_numeric(key($value))) {
+			$value = arrayFormRevert($value);
+		}
+		foreach ($value as $key => $element) {
+			foreach ($element as $property_name => $property_value) {
+				if (isset($property_value) && isset($properties[$property_name])) {
+					$value[$key][$property_name] = self::propertyToIso(
+						$properties[$property_name], $property_value
+					);
 				}
-			}
-			else {
-				$value = self::propertyToIso($property, $value);
 			}
 		}
 	}
@@ -115,13 +117,14 @@ class Loc implements Registerable
 	 */
 	public function classNameDisplayReverse(string &$value)
 	{
-		if ($value !== '') {
-			$value = explode(BS, $value);
-			foreach ($value as $key => $class_part) {
-				$value[$key] = Names::displayToClass(self::rtr($class_part));
-			}
-			$value = join(BS, $value);
+		if ($value === '') {
+			return;
 		}
+		$value = explode(BS, $value);
+		foreach ($value as $key => $class_part) {
+			$value[$key] = Names::displayToClass(self::rtr($class_part));
+		}
+		$value = join(BS, $value);
 	}
 
 	//--------------------------------------------------------------------------------------- context
@@ -131,7 +134,7 @@ class Loc implements Registerable
 	 * @param $context string
 	 * @return Context
 	 */
-	public static function context($context)
+	public static function context(string $context) : Context
 	{
 		return new Context($context);
 	}
@@ -142,7 +145,7 @@ class Loc implements Registerable
 	 *
 	 * @return Date_Format
 	 */
-	public static function date()
+	public static function date() : Date_Format
 	{
 		return Locale::current()->date_format;
 	}
@@ -157,7 +160,7 @@ class Loc implements Registerable
 	 * @param $joker string if set, the character that replaces missing values, instead of current
 	 * @return string ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
 	 */
-	public static function dateToIso($date, $max = false, $joker = null)
+	public static function dateToIso(string $date, bool $max = false, string $joker = '') : string
 	{
 		return Locale::current()->date_format->toIso($date, $max, $joker);
 	}
@@ -166,10 +169,10 @@ class Loc implements Registerable
 	/**
 	 * Takes an ISO date and make it locale
 	 *
-	 * @param $date string ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
+	 * @param $date Date_Time|string|null ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
 	 * @return string '25/12/2011' '25/12/2001 12:20' '25/12/2001 12:20:16'
 	 */
-	public static function dateToLocale($date)
+	public static function dateToLocale(Date_Time|string|null $date) : string
 	{
 		return Locale::current()->date_format->toLocale($date);
 	}
@@ -192,9 +195,9 @@ class Loc implements Registerable
 	 *
 	 * @param $context string
 	 */
-	public static function enterContext($context)
+	public static function enterContext(string $context)
 	{
-		array_push(self::$contexts_stack, $context);
+		self::$contexts_stack[] = $context;
 	}
 
 	//----------------------------------------------------------------------------------- exitContext
@@ -240,7 +243,7 @@ class Loc implements Registerable
 	 * @param $translate boolean
 	 * @return boolean
 	 */
-	public static function formatTranslate($translate)
+	public static function formatTranslate(bool $translate) : bool
 	{
 		$locale                   = Locale::current();
 		$format_translate         = $locale->format_translate;
@@ -253,9 +256,9 @@ class Loc implements Registerable
 	 * Returns the current valid context from the contexts stack
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return string|null
+	 * @return ?string
 	 */
-	public static function getContext()
+	public static function getContext() : ?string
 	{
 		$context = end(self::$contexts_stack);
 		/** @noinspection PhpUnhandledExceptionInspection class_exists */
@@ -303,7 +306,7 @@ class Loc implements Registerable
 	 *
 	 * @return string
 	 */
-	public static function language()
+	public static function language() : string
 	{
 		return Locale::current()->language;
 	}
@@ -316,7 +319,7 @@ class Loc implements Registerable
 	 * @param $value  mixed
 	 * @return string
 	 */
-	public static function methodToLocale(Reflection_Method $method, $value)
+	public static function methodToLocale(Reflection_Method $method, mixed $value) : string
 	{
 		return Locale::current()->methodToLocale($method, $value);
 	}
@@ -325,12 +328,15 @@ class Loc implements Registerable
 	/**
 	 * Change a locale value into an ISO formatted value, knowing it's property
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
-	 * @param $value    string
-	 * @return mixed
+	 * @param $value    string|null
+	 * @return Date_Time|float|integer|string
 	 */
-	public static function propertyToIso(Reflection_Property $property, $value = null)
+	public static function propertyToIso(Reflection_Property $property, string $value = null)
+	: Date_Time|float|int|string
 	{
+		/** @noinspection PhpUnhandledExceptionInspection caught at high-level, not programmatically */
 		return Locale::current()->propertyToIso($property, $value);
 	}
 
@@ -342,7 +348,8 @@ class Loc implements Registerable
 	 * @param $value    mixed
 	 * @return string
 	 */
-	public static function propertyToLocale(Reflection_Property $property, $value = null)
+	public static function propertyToLocale(Reflection_Property $property, mixed $value = null)
+		: string
 	{
 		return Locale::current()->propertyToLocale($property, $value);
 	}
@@ -381,7 +388,7 @@ class Loc implements Registerable
 	 * @param $replace string[] key is the key for the replacement, value is the replacement value
 	 * @return Replace
 	 */
-	public static function replace(array $replace)
+	public static function replace(array $replace) : Replace
 	{
 		return new Replace($replace);
 	}
@@ -390,15 +397,17 @@ class Loc implements Registerable
 	/**
 	 * Reverse translation
 	 *
-	 * @param $translation           string the translation to search for (can contain wildcards)
-	 * @param $context               string if empty, use the actual context set by enterContext()
-	 * @param $context_property_path string additional context : the property path
+	 * @param $translation           string   the translation to search for (can contain wildcards)
+	 * @param $context               string   if empty, use the actual context set by enterContext()
+	 * @param $context_property_path string   additional context : the property path
 	 * @param $limit_to              string[] if set, limit texts to these results (when wildcards)
 	 * @return string|string[]
 	 */
 	public static function rtr(
-		$translation, $context = '', $context_property_path = '', array $limit_to = null
-	) {
+		string $translation, string $context = '', string $context_property_path = '',
+		array $limit_to = []
+	) : array|string
+	{
 		if (!static::$enabled) {
 			return $translation;
 		}
@@ -476,7 +485,7 @@ class Loc implements Registerable
 	 * @param $result string
 	 * @return string
 	 */
-	public function translateReturnedValue($result)
+	public function translateReturnedValue(string $result) : string
 	{
 		return self::tr($result);
 	}

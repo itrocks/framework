@@ -86,10 +86,10 @@ class Page extends Model\Page
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $ordering integer ordering number, eg page number (see constants)
-	 * @param $layout   string raw layout of the page
+	 * @param $ordering integer|null ordering number, eg page number (see constants)
+	 * @param $layout   string|null  raw layout of the page
 	 */
-	public function __construct($ordering = null, $layout = null)
+	public function __construct(int $ordering = null, string $layout = null)
 	{
 		parent::__construct($ordering, $layout);
 		if ($this->ordering) {
@@ -123,9 +123,9 @@ class Page extends Model\Page
 	/**
 	 * Get ordering caption (eg first, middle, last page), or page number if free ordering number
 	 *
-	 * @return integer|string @example 'screen'
+	 * @return string @example 'screen'
 	 */
-	public function orderingCaption()
+	public function orderingCaption() : string
 	{
 		switch ($this->ordering) {
 			case static::BIG_SCREEN:            return 'big_screen';
@@ -144,7 +144,7 @@ class Page extends Model\Page
 	 *
 	 * @return integer
 	 */
-	protected function orderingToSortable()
+	protected function orderingToSortable() : int
 	{
 		return static::ORDERING[$this->ordering];
 	}

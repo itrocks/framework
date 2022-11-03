@@ -16,7 +16,7 @@ class Translation
 	/**
 	 * @var string
 	 */
-	public $context = '';
+	public string $context = '';
 
 	//------------------------------------------------------------------------------------- $language
 	/**
@@ -26,7 +26,7 @@ class Translation
 	 * @max_length 5
 	 * @var string
 	 */
-	public $language = '';
+	public string $language = '';
 
 	//----------------------------------------------------------------------------------------- $text
 	/**
@@ -34,24 +34,25 @@ class Translation
 	 * @multiline
 	 * @var string
 	 */
-	public $text = '';
+	public string $text = '';
 
 	//---------------------------------------------------------------------------------- $translation
 	/**
 	 * @multiline
 	 * @var string
 	 */
-	public $translation = '';
+	public string $translation = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $text        string
-	 * @param $language    string
-	 * @param $context     string
-	 * @param $translation string
+	 * @param $text        string|null
+	 * @param $language    string|null
+	 * @param $context     string|null
+	 * @param $translation string|null
 	 */
-	public function __construct($text = null, $language = null, $context = null, $translation = null)
-	{
+	public function __construct(
+		string $text = null, string $language = null, string $context = null, string $translation = null
+	) {
 		if (isset($context))     $this->context     = $context;
 		if (isset($language))    $this->language    = $language;
 		if (isset($text))        $this->text        = $text;

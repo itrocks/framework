@@ -19,7 +19,7 @@ class Output_Generator extends Generator
 	 * @param $object object
 	 * @return Structure
 	 */
-	public function generate($object) : Structure
+	public function generate(object $object) : Structure
 	{
 		$this->object    = $object;
 		$this->structure = new Structure(Builder::className($this->model->class_name));

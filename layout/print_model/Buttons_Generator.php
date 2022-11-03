@@ -19,19 +19,19 @@ class Buttons_Generator
 	/**
 	 * @var string
 	 */
-	protected $class_name;
+	protected string $class_name;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
-	 * @var object
+	 * @var ?object
 	 */
-	protected $object = null;
+	protected ?object $object = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name_object object|string
+	 * @param $class_name_object object|string|null
 	 */
-	public function __construct($class_name_object = null)
+	public function __construct(object|string $class_name_object = null)
 	{
 		if (isset($class_name_object)) {
 			$this->class_name = Builder::current()->sourceClassName(
@@ -47,7 +47,7 @@ class Buttons_Generator
 	/**
 	 * @return Button[]
 	 */
-	public function getButtons()
+	public function getButtons() : array
 	{
 		$models = Dao::search(['class_name' => $this->class_name], Print_Model::class, Dao::sort());
 		foreach ($models as $model) {

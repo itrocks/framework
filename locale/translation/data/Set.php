@@ -22,14 +22,14 @@ class Set
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//------------------------------------------------------------------------------------- $elements
 	/**
 	 * @getter
 	 * @var Data[]
 	 */
-	public $elements;
+	public array $elements;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -37,22 +37,23 @@ class Set
 	 * @setter
 	 * @var object
 	 */
-	public $object;
+	public object $object;
 
 	//-------------------------------------------------------------------------------- $property_name
 	/**
 	 * @var string
 	 */
-	public $property_name;
+	public string $property_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $object        object
-	 * @param $property_name string
-	 * @param $elements      Data[]
+	 * @param $object        object|null
+	 * @param $property_name string|null
+	 * @param $elements      Data[]|null
 	 */
-	public function __construct($object = null, $property_name = null, array $elements = null)
-	{
+	public function __construct(
+		object $object = null, string $property_name = null, array $elements = null
+	) {
 		if (isset($elements)) {
 			$this->elements = $elements;
 		}
@@ -80,7 +81,7 @@ class Set
 	 *
 	 * @return Data[]
 	 */
-	protected function getElements()
+	protected function getElements() : array
 	{
 		if ($this->elements) {
 			return $this->elements;
@@ -110,7 +111,7 @@ class Set
 	/**
 	 * @param $value object
 	 */
-	protected function setObject($value)
+	protected function setObject(object $value)
 	{
 		$this->class_name = Builder::current()->sourceClassName(get_class($value));
 		$this->object     = $value;
@@ -120,10 +121,12 @@ class Set
 	/**
 	 * @param $property Reflection_Property
 	 * @param $value    string
-	 * @param $language string
+	 * @param $language string|null
 	 * @return string
 	 */
-	public function translate(Reflection_Property $property, $value, $language = null)
+	public function translate(
+		Reflection_Property $property, string $value, string $language = null
+	) : string
 	{
 		// pre-requisite : a property value containing the context object
 		if (($property instanceof Reflection_Property_Value) && !$property->finalValue()) {
@@ -136,8 +139,9 @@ class Set
 				],
 				Data::class
 			);
+			return $translation?->translation ?: $value;
 		}
-		return (isset($translation) && $translation->translation) ? $translation->translation : $value;
+		return $value;
 	}
 
 }

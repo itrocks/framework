@@ -14,14 +14,14 @@ class Image extends Element
 	/**
 	 * @var File
 	 */
-	public $file;
+	public File $file;
 
 	//------------------------------------------------------------------------------------------ dump
 	/**
 	 * @param $level integer
 	 * @return string
 	 */
-	public function dump($level = 0)
+	public function dump(int $level = 0) : string
 	{
 		return parent::dump($level) . ' = ' . $this->file->name;
 	}

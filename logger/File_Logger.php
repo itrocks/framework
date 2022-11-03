@@ -28,9 +28,9 @@ class File_Logger implements Configurable
 
 	//----------------------------------------------------------------------------------------- $file
 	/**
-	 * @var resource
+	 * @var ?resource
 	 */
-	protected $file = null;
+	protected mixed $file = null;
 
 	//------------------------------------------------------------------------------------ $file_name
 	/**
@@ -54,7 +54,7 @@ class File_Logger implements Configurable
 	/**
 	 * @param $configuration array [path]
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
 		$this->path = $configuration[self::PATH] ?? '/tmp';
 	}
@@ -85,7 +85,7 @@ class File_Logger implements Configurable
 	/**
 	 * @return resource
 	 */
-	protected function file()
+	protected function file() : mixed
 	{
 		if (empty($this->file) && ($filename = $this->fileName())) {
 			if (!file_exists($path = lLastParse($filename, SL))) {
@@ -95,7 +95,7 @@ class File_Logger implements Configurable
 				if (!file_exists($path)) {
 					trigger_error('mkdir() : could not create directory ' . $path, E_USER_ERROR);
 				}
-				// patch : mkdir's set mode does not work (debian 8)
+				// patch : mkdir set mode does not work (debian 8)
 				chmod($path, 0777);
 			}
 			$this->file = static::GZ ? gzopen($filename, 'wb9') : fopen($filename, 'wb');
