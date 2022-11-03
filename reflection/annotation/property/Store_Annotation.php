@@ -54,7 +54,7 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string @values gz, hex, string
+	 * @param $value    ?string @values gz, hex, string
 	 * @param $property Reflection_Property
 	 */
 	public function __construct(?string $value, Reflection_Property $property)

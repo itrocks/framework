@@ -22,7 +22,7 @@ class Dashboard
 	 * @link Collection
 	 * @var Indicator[]
 	 */
-	public $indicators;
+	public array $indicators;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -45,8 +45,7 @@ class Dashboard
 	 */
 	public static function current() : static
 	{
-		/** @noinspection PhpIncompatibleReturnTypeInspection Dao:read(static) */
-		/** @noinspection PhpUnhandledExceptionInspection create static */
+		/** @noinspection PhpUnhandledExceptionInspection class */
 		return Session::current()->get(static::class)
 			?: Dao::read(1, static::class)
 			?: Builder::create(static::class, [Loc::tr('main')]);

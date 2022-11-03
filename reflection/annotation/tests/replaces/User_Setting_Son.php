@@ -22,6 +22,6 @@ class User_Setting_Son extends Setting\User
 	 * @replaces user
 	 * @var User
 	 */
-	public $guy;
+	public User $guy;
 
 }

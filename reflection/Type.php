@@ -284,9 +284,9 @@ class Type extends ReflectionType
 	 *
 	 * Depends on if it can be null or not, and depends on simple type
 	 *
-	 * @return mixed
+	 * @return array|bool|float|int|string|null
 	 */
-	public function getDefaultValue() : mixed
+	public function getDefaultValue() : array|bool|float|int|string|null
 	{
 		if ($this->allowsNull()) {
 			return null;
@@ -473,7 +473,7 @@ class Type extends ReflectionType
 	 *
 	 * @return boolean|string 'multiple' if is multiple (useful for display), else false
 	 */
-	public function isMultiple()
+	public function isMultiple() : bool|string
 	{
 		return (str_ends_with($this->type, '[]') || $this->isArray()) ? self::MULTIPLE : false;
 	}

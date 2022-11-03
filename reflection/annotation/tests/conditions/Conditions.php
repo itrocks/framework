@@ -21,7 +21,7 @@ class Conditions
 	 * @link Collection
 	 * @var Conditions_Collection[]
 	 */
-	public $lines;
+	public array $lines;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**

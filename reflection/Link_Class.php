@@ -106,6 +106,7 @@ class Link_Class extends Reflection_Class
 	/**
 	 * Returns the property of the class that make the link with the object of the parent class
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @return ?Reflection_Property
 	 */
@@ -115,6 +116,7 @@ class Link_Class extends Reflection_Class
 			$class_name = Link_Annotation::of($this)->value;
 		}
 		foreach ($this->getLinkProperties() as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection getLinkProperties gets valid properties */
 			$property = $this->getProperty($property->name);
 			if (is_a($property->getType()->asString(), $class_name, true)) {
 				return $property;
@@ -214,6 +216,7 @@ class Link_Class extends Reflection_Class
 	/**
 	 * Gets the list of @unique properties. If no @unique annotation, gets link properties
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Property[] key is the name of the property
 	 */
 	public function getUniqueProperties() : array
@@ -222,6 +225,7 @@ class Link_Class extends Reflection_Class
 		if ($unique) {
 			$unique_properties = [];
 			foreach ($unique as $property_name) {
+				/** @noinspection PhpUnhandledExceptionInspection should not have @unique bad_property */
 				$unique_properties[$property_name] = $this->getProperty($property_name);
 			}
 		}

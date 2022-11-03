@@ -166,7 +166,7 @@ class View implements Configurable
 	) : mixed
 	{
 		$feature_names
-			= (isset($parameters[Feature::FEATURE]) && ($parameters[Feature::FEATURE] != $feature_name))
+			= (isset($parameters[Feature::FEATURE]) && ($parameters[Feature::FEATURE] !== $feature_name))
 			? [$parameters[Feature::FEATURE], $feature_name]
 			: [$feature_name];
 		[$view_name, $view_method_name] = self::getView(

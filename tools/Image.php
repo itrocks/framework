@@ -327,14 +327,14 @@ class Image
 	 * @param $angle float Rotation angle in degrees
 	 * @return static
 	 */
-	public function rotate($angle)
+	public function rotate(float $angle)
 	{
 		while ($angle > 359.99) $angle -= 360;
 		while ($angle < 0)      $angle += 360;
 		if (!$angle) {
 			$destination = clone $this;
 		}
-		elseif ($angle == 180) {
+		elseif ($angle === 180.0) {
 			$destination           = $this->newImageKeepsAlpha();
 			$destination->resource = imagerotate($this->resource, $angle, 0);
 		}

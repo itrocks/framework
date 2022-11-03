@@ -146,7 +146,7 @@ class Authentication_Server implements Configurable, Registerable
 	public function hasApplication($name)
 	{
 		foreach (self::$applications as $application) {
-			if ($application->name == $name) {
+			if ($application->name === $name) {
 				// TODO LOWEST Evolution : Check sso application is accessible for user (use features and features_groups ?)
 				return $application;
 			}

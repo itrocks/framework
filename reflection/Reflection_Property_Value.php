@@ -210,7 +210,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 * @return mixed
 	 * @throws ReflectionException
 	 */
-	public function getValue($object = null, bool $with_default = false) : mixed
+	public function getValue(object $object = null, bool $with_default = false) : mixed
 	{
 		if ($this->user && !$this->final_value) {
 			$user_getter = $this->getAnnotation('user_getter');

@@ -330,7 +330,7 @@ class Reflection_Source
 			elseif ($token_id === T_USE) {
 
 				// namespace use
-				if ($use_what == T_NAMESPACE) {
+				if ($use_what === T_NAMESPACE) {
 					foreach ($this->scanClassNames() as $used => $line) {
 						if ($used[0] === BS) {
 							trigger_error(
@@ -371,7 +371,7 @@ class Reflection_Source
 
 				/*
 				// function use
-				elseif ($use_what == T_FUNCTION) {
+				elseif ($use_what === T_FUNCTION) {
 					// ...
 				}
 				*/

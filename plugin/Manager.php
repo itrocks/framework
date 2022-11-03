@@ -42,7 +42,7 @@ class Manager implements IManager
 	{
 		$data = [];
 		foreach ($this->plugins_tree as $level => $plugins) {
-			if ($level != 'top_core') {
+			if ($level !== 'top_core') {
 				foreach ($plugins as $class_name => $object) {
 					if (is_object($object)) {
 						if (method_exists($object, '__serialize')) {
@@ -171,7 +171,7 @@ class Manager implements IManager
 		// unserialize plugin
 		if (!is_object($plugin)) {
 			static $protect = null;
-			if ($class_name == $protect) {
+			if ($class_name === $protect) {
 				return null;
 			}
 			$protect = $class_name;

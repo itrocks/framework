@@ -166,7 +166,7 @@ class Compiler implements ICompiler
 		foreach ($new_compositions as $class_name => $new_composition) {
 			$old_composition = $old_compositions[$class_name] ?? null;
 			if (
-				($new_composition != $old_composition)
+				($new_composition !== $old_composition)
 				|| (
 					is_array($old_composition)
 					&& (

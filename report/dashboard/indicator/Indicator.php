@@ -45,7 +45,7 @@ class Indicator
 	 * @mandatory
 	 * @var Dashboard
 	 */
-	public $dashboard;
+	public Dashboard $dashboard;
 
 	//--------------------------------------------------------------------------------------- $grid_x
 	/**
@@ -55,7 +55,7 @@ class Indicator
 	 * @user invisible
 	 * @var integer
 	 */
-	public $grid_x;
+	public int $grid_x;
 
 	//--------------------------------------------------------------------------------------- $grid_y
 	/**
@@ -65,14 +65,14 @@ class Indicator
 	 * @user invisible
 	 * @var integer
 	 */
-	public $grid_y;
+	public int $grid_y;
 
 	//----------------------------------------------------------------------------------------- $icon
 	/**
 	 * @link Object
-	 * @var File|null
+	 * @var ?File
 	 */
-	public $icon = null;
+	public ?File $icon = null;
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
@@ -82,7 +82,7 @@ class Indicator
 	 * @var string
 	 * @widget Widget
 	 */
-	public $property_path = self::COUNT;
+	public string $property_path = self::COUNT;
 
 	//-------------------------------------------------------------------------------------- $setting
 	/**
@@ -94,7 +94,7 @@ class Indicator
 	 * @mandatory
 	 * @var Setting
 	 */
-	public $setting;
+	public Setting $setting;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -127,9 +127,7 @@ class Indicator
 	 */
 	public function __toString() : string
 	{
-		return $this->setting
-			? $this->setting->value->name
-			: Loc::tr('new $1', Loc::replace([1 => Loc::tr('indicator')]));
+		return $this->setting->value->name;
 	}
 
 	//-------------------------------------------------------------------------------- formattedValue

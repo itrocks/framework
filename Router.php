@@ -135,7 +135,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 			if ($in_class_name) {
 				$this->changes = true;
 				$this->class_paths[$in_class_name] = $file_name;
-				if ($in_class_name == $class_name) {
+				if ($in_class_name === $class_name) {
 					$result = $file_name;
 					break;
 				}
@@ -476,7 +476,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 		if (isset($this->controller_calls[$uri->controller_name][$uri->feature_name])) {
 			[$check_controller, $check_method_name]
 				= $this->controller_calls[$uri->controller_name][$uri->feature_name];
-			$changes = (($check_controller != $controller) || ($check_method_name != $method_name));
+			$changes = (($check_controller !== $controller) || ($check_method_name !== $method_name));
 		}
 		else {
 			$changes = true;
@@ -525,7 +525,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 			: $feature_name;
 		if (isset($this->view_calls[$class_name][$features])) {
 			[$check_view, $check_view_method_name] = $this->view_calls[$class_name][$features];
-			$changes = (($check_view != $view) || ($check_view_method_name != $view_method_name));
+			$changes = (($check_view !== $view) || ($check_view_method_name !== $view_method_name));
 		}
 		else {
 			$changes = true;

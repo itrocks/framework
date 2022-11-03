@@ -35,15 +35,9 @@ class Property implements Field
 	public function __construct(
 		string $name = null, Type $type = null, Reflection_Class $class = null
 	) {
-		if ($name != null) {
-			$this->name = $name;
-		}
-		if ($type != null) {
-			$this->type = $type;
-		}
-		if ($class != null) {
-			$this->class = $class;
-		}
+		if (isset($class)) $this->class = $class;
+		if (isset($name))  $this->name  = $name;
+		if (isset($type))  $this->type  = $type;
 	}
 
 	//--------------------------------------------------------------------------------------- display

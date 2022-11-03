@@ -114,7 +114,7 @@ class Wiki implements Registerable
 	 */
 	public function noParseZone($var_name, Around_Method $joinpoint)
 	{
-		$is_include = (substr($var_name, 0, 1) == SL);
+		$is_include = str_starts_with($var_name, SL);
 		if (!$is_include) {
 			$this->dont_parse_wiki ++;
 		}

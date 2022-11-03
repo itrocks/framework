@@ -85,7 +85,7 @@ class Search_Controller extends Select_Controller
 			if (!isset($exclude_properties[$property->name])) {
 
 				$property_path = $prefix . $property->name;
-				if (($property->name == $search) || ($property_path == $search)) {
+				if (($property->name === $search) || ($property_path === $search)) {
 					$first_properties[$property_path] = $property;
 					$matches                          = true;
 				}

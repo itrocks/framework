@@ -12,7 +12,7 @@ class Replaced_Getter
 	 * @getter
 	 * @var string
 	 */
-	public $replaced;
+	public string $replaced;
 
 	//---------------------------------------------------------------------------------- $replacement
 	/**

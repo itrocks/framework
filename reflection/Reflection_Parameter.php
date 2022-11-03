@@ -14,7 +14,7 @@ class Reflection_Parameter extends ReflectionParameter
 	 * @todo it may be hard, but should copy all internal functions default values here
 	 * @var array
 	 */
-	private static $internal_defaults = [
+	private static array $internal_defaults = [
 		'chop' => ['character_mask' => " \\t\\n\\r\\0\\x0B"],
 		'ReflectionClass' => [
 			'export'                 => ['return' => false],
@@ -45,7 +45,6 @@ class Reflection_Parameter extends ReflectionParameter
 	/**
 	 * Return the parameter as a PHP source string
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @example $parameter_name
 	 * @example &$parameter_name
 	 * @example $parameter_name = 'default'
@@ -57,23 +56,16 @@ class Reflection_Parameter extends ReflectionParameter
 		$optional = $this->isOptional();
 		if ($optional) {
 			if ($this->isDefaultValueAvailable()) {
-				/** @noinspection PhpUnhandledExceptionInspection isDefaultValueAvailable */
 				$default = $this->getDefaultValue();
 			}
 			elseif ($this->getDeclaringClass()) {
-				$default = isset(
-					self::$internal_defaults
+				$default = self::$internal_defaults
 					[$this->getDeclaringClass()->name][$this->getDeclaringFunction()->name][$this->name]
-				) ?
-					self::$internal_defaults
-					[$this->getDeclaringClass()->name][$this->getDeclaringFunction()->name][$this->name]
-				: null;
+					?? null;
 			}
 			elseif ($this->getDeclaringFunction()) {
-				$default = isset(
-					self::$internal_defaults[$this->getDeclaringFunction()->name][$this->name]
-				) ? self::$internal_defaults[$this->getDeclaringFunction()->name][$this->name]
-				: null;
+				$default = self::$internal_defaults[$this->getDeclaringFunction()->name][$this->name]
+					?? null;
 			}
 			else {
 				$default = null;

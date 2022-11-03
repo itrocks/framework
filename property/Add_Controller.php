@@ -46,7 +46,7 @@ class Add_Controller implements Feature_Controller
 		$parameters['feature_name']  = array_shift($parameters);
 		$parameters['property_path'] = array_shift($parameters);
 		array_unshift($parameters, new Property());
-		if ($parameters['feature_name'] == Feature::F_LIST) {
+		if ($parameters['feature_name'] === Feature::F_LIST) {
 			$this->addPropertyToList($parameters['class_name'], $parameters['property_path']);
 		}
 		$parameters[Template::TEMPLATE] = 'added';

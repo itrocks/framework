@@ -483,6 +483,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		$methods = $this->methods;
 
 		if ($flags) {
+			/** @noinspection DuplicatedCode @TODO Factorize with a Reflection trait */
 			$flip = array_flip($flags);
 			if (isset($flip[T_USE])) {
 				if (!isset($this->traits_methods)) {

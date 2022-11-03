@@ -28,6 +28,7 @@ use ITRocks\Framework\Tools\Field;
 use ITRocks\Framework\Tools\Names;
 use ReflectionException;
 use ReflectionProperty;
+use ReturnTypeWillChange;
 
 /**
  * A rich extension of the PHP ReflectionProperty class
@@ -526,6 +527,7 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @return Type
 	 */
+	#[ReturnTypeWillChange]
 	public function getType() : Type
 	{
 		$type = Var_Annotation::of($this)->getType();
@@ -557,7 +559,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @return mixed
 	 * @throws ReflectionException
 	 */
-	public function getValue($object = null, bool $with_default = false) : mixed
+	public function getValue(object $object = null, bool $with_default = false) : mixed
 	{
 		if (isset($this->root_class) && str_contains($this->path, DOT)) {
 			$class = $this->root_class;
@@ -665,8 +667,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @return boolean
 	 * @throws Exception You compare a Date_Time with stuff that could not be converted to a Date_Time
 	 */
-	private function isEquivalentObject(mixed $object1, mixed $object2)
-		: bool
+	private function isEquivalentObject(mixed $object1, mixed $object2) : bool
 	{
 		if (is_object($object1) && isset($object1->id)) {
 			$object1 = strval($object1->id);
@@ -817,6 +818,7 @@ class Reflection_Property extends ReflectionProperty
 	 * Sets value
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
+	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $object do not use for static
 	 * @param $object object|mixed object or static property value
 	 * @param $value  mixed
 	 */

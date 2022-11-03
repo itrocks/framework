@@ -33,7 +33,9 @@ class Autoloader
 	 */
 	public static function getFilePath(string $class_name, string $path_prefix = '') : bool|string
 	{
-		$path_prefix .= (strlen($path_prefix) && substr($path_prefix, -1) != SL) ? SL : '';
+		if (($path_prefix !== '') && !str_ends_with($path_prefix, SL)) {
+			$path_prefix .= SL;
+		}
 		if ($i = strrpos($class_name, BS)) {
 			$namespace = $path_prefix . strtolower(str_replace(BS, SL, substr($class_name, 0, $i)));
 			$short_class_name = substr($class_name, $i + 1);

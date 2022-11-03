@@ -84,15 +84,13 @@ class Select extends Element
 				$html_option = new Option($value, $caption);
 				if ($value === $selected) {
 					$html_option->setAttribute('selected');
-					if ($selected_option) {
-						$selected_option->removeAttribute('selected');
-					}
+					$selected_option?->removeAttribute('selected');
 				}
-				if (($html_option->getContent() == $selected) && !$selected_option) {
+				if (($html_option->getContent() === $selected) && !$selected_option) {
 					$html_option->setAttribute('selected');
 					$selected_option = $html_option;
 				}
-				$content .= strval($html_option);
+				$content .= $html_option;
 			}
 			$this->setContent($content);
 		}

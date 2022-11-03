@@ -31,12 +31,12 @@ class Map_Insert
 	 * @param $foreign_object object
 	 * @return string
 	 */
-	public function buildQuery($object, $foreign_object)
+	public function buildQuery(object $object, object $foreign_object)
 	{
 		[$table, $field1, $field2, $id1, $id2] = Map::sqlElementsOf(
 			$object, $this->property, $foreign_object
 		);
-		if ($this->property->getType()->getElementTypeAsString() == 'object') {
+		if ($this->property->getType()->getElementTypeAsString() === 'object') {
 			$class_field = substr($field2, 3) . '_class';
 			return 'INSERT INTO' . SP . BQ . $table . BQ . LF
 				. 'SET ' . BQ . $field1 . BQ . ' = ' . $id1 . ', '

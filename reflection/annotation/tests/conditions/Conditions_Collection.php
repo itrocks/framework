@@ -18,6 +18,6 @@ class Conditions_Collection
 	 * @link Object
 	 * @var Conditions
 	 */
-	public $conditions;
+	public Conditions $conditions;
 
 }

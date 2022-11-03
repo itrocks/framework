@@ -268,7 +268,7 @@ class Collection
 			$type = $property->getType();
 			if (
 				!$type->isMultiple()
-				|| ($type->getElementTypeAsString() != $property->getFinalClass()->name)
+				|| ($type->getElementTypeAsString() !== $property->getFinalClass()->name)
 			) {
 				$cell = new Item(
 					Loc::tr(
@@ -313,7 +313,7 @@ class Collection
 		foreach ($this->properties as $property_path => $property) {
 			if (
 				!$property->getType()->isMultiple()
-				|| ($property->getType()->getElementTypeAsString() != get_class($object))
+				|| ($property->getType()->getElementTypeAsString() !== get_class($object))
 			) {
 				$row->addItem($this->buildCell($object, $property, $property_path));
 			}

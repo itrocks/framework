@@ -263,7 +263,7 @@ class Joins
 		$join->master_alias    = $this->alias_prefix . 't' . ($this->alias_counter - 1);
 		$join->master_column   = 'id_' . Store_Name_Annotation::of($master_property)->value;
 		$join->master_property = $master_property;
-		$join->mode            = ($join_mode == Join::LEFT) ? Join::LEFT : Join::INNER;
+		$join->mode            = ($join_mode === Join::LEFT) ? Join::LEFT : Join::INNER;
 		$join->type            = Join::LINK;
 
 		$this->alias_counter ++;
@@ -479,7 +479,7 @@ class Joins
 		$master_property    = $this->getProperty($master_path, $master_property_name);
 		if ($master_property) {
 			$foreign_type = $master_property->getType();
-			if ($foreign_type->isMultiple() && ($foreign_type->getElementTypeAsString() == 'string')) {
+			if ($foreign_type->isMultiple() && ($foreign_type->getElementTypeAsString() === 'string')) {
 				// TODO : string[] can have multiple implementations, depending on database engine
 				// linked strings table, mysql set.. should find a way to make this common without
 				// knowing anything about the specific

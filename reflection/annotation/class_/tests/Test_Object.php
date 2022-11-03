@@ -61,7 +61,7 @@ class Test_Object
 	private function dynamic(string $text, array $options)
 	{
 		$this->data .= '+' . $text . '(';
-		if (count($options) == 1) {
+		if (count($options) === 1) {
 			foreach ($options as $option) {
 				if ($option instanceof Option\Only) {
 					$this->data .= join(',', $option->properties);

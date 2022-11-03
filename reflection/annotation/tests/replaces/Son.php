@@ -12,6 +12,6 @@ class Son extends Parent_Class
 	 * @replaces replaced
 	 * @var string
 	 */
-	public $replacement;
+	public string $replacement;
 
 }

@@ -13,7 +13,6 @@ use ITRocks\Framework\Tools\Stringable;
 use ITRocks\Framework\Tools\Value_Lists;
 use ReflectionClass;
 use ReflectionException;
-use ReflectionMethod;
 use ReturnTypeWillChange;
 
 /**
@@ -85,7 +84,7 @@ class Reflection_Class extends ReflectionClass
 			}
 			$annotation = $property->getAnnotation($annotation_name);
 			if (
-				(isset($annotation_value) && ($annotation->value == $annotation_value))
+				(isset($annotation_value) && ($annotation->value === $annotation_value))
 				|| (!isset($annotation_value) && !empty($annotation->value))
 			) {
 				$properties[$property->name] = $property;
@@ -110,7 +109,7 @@ class Reflection_Class extends ReflectionClass
 			/** @var $property Reflection_Property */
 			$annotation = $property->getAnnotation($annotation_name);
 			if (
-				(isset($annotation_value) && ($annotation->value == $annotation_value))
+				(isset($annotation_value) && ($annotation->value === $annotation_value))
 				|| (!isset($annotation_value) && !empty($annotation->value))
 			) {
 				return $property;
@@ -125,6 +124,7 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * TODO Problem with this implementation : if a interface/parent/trait constant is overridden in current class, this will remove it. No problem for [T_EXTENDS, T_USE] default use.
 	 *
+	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $flags @TODO proxify ?
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return array Constant name in key, constant value in value
 	 */
@@ -321,8 +321,7 @@ class Reflection_Class extends ReflectionClass
 	public function getMethod(string $name) : ?Reflection_Method
 	{
 		$method = parent::getMethod($name);
-		/** @noinspection PhpUnhandledExceptionInspection $method from parent::getMethods() */
-		return $method ? new Reflection_Method($this->name, $method->name) : null;
+		return new Reflection_Method($this->name, $method->name);
 	}
 
 	//------------------------------------------------------------------------------------ getMethods
@@ -332,6 +331,7 @@ class Reflection_Class extends ReflectionClass
 	 * Only methods visible for current class are retrieved, not the privates ones from parents or
 	 * traits. If you set flags, this will override this limitation.
 	 *
+	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $flags @TODO proxify ?
 	 * @noinspection PhpDocMissingThrowsInspection $method from parent::getMethods()
 	 * @param $flags integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return Reflection_Method[] key is the name of the method
@@ -344,6 +344,7 @@ class Reflection_Class extends ReflectionClass
 			$methods[$method->name] = new Reflection_Method($this->name, $method->name);
 		}
 		if ($flags) {
+			/** @noinspection DuplicatedCode @TODO Factorize with a Reflection trait */
 			$flip = array_flip($flags);
 			if (isset($flip[T_USE])) {
 				if (!isset($this->traits_methods)) {
@@ -444,6 +445,7 @@ class Reflection_Class extends ReflectionClass
 	 * If you set self::T_SORT properties will be sorted by (@)display_order class annotation
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection $property from parent::getProperties()
+	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $flags @TODO Proxify ?
 	 * @param $flags       integer[]|string[] Restriction. T_USE has no effect (always applied).
 	 *                     flags @default [T_EXTENDS, T_USE] @values T_EXTENDS, T_USE, self::T_SORT
 	 * @param $final_class ?string force the final class to this name (mostly for internal use)

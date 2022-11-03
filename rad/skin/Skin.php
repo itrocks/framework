@@ -12,9 +12,9 @@ class Skin
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name string
+	 * @param $name string|null
 	 */
-	public function __construct($name = null)
+	public function __construct(string $name = null)
 	{
 		if (isset($name)) {
 			$this->name = $name;

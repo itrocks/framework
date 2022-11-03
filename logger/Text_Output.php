@@ -71,15 +71,15 @@ class Text_Output
 	//-------------------------------------------------------------------------------------- progress
 	/**
 	 * @param $message string
-	 * @param $step    string
-	 * @param $total   string
+	 * @param $step    int
+	 * @param $total   int
 	 */
-	public function progress(string $message, string $step, string $total)
+	public function progress(string $message, int $step, int $total)
 	{
-		if ($_SERVER['REMOTE_ADDR'] == 'console') {
-			$this->log(sprintf("\r%s%d%%", $message, $step * 100 / $total), $step == $total);
+		if ($_SERVER['REMOTE_ADDR'] === 'console') {
+			$this->log(sprintf("\r%s%d%%", $message, $step * 100 / $total), $step === $total);
 		}
-		elseif ($step == 1) {
+		elseif ($step === 1) {
 			$this->log($message);
 		}
 		elseif ($step % 100) {

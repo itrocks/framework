@@ -21,7 +21,7 @@ class Bridge
 	/**
 	 * @var Installer
 	 */
-	public $installer;
+	public Installer $installer;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -38,7 +38,7 @@ class Bridge
 	 *
 	 * @param $feature_class string The already installed feature class
 	 */
-	public function automaticInstallFor($feature_class)
+	public function automaticInstallFor(string $feature_class)
 	{
 		foreach ($this->bridgeFeatures($feature_class) as $bridge_feature) {
 			if (!$this->isInstalled($bridge_feature)) {
@@ -58,7 +58,7 @@ class Bridge
 	 *
 	 * @param $feature_class string The already uninstalled feature class
 	 */
-	public function automaticUninstallFor($feature_class)
+	public function automaticUninstallFor(string $feature_class)
 	{
 		foreach ($this->bridgeFeatures($feature_class) as $bridge_feature) {
 			if ($this->isInstalled($bridge_feature)) {
@@ -80,7 +80,7 @@ class Bridge
 	 * @param $feature_class string
 	 * @return string[]
 	 */
-	protected function bridgeFeatures($feature_class)
+	protected function bridgeFeatures(string $feature_class) : array
 	{
 		$bridge_features = [];
 		$dependencies = Dao::search(
@@ -98,7 +98,7 @@ class Bridge
 	 * @param $bridge_feature string
 	 * @return array string[integer $group][integer $key]
 	 */
-	protected function featureClasses($bridge_feature)
+	protected function featureClasses(string $bridge_feature) : array
 	{
 		$feature_classes = [];
 		$dependencies = Dao::search(
@@ -115,7 +115,7 @@ class Bridge
 	/**
 	 * @param $feature_name string
 	 */
-	protected function install($feature_name)
+	protected function install(string $feature_name)
 	{
 		$this->installer->install($feature_name);
 	}
@@ -125,7 +125,7 @@ class Bridge
 	 * @param $bridge_group string[]
 	 * @return boolean true if all features of the group are installed
 	 */
-	protected function isGroupInstalled(array $bridge_group)
+	protected function isGroupInstalled(array $bridge_group) : bool
 	{
 		foreach ($bridge_group as $feature) {
 			if (!$this->isInstalled($feature)) {
@@ -138,9 +138,9 @@ class Bridge
 	//----------------------------------------------------------------------------------- isInstalled
 	/**
 	 * @param $feature_name string
-	 * @return Feature|null set only if the feature is installed
+	 * @return ?Feature set only if the feature is installed
 	 */
-	protected function isInstalled($feature_name)
+	protected function isInstalled(string $feature_name) : ?Feature
 	{
 		return Dao::searchOne(
 			['plugin_class_name' => $feature_name, 'status' => Status::INSTALLED],
@@ -152,7 +152,7 @@ class Bridge
 	/**
 	 * @param $feature_name string
 	 */
-	protected function uninstall($feature_name)
+	protected function uninstall(string $feature_name)
 	{
 		$this->installer->uninstall($feature_name);
 	}

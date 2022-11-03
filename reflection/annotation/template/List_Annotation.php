@@ -44,13 +44,13 @@ class List_Annotation extends Annotation
 				$in_quote = false;
 				$position = $next_position;
 			}
-			if (($position == $length) || ($value[$position] === ',') && !$in_quote) {
+			if (($position === $length) || ($value[$position] === ',') && !$in_quote) {
 				if (!isset($stop)) {
 					$stop = $position;
 				}
 				$values[] = trim(substr($value, $start, $stop - $start));
 				$position ++;
-				if ($position == $length) {
+				if ($position === $length) {
 					$start = $position;
 					break;
 				}
@@ -68,7 +68,7 @@ class List_Annotation extends Annotation
 			}
 			$position ++;
 		}
-		if (($position == $length) && ($values || ($position > $start))) {
+		if (($position === $length) && ($values || ($position > $start))) {
 			$values[] = substr($value, $start, $position - $start);
 		}
 		$this->value = $values;

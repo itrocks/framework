@@ -115,7 +115,7 @@ class Include_Path
 			$app_dir_begin .= ($app_dir_begin ? SL : '') . $app_dir_part;
 			$directories[$app_dir_begin] = $app_dir_begin;
 		}
-		if ($application_class != Application::class) {
+		if ($application_class !== Application::class) {
 			// get source directories from main application extends
 			$extends = get_parent_class($application_class);
 			if ($extends && !isset($already[$extends])) {

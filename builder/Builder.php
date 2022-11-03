@@ -181,7 +181,7 @@ class Builder implements Activable
 							$element_class_from = $property->getType()->getElementTypeAsString();
 							$property           = $destination_class->getProperty($property->name);
 							$element_class_to   = $property->getType()->getElementTypeAsString();
-							if ($element_class_to != $element_class_from) {
+							if ($element_class_to !== $element_class_from) {
 								$clone_collection[substr($property_name, 0, -1)] = $element_class_to;
 							}
 						}
@@ -204,7 +204,7 @@ class Builder implements Activable
 			// linked class object to link class object : store source object to linked object
 			$destination_class = new Link_Class($class_name);
 			if ($linked_class_name = $destination_class->getLinkedClassName()) {
-				if ($linked_class_name == $source_class_name) {
+				if ($linked_class_name === $source_class_name) {
 					$destination_class->getLinkProperty()->setValue($clone, $object);
 				}
 			}
@@ -438,7 +438,7 @@ class Builder implements Activable
 		else {
 			$result = $class_name;
 		}
-		return (($class_name != $result) && !Class_Builder::isBuilt($result))
+		return (($class_name !== $result) && !Class_Builder::isBuilt($result))
 			? $this->replacementClassName($result)
 			: $result;
 	}

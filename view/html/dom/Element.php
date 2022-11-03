@@ -149,10 +149,10 @@ abstract class Element
 	{
 		if (is_array($this->content)) {
 			if ($this->content) {
-				if ($this->build_mode == self::BUILD_MODE_RAW) {
+				if ($this->build_mode === self::BUILD_MODE_RAW) {
 					$content = $this->getContentAsRaw();
 				}
-				// else <=> if $this->build_mode == self::BUILD_MODE_AUTO
+				// else <=> if $this->build_mode === self::BUILD_MODE_AUTO
 				else {
 					$element = reset($this->content);
 					if (is_array($element)) {

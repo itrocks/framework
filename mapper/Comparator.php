@@ -51,7 +51,7 @@ class Comparator
 
 	//--------------------------------------------------------------------------------------- compare
 	/**
-	 * Returns -1 if $object1 < $object2, 1 if $object1 > $object2, or 0 if $object1 == $object2
+	 * Returns -1 if $object1 < $object2, 1 if $object1 > $object2, or 0 if $object1 === $object2
 	 *
 	 * @param $object1 mixed
 	 * @param $object2 mixed

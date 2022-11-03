@@ -24,16 +24,16 @@ interface Reflection_Property extends Reflection_Class_Component
 	 *
 	 * @return Reflection_Class
 	 */
-	public function getDeclaringTrait();
+	public function getDeclaringTrait() : Reflection_Class;
 
 	//------------------------------------------------------------------------- getDeclaringTraitName
 	/**
 	 * Gets the declaring trait name for the reflected property
 	 * If the property has been declared into a class, this returns this class name
 	 *
-	 * @returns string
+	 * @return string
 	 */
-	public function getDeclaringTraitName();
+	public function getDeclaringTraitName() : string;
 
 	//--------------------------------------------------------------------------------- getFinalClass
 	/**
@@ -41,7 +41,7 @@ interface Reflection_Property extends Reflection_Class_Component
 	 *
 	 * @return Reflection_Class
 	 */
-	public function getFinalClass();
+	public function getFinalClass() : Reflection_Class;
 
 	//--------------------------------------------------------------------------------- getRootClass
 	/**
@@ -55,7 +55,7 @@ interface Reflection_Property extends Reflection_Class_Component
 	 *
 	 * @return string
 	 */
-	public function getFinalClassName();
+	public function getFinalClassName() : string;
 
 	//--------------------------------------------------------------------------------------- getType
 	/**
@@ -63,7 +63,7 @@ interface Reflection_Property extends Reflection_Class_Component
 	 *
 	 * @return Type
 	 */
-	public function getType();
+	public function getType() : Type;
 
 	//-------------------------------------------------------------------------------------- getValue
 	/**
@@ -72,7 +72,7 @@ interface Reflection_Property extends Reflection_Class_Component
 	 * @param $object object
 	 * @return mixed
 	 */
-	public function getValue($object);
+	public function getValue(object $object) : mixed;
 
 	//-------------------------------------------------------------------------------------- isStatic
 	/**
@@ -80,6 +80,6 @@ interface Reflection_Property extends Reflection_Class_Component
 	 *
 	 * @return boolean
 	 */
-	public function isStatic();
+	public function isStatic() : bool;
 
 }

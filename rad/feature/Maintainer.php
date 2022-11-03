@@ -26,11 +26,11 @@ class Maintainer implements Registerable, Updatable
 	 * @param $class_name string
 	 * @return string
 	 */
-	protected function applicationClassName($class_name)
+	protected function applicationClassName(string $class_name) : string
 	{
 		$namespace = lParse($class_name, BS, 2);
 		if (!class_exists($namespace . BS . 'Application')) {
-			$namespace = lParse($class_name, BS, 1);
+			$namespace = lParse($class_name, BS);
 		}
 		return $namespace . BS . 'Application';
 	}
@@ -43,7 +43,7 @@ class Maintainer implements Registerable, Updatable
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Feature[]
 	 */
-	protected function featureAnnotationsToFeatures()
+	protected function featureAnnotationsToFeatures() : array
 	{
 		$search = [
 			'declaration' => [Declaration::BUILT_IN, Declaration::INSTALLABLE],
@@ -74,10 +74,11 @@ class Maintainer implements Registerable, Updatable
 	 * uninstall
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $abstract_installable_class_name string Installable is on the abstract class : get sons
+	 * @param $abstract_installable_class_name string|null Installable is on the abstract class : get
+	 *                                         sons
 	 * @return Feature[]
 	 */
-	protected function installableToFeatures($abstract_installable_class_name = null)
+	protected function installableToFeatures(string $abstract_installable_class_name = null) : array
 	{
 		$search = $abstract_installable_class_name
 			? ['dependency_name' => $abstract_installable_class_name, 'type' => Dependency::T_EXTENDS]
@@ -110,7 +111,7 @@ class Maintainer implements Registerable, Updatable
 	 *
 	 * @return Feature[]
 	 */
-	public function installableToFeaturesUpdate()
+	public function installableToFeaturesUpdate() : array
 	{
 		Dao::createStorage(Module::class);
 		Dao::createStorage(Feature::class);
@@ -129,7 +130,9 @@ class Maintainer implements Registerable, Updatable
 	 * @param $bridge            boolean
 	 * @return Feature
 	 */
-	protected function pluginClassNameAndTitleToFeature($plugin_class_name, $title, $bridge = false)
+	protected function pluginClassNameAndTitleToFeature(
+		string $plugin_class_name, string $title, bool $bridge = false
+	) : Feature
 	{
 		$feature = Dao::searchOne(['plugin_class_name' => $plugin_class_name], Feature::class)
 			?: new Feature($title);
@@ -145,7 +148,7 @@ class Maintainer implements Registerable, Updatable
 	 * @param $plugin_class_name string
 	 * @return Feature
 	 */
-	protected function pluginClassNameToFeature($plugin_class_name)
+	protected function pluginClassNameToFeature(string $plugin_class_name) : Feature
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $plugin_class_name must be valid */
 		$documentation = (new Reflection_Class($plugin_class_name))->getDocComment();

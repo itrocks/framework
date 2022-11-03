@@ -18,9 +18,9 @@ abstract class Files
 	 * @param $string string The string to analyse
 	 * @return string return the string with a trailing slash if there is none
 	 */
-	public static function appendSlash($string)
+	public static function appendSlash(string $string) : string
 	{
-		if ((!empty($string)) && ($string[strlen($string) - 1] != SL)) {
+		if (!str_ends_with($string, SL)) {
 			$string .= SL;
 		}
 		return $string;
@@ -43,7 +43,7 @@ abstract class Files
 			$destination = self::appendSlash($destination);
 			foreach (scandir($source) as $entry) {
 				if (!in_array($entry, $ignore)) {
-					if (is_dir($source . $entry) && ($entry != DOT) && ($entry != DD)) {
+					if (is_dir($source . $entry) && ($entry !== DOT) && ($entry !== DD)) {
 						mkdir($destination . $entry);
 						$result = self::copy($source . $entry, $destination . $entry, $ignore) && $result;
 					}
@@ -73,7 +73,7 @@ abstract class Files
 			$result     = true;
 			$list_files = scandir($path);
 			foreach ($list_files as $entry) {
-				if (($entry == DOT) || ($entry == DD)) {
+				if (($entry === DOT) || ($entry === DD)) {
 					continue;
 				}
 				if (is_dir($path . $entry)) {

@@ -32,7 +32,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	/**
 	 * @var Reflection_Class|Annoted|null
 	 */
-	public Reflection_Class|null $class;
+	public Reflection_Class|Annoted|null $class;
 
 	//------------------------------------------------------------------------------ $link_properties
 	/**

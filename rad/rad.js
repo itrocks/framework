@@ -1,8 +1,8 @@
 $(document).ready(function()
 {
-	window.zindex_counter = 0;
+	window.zindex_counter = 0
 
-	var rad_mode = false;
+	let rad_mode = false
 
 	//----------------------------------------------------------------------------------------- enter
 	/**
@@ -15,78 +15,78 @@ $(document).ready(function()
 	 * @param direction        string 'auto' (default), 'horizontal' or 'vertical'
 	 * @param link             string
 	 */
-	var enter = function(container, element_selector, hint, direction, link)
+	const enter = function(container, element_selector, hint, direction, link)
 	{
-		var $container = $(container);
+		const $container = $(container)
 
 		// highlight zones
 		$container.each(function() {
-			$(this).addClass('rad highlight');
-		});
+			$(this).addClass('rad highlight')
+		})
 
-		var $elements = (element_selector[0] === '>')
-			? $container.children(element_selector.substr(1))
-			: $container.find(element_selector);
+		const $elements = (element_selector[0] === '>')
+			? $container.children(element_selector.substring(1))
+			: $container.find(element_selector)
 
 		// horizontal or vertical ? (default is horizontal, if zero or one contained elements only)
-		var vertical = (direction === 'vertical');
+		let vertical = (direction === 'vertical')
 		if (direction === 'auto') {
 			if ($elements.length > 1) {
-				var position1 = $($elements[0]).position();
-				var position2 = $($elements[1]).position();
-				vertical = (position1.left === position2.left);
+				const position1 = $($elements[0]).position()
+				const position2 = $($elements[1]).position()
+				vertical = (position1.left === position2.left)
 			}
 		}
 
 		// awful patch : display fields elements as blocks as table-row will not get red borders (but why ?)
-		$elements.filter('fieldset>div').css('display', 'block');
+		$elements.filter('fieldset>div').css('display', 'block')
 
 		//---------------------------------------------------------------- $elements, $elements a click
 		/**
 		 * On clicking an element : the default action will be ignored : we call the insert form instead
 		 */
-		var click = function(event)
+		const click = function(event)
 		{
-			var $this = $(this);
+			const $this = $(this)
 			// call link
-			var call = link;
+			let call = link
 			if (call === 'add_property') {
-				$('.invisible').show();
+				$('.invisible').show()
 			}
 			else {
 				if (call.indexOf('{class}') > -1) {
-					call = call.repl('{class}', $this.closest('[data-class]').data('class').repl(BS, SL));
+					call = call.repl('{class}', $this.closest('[data-class]').data('class').repl(BS, SL))
 				}
 				if (call.indexOf('{feature') > -1) {
-					call = call.repl('{feature}', $this.closest('[data-feature]').data('feature'));
+					call = call.repl('{feature}', $this.closest('[data-feature]').data('feature'))
 				}
 				call = call.replace(/{(\w+)->(\w+)}/g, function(text, selector, attribute) {
-					var value = $this.closest(selector).attr(attribute);
+					let value = $this.closest(selector).attr(attribute)
 					if (attribute === 'class') {
-						value = value.repl(SP, DOT);
+						value = value.repl(SP, DOT)
 					}
-					return value;
-				});
-				call = window.app.uri_base + call + '?as_widget' + window.app.andSID();
+					return value
+				})
+				call = window.app.uri_base + call + '?as_widget' + window.app.andSID()
 				$.ajax({ url: call, success: function(data) {
-					var $popup = $(data).addClass('rad popup');
-					$popup.css('position', 'absolute');
+					const $popup = $(data).addClass('rad popup')
+					$popup.css('position', 'absolute')
 					$popup.offset({
 						left: $this.offset().left,
 						top:  $this.offset().top + $this.height() + 5
-					});
-					$popup.appendTo('body');
-					$popup.build();
-				}});
+					})
+					$popup.appendTo('body')
+					$popup.build()
+				}})
 				// prevent click inside <a>
-				event.preventDefault();
-				event.stopImmediatePropagation();
+				event.preventDefault()
+				event.stopImmediatePropagation()
 			}
-		};
+		}
 
-		$elements.click(click);
-		$elements.find('*').off('click');
-		$elements.find('a').click(click);
+		$elements.click(click)
+		$elements.find('*').off('click')
+		$elements.find('a').click(click)
 
 		//------------------------------------------------------------------------- $elements mousemove
 		/**
@@ -96,42 +96,42 @@ $(document).ready(function()
 		 */
 		$elements.mousemove(function(event)
 		{
-			var $this = $(this);
+			const $this = $(this)
 			// the hint popup follows the mouse
-			$('.hint.popup').css({ left: event.pageX + 30 + 'px', top: event.pageY + 30 + 'px' });
+			$('.hint.popup').css({ left: event.pageX + 30 + 'px', top: event.pageY + 30 + 'px' })
 			// add rad classes
-			$this.removeClass('insert-bottom insert-left insert-right insert-top');
+			$this.removeClass('insert-bottom insert-left insert-right insert-top')
 			if (vertical) {
-				var top = (event.pageY - $this.offset().top)
-					< ($this.offset().top + $this.height() - event.pageY);
-				$this.addClass(top ? 'insert-top' : 'insert-bottom');
+				const top = (event.pageY - $this.offset().top)
+					< ($this.offset().top + $this.height() - event.pageY)
+				$this.addClass(top ? 'insert-top' : 'insert-bottom')
 			}
 			else {
-				var left = (event.pageX - $this.offset().left)
-					< ($this.offset().left + $this.width() - event.pageX);
-				$this.addClass(left ? 'insert-left' : 'insert-right');
+				const left = (event.pageX - $this.offset().left)
+					< ($this.offset().left + $this.width() - event.pageX)
+				$this.addClass(left ? 'insert-left' : 'insert-right')
 			}
-		});
+		})
 
 		//-------------------------------------------------------------------------- $elements mouseout
 		$elements.mouseout(function()
 		{
-			var $this = $(this);
+			const $this = $(this)
 			// remove rad classes
-			$this.removeClass('rad insert-bottom insert-left insert-right insert-top');
+			$this.removeClass('rad insert-bottom insert-left insert-right insert-top')
 			// remove hint popup
-			$('.hint.popup').remove();
-		});
+			$('.hint.popup').remove()
+		})
 
 		//------------------------------------------------------------------------- $elements mouseover
 		$elements.mouseover(function(event)
 		{
-			var $this = $(this);
+			const $this = $(this)
 			// add rad class
-			$this.addClass('rad');
+			$this.addClass('rad')
 			// add hint popup
-			var $hint = $('<div>');
-			$hint.addClass('hint popup');
+			const $hint = $('<div>')
+			$hint.addClass('hint popup')
 			$hint.css({
 				'background-color': 'white',
 				border:             '1px solid black',
@@ -140,62 +140,62 @@ $(document).ready(function()
 				padding:            '2px',
 				position:           'absolute',
 				top:                event.pageY + 30 + 'px'
-			});
-			$hint.text(hint);
-			$hint.appendTo('body');
-		});
-	};
+			})
+			$hint.text(hint)
+			$hint.appendTo('body')
+		})
+	}
 
 	//----------------------------------------------------------------------------- body.build (MAIN)
 	$('body').build('click', '.rad.enter a', function(event)
 	{
-		event.preventDefault();
-		event.stopImmediatePropagation();
+		event.preventDefault()
+		event.stopImmediatePropagation()
 
 		// what will the trashcan accept
 		//noinspection JSJQueryEfficiency well, why ?
-		var $trashcan = $('#trashcan a');
-		var accept;
-		var trashcan_accept = ', .action, .property';
+		const $trashcan = $('#trashcan a')
+		let   accept
+		const trashcan_accept = ', .action, .property'
 
 		//-------------------------------------------------------------------------------------- exit
 		if (rad_mode) {
-			rad_mode = false;
+			rad_mode = false
 
-			accept = $trashcan.data('accept').repl(trashcan_accept, '');
+			accept = $trashcan.data('accept').repl(trashcan_accept, '')
 
-			//history.go(0);
+			//history.go(0)
 		}
 
 		//------------------------------------------------------------------------------------- enter
 		else {
-			rad_mode = true;
-			radOutput();
+			rad_mode = true
+			radOutput()
 
 			// properties can be dropped into trashcan only when in "RAD" mode
-			accept = $trashcan.data('accept') + trashcan_accept;
+			accept = $trashcan.data('accept') + trashcan_accept
 
 		}
 
 		// common code for enter / exit
-		$trashcan.data('accept', accept);
-		$trashcan.droppable({ accept: accept });
-	});
+		$trashcan.data('accept', accept)
+		$trashcan.droppable({ accept: accept })
+	})
 
-});
+})
 
 /**
- //enter('.general.actions', '>li', 'Insérer une action', 'horizontal', '/ITRocks/Framework/Component/Button/edit/{class}/{feature}/{li->class}');
- //enter('.actions>li>ul', '>li', 'Insérer une action secondaire', 'vertical');
- //enter('fieldset', '>div:not(.tabber, .columns)', 'Insérer un champ', 'vertical','add_property');
+ //enter('.general.actions', '>li', 'Insérer une action', 'horizontal', '/ITRocks/Framework/Component/Button/edit/{class}/{feature}/{li->class}')
+ //enter('.actions>li>ul', '>li', 'Insérer une action secondaire', 'vertical')
+ //enter('fieldset', '>div:not(.tabber, .columns)', 'Insérer un champ', 'vertical','add_property')
 
- $(document).radAddOutput();
- //$(document).radAddButton();
- //$('.menu>ul').radAdd('>li', 'Insérer un bloc de menu', 'vertical');
- //$('.menu>ul>li>ul').radAdd('>li', 'Insérer un lien dans le menu', 'vertical');
- //$('.actions>li>ul').radAdd('>li', 'Insérer une action secondaire', 'vertical');
- //$('article.list>table>thead>tr:first-child').radAdd('>th.property', 'Insérer une colonne', 'horizontal');
- //$('.tabber>ul').radAdd('>li', 'Insérer un onglet', 'horizontal');
- //$('.columns').radAdd('>.column', 'Insérer un bloc de champs en colonne', 'horizontal');
- //$('table.collection>thead>tr:first-child').radAdd('>th:not(:last-child)', 'Insérer une colonne', 'horizontal');
+ $(document).radAddOutput()
+ //$(document).radAddButton()
+ //$('.menu>ul').radAdd('>li', 'Insérer un bloc de menu', 'vertical')
+ //$('.menu>ul>li>ul').radAdd('>li', 'Insérer un lien dans le menu', 'vertical')
+ //$('.actions>li>ul').radAdd('>li', 'Insérer une action secondaire', 'vertical')
+ //$('article.list>table>thead>tr:first-child').radAdd('>th.property', 'Insérer une colonne', 'horizontal')
+ //$('.tabber>ul').radAdd('>li', 'Insérer un onglet', 'horizontal')
+ //$('.columns').radAdd('>.column', 'Insérer un bloc de champs en colonne', 'horizontal')
+ //$('table.collection>thead>tr:first-child').radAdd('>th:not(:last-child)', 'Insérer une colonne', 'horizontal')
 */

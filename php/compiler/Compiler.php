@@ -253,7 +253,7 @@ class Compiler extends Cache
 				}
 			}
 
-			if (count($compilers) == 1) {
+			if (count($compilers) === 1) {
 				$more_sources->added = [];
 			}
 

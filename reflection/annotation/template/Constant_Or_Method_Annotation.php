@@ -32,6 +32,7 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 		bool|string|null $value, Reflection $class_property, string $annotation_name
 	) {
 		parent::__construct($value, $class_property, $annotation_name);
+		/** @noinspection PhpCastIsUnnecessaryInspection No, it is not : bool|string possible */
 		$value = strval($this->value);
 
 		if (($pos = strpos($value, '::')) !== false) {

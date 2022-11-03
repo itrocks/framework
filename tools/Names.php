@@ -192,7 +192,7 @@ abstract class Names
 		}
 		// built classes : get object class
 		$built_path = Application::current()->getNamespace() . BS . 'Built' . BS;
-		while (substr($class_name, 0, strlen($built_path)) == $built_path) {
+		while (str_starts_with($class_name, $built_path)) {
 			$class_name = get_parent_class($class_name);
 		}
 		// replace \ by /
@@ -311,7 +311,7 @@ abstract class Names
 	public static function methodToProperty($method_name)
 	{
 		$property_name = strtolower(preg_replace('%([a-z])([A-Z])%', '$1_$2', $method_name));
-		if ((substr($property_name, 0, 4) == 'get_') || (substr($property_name, 0, 4) == 'set_')) {
+		if (str_starts_with($property_name, 'get_') || str_starts_with($property_name, 'set_')) {
 			$property_name = substr($property_name, 4);
 		}
 		return $property_name;

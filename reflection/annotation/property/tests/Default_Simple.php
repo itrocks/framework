@@ -17,22 +17,22 @@ class Default_Simple extends Default_Extended
 	/**
 	 * @default Date_Time::max
 	 * @link DateTime
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $alive_until;
+	public Date_Time|string $alive_until;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @default defaultName
 	 * @var string
 	 */
-	public $name;
+	public string $name;
 
 	//-------------------------------------------------------------------------------------- $surname
 	/**
 	 * @var string
 	 */
-	public $surname = 'Mitchum';
+	public string $surname = 'Mitchum';
 
 	//------------------------------------------------------------------------------------ defaultAge
 	/**

@@ -553,7 +553,7 @@ function strUriElement(string $string, string $joker = '') : string
  */
 function ucfirsta(string $string) : string
 {
-	if ($string[0] == "\xC3") {
+	if ($string[0] === "\xC3") {
 		if (ord($string[1]) >= 160) {
 			$string[1] = chr(ord($string[1]) - 32);
 		}

@@ -780,7 +780,7 @@ class Functions
 		foreach ($template->objects as $array) {
 			if (is_array($array)) {
 				reset($array);
-				return (key($array) == $var_name);
+				return (key($array) === $var_name);
 			}
 			$var_name = isset($var_name) ? next($template->var_names) : reset($template->var_names);
 		}
@@ -800,7 +800,7 @@ class Functions
 		foreach ($template->objects as $array) {
 			if (is_array($array)) {
 				end($array);
-				return (key($array) == $var_name);
+				return (key($array) === $var_name);
 			}
 			$var_name = isset($var_name) ? next($template->var_names) : reset($template->var_names);
 		}

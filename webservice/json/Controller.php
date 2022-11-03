@@ -60,7 +60,7 @@ class Controller implements Default_Feature_Controller
 			$search = Func::andOp($search ? [$search] : []);
 		}
 		foreach ($filters as $filter_name => $filter_value) {
-			if (is_string($filter_value) && strlen($filter_value) && ($filter_value[0] == '!')) {
+			if (is_string($filter_value) && strlen($filter_value) && ($filter_value[0] === '!')) {
 				$filter_value = ($filter_value === 'null')
 					? Func::isNotNull()
 					: Func::notEqual(substr($filter_value, 1));
@@ -115,7 +115,8 @@ class Controller implements Default_Feature_Controller
 	protected function buildJson(array|object $objects, string $class_name) : string
 	{
 		if ($this->property_names && $objects) {
-			$first_object = is_object($objects) ? $objects : reset($objects);
+			/** @noinspection PhpDeprecatedStdLibCallInspection is_array */
+			$first_object = is_array($objects) ? reset($objects) : $objects;
 			foreach ($this->property_names as $property_name) {
 				if (property_exists($first_object, $property_name)) {
 					/** @noinspection PhpUnhandledExceptionInspection property_exists */
@@ -236,7 +237,7 @@ class Controller implements Default_Feature_Controller
 		}
 		if (
 			($what instanceof Logical)
-			&& ($what->operator == Logical::OR_OPERATOR)
+			&& ($what->operator === Logical::OR_OPERATOR)
 			&& (count($what->arguments) > 1)
 		) {
 			$objects = new Map();

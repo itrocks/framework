@@ -13,19 +13,19 @@ class Ssh implements Remote_Connection
 	/**
 	 * @var string
 	 */
-	public $host;
+	public string $host;
 
 	//---------------------------------------------------------------------------------------- $login
 	/**
 	 * @var string
 	 */
-	public $login;
+	public string $login;
 
 	//------------------------------------------------------------------------------------- $password
 	/**
 	 * @var string
 	 */
-	public $password;
+	public string $password;
 
 	//--------------------------------------------------------------------------------------- connect
 	public function connect()
@@ -37,7 +37,7 @@ class Ssh implements Remote_Connection
 	/**
 	 * @param $file string
 	 */
-	public function delete($file)
+	public function delete(string $file)
 	{
 		// TODO: Implement delete() method.
 	}
@@ -46,7 +46,7 @@ class Ssh implements Remote_Connection
 	/**
 	 * @param $path string
 	 */
-	public function dir($path)
+	public function dir(string $path)
 	{
 		// TODO: Implement dir() method.
 	}
@@ -63,7 +63,7 @@ class Ssh implements Remote_Connection
 	/**
 	 * @param $path string
 	 */
-	public function mkdir($path)
+	public function mkdir(string $path)
 	{
 		// TODO: Implement mkdir() method.
 	}
@@ -73,7 +73,7 @@ class Ssh implements Remote_Connection
 	 * @param $distant string
 	 * @param $local   string
 	 */
-	public function receive($distant, $local)
+	public function receive(string $distant, string $local)
 	{
 		// TODO: Implement receive() method.
 	}
@@ -83,7 +83,7 @@ class Ssh implements Remote_Connection
 	 * @param $local   string
 	 * @param $distant string
 	 */
-	public function send($local, $distant)
+	public function send(string $local, string $distant)
 	{
 		// TODO: Implement send() method.
 	}

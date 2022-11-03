@@ -26,14 +26,14 @@ class Test_Object
 	 * @getter getSimple
 	 * @var string
 	 */
-	public $getter_simple;
+	public string $getter_simple;
 
 	//-------------------------------------------------------------------------------- $getter_static
 	/**
 	 * @getter getStatic
 	 * @var string
 	 */
-	public $getter_static;
+	public string $getter_static;
 
 	//------------------------------------------------------------------------------------- $property
 	/**
@@ -44,21 +44,21 @@ class Test_Object
 	 * @link Collection
 	 * @var Property_Test[]
 	 */
-	public $property;
+	public array $property;
 
 	//-------------------------------------------------------------------------------- $setter_simple
 	/**
 	 * @setter setSimple
 	 * @var string
 	 */
-	public $setter_simple;
+	public string $setter_simple;
 
 	//-------------------------------------------------------------------------------- $setter_static
 	/**
 	 * @setter static::setStatic
 	 * @var string
 	 */
-	public $setter_static;
+	public string $setter_static;
 
 	//---------------------------------------------------------------------------------- $with_values
 	/**
@@ -67,12 +67,13 @@ class Test_Object
 	 *         fourth_value
 	 * @var string
 	 */
-	public $with_values;
+	public string $with_values;
 
 	//----------------------------------------------------------------------- getDefaultPropertyValue
 	/**
 	 * Get the default property value, for test of @default annotation
 	 *
+	 * @noinspection PhpUnused @getter
 	 * @param $property Interfaces\Reflection_Property
 	 * @return string
 	 */
@@ -83,6 +84,7 @@ class Test_Object
 
 	//------------------------------------------------------------------------------------- getSimple
 	/**
+	 * @noinspection PhpUnused @getter
 	 * @return string
 	 */
 	public function getSimple() : string
@@ -92,6 +94,7 @@ class Test_Object
 
 	//------------------------------------------------------------------------------------- getStatic
 	/**
+	 * @noinspection PhpUnused @getter
 	 * @param $value string
 	 * @return string
 	 */
@@ -102,6 +105,7 @@ class Test_Object
 
 	//------------------------------------------------------------------------------------- setSimple
 	/**
+	 * @noinspection PhpUnused @setter
 	 * @param $setter_simple string
 	 */
 	public function setSimple(string $setter_simple)
@@ -111,6 +115,7 @@ class Test_Object
 
 	//------------------------------------------------------------------------------------- setStatic
 	/**
+	 * @noinspection PhpUnused @setter
 	 * @param $value string
 	 * @return string
 	 */

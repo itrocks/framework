@@ -19,7 +19,7 @@ class Replacement_Getter
 	 * @replaces replaced
 	 * @var string
 	 */
-	public $replacement;
+	public string $replacement;
 
 	//-------------------------------------------------------------------------------- getReplacement
 	/**

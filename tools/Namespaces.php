@@ -59,7 +59,7 @@ abstract class Namespaces
 		array_shift($name_space);
 		$file = 0;
 		foreach ($name_space as $name) {
-			while (($file < count($file_space)) && ($file_space[$file] != $name)) {
+			while (($file < count($file_space)) && ($file_space[$file] !== $name)) {
 				$file ++;
 			}
 			$file ++;

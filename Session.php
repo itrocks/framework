@@ -333,7 +333,7 @@ class Session
 	public function stop()
 	{
 		$params = session_get_cookie_params();
-		if ($_COOKIE[session_name()] == session_id()) {
+		if ($_COOKIE[session_name()] === session_id()) {
 			setcookie(
 				session_name(), '', time() - 42000,
 				$params['path'], $params['domain'], $params['secure'], $params['httponly']

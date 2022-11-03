@@ -257,7 +257,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 			$tokens    =& $this->class->source->getTokens();
 			$token_key =  $this->token_key;
 			while (is_array($token = $tokens[--$token_key])) {
-				if ($token[0] == T_WHITESPACE) {
+				if ($token[0] === T_WHITESPACE) {
 					$token[1] = str_replace([CR, LF . LF], ['', LF], $token[1]);
 				}
 				$this->prototype_string = $token[1] . $this->prototype_string;

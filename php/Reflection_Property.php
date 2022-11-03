@@ -271,7 +271,7 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	 * @param $object object
 	 * @return mixed
 	 */
-	public function getValue($object) : mixed
+	public function getValue(object $object) : mixed
 	{
 		return $object->{$this->name};
 	}

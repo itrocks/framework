@@ -73,7 +73,7 @@ class Date_Format
 	private function advancedDate(string $date, string $joker = '') : string
 	{
 		// two values with a middle slash
-		if (substr_count($date, SL) == 1) {
+		if (substr_count($date, SL) === 1) {
 			[$one, $two] = explode(SL, $date);
 			// the first number is a year : year/month
 			if (strlen($one) > 2) {
@@ -140,7 +140,7 @@ class Date_Format
 		// prevent some user mistyping
 		$date = str_replace('//', '/', $date);
 		$date = $this->advancedDate($date, $joker);
-		if (strlen($date) == 10) {
+		if (strlen($date) === 10) {
 			if ($max) {
 				$date .= SP . '23:59:59';
 			}
@@ -190,7 +190,7 @@ class Date_Format
 			if (empty($date) || (new Date_Time($date))->isEmpty()) {
 				return '';
 			}
-			if (strlen($date) == 10) {
+			if (strlen($date) === 10) {
 				return DateTime::createFromFormat('Y-m-d', $date)->format($this->format);
 			}
 			else {
@@ -236,7 +236,7 @@ class Date_Format
 			'i' => '$5',
 			's' => '$6',
 		];
-		if (strlen($date) == 10) {
+		if (strlen($date) === 10) {
 			$pattern = "/ $sub_pattern_date /x";
 			if (preg_match($pattern, $date)) {
 				$replace = str_replace(array_keys($replacement), array_values($replacement), $this->format);
@@ -252,20 +252,20 @@ class Date_Format
 				//return str_replace(['_', '%'], ['?', '*'], preg_replace($pattern, $replace, $date));
 				$date = preg_replace("/ $sub_pattern_date /x", $replace, $date);
 				// backward compatible code but with support to display time if required
-				if ($this->show_time == self::TIME_ALWAYS) {
+				if ($this->show_time === self::TIME_ALWAYS) {
 					return trim($date . SP . $time);
 				}
 				return $date;
 				// want code compatible with ::$show_seconds (and new constants) like in toLocale()?
 				// => change above backward code with below
-				/*if ($this->show_time == self::TIME_NEVER) {
+				/*if ($this->show_time === self::TIME_NEVER) {
 					return $date;
 				}
-				elseif ($this->show_time != self::TIME_ALWAYS) {
+				elseif ($this->show_time !== self::TIME_ALWAYS) {
 					if ($time === '__:__:__') {
 						$time = '';
 					}
-					elseif (!$this->show_seconds && strlen($time) == 8 && substr($time, -2) == '__') {
+					elseif (!$this->show_seconds && strlen($time) === 8 && substr($time, -2) === '__') {
 						$time = substr($time, 0, 5);
 					}
 				}

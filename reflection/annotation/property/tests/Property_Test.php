@@ -89,6 +89,7 @@ class Property_Test extends Test
 		$robert = new Default_Simple();
 		static::assertEquals(18, $robert->age, '@default.override');
 		static::assertEquals(43, $robert->null_age, '@default.override_null');
+		/** @noinspection PhpTypedPropertyMightBeUninitializedInspection @default */
 		static::assertEquals('Robert', $robert->name, '@default.simple');
 		static::assertEquals('Mitchum', $robert->surname, '@default.very_simple');
 		/** @noinspection PhpUnhandledExceptionInspection constants */

@@ -596,7 +596,7 @@ class Object_Builder_Array
 				$build->is_null = false;
 			}
 		}
-		elseif (($property_name != 'id') && !isset($property)) {
+		elseif (($property_name !== 'id') && !isset($property)) {
 			if (is_null($this->ignore_unknown_properties)) {
 				$build->object->$property_name = $value;
 			}

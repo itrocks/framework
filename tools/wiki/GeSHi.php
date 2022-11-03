@@ -38,7 +38,7 @@ class GeSHi
 		else {
 			// php highlighter is always here
 			return PRE . (
-					($language == 'php')
+					($language === 'php')
 					? highlight_string($source, true)
 					: String_Class::of($source)->htmlEntities()
 				) . _PRE;

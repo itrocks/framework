@@ -27,7 +27,7 @@ function upgradeMemoryLimit(string $memory_limit) : bool
 	if ($memory_limit <= 0) {
 		$memory_limit = -1;
 	}
-	if ((($old_memory_limit > 0) && ($memory_limit > $old_memory_limit)) || ($memory_limit == -1)) {
+	if ((($old_memory_limit > 0) && ($memory_limit > $old_memory_limit)) || ($memory_limit === -1)) {
 		ini_set('memory_limit', ceil($memory_limit / 1024 / 1024) . 'M');
 		return true;
 	}

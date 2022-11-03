@@ -28,14 +28,14 @@ class Feature
 	 * @user invisible
 	 * @var string
 	 */
-	public $application_class_name;
+	public string $application_class_name;
 
 	//--------------------------------------------------------------------------------------- $bridge
 	/**
 	 * @user invisible
 	 * @var boolean
 	 */
-	public $bridge;
+	public bool $bridge;
 
 	//---------------------------------------------------------------------------------- $description
 	/**
@@ -44,21 +44,21 @@ class Feature
 	 * @translate common
 	 * @var string
 	 */
-	public $description;
+	public string $description;
 
 	//--------------------------------------------------------------------------------------- $module
 	/**
 	 * @link Object
-	 * @var Module
+	 * @var ?Module
 	 */
-	public $module;
+	public ?Module $module;
 
 	//---------------------------------------------------------------------------- $plugin_class_name
 	/**
 	 * @user invisible
 	 * @var string
 	 */
-	public $plugin_class_name;
+	public string $plugin_class_name;
 
 	//--------------------------------------------------------------------------------------- $status
 	/**
@@ -66,14 +66,14 @@ class Feature
 	 * @values Status::const
 	 * @var string
 	 */
-	public $status = Status::AVAILABLE;
+	public string $status = Status::AVAILABLE;
 
 	//----------------------------------------------------------------------------------------- $tags
 	/**
 	 * @link Map
 	 * @var Tag[]
 	 */
-	public $tags;
+	public array $tags;
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
@@ -81,7 +81,7 @@ class Feature
 	 * @translate common
 	 * @var string
 	 */
-	public $title;
+	public string $title;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

@@ -43,7 +43,7 @@ class Option extends Element
 			$string = parent::__toString();
 			$this->setContent($content);
 		}
-		elseif ($content == ($value = $this->getAttribute('value'))) {
+		elseif ($content === ($value = $this->getAttribute('value'))) {
 			$this->removeAttribute('value');
 			$string = parent::__toString();
 			$this->setAttribute('value', $value);

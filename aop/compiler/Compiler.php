@@ -9,7 +9,6 @@ use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Needs_Main;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\PHP;
 use ITRocks\Framework\PHP\Compiler\More_Sources;
 use ITRocks\Framework\PHP\Dependency;
@@ -204,22 +203,23 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 					foreach (Dao::search($search, Dependency::class) as $dependency) {
 						/** @var $dependency Dependency */
 						while ($dependency && Class_Builder::isBuilt($dependency->class_name)) {
-							$search_built_parent = Search_Object::create(Dependency::class);
-							$search_built_parent->class_name = $dependency->class_name;
-							$search_built_parent->type       = [Dependency::T_EXTENDS, Dependency::T_USE];
-							$dependency = Dao::searchOne($search_built_parent);
+							$search_built_parent = [
+								'class_name' => $dependency->class_name,
+								'type'       => [Dependency::T_EXTENDS, Dependency::T_USE]
+							];
+							$dependency = Dao::searchOne($search_built_parent, Dependency::class);
 							if (!$dependency) {
 								trigger_error(
-									'No parent class for built class ' . $search_built_parent->class_name,
+									'No parent class for built class ' . $search_built_parent['class_name'],
 									E_USER_WARNING
 								);
 							}
-							$search_built_parent->class_name = $dependency->dependency_name;
-							$search_built_parent->type       = Dependency::T_DECLARATION;
-							$dependency = Dao::searchOne($search_built_parent);
+							$search_built_parent['class_name'] = $dependency->dependency_name;
+							$search_built_parent['type']       = Dependency::T_DECLARATION;
+							$dependency = Dao::searchOne($search_built_parent, Dependency::class);
 							if (!$dependency) {
 								trigger_error(
-									'No "declaration" dependency for class ' . $search_built_parent->class_name,
+									'No "declaration" dependency for class ' . $search_built_parent['class_name'],
 									E_USER_ERROR
 								);
 							}

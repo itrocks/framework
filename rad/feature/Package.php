@@ -19,7 +19,7 @@ class Package
 	 * @link Map
 	 * @var Feature[]
 	 */
-	public $features;
+	public array $features;
 
 	//---------------------------------------------------------------------------------- $included_in
 	/**
@@ -27,7 +27,7 @@ class Package
 	 * @link Map
 	 * @var Package[]
 	 */
-	public $included_in;
+	public array $included_in;
 
 	//------------------------------------------------------------------------------------- $includes
 	/**
@@ -35,6 +35,6 @@ class Package
 	 * @link Map
 	 * @var Package[]
 	 */
-	public $includes;
+	public array $includes;
 
 }

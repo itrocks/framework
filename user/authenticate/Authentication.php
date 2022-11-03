@@ -84,13 +84,13 @@ abstract class Authentication
 	public static function controlRegisterFormParameters(array $form) : array
 	{
 		$errors_messages = [];
-		if (!(($form['login'] != '') && (str_replace(SP, '', $form['login']) != ''))) {
+		if (!(($form['login'] !== '') && (str_replace(SP, '', $form['login']) !== ''))) {
 			$errors_messages[] = [
 				'name'    => 'Incorrect login',
 				'message' => 'The login is incorrect, a login must be not void.'
 			];
 		}
-		if (!(($form['password'] != '') && (str_replace(SP, '', $form['password']) != ''))) {
+		if (!(($form['password'] !== '') && (str_replace(SP, '', $form['password']) !== ''))) {
 			$errors_messages[] = [
 				'name'    => 'Incorrect password',
 				'message' => 'The password is incorrect, must be not void.'

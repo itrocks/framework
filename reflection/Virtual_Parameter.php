@@ -14,31 +14,31 @@ class Virtual_Parameter
 	/**
 	 * @var mixed
 	 */
-	private $default;
+	private mixed $default;
 
 	//------------------------------------------------------------------------------------- $function
 	/**
 	 * @var string|string[]
 	 */
-	private $function;
+	private array|string $function;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string
 	 */
-	public $name;
+	public string $name;
 
 	//------------------------------------------------------------------------------------- $optional
 	/**
 	 * @var boolean
 	 */
-	private $optional;
+	private bool $optional;
 
 	//------------------------------------------------------------------------------------ $reference
 	/**
 	 * @var boolean
 	 */
-	private $reference;
+	private bool $reference;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -49,7 +49,8 @@ class Virtual_Parameter
 	 * @param $pass_by_reference boolean
 	 */
 	public function __construct(
-		$function, $parameter_name, $optional = false, $default = null, $pass_by_reference = false
+		array|string $function, string $parameter_name, bool $optional = false, mixed $default = null,
+		bool $pass_by_reference = false
 	) {
 		$this->function  = $function;
 		$this->name      = $parameter_name;

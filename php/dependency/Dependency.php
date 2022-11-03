@@ -50,15 +50,15 @@ class Dependency
 	 *
 	 * @var ?string
 	 */
-	public ?string $class_name;
+	public ?string $class_name = null;
 
 	//---------------------------------------------------------------------------------- $declaration
 	/**
 	 * @see Declaration
 	 * @values Declaration::const
-	 * @var string
+	 * @var ?string
 	 */
-	public string $declaration;
+	public ?string $declaration = null;
 
 	//----------------------------------------------------------------------------- $dependency_class
 	/**
@@ -78,9 +78,9 @@ class Dependency
 	/**
 	 * The file name where the class is stored
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	public string $file_name;
+	public ?string $file_name;
 
 	//----------------------------------------------------------------------------------------- $line
 	/**

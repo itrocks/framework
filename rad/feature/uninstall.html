@@ -12,32 +12,32 @@
 <!--BEGIN-->
 <!--target #modal-->
 
-<article class="install feature">
-	<header>
-		<h2>|Uninstall of <strong>¦{title}¦</strong>|</h2>
-	</header>
-	<div>
-		<!--dependents?-->
-		<p>
-			|If you uninstall this feature|, |the following dependent features will be uninstalled too| :
-		</p>
-		<ul>
-			<!--dependents-->
-			<li>{title}</li>
+	<article class="install feature">
+		<header>
+			<h2>|Uninstall of <strong>¦{title}¦</strong>|</h2>
+		</header>
+		<div>
+			<!--dependents?-->
+			<p>
+				|If you uninstall this feature|, |the following dependent features will be uninstalled too| :
+			</p>
+			<ul>
+				<!--dependents-->
+				<li>{title}</li>
+				<!--end-->
+			</ul>
 			<!--end-->
+			<p>|Please confirm you want to uninstall this feature|.</p>
+		</div>
+		<ul class="actions">
+			<li class="uninstall">
+				<a href="app://(confirm_link)" target="#responses">|Uninstall|</a>
+			</li>
+			<li class="close">
+				<a href="app://(close_link)" target="#main">|Cancel|</a>
+			</li>
 		</ul>
-		<!--end-->
-		<p>|Please confirm you want to uninstall this feature|.</p>
-	</div>
-	<ul class="actions">
-		<li class="uninstall">
-			<a href="app://(confirm_link)" target="#responses">|Uninstall|</a>
-		</li>
-		<li class="close">
-			<a href="app://(close_link)" target="#main">|Cancel|</a>
-		</li>
-	</ul>
-</article>
+	</article>
 
 <!--end-->
 <!--END-->

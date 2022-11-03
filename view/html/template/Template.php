@@ -916,8 +916,8 @@ class Template
 		foreach ($params as $key => $param) {
 			$param = trim($param);
 			if (
-				((substr($param, 0, 1) == Q) && (substr($param, -1) == Q))
-				|| ((substr($param, 0, 1) == DQ) && (substr($param, -1) == DQ))
+				(str_starts_with($param, Q) && str_ends_with($param, Q))
+				|| (str_starts_with($param, DQ) && str_ends_with($param, DQ))
 			) {
 				$params[$key] = substr($param, 1, -1);
 			}
@@ -1324,7 +1324,7 @@ class Template
 	{
 		$search_var_name = $loop->var_name;
 
-		if (substr($loop->var_name, -1) == '>') {
+		if (str_ends_with($loop->var_name, '>')) {
 			$end_last       = true;
 			$loop->var_name = substr($loop->var_name, 0, -1);
 		}
@@ -1354,7 +1354,7 @@ class Template
 			else {
 				$loop->from = $loop->to = $loop->has_expr;
 			}
-			$loop->to = (($loop->to == '') ? null : $loop->to);
+			$loop->to = (($loop->to === '') ? null : $loop->to);
 		}
 		else {
 			$loop->from = 0;
@@ -1643,8 +1643,8 @@ class Template
 			$object = $this->parseConditional($property_name);
 		}
 		elseif (
-			($property_name[0] == Q && substr($property_name, -1) == Q)
-			|| ($property_name[0] == DQ && substr($property_name, -1) == DQ)
+			(str_starts_with($property_name, Q) && str_ends_with($property_name, Q))
+			|| (str_starts_with($property_name, DQ) && str_ends_with($property_name, DQ))
 		) {
 			$object = $this->parseConstant($property_name);
 		}
@@ -1774,7 +1774,7 @@ class Template
 		if (
 			$format_value
 			&& ($source_object instanceof Reflection_Property)
-			&& ($property_name == 'value')
+			&& ($property_name === 'value')
 		) {
 			$object = (new Reflection_Property_View($source_object))->formatValue($object);
 		}
@@ -1875,7 +1875,7 @@ class Template
 		return ctype_lower($c)
 			|| (
 				ctype_upper($c)
-				&& (substr($content, $i, 6) != 'BEGIN:') && (substr($content, $i, 4) != 'END:')
+				&& (substr($content, $i, 6) !== 'BEGIN:') && (substr($content, $i, 4) !== 'END:')
 			)
 			|| str_contains('#@§/.-+?!~|="' . Q, $c);
 	}
@@ -1912,7 +1912,7 @@ class Template
 		elseif ($var_name[0] === SL) {
 			return $this->parseInclude($var_name);
 		}
-		elseif ($var_name[0] == '!') {
+		elseif ($var_name[0] === '!') {
 			$not      = true;
 			$var_name = substr($var_name, 1);
 		}
@@ -2045,9 +2045,9 @@ class Template
 			}
 			return;
 		}
-		while (($content[$i] != SP) && ($content[$i] != ',') && ($content[$i] != SL)) {
-			if (($content[$i] == Q) || ($content[$i] == DQ)) {
-				while ($content[$j] != $content[$i]) {
+		while (!in_array($content[$i], [SL, SP, ','], true)) {
+			if (($content[$i] === Q) || ($content[$i] === DQ)) {
+				while ($content[$j] !== $content[$i]) {
 					$j ++;
 				}
 			}
@@ -2350,7 +2350,7 @@ class Template
 			? Paths::absoluteBase()
 			: ($this->getUriRoot() . $this->getScriptName());
 		$full_path = str_replace([SL . SL, SL . DOT . SL], SL, $base . $link);
-		if (substr($full_path, 0, 2) == (DOT . SL)) {
+		if (str_starts_with($full_path, DOT . SL)) {
 			$full_path = substr($full_path, 2);
 		}
 		return $full_path;
@@ -2376,7 +2376,7 @@ class Template
 				$link_length = strlen($link);
 				$i           = 0;
 				while (($i = strpos($content, $link, $i)) !== false) {
-					if ($l == 'href=') {
+					if ($l === 'href=') {
 						$of = strrpos($content, '<', $i - $length);
 						$ok = (substr($content, $of, 6) !== '<link ');
 					}
@@ -2474,7 +2474,7 @@ class Template
 				$link_length = strlen($link);
 				$i           = 0;
 				while (($i = strpos($content, $link, $i)) !== false) {
-					if ($l == 'href=') {
+					if ($l === 'href=') {
 						$of = strrpos($content, '<', $i - $length);
 						$ok = (substr($content, $of, 6) === '<link ');
 					}

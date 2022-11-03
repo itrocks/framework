@@ -134,7 +134,7 @@ class Line
 			return '[]';
 		}
 		$counter = 0;
-		if ($array_count == 1) {
+		if ($array_count === 1) {
 			$dump        = '[';
 			$dump_length = 2;
 		}
@@ -147,7 +147,7 @@ class Line
 				$dump .= ',';
 				$dump_length ++;
 			}
-			if ($key != $counter) {
+			if ($key !== $counter) {
 				$counter = -1;
 				$dump   .= $key . '=>';
 				if ($key === $element) {

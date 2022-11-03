@@ -13,7 +13,7 @@ class Set
 	/**
 	 * @return Skin[]
 	 */
-	public function skins()
+	public function skins() : array
 	{
 		$skins = [];
 		foreach (scandir(__DIR__ . '../../skins') as $file_name) {

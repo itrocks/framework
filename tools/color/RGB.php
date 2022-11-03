@@ -66,14 +66,14 @@ class RGB
 		$color   = str_replace('#', '', $color);
 		$hex_str = preg_replace("/[^0-9A-Fa-f]/", '', $color);
 		// If a proper hex code, convert using bitwise operation. No overhead... faster
-		if (strlen($hex_str) == 6) {
+		if (strlen($hex_str) === 6) {
 			$color_val   = hexdec($hex_str);
 			$this->red   = 0xFF & ($color_val >> 0x10);
 			$this->green = 0xFF & ($color_val >> 0x8);
 			$this->blue  = 0xFF & $color_val;
 		}
 		// if shorthand notation, need some string manipulations
-		elseif (strlen($hex_str) == 3) {
+		elseif (strlen($hex_str) === 3) {
 			$this->red   = hexdec(str_repeat($hex_str[0], 2));
 			$this->green = hexdec(str_repeat($hex_str[1], 2));
 			$this->blue  = hexdec(str_repeat($hex_str[2], 2));

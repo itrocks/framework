@@ -18,6 +18,6 @@ class Simple
 	 * @replaces replaced
 	 * @var string
 	 */
-	public $replacement;
+	public string $replacement;
 
 }

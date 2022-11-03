@@ -171,10 +171,10 @@ class Parser
 			$reflection_class = $class_name;
 			$pos              = strrpos($reflection_class, '_');
 			$reflection_class = substr($reflection_class, $pos + 1);
-			if ($reflection_class == 'Class') {
+			if ($reflection_class === 'Class') {
 				$reflection_class .= '_';
 			}
-			elseif ($reflection_class == 'Value') {
+			elseif ($reflection_class === 'Value') {
 				$reflection_class = 'Property';
 			}
 			if (!isset(self::$default_annotations)) {
@@ -317,7 +317,7 @@ class Parser
 			$do = false;
 			if (is_array($annotation->value)) {
 				foreach ($annotation->value as $value) {
-					if ($value && (ctype_upper($value[0]) || ($value[0] == BS))) {
+					if ($value && (ctype_upper($value[0]) || ($value[0] === BS))) {
 						$do = true;
 						break;
 					}

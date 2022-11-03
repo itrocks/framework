@@ -113,8 +113,8 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 				)
 				&& Link_Annotation::of($foreign_property)->isMap()
 				&& (
-					($foreign_property->getDeclaringClassName() != $property->getDeclaringClassName())
-					|| ($foreign_property->getName() != $property->getName())
+					($foreign_property->getDeclaringClassName() !== $property->getDeclaringClassName())
+					|| ($foreign_property->getName() !== $property->getName())
 				)
 			) {
 				$possibles[$foreign_property->getName()] = $foreign_property;
@@ -122,7 +122,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 		}
 		$possibles = Replaces_Annotations::removeReplacedProperties($possibles);
 		$possibles = $this->reduceToComposites($possibles);
-		if (count($possibles) != 1) {
+		if (count($possibles) !== 1) {
 			$this->value = Names::classToProperty($property->getDeclaringClassName());
 		}
 		return array_keys($possibles);

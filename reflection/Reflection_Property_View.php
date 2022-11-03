@@ -15,11 +15,11 @@ class Reflection_Property_View
 	/**
 	 * @var Reflection_Property
 	 */
-	public $property;
+	public Reflection_Property $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $property Reflection_Property
+	 * @param $property Reflection_Property|null
 	 */
 	public function __construct(Reflection_Property $property = null)
 	{
@@ -33,7 +33,7 @@ class Reflection_Property_View
 	 * @param $value mixed
 	 * @return string
 	 */
-	public function formatValue($value)
+	public function formatValue(mixed $value) : string
 	{
 		$type = $this->property->getType();
 		if (is_string($value) && $type->isString()) {
@@ -60,7 +60,7 @@ class Reflection_Property_View
 		}
 		return $type->isBasic()
 			? Loc::propertyToLocale($this->property, $value)
-			: $value;
+			: strval($value);
 	}
 
 	//----------------------------------------------------------------------------- getFormattedValue
@@ -72,7 +72,7 @@ class Reflection_Property_View
 	 * @param $final_value boolean
 	 * @return string
 	 */
-	public function getFormattedValue($object, $final_value = false)
+	public function getFormattedValue(mixed $object, bool $final_value = false) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $property belongs to $object class */
 		return $this->formatValue($final_value ? $object : $this->property->getValue($object));

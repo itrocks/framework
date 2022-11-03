@@ -26,7 +26,7 @@ class Mattermost implements Configurable
 	 *
 	 * @var string
 	 */
-	public $channel;
+	public string $channel;
 
 	//----------------------------------------------------------------------------------------- $hook
 	/**
@@ -34,7 +34,7 @@ class Mattermost implements Configurable
 	 *
 	 * @var string
 	 */
-	public $hook;
+	public string $hook;
 
 	//------------------------------------------------------------------------------------- $username
 	/**
@@ -42,7 +42,7 @@ class Mattermost implements Configurable
 	 *
 	 * @var string
 	 */
-	public $username;
+	public string $username;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -69,15 +69,15 @@ class Mattermost implements Configurable
 	 * Posts a text message to a mattermost channel
 	 *
 	 * @param $message  string
-	 * @param $channel  string
-	 * @param $username string
-	 * @return mixed
+	 * @param $channel  string|null
+	 * @param $username string|null
+	 * @return bool|string
 	 */
-	function post($message, $channel = null, $username = null)
+	function post(string $message, string $channel = null, string $username = null) : bool|string
 	{
 		$content           = new stdClass();
-		$content->username = isset($username) ? $username : $this->username;
-		$content->channel  = isset($channel)  ? $channel  : $this->channel;
+		$content->username = $username ?? $this->username;
+		$content->channel  = $channel ?? $this->channel;
 		$content->text     = $message;
 
 		$content = json_encode($content);
