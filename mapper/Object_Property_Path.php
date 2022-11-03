@@ -11,7 +11,7 @@ class Object_Property_Path extends Class_Property_Path
 	/**
 	 * @var object
 	 */
-	private $object;
+	private object $object;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -31,16 +31,14 @@ class Object_Property_Path extends Class_Property_Path
 	 * @return mixed
 	 * @todo make this work with Class_Name->property_name reverse links
 	 */
-	public function getValue($property_path)
+	public function getValue(string $property_path) : mixed
 	{
 		$object = $this->object;
 		foreach (explode(DOT, $property_path) as $property_name) {
-			if (is_object($object)) {
-				$object = $object->$property_name;
-			}
-			else {
+			if (!is_object($object)) {
 				return null;
 			}
+			$object = $object->$property_name;
 		}
 		return $object;
 	}

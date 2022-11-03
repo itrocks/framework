@@ -15,13 +15,13 @@ class Comparator
 	/**
 	 * @var string
 	 */
-	private $class_name;
+	protected string $class_name;
 
 	//------------------------------------------------------------------------------ $properties_path
 	/**
 	 * @var string[]|Reverse[]
 	 */
-	private $properties_path;
+	protected array $properties_path;
 
 	//--------------------------------------------------------------------------- $use_compare_method
 	/**
@@ -29,7 +29,7 @@ class Comparator
 	 *
 	 * @var boolean
 	 */
-	public $use_compare_method = true;
+	public bool $use_compare_method = true;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -37,7 +37,7 @@ class Comparator
 	 * @param $class_name      string
 	 * @param $properties_path string[]|Reverse[]
 	 */
-	public function __construct($class_name, array $properties_path = [])
+	public function __construct(string $class_name, array $properties_path = [])
 	{
 		$this->class_name = $class_name;
 		if ($properties_path) {
@@ -53,11 +53,11 @@ class Comparator
 	/**
 	 * Returns -1 if $object1 < $object2, 1 if $object1 > $object2, or 0 if $object1 == $object2
 	 *
-	 * @param $object1 object
-	 * @param $object2 object
+	 * @param $object1 mixed
+	 * @param $object2 mixed
 	 * @return integer -1, 0 or 1
 	 */
-	public function compare($object1, $object2)
+	public function compare(mixed $object1, mixed $object2) : int
 	{
 		if (is_object($object1) && is_object($object2)) {
 			// Comparable objects : use their compare method
@@ -107,7 +107,7 @@ class Comparator
 	 * @param $objects object[]
 	 * @param $sort_callback string You can define which sort function to call
 	 */
-	public function sort(array &$objects, $sort_callback = 'uasort')
+	public function sort(array &$objects, string $sort_callback = 'uasort')
 	{
 		call_user_func_array($sort_callback, [&$objects, [$this, 'compare']]);
 	}

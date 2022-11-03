@@ -8,7 +8,6 @@ use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Template\Representative;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -28,7 +27,7 @@ abstract class Getter
 	/**
 	 * @var boolean
 	 */
-	public static $ignore = false;
+	public static bool $ignore = false;
 
 	//------------------------------------------------------------------------- getAbstractCollection
 	/**
@@ -39,10 +38,12 @@ abstract class Getter
 	 *
 	 * @param $class_name string
 	 * @param $object     object
-	 * @param $property   string|Reflection_Property
+	 * @param $property   Reflection_Property|string|null
 	 * @return object[]
 	 */
-	private static function getAbstractCollection($class_name, $object, $property = null)
+	private static function getAbstractCollection(
+		string $class_name, object $object, Reflection_Property|string $property = null
+	) : array
 	{
 		$objects = [];
 		$class_names = self::getFinalClasses($class_name);
@@ -59,11 +60,11 @@ abstract class Getter
 	/**
 	 * Generic getter for getting all objects of a given class
 	 *
-	 * @param $stored            object[]
-	 * @param $element_type_name string
+	 * @param $stored            object[]|null
+	 * @param $element_type_name string|null
 	 * @return object[]
 	 */
-	public static function & getAll(array &$stored = null, $element_type_name = null)
+	public static function & getAll(array &$stored = null, string $element_type_name = null) : array
 	{
 		if (!(self::$ignore || isset($stored))) {
 			$stored = Dao::readAll($element_type_name, Dao::sort());
@@ -76,16 +77,19 @@ abstract class Getter
 	 * Generic getter for a collection of objects
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $stored     Component[]|string Actual value of the property (will be returned if not null)
-	 * @param $class_name string Class for each collection's object
-	 * @param $object     object Parent object
-	 * @param $property   string|Reflection_Property Parent property (or property name). Recommended
-	 *        but can be omitted if foreign class is a Component
+	 * @param $stored     Component[]|string|null Actual value of the property
+	 *                    (will be returned if not null)
+	 * @param $class_name string|null Class for each collection's object
+	 * @param $object     object|null Parent object
+	 * @param $property   Reflection_Property|string|null Parent property (or property name).
+	 *                    Recommended but can be omitted if foreign class is a Component
 	 * @return object[]
 	 */
 	public static function & getCollection(
-		&$stored = null, $class_name = null, $object = null, $property = null
-	) {
+		array|string &$stored = null, string $class_name = null, object $object = null,
+		Reflection_Property|string $property = null
+	) : array
+	{
 		// TODO JSON will work only if $property is set. Should add string / null case
 		if (
 			!self::$ignore
@@ -135,11 +139,6 @@ abstract class Getter
 						if ($link_properties_names) {
 							$options[] = Dao::key($link_properties_names);
 						}
-						// TODO Heavy patch, but client consultation crashes into CRM without this
-						if ($class_name === 'Neopolia\Factures\Built\Sales\Client\Address\Contact') {
-							$class = new Reflection_Class($class_name);
-							$class->setAnnotation('representative', new Representative('name', $class));
-						}
 						$stored = $dao->search($search_element, null, $options);
 					}
 					// when element class is not a component and a property name was found
@@ -187,21 +186,23 @@ abstract class Getter
 	/**
 	 * Register this for any Date_Time property using '@link DateTime' annotation
 	 *
-	 * @param $stored Date_Time|string
+	 * @param $stored Date_Time|string|null
 	 * @return Date_Time
 	 */
-	public static function & getDateTime(&$stored)
+	public static function & getDateTime(Date_Time|string|null &$stored) : Date_Time
 	{
+		if ($stored instanceof Date_Time) {
+			return $stored;
+		}
 		if (is_null($stored)) {
 			$stored = Date_Time::min();
+			return $stored;
 		}
-		elseif (is_string($stored)) {
-			try {
-				$stored = Date_Time::fromISO($stored);
-			}
-			catch (Exception $exception) {
-				$stored = Date_Time_Error::fromError($stored);
-			}
+		try {
+			$stored = Date_Time::fromISO($stored);
+		}
+		catch (Exception) {
+			$stored = Date_Time_Error::fromError($stored);
 		}
 		return $stored;
 	}
@@ -215,10 +216,11 @@ abstract class Getter
 	 * @param $class_name string
 	 * @return string[]
 	 */
-	private static function getFinalClasses($class_name)
+	private static function getFinalClasses(string $class_name) : array
 	{
+		/** @noinspection DuplicatedCode inspector bug (duplicated with css code) */
 		$class_names = [];
-		$search = ['dependency_name' => $class_name, 'type' => Dependency::T_EXTENDS];
+		$search      = ['dependency_name' => $class_name, 'type' => Dependency::T_EXTENDS];
 		foreach (Dao::search($search, Dependency::class) as $dependency) {
 			/** @noinspection PhpUnhandledExceptionInspection $dependency must always be valid */
 			/** @var $dependency Dependency */
@@ -241,9 +243,9 @@ abstract class Getter
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object        object the object
 	 * @param $property_name string the property to get value of : must exist for the object class
-	 * @return object|object[]
+	 * @return object|object[]|null
 	 */
-	public static function & getLink($object, $property_name)
+	public static function & getLink(object $object, string $property_name) : array|object|null
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid object property */
 		$property   = new Reflection_Property($object, $property_name);
@@ -270,42 +272,45 @@ abstract class Getter
 	 * Generic getter for mapped objects
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $stored   object[] actual value of the property (will be returned if not null)
-	 * @param $object   object the parent object
-	 * @param $property Reflection_Property|string the source property (or name) for map reading
+	 * @param $stored   object[]|null actual value of the property (will be returned if not null)
+	 * @param $object   object|null   the parent object
+	 * @param $property Reflection_Property|string|null the source property (or name) for map reading
 	 * @return Component[]
 	 */
-	public static function & getMap(array &$stored = null, $object = null, $property = null)
+	public static function & getMap(
+		array &$stored = null, object $object = null, Reflection_Property|string $property = null
+	) : array
 	{
-		if (!(self::$ignore || isset($stored))) {
-			if (Dao::getObjectIdentifier($object)) {
-				if (!($property instanceof Reflection_Property)) {
-					/** @noinspection PhpUnhandledExceptionInspection needs valid $property of $object */
-					$property = new Reflection_Property($object, $property);
-				}
-				$dao        = Dao::get($property->getAnnotation('dao')->value);
-				$class_name = get_class($object);
-				/** @noinspection PhpUnhandledExceptionInspection $class_name is a get_class() */
-				$link_class        = new Link_Class($class_name);
-				$linked_class_name = $link_class->getLinkedClassName();
-				if ($linked_class_name) {
-					/** @noinspection PhpUnhandledExceptionInspection valid $object & getCompositeProperty */
-					$object     = $link_class->getCompositeProperty()->getValue($object);
-					$class_name = $linked_class_name;
-				}
-				$element_type = $property->getType()->getElementType();
-				$is_abstract  = $element_type->isAbstractClass();
-				$sort         = $is_abstract ? Dao::sort(['id']) : Dao::sort();
-				$stored       = $dao->search(
-					[$class_name . '->' . $property->name => $object], $element_type->asString(), [$sort]
-				);
-				if ($is_abstract) {
-					$sort->sortObjects($stored);
-				}
+		if (self::$ignore || isset($stored)) {
+			return $stored;
+		}
+		if (Dao::getObjectIdentifier($object)) {
+			if (!($property instanceof Reflection_Property)) {
+				/** @noinspection PhpUnhandledExceptionInspection needs valid $property of $object */
+				$property = new Reflection_Property($object, $property);
 			}
-			else {
-				$stored = [];
+			$dao        = Dao::get($property->getAnnotation('dao')->value);
+			$class_name = get_class($object);
+			/** @noinspection PhpUnhandledExceptionInspection $class_name is a get_class() */
+			$link_class        = new Link_Class($class_name);
+			$linked_class_name = $link_class->getLinkedClassName();
+			if ($linked_class_name) {
+				/** @noinspection PhpUnhandledExceptionInspection valid $object & getCompositeProperty */
+				$object     = $link_class->getCompositeProperty()->getValue($object);
+				$class_name = $linked_class_name;
 			}
+			$element_type = $property->getType()->getElementType();
+			$is_abstract  = $element_type->isAbstractClass();
+			$sort         = $is_abstract ? Dao::sort(['id']) : Dao::sort();
+			$stored       = $dao->search(
+				[$class_name . '->' . $property->name => $object], $element_type->asString(), [$sort]
+			);
+			if ($is_abstract) {
+				$sort->sortObjects($stored);
+			}
+		}
+		else {
+			$stored = [];
 		}
 		return $stored;
 	}
@@ -317,75 +322,79 @@ abstract class Getter
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $stored     mixed actual value of the object, or identifier to an object, or null
 	 * @param $class_name string the object class name
-	 * @param $object     object the parent object
-	 * @param $property   string|Reflection_Property the parent property
-	 * @return object
+	 * @param $object     object|null the parent object
+	 * @param $property   Reflection_Property|string|null the parent property
+	 * @return ?object
 	 */
-	public static function & getObject(&$stored, $class_name, $object = null, $property = null)
+	public static function & getObject(
+		mixed &$stored, string $class_name, object $object = null,
+		Reflection_Property|string $property = null
+	) : ?object
 	{
-		if (!(self::$ignore || is_object($stored))) {
-			if ($property instanceof Reflection_Property) {
-				$property_name = $property->name;
+		if (self::$ignore || is_object($stored)) {
+			return $stored;
+		}
+		if ($property instanceof Reflection_Property) {
+			$property_name = $property->name;
+		}
+		elseif (is_string($property) && is_object($object)) {
+			$property_name = $property;
+			/** @noinspection PhpUnhandledExceptionInspection get_class and need valid property */
+			$property = new Reflection_Property($object, $property_name);
+		}
+		if ($property && $property->getAnnotation('component')->value) {
+			$foreign_property_name = Foreign_Annotation::of($property)->value;
+			if ($foreign_property_name && Dao::getObjectIdentifier($object)) {
+				$stored = Dao::searchOne(
+					[$foreign_property_name => $object], $property->getType()->getElementTypeAsString()
+				);
 			}
-			elseif (is_string($property) && is_object($object)) {
-				$property_name = $property;
-				/** @noinspection PhpUnhandledExceptionInspection get_class and need valid property */
-				$property = new Reflection_Property($object, $property_name);
+		}
+		elseif (is_object($object) && isset($property_name)) {
+			$id_property_name = 'id_' . $property_name;
+			if (isset($object->$id_property_name)) {
+				$stored = $object->$id_property_name;
 			}
-			if ($property && $property->getAnnotation('component')->value) {
-				$foreign_property_name = Foreign_Annotation::of($property)->value;
-				if ($foreign_property_name && Dao::getObjectIdentifier($object)) {
-					$stored = Dao::searchOne(
-						[$foreign_property_name => $object], $property->getType()->getElementTypeAsString()
-					);
+			$id_property_name_class = $id_property_name . '_class';
+			if (isset($object->$id_property_name_class) && (new Type($class_name))->isAbstractClass()) {
+				$class_name = $object->$id_property_name_class;
+			}
+		}
+		if (isset($stored) && !is_object($stored)) {
+			if (
+				isset($property)
+				&& Store_Annotation::of($property)->value
+				&& !Store_Annotation::of($property)->isFalse()
+			) {
+				if (Store_Annotation::of($property)->isGz()) {
+					$inflated = gzinflate($stored);
+					if ($inflated !== false) {
+						$stored = $inflated;
+					}
 				}
-			}
-			elseif (is_object($object) && isset($property_name)) {
-				$id_property_name = 'id_' . $property_name;
-				if (isset($object->$id_property_name)) {
-					$stored = $object->$id_property_name;
-				}
-				$id_property_name_class = $id_property_name . '_class';
-				if (isset($object->$id_property_name_class) && (new Type($class_name))->isAbstractClass()) {
-					$class_name = $object->$id_property_name_class;
-				}
-			}
-			if (isset($stored) && !is_object($stored)) {
-				if (
-					isset($property)
-					&& Store_Annotation::of($property)->value
-					&& !Store_Annotation::of($property)->isFalse()
-				) {
-					if (Store_Annotation::of($property)->isGz()) {
-						$inflated = gzinflate($stored);
-						if ($inflated !== false) {
-							$stored = $inflated;
+				switch (Store_Annotation::of($property)->value) {
+					case Store_Annotation::JSON:
+						$stored = json_decode($stored, true);
+						$stored = static::schemaDecode($stored, $property);
+						break;
+					default:
+						// TODO QUESTION $class_name and $property_class_name... Isn't it the same ?
+						// TODO QUESTION Is Builder::className($property_class_name) missing ?
+						$property_class_name = $property->getType()->asString();
+						if (is_a($property_class_name, Stringable::class, true)) {
+							$stored = call_user_func([$property_class_name, 'fromString'], $stored);
 						}
-					}
-					switch (Store_Annotation::of($property)->value) {
-						case Store_Annotation::JSON:
-							$stored = json_decode($stored, true);
-							$stored = static::schemaDecode($stored, $property);
-							break;
-						default:
-							// TODO QUESTION $class_name and $property_class_name... Isn't it the same ?
-							// TODO QUESTION Is Builder::className($property_class_name) missing ?
-							$property_class_name = $property->getType()->asString();
-							if (is_a($property_class_name, Stringable::class, true)) {
-								$stored = call_user_func([$property_class_name, 'fromString'], $stored);
-							}
-							elseif (method_exists($property_class_name, '__unserialize')) {
-								$stored = unserialize($stored);
-							}
-							break;
-					}
+						elseif (method_exists($property_class_name, '__unserialize')) {
+							$stored = unserialize($stored);
+						}
+						break;
 				}
-				else {
-					$class_name = Builder::className($class_name);
-					$stored     = isset($property)
-						? Dao::get($property->getAnnotation('dao')->value)->read($stored, $class_name)
-						: Dao::read($stored, $class_name);
-				}
+			}
+			else {
+				$class_name = Builder::className($class_name);
+				$stored     = isset($property)
+					? Dao::get($property->getAnnotation('dao')->value)->read($stored, $class_name)
+					: Dao::read($stored, $class_name);
 			}
 		}
 		return $stored;
@@ -399,7 +408,7 @@ abstract class Getter
 	 * @param $stored string|string[]
 	 * @return string[]
 	 */
-	public static function & getStringArray(&$stored)
+	public static function & getStringArray(array|string &$stored) : array
 	{
 		if (is_string($stored)) {
 			$stored = trim($stored) ? explode(LF, str_replace(',', LF, $stored)) : [];
@@ -418,7 +427,7 @@ abstract class Getter
 	 * @param $ignore boolean new state for self::$ignore
 	 * @return boolean old state of self::$ignore
 	 */
-	public static function ignore($ignore)
+	public static function ignore(bool $ignore) : bool
 	{
 		$result       = self::$ignore;
 		self::$ignore = $ignore;
@@ -432,7 +441,7 @@ abstract class Getter
 	 * @param $object        object
 	 * @param $property_name string
 	 */
-	public static function invalidate($object, $property_name)
+	public static function invalidate(object $object, string $property_name)
 	{
 		if (!isset($object->$property_name)) {
 			return;
@@ -451,17 +460,17 @@ abstract class Getter
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $stored   array The object stored into an array : [$property_name => $value]
-	 * @param $property Reflection_Property
+	 * @param $property Reflection_Property|null
 	 * @return object
 	 */
-	public static function schemaDecode(array $stored, Reflection_Property $property = null)
+	public static function schemaDecode(array $stored, Reflection_Property $property = null) : object
 	{
 		$stored_array = $stored;
 		if (isset($stored_array[Store_Annotation::JSON_CLASS])) {
 			$class_name = $stored_array[Store_Annotation::JSON_CLASS];
 			unset($stored_array[Store_Annotation::JSON_CLASS]);
 		}
-		elseif ($property && $property->getType()->isClass()) {
+		elseif ($property?->getType()->isClass()) {
 			$class_name = $property->getType()->getElementTypeAsString();
 		}
 		else {

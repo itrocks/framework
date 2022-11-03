@@ -15,7 +15,7 @@ class Map
 	/**
 	 * @var object[]
 	 */
-	public $objects;
+	public array $objects;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -26,7 +26,7 @@ class Map
 	 * @param $key_is_id boolean Set this to true if your objects array use objects id as key
 	 *                           This will enable an optimization to get this working faster
 	 */
-	public function __construct(array &$objects = [], $key_is_id = false)
+	public function __construct(array &$objects = [], bool $key_is_id = false)
 	{
 		if (!$key_is_id) {
 			$this->objects = $objects;
@@ -44,7 +44,7 @@ class Map
 	 *
 	 * @param $element object|object[]
 	 */
-	public function add($element)
+	public function add(array|object $element)
 	{
 		if (is_array($element)) {
 			foreach ($element as $elem) {
@@ -63,7 +63,7 @@ class Map
 	 * @param $element object
 	 * @return boolean
 	 */
-	public function has($element)
+	public function has(object $element) : bool
 	{
 		$key = Dao::getObjectIdentifier($element);
 		return isset($this->objects[$key]) || array_key_exists($key, $this->objects);
@@ -83,7 +83,7 @@ class Map
 	 * @return Map|object[] the intersection of this set and linked elements / Set elements
 	 * Returns a Map if $elements was a Map, or an object[] if $elements was an object[]
 	 */
-	public function intersect($objects, $only_first_common_element = false)
+	public function intersect(array|Map $objects, bool $only_first_common_element = false) : array|Map
 	{
 		if ($objects instanceof Map) {
 			$objects = $objects->objects;
@@ -107,7 +107,7 @@ class Map
 	 *
 	 * @param $element object|object[]
 	 */
-	public function remove($element)
+	public function remove(array|object $element)
 	{
 		if (is_array($element)) {
 			foreach ($element as $elem) {
@@ -129,11 +129,11 @@ class Map
 	/**
 	 * Sorts a collection of objects and returns the sorted objects collection
 	 *
-	 * @param $sort    Sort
+	 * @param $sort    Sort|null
 	 * @return object[] the sorted objects collection
 	 * @todo Dao_Sort_Option should become something as simple as Sort, used by Dao and Collection
 	 */
-	public function sort(Sort $sort = null)
+	public function sort(Sort $sort = null) : array
 	{
 		if (count($this->objects) > 1) {
 			$object = reset($this->objects);

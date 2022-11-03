@@ -16,7 +16,7 @@ trait Remover
 	 * @param $object object contained object to remove
 	 * @return integer removed instances count
 	 */
-	public function remove($object)
+	public function remove(object $object) : int
 	{
 		return Remover_Tool::removeObjectFromComposite($this, $object);
 	}

@@ -12,7 +12,7 @@ use ITRocks\Framework\Traits\Has_Code_And_Name;
  */
 abstract class Code
 {
-	use Has_Code_And_Name { fromString as private fromStringIsAlwaysMultiple; }
+	use Has_Code_And_Name;
 
 	//---------------------------------------------------------------------------------------- equals
 	/**
@@ -26,16 +26,6 @@ abstract class Code
 	public function equals(Code $code)
 	{
 		return $this->sameAs($code);
-	}
-
-	//------------------------------------------------------------------------------------ fromString
-	/**
-	 * @param $value string
-	 * @return static[]
-	 */
-	public static function fromString($value)
-	{
-		return static::fromStringMultiple($value);
 	}
 
 }

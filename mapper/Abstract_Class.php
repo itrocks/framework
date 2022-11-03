@@ -13,13 +13,13 @@ class Abstract_Class
 	 *
 	 * @var string
 	 */
-	public $class;
+	public string $class;
 
 	//------------------------------------------------------------------------------- $representative
 	/**
 	 * @var string
 	 */
-	public $representative;
+	public string $representative;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -27,7 +27,7 @@ class Abstract_Class
 	 */
 	public function __toString() : string
 	{
-		return strval($this->representative);
+		return $this->representative;
 	}
 
 }

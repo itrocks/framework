@@ -15,6 +15,6 @@ interface Comparable
 	 * @param $with object
 	 * @return integer -1, 0 or 1
 	 */
-	public static function compare($what, $with);
+	public static function compare(object $what, object $with) : int;
 
 }

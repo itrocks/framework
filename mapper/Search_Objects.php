@@ -15,10 +15,10 @@ abstract class Search_Objects
 	 * Try each search object. When one is found, then return the first result object
 	 *
 	 * @param $objects object[]|array[]|array
-	 * @param $class_name string
-	 * @return object
+	 * @param $class_name string|null
+	 * @return ?object
 	 */
-	public static function searchOne(array $objects, $class_name = null)
+	public static function searchOne(array $objects, string $class_name = null) : ?object
 	{
 		foreach ($objects as $object) {
 			$object = Dao::searchOne($object, $class_name);

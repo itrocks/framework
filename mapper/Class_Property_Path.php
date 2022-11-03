@@ -11,13 +11,13 @@ class Class_Property_Path
 	/**
 	 * @var string
 	 */
-	private $class_name;
+	protected string $class_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name string class name
 	 */
-	public function __construct($class_name)
+	public function __construct(string $class_name)
 	{
 		$this->class_name = $class_name;
 	}

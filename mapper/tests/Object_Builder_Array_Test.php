@@ -11,6 +11,7 @@ use ITRocks\Framework\Tests\Objects\Composite;
 use ITRocks\Framework\Tests\Objects\Resource;
 use ITRocks\Framework\Tests\Objects\Salesman;
 use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\View\User_Error_Exception;
 
 /**
  * Object builder from array unit tests
@@ -39,8 +40,10 @@ class Object_Builder_Array_Test extends Test
 	}
 
 	//---------------------------------------------------------------- testExistingComponentSubObject
+
 	/**
 	 * What if we build an existing composite with its component sub-object
+	 * @throws User_Error_Exception
 	 */
 	public function testExistingComponentSubObject()
 	{
@@ -67,8 +70,10 @@ class Object_Builder_Array_Test extends Test
 	}
 
 	//------------------------------------------------------------------------- testExistingSubObject
+
 	/**
 	 * What if we build an existing object and existing sub-objects
+	 * @throws User_Error_Exception
 	 */
 	public function testExistingSubObject()
 	{
@@ -86,7 +91,7 @@ class Object_Builder_Array_Test extends Test
 			'name'                => $object->name
 		]);
 
-		// only the main object : sub-objects that are not @composite are not explicitely built objects,
+		// only the main object : sub-objects that are not @composite are not explicitly built objects,
 		// but they are inside the object that use them
 		// (the default write controller will not write them even if data has changed)
 		$assume = [new Built_Object(Dao::searchOne($object))];
@@ -99,8 +104,10 @@ class Object_Builder_Array_Test extends Test
 	}
 
 	//--------------------------------------------------------------------- testExistingSubObjectData
+
 	/**
 	 * What if we build an existing object and data from sub-objects
+	 * @throws User_Error_Exception
 	 */
 	public function testExistingSubObjectData()
 	{
@@ -124,7 +131,7 @@ class Object_Builder_Array_Test extends Test
 			new Built_Object($object)
 		];
 
-		// we have explicitely changed data from sub-objects, so they are explicitely built object
+		// we have explicitly changed data from sub-objects, so they are explicitly built object
 		// (the default write controller will write them before the object that use them)
 		static::assertEquals($assume, $builder->getBuiltObjects());
 
@@ -134,8 +141,10 @@ class Object_Builder_Array_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------ testNewSubObject
+
 	/**
 	 * The form contains data for a new mandatory or optional sub-object
+	 * @throws User_Error_Exception
 	 */
 	public function testNewSubObject()
 	{
@@ -160,8 +169,10 @@ class Object_Builder_Array_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------- testNewSubObjectData
+
 	/**
 	 * The form contains data for a new mandatory or optional sub-object
+	 * @throws User_Error_Exception
 	 */
 	public function testNewSubObjectData()
 	{
@@ -189,8 +200,10 @@ class Object_Builder_Array_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------ testSimple
+
 	/**
 	 * A simple test : will a form build a salesman ?
+	 * @throws User_Error_Exception
 	 */
 	public function testSimple()
 	{

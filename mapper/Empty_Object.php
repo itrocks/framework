@@ -33,7 +33,7 @@ abstract class Empty_Object
 	 * @return object
 	 * @throws ReflectionException
 	 */
-	public static function create($class_name)
+	public static function create(string $class_name) : object
 	{
 		$object = Builder::create($class_name);
 		foreach ((new Reflection_Class($class_name))->getProperties() as $property) {
@@ -56,7 +56,7 @@ abstract class Empty_Object
 	 * @param $check_composite boolean if true, check if @composite properties are empty too
 	 * @return boolean
 	 */
-	public static function isEmpty($object, $check_composite = false)
+	public static function isEmpty(object $object, bool $check_composite = false) : bool
 	{
 		$is_empty = true;
 		if ($object instanceof Can_Be_Empty) {

@@ -20,9 +20,9 @@ class Note
 	 * @link DateTime
 	 * @mandatory
 	 * @see Date_Time::nowMinute
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $date;
+	public Date_Time|string $date;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -31,7 +31,7 @@ class Note
 	 * @user hidden
 	 * @var object
 	 */
-	public $object;
+	public object $object;
 
 	//----------------------------------------------------------------------------------------- $text
 	/**
@@ -40,13 +40,13 @@ class Note
 	 * @multiline
 	 * @var string
 	 */
-	public $text;
+	public string $text;
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
 	 * @var string
 	 */
-	public $title;
+	public string $title;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -54,10 +54,8 @@ class Note
 	 */
 	public function __toString() : string
 	{
-		$text = lParse(strval($this->text), LF);
-		return $this->title
-			? strval($this->title)
-			: ((strlen($text) > 32) ? (substr($text, 0, 32) . '...') : $text);
+		$text = lParse($this->text, LF);
+		return $this->title ?: ((strlen($text) > 32) ? (substr($text, 0, 32) . '...') : $text);
 	}
 
 }

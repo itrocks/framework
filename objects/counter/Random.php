@@ -17,13 +17,13 @@ trait Random
 	 * @conditions random=true
 	 * @var string
 	 */
-	public $property_name = 'number';
+	public string $property_name = 'number';
 
 	//--------------------------------------------------------------------------------------- $random
 	/**
 	 * @var boolean
 	 */
-	public $random = false;
+	public bool $random = false;
 
 	//------------------------------------------------------------------------------------- decrement
 	/**

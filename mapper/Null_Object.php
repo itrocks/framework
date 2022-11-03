@@ -28,6 +28,7 @@ abstract class Null_Object
 		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		foreach ((new Reflection_Class($class_name))->getProperties() as $property) {
 			if (!$property->isStatic()) {
+				/** @noinspection PhpRedundantOptionalArgumentInspection must set value */
 				$property->setValue($object, null);
 			}
 		}
@@ -40,10 +41,11 @@ abstract class Null_Object
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object     object
-	 * @param $class_name string you can set a class name of a parent class to get a partial isNull()
+	 * @param $class_name string|null you can set a class name of a parent class to get a partial
+	 *                    isNull()
 	 * @return boolean
 	 */
-	public static function isEmpty($object, $class_name = null)
+	public static function isEmpty(object $object, string $class_name = null) : bool
 	{
 		if (empty($object)) {
 			return true;
@@ -91,10 +93,11 @@ abstract class Null_Object
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object            object
-	 * @param $properties_filter callable set a callback function that filters properties to be tested
+	 * @param $properties_filter callable|null set a callback function that filters properties to be
+	 *                           tested
 	 * @return boolean
 	 */
-	public static function isNull($object, callable $properties_filter = null)
+	public static function isNull(object $object, callable $properties_filter = null) : bool
 	{
 		if (!isset($object)) {
 			return true;
@@ -132,7 +135,7 @@ abstract class Null_Object
 				$property_type = $property->getType();
 				if ($property_type->isClass() && !$property_type->isMultiple()) {
 					$id_property = 'id_' . $property->name;
-					if (isset($object->$id_property) && !is_null($object->$id_property)) {
+					if (isset($object->$id_property)) {
 						$is_null = false;
 						break;
 					}

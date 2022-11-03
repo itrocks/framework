@@ -13,7 +13,7 @@ class Built_Object
 	/**
 	 * @var object
 	 */
-	public $object;
+	public object $object;
 
 	//-------------------------------------------------------------------------------- $write_options
 	/**
@@ -22,14 +22,14 @@ class Built_Object
 	 *
 	 * @var Option[]
 	 */
-	public $write_options = [];
+	public array $write_options = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $object        object
-	 * @param $write_options Option[]
+	 * @param $object        object|null
+	 * @param $write_options Option[]|null
 	 */
-	public function __construct($object = null, array $write_options = null)
+	public function __construct(object $object = null, array $write_options = null)
 	{
 		if (isset($object))        $this->object        = $object;
 		if (isset($write_options)) $this->write_options = $write_options;

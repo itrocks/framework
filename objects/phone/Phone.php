@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Objects;
 
 use ITRocks\Framework\Objects\Phone\Has_Phone_Number;
-use ITRocks\Framework\Traits\Has_Number;
 use ITRocks\Framework\Traits\Is_Immutable;
 
 /**

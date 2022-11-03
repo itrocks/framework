@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\View\User_Error_Exception;
 
 /**
  * Apply counter simple form controller
@@ -17,11 +18,13 @@ class Apply_Simple_Form_Controller implements Feature_Controller
 	const FEATURE = 'APPLY_SIMPLE_FORM';
 
 	//------------------------------------------------------------------------------------------- run
+
 	/**
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @return ?string
+	 * @throws User_Error_Exception
 	 */
 	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{

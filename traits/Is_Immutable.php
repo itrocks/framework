@@ -62,6 +62,7 @@ trait Is_Immutable
 			Link_Annotation::of($link_class)->value
 			&& ($composite_property = $link_class->getCompositeProperty())
 		) {
+			/** @noinspection PhpRedundantOptionalArgumentInspection Must set value */
 			$composite_property->setValue($this, null);
 		}
 		if ($existing = $link->searchOne($search)) {

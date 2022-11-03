@@ -10,6 +10,7 @@ use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Mutex;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template;
+use ReflectionException;
 
 /**
  * The Counter class manages business-side counters : ie invoices numbers, etc.
@@ -32,7 +33,7 @@ class Counter
 	 * @mandatory
 	 * @var string
 	 */
-	public $format = '{YEAR}%04d';
+	public string $format = '{YEAR}%04d';
 
 	//----------------------------------------------------------------------------------- $identifier
 	/**
@@ -41,15 +42,15 @@ class Counter
 	 * @user_getter showIdentifier
 	 * @var string
 	 */
-	public $identifier;
+	public string $identifier;
 
 	//---------------------------------------------------------------------------------- $last_update
 	/**
 	 * @link DateTime
 	 * @user readonly
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $last_update;
+	public Date_Time|string $last_update;
 
 	//----------------------------------------------------------------------------------- $last_value
 	/**
@@ -61,7 +62,7 @@ class Counter
 	 * @user_var string
 	 * @var integer
 	 */
-	public $last_value = 0;
+	public int $last_value = 0;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -80,6 +81,7 @@ class Counter
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public function __toString() : string
 	{
@@ -101,9 +103,7 @@ class Counter
 		$mutex      = static::lock($class_name);
 		/** @var $counter Counter */
 		$counter = Dao::searchOne(['identifier' => $class_name], Counter::class);
-		if ($counter) {
-			$counter->decrement($class_name, $property_name);
-		}
+		$counter?->decrement($class_name, $property_name);
 		static::unlock($mutex);
 	}
 
@@ -278,7 +278,7 @@ class Counter
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
-	 * @throws \ReflectionException
+	 * @throws ReflectionException
 	 */
 	public function showIdentifier() : string
 	{

@@ -18,7 +18,7 @@ abstract class Remover_Tool
 	 * @param $object    object contained object to remove
 	 * @return integer removed instances count
 	 */
-	public static function removeObjectFromComposite($composite, $object)
+	public static function removeObjectFromComposite(object $composite, object $object) : int
 	{
 		$count = 0;
 		/** @noinspection PhpUnhandledExceptionInspection object */

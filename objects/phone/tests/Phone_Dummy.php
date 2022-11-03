@@ -16,7 +16,7 @@ class Phone_Dummy
 	/**
 	 * Phone_Dummy constructor.
 	 *
-	 * @param $phone_number string|null
+	 * @param $phone_number ?string
 	 */
 	public function __construct(public ?string $phone_number)
 	{}

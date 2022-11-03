@@ -25,27 +25,27 @@ class Opened_Document
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//----------------------------------------------------------------------------------- $identifier
 	/**
 	 * @var integer
 	 */
-	public $identifier;
+	public int $identifier;
 
 	//----------------------------------------------------------------------------------------- $ping
 	/**
 	 * @link DateTime
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $ping;
+	public Date_Time|string $ping;
 
 	//----------------------------------------------------------------------------------------- $user
 	/**
 	 * @link Object
 	 * @var User
 	 */
-	public $user;
+	public User $user;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -65,21 +65,18 @@ class Opened_Document
 	 * @param $object object
 	 * @return boolean true if the object has correctly been closed, false if was not existing before
 	 */
-	public static function closeObject($object)
+	public static function closeObject(object $object) : bool
 	{
-		if ($opened_document = self::openedObject($object)) {
-			return Dao::delete($opened_document);
-		}
-		return false;
+		return ($opened_document = self::openedObject($object)) && Dao::delete($opened_document);
 	}
 
 	//------------------------------------------------------------------------------ keepObjectOpened
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
-	 * @return boolean true
+	 * @return true
 	 */
-	public static function keepObjectOpened($object)
+	public static function keepObjectOpened(object $object) : bool
 	{
 		if ($opened_document = static::openedObject($object)) {
 			/** @noinspection PhpUnhandledExceptionInspection valid */
@@ -98,7 +95,7 @@ class Opened_Document
 	 * @param $object object
 	 * @return boolean true if the object can be opened, false if an object was already opened before
 	 */
-	public static function openObject($object)
+	public static function openObject(object $object) : bool
 	{
 		if (!self::openedObject($object)) {
 			/** @noinspection PhpUnhandledExceptionInspection constant */
@@ -118,9 +115,9 @@ class Opened_Document
 	 * Returns an Opened_Document object if the object is opened
 	 *
 	 * @param $object object
-	 * @return static|null
+	 * @return ?static
 	 */
-	public static function openedObject($object)
+	public static function openedObject(object $object) : ?static
 	{
 		$since = Date_Time::now()->sub(static::DELAY, Date_Time::SECOND);
 		return Dao::searchOne(

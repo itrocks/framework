@@ -20,7 +20,8 @@ abstract class String_Array
 	 * @param $property_name string
 	 * @return string[]
 	 */
-	public static function getter(Read_Property $joinpoint, $object, $property_name)
+	public static function getter(Read_Property $joinpoint, object $object, string $property_name)
+		: array
 	{
 		if (!is_array($object->$property_name)) {
 			$object->$property_name = explode(',', $object->$property_name);

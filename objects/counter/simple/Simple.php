@@ -29,7 +29,7 @@ class Simple extends Counter
 	 * @user_change_realtime
 	 * @var boolean
 	 */
-	public $complete_with_zeros = true;
+	public bool $complete_with_zeros = true;
 
 	//------------------------------------------------------------------------------ $documents_count
 	/**
@@ -42,7 +42,7 @@ class Simple extends Counter
 	 * @user_change_realtime
 	 * @var integer
 	 */
-	public $documents_count = 9999;
+	public int $documents_count = 9999;
 
 	//--------------------------------------------------------------------------------------- $prefix
 	/**
@@ -51,7 +51,7 @@ class Simple extends Counter
 	 * @user_change_realtime
 	 * @var string
 	 */
-	public $prefix = '';
+	public string $prefix = '';
 
 	//----------------------------------------------------------------------- $year_with_4_characters
 	/**
@@ -61,7 +61,7 @@ class Simple extends Counter
 	 * @user_change_realtime
 	 * @var boolean
 	 */
-	public $year_with_4_characters = false;
+	public bool $year_with_4_characters = false;
 
 	//--------------------------------------------------------------------------------- $yearly_reset
 	/**
@@ -70,14 +70,14 @@ class Simple extends Counter
 	 * @user_change_realtime
 	 * @var boolean
 	 */
-	public $yearly_reset = true;
+	public bool $yearly_reset = true;
 
 	//------------------------------------------------------------------------------- formatLastValue
 	/**
 	 * @param $object object|null
 	 * @return string
 	 */
-	public function formatLastValue($object = null) : string
+	public function formatLastValue(object $object = null) : string
 	{
 		if (!$this->last_value) {
 			$this->last_value = 1;

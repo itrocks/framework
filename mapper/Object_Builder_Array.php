@@ -219,7 +219,8 @@ class Object_Builder_Array
 	 * @throws User_Error_Exception
 	 */
 	public function buildCollection(
-		string $class_name, array $old_collection, array $array, bool $null_if_empty = false, object $composite = null
+		string $class_name, array $old_collection, array $array, bool $null_if_empty = false,
+		object $composite = null
 	) : array
 	{
 		$collection = [];
@@ -822,10 +823,10 @@ class Object_Builder_Array
 	 * @param $array  array  the source array
 	 * @param $object ?object the object to complete (if set) or to build (if null)
 	 *                This object is always set at the end of execution of initObject()
-	 * @return array|null if read from a link object, this is the search properties that identify it
+	 * @return ?array if read from a link object, this is the search properties that identify it
 	 * @throws User_Error_Exception
 	 */
-	private function initObject(array &$array, ?object &$object) : array|null
+	private function initObject(array &$array, ?object &$object) : ?array
 	{
 		if (!$object) {
 			if (isset($array['id']) && $array['id']) {

@@ -30,10 +30,10 @@ trait Component
 	 * Default disposer call the remove
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name    string|object The composite class name or object
-	 * @param $property_name string The composite property name
+	 * @param $class_name    object|string|null The composite class name or object
+	 * @param $property_name string|null The composite property name
 	 */
-	public function dispose($class_name = null, $property_name = null)
+	public function dispose(object|string $class_name = null, string $property_name = null)
 	{
 		foreach (self::getCompositeProperties($class_name, $property_name) as $property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property from $this must be accessible */
@@ -55,11 +55,12 @@ trait Component
 	 * Gets composite object
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name    string|object The composite class name or object
-	 * @param $property_name string The composite property name
+	 * @param $class_name    object|string|null The composite class name or object
+	 * @param $property_name string|null The composite property name
 	 * @return object
 	 */
-	public function getComposite($class_name = null, $property_name = null)
+	public function getComposite(object|string $class_name = null, string $property_name = null)
+		: object
 	{
 		/** @noinspection PhpUnhandledExceptionInspection property from $this must be accessible */
 		return self::getCompositeProperty($class_name, $property_name)->getValue($this);
@@ -70,11 +71,13 @@ trait Component
 	 * Get composite properties
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name    object|string The composite class name or object
-	 * @param $property_name string The composite property name
+	 * @param $class_name    object|string|null The composite class name or object
+	 * @param $property_name string|null The composite property name
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public static function getCompositeProperties($class_name = null, $property_name = null) : array
+	public static function getCompositeProperties(
+		object|string $class_name = null, string $property_name = null
+	) : array
 	{
 		// flexible parameters : first parameter can be a property name alone
 		if (is_string($class_name) && !empty($class_name) && !isset($property_name)) {
@@ -119,12 +122,13 @@ trait Component
 	/**
 	 * Gets composite property
 	 *
-	 * @param $class_name    string|object The composite class name or object
-	 * @param $property_name string The composite property name
+	 * @param $class_name    object|string|null The composite class name or object
+	 * @param $property_name string|null The composite property name
 	 * @return Reflection_Property
 	 */
-	public static function getCompositeProperty($class_name = null, $property_name = null)
-		: Reflection_Property
+	public static function getCompositeProperty(
+		object|string $class_name = null, string $property_name = null
+	) : Reflection_Property
 	{
 		$properties = self::getCompositeProperties($class_name, $property_name);
 		return reset($properties);
@@ -135,9 +139,9 @@ trait Component
 	 * Sets composite object
 	 *
 	 * @param $object        object The composite object
-	 * @param $property_name string The composite property name (needed if multiple)
+	 * @param $property_name string|null The composite property name (needed if multiple)
 	 */
-	public function setComposite($object, $property_name = null)
+	public function setComposite(object $object, string $property_name = null)
 	{
 		foreach (self::getCompositeProperties($object, $property_name) as $property) {
 			$property->setValue($this, $object);
