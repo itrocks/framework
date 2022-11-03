@@ -288,7 +288,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * Checks, searches, and gets the file path for a class name
 	 *
 	 * @param $class_name string
-	 * @return ?string
+	 * @return string
 	 */
 	public function getClassFileName(string $class_name) : string
 	{
@@ -305,7 +305,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	//------------------------------------------------------------------------- getElementClassNameOf
 	/**
 	 * @param $class_name string
-	 * @return ?string
+	 * @return string
 	 */
 	public function getElementClassNameOf(string $class_name) : string
 	{

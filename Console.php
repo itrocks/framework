@@ -82,7 +82,7 @@ class Console
 		if ($arguments) {
 			$this->script = $arguments[0];
 
-			if (empty($arguments[1]) || (substr($arguments[1], 0, 1) !== '/')) {
+			if (empty($arguments[1]) || !str_starts_with($arguments[1], '/')) {
 				$this->uri       = '/';
 				$this->arguments = array_slice($arguments, 1);
 			}
@@ -151,10 +151,11 @@ class Console
 	 */
 	private function parseArguments()
 	{
+		/** @noinspection PhpArrayWriteIsNotUsedInspection Of course it is */
 		$_GET = ['as_widget' => true];
 		$var  = '-g';
 		foreach ($this->arguments as $argument) {
-			if (substr($argument, 0, 1) === '-') {
+			if (str_starts_with($argument, '-')) {
 				$var = $argument;
 			}
 			else {

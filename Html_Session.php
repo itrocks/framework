@@ -20,13 +20,13 @@ class Html_Session implements Activable, Configurable
 	/**
 	 * @var boolean
 	 */
-	public static $use_cookie = false;
+	public static bool $use_cookie = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration)
+	public function __construct(mixed $configuration)
 	{
 		self::$use_cookie = isset($configuration[self::USE_COOKIE]) && $configuration[self::USE_COOKIE];
 	}
@@ -41,10 +41,10 @@ class Html_Session implements Activable, Configurable
 
 	//------------------------------------------------------------------------------------ useCookies
 	/**
-	 * @param $cookies boolean
+	 * @param $cookies boolean|null
 	 * @return boolean
 	 */
-	public static function useCookies($cookies = null)
+	public static function useCookies(bool $cookies = null) : bool
 	{
 		if (isset($cookies)) {
 			self::$use_cookie = true;
