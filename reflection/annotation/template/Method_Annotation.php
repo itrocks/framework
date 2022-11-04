@@ -13,6 +13,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tools\Names;
 use ReflectionException;
+use ReflectionMethod;
 
 /**
  * This annotation template contains a callable method :
@@ -68,7 +69,23 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	{
 		if ($this->static || is_string($object)) {
 			if (($object !== $this->value) && !(reset($arguments) instanceof Event)) {
-				array_unshift($arguments, $object);
+				try {
+					$method     = new ReflectionMethod($this->value);
+					$parameters = $method->getParameters();
+					$parameter  = $parameters[0] ?? null;
+					$type       = $parameter?->getType()?->getName();
+					if ($type === 'self') {
+						$type = $method->getDeclaringClass()->name;
+					}
+					elseif ($type === 'static') {
+						$type = $method->class;
+					}
+					if ($type && is_a($object, $type, true)) {
+						array_unshift($arguments, $object);
+					}
+				}
+				catch (ReflectionException) {
+				}
 			}
 			return call_user_func_array($this->value, $arguments);
 		}

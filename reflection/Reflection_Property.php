@@ -27,6 +27,7 @@ use ITRocks\Framework\Tools\Date_Time_Error;
 use ITRocks\Framework\Tools\Field;
 use ITRocks\Framework\Tools\Names;
 use ReflectionException;
+use ReflectionMethod;
 use ReflectionProperty;
 use ReturnTypeWillChange;
 
@@ -324,7 +325,18 @@ class Reflection_Property extends ReflectionProperty
 				/** @noinspection PhpUnhandledExceptionInspection final class name always valid */
 				$default_object = Builder::create($this->getFinalClassName());
 			}
-			return $default_annotation->call($default_object, [$this]);
+			try {
+				$method     = new ReflectionMethod($default_annotation->value);
+				$parameters = $method->getParameters();
+				$parameter1 = $parameters[0] ?? null;
+				$parameter2 = $parameters[1] ?? null;
+			}
+			catch (ReflectionException) {
+				$parameter1 = $parameter2 = null;
+			}
+			return in_array('property', [$parameter1?->name, $parameter2?->name], true)
+				? $default_annotation->call($default_object, [$this])
+				: $default_annotation->call($default_object);
 		}
 		return $this->getFinalClass()
 			->getDefaultProperties([T_EXTENDS], $use_annotation, $this->name)[$this->name] ?? null;
