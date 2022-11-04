@@ -26,9 +26,9 @@ class Logger extends File_Logger implements Registerable
 
 	//------------------------------------------------------------------------------ onMainController
 	/**
-	 * @param $result string|null
+	 * @param $result ?string
 	 */
-	public function onMainController(string|null $result)
+	public function onMainController(?string $result) : void
 	{
 		if ((new Call_Stack)->methodCount([Main::class, 'run']) > 1) {
 			return;
@@ -44,7 +44,7 @@ class Logger extends File_Logger implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
 		$aop->afterMethod([Main::class, 'run'], [$this, 'onMainController']);

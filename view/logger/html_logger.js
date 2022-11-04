@@ -2,13 +2,14 @@ $(document).ready(function()
 {
 
 	$('body').build('call', 'iframe[data-from]', function() {
-		var $iframe = this;
-		var $from   = $('#' + $iframe.data('from'));
+		const $iframe = this
+		const $from   = $('#' + $iframe.data('from'))
 		if (!$from.length) {
-			return;
+			return
 		}
-		var document = $iframe.get(0).contentWindow.document;
-		document.open();
+		const document = $iframe.get(0).contentWindow.document
+		document.open()
+		// noinspection HtmlRequiredTitleElement Gets current head content, including title
 		document.write(
 			'<!DOCTYPE HTML>' + LF
 			+ '<html lang=' + DQ + $('html').attr('lang') + DQ + '>'
@@ -16,9 +17,9 @@ $(document).ready(function()
 			+ '<body><main>' + LF + LF
 			+ $from.html()
 			+ LF + LF + '</main></body></html>'
-		);
-		document.close();
-		$from.remove();
-	});
+		)
+		document.close()
+		$from.remove()
+	})
 
-});
+})

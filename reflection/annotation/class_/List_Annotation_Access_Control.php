@@ -53,7 +53,7 @@ class List_Annotation_Access_Control implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod(
 			[List_Annotation::class, '__construct'], [$this, 'checkListAnnotationLockColumnsAccess']

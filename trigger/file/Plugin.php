@@ -65,7 +65,7 @@ class Plugin implements Configurable, Registerable
 	 *
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->beforeMethod([Server::class, 'loop'], [$this, 'watchFiles']);
 	}

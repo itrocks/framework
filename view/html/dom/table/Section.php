@@ -13,7 +13,7 @@ abstract class Section extends Element
 	/**
 	 * @var Row[]
 	 */
-	public $rows = [];
+	public array $rows = [];
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -29,7 +29,7 @@ abstract class Section extends Element
 	/**
 	 * @param $row Row
 	 */
-	public function addRow(Row $row)
+	public function addRow(Row $row) : void
 	{
 		$this->rows[] = $row;
 	}

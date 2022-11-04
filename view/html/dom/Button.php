@@ -9,10 +9,10 @@ class Button extends Element
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
-	 * @param $id string
+	 * @param $value string|null
+	 * @param $id    string|null
 	 */
-	public function __construct($value = null, $id = null)
+	public function __construct(string $value = null, string $id = null)
 	{
 		parent::__construct('button', false);
 		if (isset($value)) $this->setContent($value);

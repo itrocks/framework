@@ -13,14 +13,14 @@ abstract class List_ extends Element
 	/**
 	 * @var Item[]
 	 */
-	public $items = [];
+	public array $items = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $name  string
 	 * @param $items Item[]
 	 */
-	public function __construct($name, array $items = null)
+	public function __construct(string $name, array $items = null)
 	{
 		parent::__construct($name);
 		if (isset($items)) $this->items = $items;
@@ -30,7 +30,7 @@ abstract class List_ extends Element
 	/**
 	 * @param $item Item|string
 	 */
-	public function addItem($item)
+	public function addItem(Item|string $item) : void
 	{
 		$this->items[] = ($item instanceof Item) ? $item : new Item($item);
 		$this->setContent(null);
@@ -40,14 +40,11 @@ abstract class List_ extends Element
 	/**
 	 * @return string
 	 */
-	public function getContent()
+	public function getContent() : string
 	{
 		$content = parent::getContent();
 		if (!isset($content)) {
-			$content = '';
-			foreach ($this->items as $item) {
-				$content .= $item;
-			}
+			$content = implode('', $this->items);
 			$this->setContent($content);
 		}
 		return $content;

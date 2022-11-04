@@ -65,7 +65,7 @@ class Logger implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->beforeMethod([Compiler::class, 'compileSource'], [$this, 'onCompileSource']);
 		$register->aop->afterMethod([Framework\Logger::class, 'stop'], [$this, 'onLoggerStop']);

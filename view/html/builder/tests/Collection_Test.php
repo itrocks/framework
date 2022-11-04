@@ -25,7 +25,7 @@ class Collection_Test extends Test
 	/**
 	 * @return object
 	 */
-	protected function buildObject()
+	protected function buildObject() : object
 	{
 		// vehicle door pieces
 		$lever        = new Vehicle_Door_Piece();
@@ -55,7 +55,7 @@ class Collection_Test extends Test
 	 * @param $object object
 	 * @return string
 	 */
-	protected function callEditController($object) : string
+	protected function callEditController(object $object) : string
 	{
 		$edit       = new Edit\Controller();
 		$uri        = new Uri(View::link($object, Feature::F_EDIT));
@@ -121,7 +121,7 @@ class Collection_Test extends Test
 	/**
 	 * A collection inside a collection
 	 */
-	public function testCollectionOfCollection()
+	public function testCollectionOfCollection() : void
 	{
 		$object         = $this->buildObject();
 		$html           = $this->callEditController($object);

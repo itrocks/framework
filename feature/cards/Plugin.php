@@ -42,7 +42,7 @@ class Plugin implements Installable, Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->setAnnotations(Parser::T_CLASS, [
 			'card_columns' => Card_Columns_Annotation::class,

@@ -16,6 +16,6 @@ interface Registerable extends Plugin
 	 *
 	 * @param $register Register
 	 */
-	public function register(Register $register);
+	public function register(Register $register) : void;
 
 }

@@ -11,10 +11,10 @@ abstract class Cell extends Element
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name    string
-	 * @param $content string
+	 * @param $name    string|null
+	 * @param $content string|null
 	 */
-	public function __construct($name = null, $content = null)
+	public function __construct(string $name = null, string $content = null)
 	{
 		parent::__construct($name);
 		if (isset($content)) {

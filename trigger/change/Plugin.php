@@ -119,7 +119,7 @@ class Plugin extends Trigger\Plugin
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
 		$aop->afterMethod ([Write::class, 'afterWrite'],  [$this, 'afterWrite']);

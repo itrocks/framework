@@ -14,30 +14,31 @@ class Select extends Element
 	 *
 	 * @var boolean
 	 */
-	public $ordered = false;
+	public bool $ordered = false;
 
 	//------------------------------------------------------------------------------------- $selected
 	/**
 	 * @var string
 	 */
-	private $selected;
+	private string $selected = '';
 
 	//--------------------------------------------------------------------------------------- $values
 	/**
 	 * @var string[]
 	 */
-	public $values = [];
+	public array $values = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name     string
-	 * @param $values   string[]
-	 * @param $selected string
-	 * @param $id       string
+	 * @param $name     string|null
+	 * @param $values   string[]|null
+	 * @param $selected string|null
+	 * @param $id       string|null
 	 */
-	public function __construct($name = null, array $values = null, $selected = null, $id = null)
-	{
-		parent::__construct('select', true);
+	public function __construct(
+		string $name = null, array $values = null, string $selected = null, string $id = null
+	) {
+		parent::__construct('select');
 		if (isset($id))       $this->setAttribute('id',   $id);
 		if (isset($name))     $this->setAttribute('name', $name);
 		if (isset($values))   $this->values = $values;
@@ -49,11 +50,11 @@ class Select extends Element
 	 * Adds a value
 	 *
 	 * @param $value   string
-	 * @param $caption string
+	 * @param $caption string|null
 	 */
-	public function addValue($value, $caption = null)
+	public function addValue(string $value, string $caption = null) : void
 	{
-		$this->values[$value] = isset($caption) ? $caption : $value;
+		$this->values[$value] = $caption ?? $value;
 		$this->setContent(null);
 	}
 
@@ -63,7 +64,7 @@ class Select extends Element
 	 *
 	 * @return string
 	 */
-	public function getContent()
+	public function getContent() : string
 	{
 		$content = parent::getContent();
 		if (!isset($content)) {
@@ -99,10 +100,10 @@ class Select extends Element
 
 	//-------------------------------------------------------------------------------------- selected
 	/**
-	 * @param $selected string if not set, selected will return current value without removing it
+	 * @param $selected string|null if not set, selected will return current value without removing it
 	 * @return string
 	 */
-	public function selected($selected = null)
+	public function selected(string $selected = null) : string
 	{
 		if (isset($selected)) {
 			$this->selected = $selected;

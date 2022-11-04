@@ -15,19 +15,19 @@ class Json_Error_Response
 	/**
 	 * @var $code integer
 	 */
-	private $code;
+	private int $code;
 
 	//---------------------------------------------------------------------------------- $description
 	/**
 	 * @var $description string
 	 */
-	private $description;
+	private string $description;
 
 	//---------------------------------------------------------------------------------------- $error
 	/**
 	 * @var $error string
 	 */
-	private $error;
+	private string $error;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -35,12 +35,12 @@ class Json_Error_Response
 	 *
 	 * @param $code        integer
 	 * @param $description string|array
-	 * @param $error       string
+	 * @param $error       string|null
 	 */
-	public function __construct($code, $description = '', $error = null)
+	public function __construct(int $code, array|string $description = '', string $error = null)
 	{
 		$this->code  = $code;
-		$this->error = $error ? $error : $this->getError();
+		$this->error = $error ?: $this->getError();
 		$this->setDescription($description);
 	}
 
@@ -50,7 +50,7 @@ class Json_Error_Response
 	 *
 	 * @return string
 	 */
-	private function getError()
+	private function getError() : string
 	{
 		$error = '';
 		switch ($this->code) {
@@ -85,7 +85,7 @@ class Json_Error_Response
 	 *
 	 * @return string
 	 */
-	private function getHeaderCode()
+	private function getHeaderCode() : string
 	{
 		$header_code = null;
 		switch ($this->code) {
@@ -109,7 +109,7 @@ class Json_Error_Response
 				break;
 		}
 
-		return 'HTTP/1.1 ' . strval($this->code) . SP . $header_code;
+		return 'HTTP/1.1 ' . $this->code . SP . $header_code;
 	}
 
 	//----------------------------------------------------------------------------------- getResponse
@@ -118,7 +118,7 @@ class Json_Error_Response
 	 *
 	 * @return string
 	 */
-	public function getResponse()
+	public function getResponse() : string
 	{
 		header($this->getHeaderCode(), true, $this->code);
 		if (Engine::acceptJson()) {
@@ -135,9 +135,9 @@ class Json_Error_Response
 	/**
 	 * Set the default error description
 	 *
-	 * @param $description string|array
+	 * @param $description array|string
 	 */
-	private function setDescription($description)
+	private function setDescription(array|string $description) : void
 	{
 		if (!$description) {
 			switch ($this->code) {

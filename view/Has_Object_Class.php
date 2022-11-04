@@ -12,6 +12,6 @@ interface Has_Object_Class
 	/**
 	 * @return string
 	 */
-	public function objectClass();
+	public function objectClass() : string;
 
 }

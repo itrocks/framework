@@ -19,7 +19,7 @@ class Text_To_Lines implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod([Generator::class, 'generate'], [$this, 'textToLines']);
 	}

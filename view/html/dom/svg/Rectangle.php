@@ -11,13 +11,14 @@ class Rectangle extends Element
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $x      float
-	 * @param $y      float
-	 * @param $width  float
-	 * @param $height float
+	 * @param $x      float|null
+	 * @param $y      float|null
+	 * @param $width  float|null
+	 * @param $height float|null
 	 */
-	public function __construct($x = null, $y = null, $width = null, $height = null)
-	{
+	public function __construct(
+		float $x = null, float $y = null, float $width = null, float $height = null
+	) {
 		parent::__construct('rect');
 
 		if (isset($x))      $this->setAttribute('x',      $x);

@@ -13,7 +13,7 @@ class Script extends Element
 	 *
 	 * @param $script string script
 	 */
-	public function __construct($script = '')
+	public function __construct(string $script = '')
 	{
 		parent::__construct('script');
 		$this->setContent(LF . $script . LF);

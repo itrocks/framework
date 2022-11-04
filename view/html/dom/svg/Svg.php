@@ -9,10 +9,10 @@ class Svg extends Element
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $width  integer
-	 * @param $height integer
+	 * @param $width  integer|null
+	 * @param $height integer|null
 	 */
-	public function __construct($width = null, $height = null)
+	public function __construct(int $width = null, int $height = null)
 	{
 		parent::__construct('svg');
 		if (isset($height)) {

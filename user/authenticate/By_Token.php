@@ -102,7 +102,7 @@ class By_Token implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod([Main::class, 'createSession'], [$this, 'apply']);
 	}

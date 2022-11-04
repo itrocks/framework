@@ -17,7 +17,7 @@ class Compact_File extends Property
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
-	public function buildHtml()
+	public function buildHtml() : string
 	{
 		$parameters = array_merge($this->parameters, ['property' => $this->property]);
 

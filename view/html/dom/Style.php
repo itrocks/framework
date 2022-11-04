@@ -11,20 +11,20 @@ class Style
 	/**
 	 * @var string
 	 */
-	public $key;
+	public string $key;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * @var string
 	 */
-	public $value;
+	public string $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $key string
-	 * @param $value string
+	 * @param $key   string|null
+	 * @param $value string|null
 	 */
-	public function __construct($key = null, $value = null)
+	public function __construct(string $key = null, string $value = null)
 	{
 		if (isset($key))   $this->key = $key;
 		if (isset($value)) $this->value = $value;

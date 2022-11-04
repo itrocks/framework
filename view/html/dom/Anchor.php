@@ -9,10 +9,10 @@ class Anchor extends Element
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $link    string
-	 * @param $content string
+	 * @param $link    string|null
+	 * @param $content string|null
 	 */
-	public function __construct($link = null, $content = null)
+	public function __construct(string $link = null, string $content = null)
 	{
 		parent::__construct('a');
 		if (isset($link))    $this->setAttribute('href', $link);

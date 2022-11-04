@@ -223,7 +223,7 @@ class Cache implements Configurable, Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
 		$aop->afterMethod ([Mysql\Link::class, 'read'],              [$this, 'cacheReadObject']);

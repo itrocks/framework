@@ -11,10 +11,10 @@ class Option extends Element
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value   string
-	 * @param $caption string
+	 * @param $value   string|null
+	 * @param $caption string|null
 	 */
-	public function __construct($value = null, $caption = null)
+	public function __construct(string $value = null, string $caption = null)
 	{
 		parent::__construct('option', true);
 		if (isset($value)) {
@@ -59,7 +59,7 @@ class Option extends Element
 	 * @return string
 	 * @todo This is a patch to make Html_Option::getContent work. Remove this when it will work
 	 */
-	public function getContent()
+	public function getContent() : string
 	{
 		return parent::getContent();
 	}

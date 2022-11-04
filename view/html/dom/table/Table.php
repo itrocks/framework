@@ -15,23 +15,21 @@ class Table extends Element
 	/**
 	 * @var Body
 	 */
-	public $body;
+	public Body $body;
 
 	//--------------------------------------------------------------------------------------- $footer
 	/**
 	 * @var Footer
 	 */
-	public $footer;
+	public Footer $footer;
 	
 	//----------------------------------------------------------------------------------------- $head
 	/**
 	 * @var Head
 	 */
-	public $head;
+	public Head $head;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 */
 	public function __construct()
 	{
 		parent::__construct('table');
@@ -44,10 +42,10 @@ class Table extends Element
 	public function __toString() : string
 	{
 		$content = '';
-		if (isset($this->head)) $content   .= LF . $this->head;
-		if (isset($this->body)) $content   .= LF . $this->body;
+		if (isset($this->head))   $content .= LF . $this->head;
+		if (isset($this->body))   $content .= LF . $this->body;
 		if (isset($this->footer)) $content .= LF . $this->footer;
-		$this->setContent($content . LF);
+		$this->setContent(trim($content) . LF);
 		return parent::__toString();
 	}
 

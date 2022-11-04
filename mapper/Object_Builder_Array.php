@@ -339,7 +339,7 @@ class Object_Builder_Array
 	/**
 	 * @param $array      array
 	 * @param $class_name string the name of the class to build each element
-	 * @return integer[]
+	 * @return object[]
 	 * @throws User_Error_Exception
 	 */
 	public function buildMap(array $array, string $class_name) : array

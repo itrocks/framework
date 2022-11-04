@@ -13,6 +13,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Traits\Is_Immutable;
 use ITRocks\Framework\View\Html\Builder\Collection;
 use ITRocks\Framework\View\Html\Builder\Property;
+use ITRocks\Framework\View\User_Error_Exception;
 
 /**
  * This property widget displays a Map like a collection
@@ -36,7 +37,7 @@ class Map_As_Collection extends Property
 	/**
 	 * @return string
 	 */
-	public function buildHtml()
+	public function buildHtml() : string
 	{
 		// TODO LOW remove this "if" statement, trigger a notice, debug step by step and optimize
 		// this "if" patch is here because parseSingleValue() calls this both : we have to build html
@@ -77,8 +78,9 @@ class Map_As_Collection extends Property
 	 * @param $object        object
 	 * @param $null_if_empty boolean
 	 * @return mixed
+	 * @throws User_Error_Exception
 	 */
-	public function buildValue($object, $null_if_empty)
+	public function buildValue(object $object, bool $null_if_empty) : array
 	{
 		$builder                            = new Object_Builder_Array();
 		$class_name                         = $this->property->getType()->getElementTypeAsString();

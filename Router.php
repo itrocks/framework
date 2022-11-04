@@ -430,7 +430,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		/*
 		$aop = $register->aop;

@@ -47,7 +47,7 @@ class Resend_Controller extends Controller implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod(
 			[Output\Controller::class, 'getGeneralButtons'],

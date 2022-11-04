@@ -169,7 +169,7 @@ class Maintainer implements Registerable, Updatable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		Application_Updater::get()->addUpdatable($this);
 	}

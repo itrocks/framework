@@ -152,7 +152,7 @@ class Sql_Link_Restrictor implements Registerable
 	 *
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
 		/* @todo this method does not exist anymore into Sql_Select_Builder

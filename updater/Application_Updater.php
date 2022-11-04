@@ -212,7 +212,7 @@ class Application_Updater implements Configurable
 		// Does not use View, as it is not ready and this may crash if called at this step
 		return strReplace(
 			[
-				'{memory_limit}' => ini_get('memory_limit'),
+				'(memory_limit)' => ini_get('memory_limit'),
 				'{time_limit}'   => ini_get('max_execution_time')
 			],
 			file_get_contents(__DIR__ . SL . 'Application_Updater_confirmFullUpdate.html')

@@ -20,7 +20,8 @@ class Default_View implements IView
 	 * @param $feature_name  string
 	 * @return string
 	 */
-	protected function executeTemplate($template_file, array $parameters, $feature_name)
+	protected function executeTemplate(string $template_file, array $parameters, string $feature_name)
+		: string
 	{
 		if (isset($parameters[Template::TEMPLATE])) {
 			unset($parameters[Template::TEMPLATE]);
@@ -56,7 +57,9 @@ class Default_View implements IView
 	 * @param $feature_name   string
 	 * @return Template
 	 */
-	protected function newTemplate($template_class, array $parameters, $template_file, $feature_name)
+	protected function newTemplate(
+		string $template_class, array $parameters, string $template_file, string $feature_name
+	) : Template
 	{
 		/** @var $template Template */
 		/** @noinspection PhpUnhandledExceptionInspection $template_class must be valid */

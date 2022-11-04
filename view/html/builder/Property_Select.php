@@ -14,20 +14,20 @@ class Property_Select
 	/**
 	 * @var string
 	 */
-	public $name;
+	public string $name;
 
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * @var Reflection_Property $property
 	 */
-	public $property;
+	public Reflection_Property $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $property Reflection_Property
-	 * @param $name     string
+	 * @param $property Reflection_Property|null
+	 * @param $name     string|null
 	 */
-	public function __construct(Reflection_Property $property = null, $name = null)
+	public function __construct(Reflection_Property $property = null, string $name = null)
 	{
 		if (isset($property)) $this->property = $property;
 		if (isset($name))     $this->name     = $name;
@@ -37,7 +37,7 @@ class Property_Select
 	/**
 	 * @return string
 	 */
-	public function build()
+	public function build() : string
 	{
 		$properties_name = [];
 		foreach ($this->property->getFinalClass()->getProperties([T_EXTENDS, T_USE]) as $property) {

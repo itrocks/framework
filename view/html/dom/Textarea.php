@@ -9,10 +9,10 @@ class Textarea extends Element
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name  string
-	 * @param $value string
+	 * @param $name  string|null
+	 * @param $value string|null
 	 */
-	public function __construct($name = null, $value = null)
+	public function __construct(string $name = null, string $value = null)
 	{
 		parent::__construct('textarea');
 		if (isset($name))  $this->setAttribute('name', $name);

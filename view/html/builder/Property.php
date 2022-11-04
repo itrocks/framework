@@ -72,17 +72,16 @@ abstract class Property
 	/**
 	 * @return string
 	 */
-	public abstract function buildHtml();
+	public abstract function buildHtml() : string;
 
 	//------------------------------------------------------------------------------------ buildValue
 	/**
 	 * @param $object        object
 	 * @param $null_if_empty boolean
-	 * @return mixed
+	 * @return string
 	 */
-	public function buildValue(
-		/* @noinspection PhpUnusedParameterInspection */ $object, $null_if_empty
-	) {
+	public function buildValue(object $object, bool $null_if_empty) : mixed
+	{
 		return self::DONT_BUILD_VALUE;
 	}
 
@@ -90,7 +89,7 @@ abstract class Property
 	/**
 	 * @param $template Template
 	 */
-	public function setTemplate(Template $template)
+	public function setTemplate(Template $template) : void
 	{
 		$this->template = $template;
 	}

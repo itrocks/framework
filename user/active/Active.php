@@ -39,7 +39,7 @@ class Active implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod(
 			[Authentication::class, 'userMatch'], [$this, 'resultFalseJoinpoint']

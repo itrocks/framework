@@ -56,7 +56,7 @@ class Engine implements Registerable, View\Engine
 	}
 
 	//-------------------------------------------------------------------------------------- afterRun
-	public function afterRun()
+	public function afterRun() : void
 	{
 		if (static::acceptJson() && isset(self::$view_backup)) {
 			View::current(self::$view_backup);
@@ -65,7 +65,7 @@ class Engine implements Registerable, View\Engine
 	}
 
 	//------------------------------------------------------------------------------------- beforeRun
-	public function beforeRun()
+	public function beforeRun() : void
 	{
 		if (static::acceptJson()) {
 			self::$view_backup = View::current();
@@ -146,7 +146,7 @@ class Engine implements Registerable, View\Engine
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
 		$aop->afterMethod( [View::class, 'run'], [$this, 'afterRun' ]);

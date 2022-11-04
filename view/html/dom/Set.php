@@ -13,46 +13,46 @@ class Set extends Element
 	/**
 	 * @var string
 	 */
-	private $base_name;
+	private string $base_name = '';
 
 	//------------------------------------------------------------------------------- $ordered_values
 	/**
 	 * @var boolean
 	 */
-	private $ordered_values = false;
+	private bool $ordered_values = false;
 
 	//------------------------------------------------------------------------------------- $readonly
 	/**
 	 * @var boolean
 	 */
-	private $readonly = false;
+	private bool $readonly = false;
 
 	//------------------------------------------------------------------------------------- $selected
 	/**
 	 * @var string[]
 	 */
-	private $selected = [];
+	private array $selected = [];
 
 	//--------------------------------------------------------------------------------------- $values
 	/**
 	 * @var string[]
 	 */
-	private $values = [];
+	private array $values = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $base_name      string The base name for all input fields named 'base_name[value]'
-	 * @param $values         string[]
-	 * @param $selected       string
-	 * @param $id             string
-	 * @param $readonly       boolean
-	 * @param $ordered_values boolean
+	 * @param $base_name      string|null The base name for all input fields named 'base_name[value]'
+	 * @param $values         string[]|null
+	 * @param $selected       string|null
+	 * @param $id             string|null
+	 * @param $readonly       boolean|null
+	 * @param $ordered_values boolean|null
 	 */
 	public function __construct(
-		$base_name = null, array $values = null, $selected = null, $id = null, $readonly = false,
-		$ordered_values = false
+		string $base_name = null, array $values = null, string $selected = null, string $id = null,
+		bool $readonly = false, bool $ordered_values = false
 	) {
-		parent::__construct('span', true);
+		parent::__construct('span');
 		$this->setAttribute('class', 'set');
 		if (isset($base_name))      $this->base_name = $base_name;
 		if (isset($id))             $this->setAttribute('id', $id);
@@ -67,11 +67,11 @@ class Set extends Element
 	 * Adds a value
 	 *
 	 * @param $value   string
-	 * @param $caption string
+	 * @param $caption string|null
 	 */
-	public function addValue($value, $caption = null)
+	public function addValue(string $value, string $caption = null) : void
 	{
-		$this->values[$value] = isset($caption) ? $caption : $value;
+		$this->values[$value] = $caption ?? $value;
 		$this->setContent(null);
 	}
 
@@ -82,7 +82,7 @@ class Set extends Element
 	 *
 	 * @return string
 	 */
-	public function getContent()
+	public function getContent() : string
 	{
 		$content = parent::getContent();
 		// TODO HCR Something more simple (BP : why removeAttribute ?)
@@ -112,12 +112,12 @@ class Set extends Element
 					$html_option->setAttribute('disabled');
 					$html_option->setAttribute('readonly');
 				}
-				$label = new Label(strval($html_option) . strval(new Span(Loc::tr($caption))));
+				$label = new Label($html_option . new Span(Loc::tr($caption)));
 				$label->setAttribute('name', $this->base_name);
 				if ($conditions) {
 					$label->setAttribute($conditions->name, $conditions->value);
 				}
-				$content .= strval($label) . LF;
+				$content .= $label . LF;
 			}
 			$this->setContent(trim($content));
 		}
@@ -126,18 +126,14 @@ class Set extends Element
 
 	//-------------------------------------------------------------------------------------- selected
 	/**
-	 * @param $selected string if not set, selected will return current value without removing it
+	 * @param $selected array|string|null if not set, selected will return current value without
+	 *                  removing it
 	 * @return string[]
 	 */
-	public function selected($selected = null)
+	public function selected(array|string $selected = null) : array
 	{
 		if (isset($selected)) {
-			if (is_array($selected)) {
-				$this->selected = $selected;
-			}
-			else {
-				$this->selected = explode(',', $selected);
-			}
+			$this->selected = is_array($selected) ? $selected : explode(',', $selected);
 		}
 		return $this->selected;
 	}

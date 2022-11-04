@@ -14,7 +14,7 @@ class Cleaner implements Registerable
 	/**
 	 * @param $result string
 	 */
-	public function clean(&$result)
+	public function clean(string &$result) : void
 	{
 		$result = str_replace(CR, '', $result);
 		$result = preg_replace('~\n\s+\n~', LF, $result);
@@ -25,7 +25,7 @@ class Cleaner implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
 		$aop->afterMethod([Template::class, 'parse'], [$this, 'clean']);

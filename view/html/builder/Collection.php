@@ -48,13 +48,13 @@ class Collection
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//----------------------------------------------------------------------------------- $collection
 	/**
 	 * @var object[]
 	 */
-	public $collection;
+	public array $collection;
 
 	//------------------------------------------------------------------------------------ $has_value
 	/**
@@ -62,37 +62,37 @@ class Collection
 	 *
 	 * @var boolean[] key is the name of the property, value is always true
 	 */
-	public $has_value;
+	public array $has_value;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * @var Reflection_Property[]
 	 */
-	protected $properties;
+	protected array $properties;
 
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * @var Reflection_Property
 	 */
-	public $property;
+	public Reflection_Property $property;
 
 	//---------------------------------------------------------------------------- $property_displays
 	/**
 	 * @var string[]
 	 */
-	public $property_displays;
+	public array $property_displays;
 
 	//----------------------------------------------------------------------------------------- $sort
 	/**
 	 * @var boolean
 	 */
-	public $sort = true;
+	public bool $sort = true;
 
 	//------------------------------------------------------------------------------------- $template
 	/**
-	 * @var Template
+	 * @var ?Template
 	 */
-	public $template = null;
+	public ?Template $template = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -100,10 +100,10 @@ class Collection
 	 * @param $collection      object[]
 	 * @param $link_properties boolean
 	 *   Linked class properties are hidden by default : only the link property is shown
-	 *   If set to true, the link property will by hidden and the class properties shown
+	 *   If set to true, the link property will be hidden and the class properties shown
 	 */
 	public function __construct(
-		Reflection_Property $property, array $collection, $link_properties = false
+		Reflection_Property $property, array $collection, bool $link_properties = false
 	) {
 		$this->property   = $property;
 		$this->collection = $collection;
@@ -123,10 +123,7 @@ class Collection
 		$list = new Unordered();
 		$list->addClass('auto_width');
 		$list->addClass('collection');
-		$header = $this->buildHeader();
-		if (!($header instanceof Item)) {
-			$header = new Item($header);
-		}
+		$header = new Item($this->buildHeader());
 		$header->addClass('head');
 		$list->addItem($header);
 		foreach ($this->buildBody() as $line) {
@@ -147,7 +144,7 @@ class Collection
 	/**
 	 * @return Item[]|List_[][]
 	 */
-	protected function buildBody()
+	protected function buildBody() : array
 	{
 		$body = [];
 		foreach ($this->collection as $object) {
@@ -261,7 +258,7 @@ class Collection
 	/**
 	 * @return Ordered
 	 */
-	protected function buildHeader()
+	protected function buildHeader() : Ordered
 	{
 		$header = new Ordered();
 		foreach ($this->properties as $property) {
@@ -327,7 +324,7 @@ class Collection
 	 * @param $properties Reflection_Property[]
 	 * @return Reflection_Property[]
 	 */
-	protected function expandProperties(array $properties)
+	protected function expandProperties(array $properties) : array
 	{
 		$expand_properties = [];
 		foreach ($properties as $property_path => $property) {
@@ -415,7 +412,7 @@ class Collection
 	 * @param $property Reflection_Property
 	 * @return boolean
 	 */
-	protected function isPropertyVisible(Reflection_Property $property)
+	protected function isPropertyVisible(Reflection_Property $property) : bool
 	{
 		$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
 		return !$user_annotation->has(User_Annotation::HIDE_OUTPUT)
@@ -429,7 +426,7 @@ class Collection
 	 * @param $property Reflection_Property
 	 * @return boolean
 	 */
-	protected function propertyHasValue(Reflection_Property $property)
+	protected function propertyHasValue(Reflection_Property $property) : bool
 	{
 		foreach ($this->collection as $object) {
 			/** @noinspection PhpUnhandledExceptionInspection */

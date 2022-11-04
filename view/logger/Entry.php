@@ -19,41 +19,42 @@ trait Entry
 	 * @multiline
 	 * @store false
 	 * @user_getter userGetOutput
-	 * @var string
+	 * @var string|No_Escape
 	 */
-	public $output;
+	public string|No_Escape $output;
 
 	//----------------------------------------------------------------------------- deactivateScripts
 	/**
+	 * @noinspection HtmlRequiredTitleElement Don't care
 	 * @param $output string
 	 * @return string
 	 */
-	protected function deactivateScripts($output)
+	protected function deactivateScripts(string $output) : string
 	{
 		return str_ireplace(
-				[
-					'<script', '</script>',
-					'<link',   '</link>',
-					'<head>',  '</head>',
-					'auto-redirect',
-					'auto-refresh'
-				],
-				[
-					'&lt;script',        '&lt/script>',
-					'&lt;link',          '&lt/link&gt;',
-					'<pre>&lt;head&gt;', '&lt;/head></pre>',
-					'',
-					''
-				],
-				$output
-			);
+			[
+				'<script', '</script>',
+				'<link',   '</link>',
+				'<head>',  '</head>',
+				'auto-redirect',
+				'auto-refresh'
+			],
+			[
+				'&lt;script',        '&lt/script>',
+				'&lt;link',          '&lt/link&gt;',
+				'<pre>&lt;head&gt;', '&lt;/head></pre>',
+				'',
+				''
+			],
+			$output
+		);
 	}
 
 	//------------------------------------------------------------------------------------- getOutput
 	/**
 	 * @return string
 	 */
-	protected function getOutput()
+	protected function getOutput() : string
 	{
 		/** @var $logger Logger */
 		$logger = Session::current()->plugins->get(Logger::class);
@@ -66,16 +67,17 @@ trait Entry
 	 * @param $output string
 	 * @return string
 	 */
-	protected function iFrame($output)
+	protected function iFrame(string $output) : string
 	{
 		return '<iframe data-from="entry-output"></iframe><div id="entry-output">' . $output . '</div>';
 	}
 
 	//--------------------------------------------------------------------------------- userGetOutput
 	/**
-	 * @return string
+	 * @noinspection PhpUnused @user_getter
+	 * @return No_Escape
 	 */
-	public function userGetOutput()
+	public function userGetOutput() : No_Escape
 	{
 		return new No_Escape(
 			$this->iFrame($this->deactivateScripts($this->getOutput())),

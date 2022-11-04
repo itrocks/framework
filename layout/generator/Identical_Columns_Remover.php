@@ -99,7 +99,7 @@ class Identical_Columns_Remover implements Configurable, Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod(
 			[Empty_Columns_Remover::class, 'emptyColumns'], [$this, 'identicalColumns']

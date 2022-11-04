@@ -23,18 +23,18 @@ class File
 	/**
 	 * @var Dao\File
 	 */
-	protected $file;
+	protected Dao\File $file;
 
 	//------------------------------------------------------------------------------------- $property
 	/**
-	 * @var Reflection_Property|null
+	 * @var ?Reflection_Property
 	 */
-	protected $property;
+	protected ?Reflection_Property $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $file     Dao\File
-	 * @param $property Reflection_Property
+	 * @param $property Reflection_Property|null
 	 */
 	public function __construct(Dao\File $file, Reflection_Property $property = null)
 	{
@@ -46,7 +46,7 @@ class File
 	/**
 	 * @return string
 	 */
-	public function build()
+	public function build() : string
 	{
 		return $this->buildFileAnchor($this->file);
 	}
@@ -56,7 +56,7 @@ class File
 	 * @param $file Dao\File
 	 * @return Anchor
 	 */
-	protected function buildFileAnchor(Dao\File $file)
+	protected function buildFileAnchor(Dao\File $file) : Anchor
 	{
 		$image = $file->getType()->is('image')
 			? new Image($file->link(Feature::F_OUTPUT, 22))
@@ -81,13 +81,13 @@ class File
 
 	//------------------------------------------------------------------------------------ buildImage
 	/**
-	 * Build a file image HTML element
+	 * Builds a file image HTML element
 	 *
-	 * @param $width  integer
-	 * @param $height integer
+	 * @param $width  integer|null
+	 * @param $height integer|null
 	 * @return Image
 	 */
-	public function buildImage($width = null, $height = null)
+	public function buildImage(int $width = null, int $height = null) : Image
 	{
 		$file       = clone $this->file;
 		$file->name = uniqid() . '.' . rLastParse($this->file->name, DOT);
@@ -107,10 +107,9 @@ class File
 				$image_arguments['height'] = $height;
 			}
 		}
-		$image = new Image(View::link(
+		return new Image(View::link(
 			Session_File::class, Feature::F_OUTPUT, $image_parameters, $image_arguments
 		));
-		return $image;
 	}
 
 }

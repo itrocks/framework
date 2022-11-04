@@ -13,11 +13,9 @@ class Row extends Element
 	/**
 	 * @var Cell[]
 	 */
-	private $cells = [];
+	private array $cells = [];
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 */
 	public function __construct()
 	{
 		parent::__construct('tr');
@@ -41,9 +39,9 @@ class Row extends Element
 	//--------------------------------------------------------------------------------------- addCell
 	/**
 	 * @param $cell            Cell
-	 * @param $before_position integer first cell position is 0
+	 * @param $before_position integer|null first cell position is 0
 	 */
-	public function addCell(Cell $cell, $before_position = null)
+	public function addCell(Cell $cell, int $before_position = null) : void
 	{
 		if (isset($before_position)) {
 			$this->cells = array_merge(

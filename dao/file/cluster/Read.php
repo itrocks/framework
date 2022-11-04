@@ -103,7 +103,7 @@ class Read implements Configurable, Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
 		$aop->afterMethod([File\Link::class,      'readProperty'], [$this, 'afterLinkReadProperty']);

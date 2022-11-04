@@ -62,7 +62,7 @@ class Delete_And_Replace implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->beforeMethod([Contextual_Mysqli::class, 'queryError'], [$this, 'onQueryError']);
 	}

@@ -11,20 +11,20 @@ class Attribute
 	/**
 	 * @var string
 	 */
-	public $name;
+	public string $name;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
-	 * @var string
+	 * @var bool|int|string|null
 	 */
-	public $value;
+	public bool|int|string|null $value = null;
 
 	//---------------------------------------------------------------------------- BOOLEAN_ATTRIBUTES
 	/**
 	 * These attributes name accept only boolean values, but they must parse in HTML like this :
 	 * true => 'attributeName' ; false => '' (not parsed
 	 *
-	 * Others attributes will be parsed the standard way :
+	 * Other attributes will be parsed the standard way :
 	 * true => 'attributeName="1"' ; false => 'attributeName=""'
 	 *
 	 * @example
@@ -41,10 +41,10 @@ class Attribute
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name string
-	 * @param $value string
+	 * @param $name  string|null
+	 * @param $value bool|int|string|null
 	 */
-	public function __construct($name = null, $value = null)
+	public function __construct(string $name = null, bool|int|string $value = null)
 	{
 		if (isset($name))  $this->name  = $name;
 		if (isset($value)) $this->value = $value;
@@ -67,10 +67,10 @@ class Attribute
 
 	//----------------------------------------------------------------------------------- escapeValue
 	/**
-	 * @param $value string
+	 * @param $value bool|int|string
 	 * @return string
 	 */
-	public static function escapeValue($value)
+	public static function escapeValue(bool|int|string|null $value) : string
 	{
 		if (!str_contains($value, DQ)) {
 			return DQ . $value . DQ;

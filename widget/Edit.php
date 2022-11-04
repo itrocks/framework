@@ -15,7 +15,7 @@ class Edit extends Property
 	/**
 	 * @return string
 	 */
-	public function buildHtml()
+	public function buildHtml() : string
 	{
 		$builder = new Html_Builder_Property($this->property, $this->value);
 		return new Div($builder->build());

@@ -249,7 +249,7 @@ class Html_Builder_Collection extends Collection
 	/**
 	 * @return Ordered
 	 */
-	protected function buildHeader()
+	protected function buildHeader() : Ordered
 	{
 		$header = parent::buildHeader();
 		$header->addItem(new Item());

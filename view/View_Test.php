@@ -18,7 +18,7 @@ class View_Test extends Test
 	 * @return array
 	 * @see testLink
 	 */
-	public function providerLink()
+	public function providerLink() : array
 	{
 		$user = new User();
 		/** @noinspection PhpUndefinedFieldInspection simulated, for testing purpose */
@@ -40,7 +40,7 @@ class View_Test extends Test
 	 * @param $expect     string
 	 * @param $parameters array
 	 */
-	public function testLink($expect, $parameters)
+	public function testLink(string $expect, array $parameters) : void
 	{
 		static::assertEquals($expect, View::link(...$parameters));
 	}

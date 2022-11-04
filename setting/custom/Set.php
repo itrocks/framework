@@ -29,9 +29,9 @@ abstract class Set
 	//-------------------------------------------------------------------------------------- $setting
 	/**
 	 * @store false Setting\Custom\Set is always saved into a Setting, we must not save it again
-	 * @var Setting
+	 * @var ?Setting
 	 */
-	public Setting $setting;
+	public ?Setting $setting;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

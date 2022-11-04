@@ -45,7 +45,7 @@ class Email_Flag implements Configurable, Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
 		$aop->afterMethod([File::class, 'send'], [$this, 'touchFlag']);

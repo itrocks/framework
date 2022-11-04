@@ -163,7 +163,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
 		$aop->afterMethod ([Contextual_Mysqli::class, 'query'],      [$this, 'afterQuery']);

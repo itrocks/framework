@@ -11,44 +11,44 @@ abstract class Json_Template
 	/**
 	 * @var string
 	 */
-	protected $class_name;
+	protected string $class_name;
 
 	//--------------------------------------------------------------------------------- $feature_name
 	/**
 	 * @var string
 	 */
-	protected $feature_name;
+	protected string $feature_name;
 
 	//---------------------------------------------------------------------------------------- $files
 	/**
 	 * @var array[]
 	 */
-	protected $files;
+	protected array $files;
 
 	//----------------------------------------------------------------------------------------- $form
 	/**
 	 * @var array
 	 */
-	protected $form;
+	protected array $form;
 
 	//----------------------------------------------------------------------------------- $parameters
 	/**
 	 * @var array
 	 */
-	protected $parameters;
+	protected array $parameters;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Json_Template constructor.
 	 *
+	 * @param $parameters   array
+	 * @param $form         array
+	 * @param $files        array[]
 	 * @param $class_name   string
 	 * @param $feature_name string
-	 * @param $files        array[]
-	 * @param $form         array
-	 * @param $parameters   array
 	 */
 	public function __construct(
-		array $parameters, array $form, array $files, $class_name, $feature_name
+		array $parameters, array $form, array $files, string $class_name, string $feature_name
 	) {
 		$this->parameters   = $parameters;
 		$this->form         = $form;
@@ -63,6 +63,6 @@ abstract class Json_Template
 	 *
 	 * @return string
 	 */
-	abstract public function render();
+	abstract public function render() : string;
 
 }

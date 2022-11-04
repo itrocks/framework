@@ -26,7 +26,7 @@ class Person_Having_Name_Default_With_Civility implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod(
 			[Person_Having_Name::class, 'setDefaultName'], [__CLASS__, 'prependCivility']

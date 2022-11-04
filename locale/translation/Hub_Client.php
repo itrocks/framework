@@ -60,7 +60,7 @@ class Hub_Client implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod(
 			[Translator::class, 'translations'], [$this, 'getTranslationsFromHub']

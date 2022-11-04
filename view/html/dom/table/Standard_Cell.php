@@ -9,9 +9,9 @@ class Standard_Cell extends Cell
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $content string
+	 * @param $content string|null
 	 */
-	public function __construct($content = null)
+	public function __construct(string $content = null)
 	{
 		parent::__construct('td', $content);
 	}

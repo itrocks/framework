@@ -103,7 +103,7 @@ class Xdebug implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
 		$aop->beforeMethod([Main::class, 'runController'], [$this, 'cleanup']);

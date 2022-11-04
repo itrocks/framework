@@ -11,73 +11,73 @@ class Loop
 	/**
 	 * @var string
 	 */
-	public $content;
+	public string $content;
 
 	//-------------------------------------------------------------------------------------- $counter
 	/**
 	 * @var integer
 	 */
-	public $counter = 0;
+	public int $counter = 0;
 
 	//-------------------------------------------------------------------------------------- $element
 	/**
 	 * @var mixed
 	 */
-	public $element;
+	public mixed $element;
 
 	//--------------------------------------------------------------------------------- $else_content
 	/**
 	 * @var string
 	 */
-	public $else_content;
+	public string $else_content;
 
 	//---------------------------------------------------------------------------------------- $first
 	/**
 	 * @var boolean
 	 */
-	public $first = true;
+	public bool $first = true;
 
 	//------------------------------------------------------------------------------ $force_condition
 	/**
 	 * @var boolean
 	 */
-	public $force_condition = false;
+	public bool $force_condition = false;
 
 	//------------------------------------------------------------------------------- $force_equality
 	/**
 	 * @var boolean
 	 */
-	public $force_equality = false;
+	public bool $force_equality = false;
 
 	//----------------------------------------------------------------------------------------- $from
 	/**
 	 * @var integer
 	 */
-	public $from;
+	public int $from;
 
 	//------------------------------------------------------------------------------------- $has_expr
 	/**
-	 * @var string
+	 * @var ?string
 	 */
-	public $has_expr = null;
+	public ?string $has_expr = null;
 
 	//--------------------------------------------------------------------------------------- $has_id
 	/**
 	 * @var boolean
 	 */
-	public $has_id;
+	public bool $has_id = false;
 
 	//------------------------------------------------------------------------------------------ $key
 	/**
 	 * @var integer|string
 	 */
-	public $key;
+	public int|string $key;
 
 	//------------------------------------------------------------------------------------ $separator
 	/**
 	 * @var string
 	 */
-	public $separator;
+	public string $separator;
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
@@ -91,12 +91,12 @@ class Loop
 	 *
 	 * @var boolean
 	 */
-	public $use_end;
+	public bool $use_end;
 
 	//------------------------------------------------------------------------------------- $var_name
 	/**
 	 * @var string
 	 */
-	public $var_name;
+	public string $var_name;
 
 }

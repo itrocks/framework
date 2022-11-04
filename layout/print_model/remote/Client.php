@@ -125,7 +125,7 @@ class Client implements Configurable, Registerable
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod(
 			[List_\Controller::class, 'getGeneralButtons'], [$this, 'addRemoteButton']

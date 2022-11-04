@@ -63,7 +63,7 @@ class Executor implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->beforeMethod([Main::class, 'executeController'], [$this, 'executeNotWrite']);
 		$register->aop->beforeMethod([Save\Controller::class, 'write'],  [$this, 'executeWrite']);

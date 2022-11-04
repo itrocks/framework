@@ -11,7 +11,7 @@ class Sorted extends Unordered
 	/**
 	 * @return string
 	 */
-	public function getContent()
+	public function getContent() : string
 	{
 		asort($this->items);
 		return parent::getContent();

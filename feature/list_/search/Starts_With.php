@@ -49,7 +49,7 @@ class Starts_With implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->beforeMethod(
 			[Search_Parameters_Parser::class, 'applySingleValue'], [$this, 'appendJoker']

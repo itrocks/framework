@@ -19,19 +19,19 @@ class Abstract_Collection
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//----------------------------------------------------------------------------------- $collection
 	/**
 	 * @var object[]
 	 */
-	public $collection;
+	public array $collection;
 
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * @var Reflection_Property
 	 */
-	public $property;
+	public Reflection_Property $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -49,7 +49,7 @@ class Abstract_Collection
 	/**
 	 * @return string
 	 */
-	public function build()
+	public function build() : string
 	{
 		$result = '';
 		foreach ($this->collection as $object) {

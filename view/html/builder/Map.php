@@ -23,32 +23,32 @@ class Map
 	/**
 	 * @var string
 	 */
-	protected $class_name;
+	protected string $class_name;
 
 	//---------------------------------------------------------------------------------- $is_abstract
 	/**
 	 * @var boolean
 	 */
-	protected $is_abstract;
+	protected bool $is_abstract;
 
 	//------------------------------------------------------------------------------------------ $map
 	/**
 	 * @var object[]
 	 */
-	protected $map;
+	protected array $map;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * @todo is not this dead code ? Look if used on any project, remove it if unused
 	 * @var Reflection_Property[]
 	 */
-	protected $properties;
+	protected array $properties;
 
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * @var Reflection_Property
 	 */
-	protected $property;
+	protected Reflection_Property $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -72,7 +72,7 @@ class Map
 	/**
 	 * @return Unordered
 	 */
-	public function build()
+	public function build() : Unordered
 	{
 		(new Mapper\Map($this->map))->sort();
 		$list = new Unordered();

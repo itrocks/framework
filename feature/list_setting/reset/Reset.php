@@ -46,7 +46,7 @@ class Reset implements Registerable
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod(
 			[Authentication::class, 'authenticate'], [$this, 'sessionReset']

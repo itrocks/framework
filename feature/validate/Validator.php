@@ -341,7 +341,7 @@ class Validator implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod(
 			[Data_Link\Write::class, 'beforeWrite'], [$this, 'beforeWrite']

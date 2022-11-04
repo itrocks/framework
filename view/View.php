@@ -26,7 +26,7 @@ class View implements Configurable
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration)
+	public function __construct(mixed $configuration)
 	{
 		$class_name = $configuration[Configuration::CLASS_NAME];
 		unset($configuration[Configuration::CLASS_NAME]);
@@ -54,12 +54,12 @@ class View implements Configurable
 	 * @param $files            array[]
 	 * @param $class_name       string
 	 * @param $feature_name     string
-	 * @return mixed
+	 * @return ?string
 	 */
 	private static function executeView(
 		string $view, string $view_method_name, array $parameters, array $form, array $files,
 		string $class_name, string $feature_name
-	) : mixed
+	) : ?string
 	{
 		$object = reset($parameters);
 		/** @noinspection PhpUnhandledExceptionInspection must call with a right $view class */
@@ -159,11 +159,11 @@ class View implements Configurable
 	 * @param $files        array[] Files parameters
 	 * @param $class_name   string  The context class name (class of the first parameter)
 	 * @param $feature_name string  The feature class name
-	 * @return mixed
+	 * @return ?string
 	 */
 	public static function run(
 		array $parameters, array $form, array $files, string $class_name, string $feature_name
-	) : mixed
+	) : ?string
 	{
 		$feature_names
 			= (isset($parameters[Feature::FEATURE]) && ($parameters[Feature::FEATURE] !== $feature_name))

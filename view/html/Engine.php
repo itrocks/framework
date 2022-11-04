@@ -32,7 +32,7 @@ class Engine implements Configurable, Framework\View\Engine
 	/**
 	 * @param $parameters array
 	 */
-	public function __construct($parameters = null)
+	public function __construct(mixed $parameters = null)
 	{
 		if (isset($parameters)) {
 			foreach ($parameters as $key => $value) {

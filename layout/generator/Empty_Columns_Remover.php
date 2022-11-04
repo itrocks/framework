@@ -196,7 +196,7 @@ class Empty_Columns_Remover implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->beforeMethod(
 			[Automatic_Line_Feed::class, 'run'], [$this, 'beforeAutomaticLineFeed']
@@ -271,14 +271,16 @@ class Empty_Columns_Remover implements Registerable
 		$this->shifts = [];
 		$this->widths = [];
 		do {
-			$shift        += ($right - $property->left);
+			$shift += ($right - $property->left);
+			/** @noinspection PhpSuspiciousNameCombinationInspection It's ok for shift */
 			$right         = $property->left;
 			$column       --;
 			$property      = prev($this->unset);
 			$unset_column  = key($this->unset) ?: -1;
 			while ($column > $unset_column) {
 				$set_property = $properties[$column];
-				$right        = $set_property->left;
+				/** @noinspection PhpSuspiciousNameCombinationInspection It's ok for shift */
+				$right = $set_property->left;
 				if ($set_property->text_align === Property::LEFT) {
 					$this->widths[$column] = $shift;
 					$shift                 = 0;

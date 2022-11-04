@@ -9,11 +9,11 @@ class Input extends Element
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name  string
-	 * @param $value string
-	 * @param $id    string
+	 * @param $name  string|null
+	 * @param $value string|null
+	 * @param $id    string|null
 	 */
-	public function __construct($name = null, $value = null, $id = null)
+	public function __construct(string $name = null, string $value = null, string $id = null)
 	{
 		parent::__construct('input', false);
 		if (isset($name))  $this->setAttribute('name',  $name);
@@ -24,10 +24,10 @@ class Input extends Element
 	//---------------------------------------------------------------------------------- setAttribute
 	/**
 	 * @param $name  string
-	 * @param $value boolean|integer|string
+	 * @param $value boolean|integer|string|null
 	 * @return Attribute
 	 */
-	public function setAttribute($name, $value = null)
+	public function setAttribute(string $name, bool|int|string $value = null) : Attribute
 	{
 		if (($name === 'value') && is_string($value)) {
 			$value = str_replace(['{', '}'], ['&lbrace;', '&rbrace;'], $value);

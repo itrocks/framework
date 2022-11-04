@@ -19,7 +19,7 @@ class Default_View
 	/**
 	 * @var string the result to output as a json encoded string
 	 */
-	public $json = false;
+	public string $json = '';
 
 	//------------------------------------------------------------------------------------------- run
 	/**
@@ -44,16 +44,10 @@ class Default_View
 			: [$feature_name];
 
 		//get the json file template
-		$template_file = Engine::getTemplateFile(
-			$class_name,
-			$feature_names,
-			(
-				isset($parameters[Template::TEMPLATE])
-				? Names::propertyToClass($parameters[Template::TEMPLATE])
-				: null
-			),
-			Engine::JSON_TEMPLATE_FILE_EXTENSION
-		);
+		$template = isset($parameters[Template::TEMPLATE])
+			? Names::propertyToClass($parameters[Template::TEMPLATE])
+			: '';
+		$template_file = Engine::getTemplateFile($class_name, $feature_names, $template);
 		if (!$template_file) {
 			header('HTTP/1.0 404 Not Found', true, 404);
 			return 'null';
@@ -71,11 +65,11 @@ class Default_View
 				}
 			}
 		}
-		catch (Exception $exception) {
+		catch (Exception) {
 			$this->json = false;
 		}
 
-		if (($this->json === '') || ($this->json === false)) {
+		if ($this->json === '') {
 			header('HTTP/1.0 520 Unknown Error', true, 520);
 			return 'null';
 		}

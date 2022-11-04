@@ -8,8 +8,6 @@ class Head extends Section
 {
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 */
 	public function __construct()
 	{
 		parent::__construct('thead');
