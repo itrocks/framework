@@ -24,10 +24,10 @@ class Input extends Element
 	//---------------------------------------------------------------------------------- setAttribute
 	/**
 	 * @param $name  string
-	 * @param $value boolean|integer|string|null
+	 * @param $value boolean|integer|string
 	 * @return Attribute
 	 */
-	public function setAttribute(string $name, bool|int|string $value = null) : Attribute
+	public function setAttribute(string $name, bool|int|string $value = '') : Attribute
 	{
 		if (($name === 'value') && is_string($value)) {
 			$value = str_replace(['{', '}'], ['&lbrace;', '&rbrace;'], $value);

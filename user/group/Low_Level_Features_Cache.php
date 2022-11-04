@@ -31,12 +31,12 @@ class Low_Level_Features_Cache
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current Low_Level_Feature|T|null
-	 * @return T
-	 * @template T
+	 * @param $set_current static|null
+	 * @return ?static
 	 */
-	public static function current($set_current = null) : Low_Level_Features_Cache
+	public static function current(self $set_current = null) : ?static
 	{
+		/** @var $current static */
 		$current = self::pCurrent($set_current);
 		if (!isset($current)) {
 			$user = User::current();

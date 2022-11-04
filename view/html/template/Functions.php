@@ -148,9 +148,9 @@ class Functions
 	 * If it is a built object (using Builder), always gets the source class name
 	 *
 	 * @param $template Template
-	 * @return Displayable
+	 * @return ?Displayable
 	 */
-	public function getClass(Template $template) : Displayable
+	public function getClass(Template $template) : ?Displayable
 	{
 		return $this->displayableClassNameOf(reset($template->objects));
 	}
@@ -538,10 +538,11 @@ class Functions
 	/**
 	 * Multiple properties come last
 	 *
+	 * @noinspection PhpMixedReturnTypeCanBeReducedInspection If not an array, returns the object
 	 * @param $template Template
-	 * @return Reflection_Property[]
+	 * @return mixed
 	 */
-	public function getEndWithMultiple(Template $template) : array
+	public function getEndWithMultiple(Template $template) : mixed
 	{
 		/** @var  $properties Reflection_Property[] */
 		$properties = reset($template->objects);
@@ -655,9 +656,9 @@ class Functions
 	 * The top object of the template must be a Reflection_Property[], or it will return as null
 	 *
 	 * @param $template Template
-	 * @return Reflection_Property[]
+	 * @return Reflection_Property[]|Reflection_Property
 	 */
-	public function getFilterProperties(Template $template) : array
+	public function getFilterProperties(Template $template) : array|Reflection_Property
 	{
 		$properties        = reset($template->objects);
 		$properties_filter = $template->getParameter(Parameter::PROPERTIES_FILTER);
@@ -1278,9 +1279,9 @@ class Functions
 	 * Returns root class from template objects stack
 	 *
 	 * @param $template Template
-	 * @return Displayable
+	 * @return ?Displayable
 	 */
-	public function getRootClass(Template $template) : Displayable
+	public function getRootClass(Template $template) : ?Displayable
 	{
 		return $this->displayableClassNameOf($this->getRootObject($template));
 	}

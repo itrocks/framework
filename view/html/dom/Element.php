@@ -42,7 +42,7 @@ abstract class Element
 	/**
 	 * @var string|string[]|array|null array for string[][] for build_mode AUTO
 	 */
-	private array|string|null $content;
+	private array|string|null $content = null;
 
 	//-------------------------------------------------------------------------------------- $end_tag
 	/**

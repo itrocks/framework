@@ -36,9 +36,9 @@ class View implements Configurable
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @param $set_current View\Engine|null
-	 * @return View\Engine
+	 * @return ?View\Engine
 	 */
-	public static function current(View\Engine $set_current = null) : View\Engine
+	public static function current(View\Engine $set_current = null) : ?View\Engine
 	{
 		/** @noinspection PhpIncompatibleReturnTypeInspection */
 		return self::pCurrent($set_current);

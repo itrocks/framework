@@ -77,10 +77,10 @@ class Engine implements Registerable, View\Engine
 	/**
 	 * Gets/sets current environment's object
 	 *
-	 * @param $set_current object|null
+	 * @param $set_current static|null
 	 * @return ?static
 	 */
-	public static function current(object $set_current = null) : ?static
+	public static function current(self $set_current = null) : ?static
 	{
 		/** @noinspection PhpIncompatibleReturnTypeInspection View\Engine */
 		return static::parentCurrent($set_current);

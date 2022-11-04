@@ -88,10 +88,10 @@ class Error_Handlers implements Activable, Configurable
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current self|null
-	 * @return ?self
+	 * @param $set_current static|null
+	 * @return ?static
 	 */
-	public static function current(self $set_current = null) : ?self
+	public static function current(self $set_current = null) : ?static
 	{
 		/** @noinspection PhpIncompatibleReturnTypeInspection inspector error : more restrictive */
 		return self::pCurrent($set_current);

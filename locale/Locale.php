@@ -92,12 +92,12 @@ class Locale implements Configurable, Registerable, Updatable
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current Locale|null
+	 * @param $set_current static|null
 	 * @return ?static
 	 */
-	public static function current(Locale $set_current = null) : ?static
+	public static function current(self $set_current = null) : ?static
 	{
-		/** @var $locale ?Locale */
+		/** @var $locale ?static */
 		$locale = self::pCurrent($set_current);
 		return $locale;
 	}

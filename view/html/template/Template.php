@@ -156,7 +156,7 @@ class Template
 	 *
 	 * @var string
 	 */
-	public string $parse_class_name;
+	public string $parse_class_name = '';
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -656,7 +656,7 @@ class Template
 	 */
 	public function parse() : string
 	{
-		$this->parse_class_name = null;
+		$this->parse_class_name = '';
 		$content = $this->content;
 		$content = $this->parseContainer($content);
 		return $this->parseFullPage($content);
@@ -1482,12 +1482,12 @@ class Template
 	/**
 	 * @param $object         object
 	 * @param $parameter_name string
-	 * @return string
+	 * @return array|string
 	 */
 	protected function parseParameter(
 		/** @noinspection PhpUnusedParameterInspection */
 		object $object, string $parameter_name
-	) : string
+	) : array|string
 	{
 		return $this->parameters[$parameter_name] ?? '';
 	}
@@ -1640,7 +1640,7 @@ class Template
 		) {
 			$object = $this->parseConstant($property_name);
 		}
-		elseif (isset($this->parse_class_name)) {
+		elseif ($this->parse_class_name) {
 			if ($property_name === 'class') {
 				$object = $this->parse_class_name;
 			}
@@ -1656,7 +1656,7 @@ class Template
 			else {
 				$object = isA($this->parse_class_name, $this->parseClassName($property_name));
 			}
-			$this->parse_class_name = null;
+			$this->parse_class_name = '';
 		}
 		elseif (($property_name[0] >= 'A') && ($property_name[0] <= 'Z')) {
 			if (is_array($object) && (isset($object[$property_name]) || !class_exists($property_name))) {
@@ -1932,9 +1932,9 @@ class Template
 			$object = $this->parseSingleValue($var_name);
 		}
 		// if the parse value finishes with a class name : check if the last object is any of this class
-		if (isset($this->parse_class_name)) {
+		if ($this->parse_class_name) {
 			$object                 = isA(reset($this->objects), $this->parse_class_name);
-			$this->parse_class_name = null;
+			$this->parse_class_name = '';
 		}
 		// parse object to string
 		if ($as_string && is_object($object)) {
@@ -2005,7 +2005,7 @@ class Template
 			$this->parseVarRemove($content, $i, $j);
 		}
 		if ($html_entities && ($var_name[0] !== SL) && !($value instanceof No_Escape)) {
-			$value = $this->htmlEntities($value);
+			$value = $this->htmlEntities(strval($value));
 		}
 		$content = substr($content, 0, $i) . $value . substr($content, $j + 1);
 		$i      += strlen($value);

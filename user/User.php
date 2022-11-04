@@ -25,9 +25,9 @@ class User
 	 * @noinspection PhpDocSignatureInspection $set_current static
 	 * @param $set_current static Only set when a user, but other parameters
 	 *        set by @default User::current or @user_default User::current can be set and ignored
-	 * @return static
+	 * @return ?static
 	 */
-	public static function current(object $set_current = null) : object
+	public static function current(self $set_current = null) : ?static
 	{
 		$user = self::pCurrent(($set_current instanceof User) ? $set_current : null);
 		if (
