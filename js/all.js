@@ -8,7 +8,7 @@ $.getScript(path + 'vendor/jquery/jquery-mousewheel/jquery.mousewheel.min.js')
 $.getScript(path + 'itrocks/framework/js/jquery.confirm.js')
 $.getScript(path + 'itrocks/framework/js/jquery.xtarget.js')
 
-$.getScript(path + 'vendor/jquery-form/form/jquery.form.js')
+$.getScript(path + 'vendor/jquery-form/form/dist/jquery.form.min.js')
 
 $.getScript(path + 'itrocks/framework/js/jquery.aform.js')
 $.getScript(path + 'itrocks/framework/js/jquery.autofocus.js')
