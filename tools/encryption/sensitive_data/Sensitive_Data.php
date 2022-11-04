@@ -33,7 +33,7 @@ class Sensitive_Data
 	 * @param $property Reflection_Property
 	 * @return boolean true if the property has been allowed or was already allowed
 	 */
-	public function allowProperty(User $user, Reflection_Property $property)
+	public function allowProperty(User $user, Reflection_Property $property) : bool
 	{
 		if (
 			isset($_POST['password'])
@@ -67,9 +67,9 @@ class Sensitive_Data
 	/**
 	 * @param $data     string
 	 * @param $property Reflection_Property
-	 * @return string
+	 * @return ?string
 	 */
-	public function decrypt($data, Reflection_Property $property)
+	public function decrypt(string $data, Reflection_Property $property) : ?string
 	{
 		if (($key = $this->propertyKey($property)) && ($secret = $key->getSecret())) {
 			$iv = hex2bin(substr($data, static::IV_SIZE * 2));
@@ -85,7 +85,7 @@ class Sensitive_Data
 	 * @param $property Reflection_Property
 	 * @return string
 	 */
-	public function encrypt($data, Reflection_Property $property)
+	public function encrypt(string $data, Reflection_Property $property) : string
 	{
 		if (($key = $this->propertyKey($property)) && ($secret = $key->getSecret())) {
 			/** @noinspection PhpUnhandledExceptionInspection valid call */
@@ -97,11 +97,11 @@ class Sensitive_Data
 
 	//---------------------------------------------------------------------------------------- getter
 	/**
-	 * @param $value    mixed
+	 * @param $value    string
 	 * @param $property Reflection_Property
-	 * @return mixed
+	 * @return ?string
 	 */
-	public static function getter($value, Reflection_Property $property)
+	public static function getter(string $value, Reflection_Property $property) : ?string
 	{
 		return (new static)->decrypt($value, $property);
 	}
@@ -110,10 +110,10 @@ class Sensitive_Data
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
-	 * @param $user     User
+	 * @param $user     User|null
 	 * @return Key
 	 */
-	protected function propertyKey(Reflection_Property $property, User $user = null)
+	protected function propertyKey(Reflection_Property $property, User $user = null) : Key
 	{
 		$class_name = Builder::current()->sourceClassName($property->final_class);
 

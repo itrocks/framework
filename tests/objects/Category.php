@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
+use ITRocks\Framework\Traits\Has_Name;
+
 /**
  * A category class
  *
@@ -8,48 +10,34 @@ namespace ITRocks\Framework\Tests\Objects;
  */
 class Category
 {
+	use Has_Name;
 
 	//-------------------------------------------------------------------------- $main_super_category
 	/**
 	 * @link Object
-	 * @var Category
+	 * @var ?Category
 	 */
-	public $main_super_category;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
+	public ?Category $main_super_category;
 
 	//---------------------------------------------------------------------------------------- $shops
 	/**
 	 * @link Map
 	 * @var Shop[]
 	 */
-	public $shops;
+	public array $shops;
 
 	//------------------------------------------------------------------------------- $sub_categories
 	/**
 	 * @link Map
 	 * @var Category[]
 	 */
-	public $sub_categories;
+	public array $sub_categories;
 
 	//----------------------------------------------------------------------------- $super_categories
 	/**
 	 * @link Map
 	 * @var Category[]
 	 */
-	public $super_categories;
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString() : string
-	{
-		return strval($this->name);
-	}
+	public array $super_categories;
 
 }

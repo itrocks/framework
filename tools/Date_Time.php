@@ -5,7 +5,6 @@ use DateInterval;
 use DateTime;
 use DateTimeZone;
 use Exception;
-use ReturnTypeWillChange;
 
 /**
  * This class extends PHP DateTime class : you should use this to be ITRocks compatible
@@ -127,39 +126,34 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * Increments a date for a given unit
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $quantity DateInterval|integer
+	 * @param $interval DateInterval|integer
 	 * @param $unit     string any of the Date_Time duration unit constants
-	 * @return static
+	 * @return $this
 	 */
-	public function add(DateInterval|int $quantity, string $unit = self::DAY) : static
+	public function add(DateInterval|int $interval, string $unit = self::DAY) : static
 	{
-		if ($quantity instanceof DateInterval) {
-			parent::add($quantity);
-		}
-		else {
-			if ($quantity < 0) {
-				$quantity = -$quantity;
+		if (is_int($interval)) {
+			if ($interval < 0) {
+				$interval = -$interval;
 				$invert   = true;
 			}
 			else {
 				$invert = false;
 			}
 			switch ($unit) {
-				case self::HOUR:   $interval = 'PT' . $quantity . 'H'; break;
-				case self::MINUTE: $interval = 'PT' . $quantity . 'M'; break;
-				case self::SECOND: $interval = 'PT' . $quantity . 'S'; break;
-				case self::DAY:    $interval = 'P'  . $quantity . 'D'; break;
-				case self::WEEK:   $interval = 'P'  . ($quantity * 7) . 'D'; break;
-				case self::MONTH:  $interval = 'P'  . $quantity . 'M'; break;
-				case self::YEAR:   $interval = 'P'  . $quantity . 'Y'; break;
+				case self::HOUR:   $interval = 'PT' . $interval . 'H'; break;
+				case self::MINUTE: $interval = 'PT' . $interval . 'M'; break;
+				case self::SECOND: $interval = 'PT' . $interval . 'S'; break;
+				case self::DAY:    $interval = 'P'  . $interval . 'D'; break;
+				case self::WEEK:   $interval = 'P'  . ($interval * 7) . 'D'; break;
+				case self::MONTH:  $interval = 'P'  . $interval . 'M'; break;
+				case self::YEAR:   $interval = 'P'  . $interval . 'Y'; break;
 			}
-			if (isset($interval)) {
-				/** @noinspection PhpUnhandledExceptionInspection $interval is generated and valid */
-				$interval         = new DateInterval($interval);
-				$interval->invert = $invert;
-				parent::add($interval);
-			}
+			/** @noinspection PhpUnhandledExceptionInspection $interval is generated and valid */
+			$interval         = new DateInterval($interval);
+			$interval->invert = $invert;
 		}
+		parent::add($interval);
 		return $this;
 	}
 
@@ -196,7 +190,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @return static|false
 	 */
 	public static function createFromFormat(
-		string $format, string $datetime, DateTimeZone|null $timezone = null
+		string $format, string $datetime, DateTimeZone $timezone = null
 	) : static|false
 	{
 		$date_time = $timezone
@@ -326,10 +320,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	//---------------------------------------------------------------------------------------- format
 	/**
 	 * @param $format string
-	 * @return integer|string
+	 * @return string
 	 */
-	#[ReturnTypeWillChange]
-	public function format(string $format) : int|string
+	public function format(string $format) : string
 	{
 		return parent::format($format);
 	}
@@ -613,15 +606,15 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Increments a date for a given unit
 	 *
-	 * @param $quantity DateInterval|integer
+	 * @param $interval DateInterval|integer
 	 * @param $unit     string any of the Date_Time duration unit constants
-	 * @return static
+	 * @return $this
 	 */
-	public function sub(DateInterval|int $quantity, string $unit = self::DAY) : static
+	public function sub(DateInterval|int $interval, string $unit = self::DAY) : static
 	{
-		($quantity instanceof DateInterval)
-			? parent::sub($quantity)
-			: $this->add(-$quantity, $unit);
+		($interval instanceof DateInterval)
+			? parent::sub($interval)
+			: $this->add(-$interval, $unit);
 		return $this;
 	}
 

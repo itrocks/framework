@@ -20,17 +20,20 @@ class Component
 	 * @link Object
 	 * @var Composite
 	 */
-	public $composite;
+	public Composite $composite;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Object constructor
+	 * A constructor for your Has_Name class
 	 *
-	 * @param $name string
+	 * @param $name string|null
+	 * @todo use With_Constructor : needs AOP compiler update
 	 */
-	public function __construct($name = null)
+	public function __construct(string $name = null)
 	{
-		if (isset($name)) $this->name = $name;
+		if (isset($name)) {
+			$this->name = $name;
+		}
 	}
 
 }

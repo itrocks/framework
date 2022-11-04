@@ -29,10 +29,10 @@ class In_Select implements Negate, Where
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $select Select|null
+	 * @param $select ?Select
 	 * @param $in     boolean|null
 	 */
-	public function __construct(Select|null $select, bool $in = null)
+	public function __construct(?Select $select, bool $in = null)
 	{
 		if (isset($select)) $this->select = $select;
 		if (isset($in))     $this->in     = $in;

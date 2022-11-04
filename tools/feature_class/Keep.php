@@ -17,6 +17,6 @@ class Keep extends Feature_Class
 	 * @store false
 	 * @var boolean
 	 */
-	public $keep;
+	public bool $keep = false;
 
 }

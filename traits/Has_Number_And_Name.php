@@ -8,7 +8,7 @@ namespace ITRocks\Framework\Traits;
  */
 trait Has_Number_And_Name
 {
-	use Has_Name { Has_Name::__toString as private hasNameToString; }
+	use Has_Name   { Has_Name::__toString   as private hasNameToString;   }
 	use Has_Number { Has_Number::__toString as private hasNumberToString; }
 
 	//------------------------------------------------------------------------------------ __toString

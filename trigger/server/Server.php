@@ -29,7 +29,7 @@ class Server
 	/**
 	 * @var Asynchronous
 	 */
-	public $asynchronous;
+	public Asynchronous $asynchronous;
 
 	//----------------------------------------------------------------------------------------- $stop
 	/**
@@ -37,7 +37,7 @@ class Server
 	 *
 	 * @var boolean
 	 */
-	public $stop = false;
+	public bool $stop = false;
 
 	//----------------------------------------------------------------------------------- afterAction
 	/**
@@ -86,7 +86,7 @@ class Server
 	 * @param $action       Action
 	 * @param $process_done boolean if true, the process is done and an empty stop date-time is error
 	 */
-	protected function launchedActionStatus(Action $action, $process_done = false)
+	protected function launchedActionStatus(Action $action, bool $process_done = false)
 	{
 		$data = Dao::searchOne(['request_identifier' => $action->request_identifier], Data::class);
 		if ($data) {
@@ -103,7 +103,7 @@ class Server
 	 *
 	 * @return integer count executed actions
 	 */
-	public function loop()
+	public function loop() : int
 	{
 		// next scheduled actions
 		/** @var $actions Action[] */

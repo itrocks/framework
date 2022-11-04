@@ -9,7 +9,6 @@ use ITRocks\Framework\Dao;
  * Conception to extends Document, for testing use
  *
  * @extends Document
- * @see Document
  */
 trait Has_Counter
 {
@@ -18,7 +17,7 @@ trait Has_Counter
 	/**
 	 * @param $counter integer
 	 */
-	abstract public function setCounter($counter);
+	abstract public function setCounter(int $counter);
 
 	//------------------------------------------------------------------------------------- setNumber
 	/**
@@ -26,14 +25,15 @@ trait Has_Counter
 	 */
 	public function setNumber()
 	{
-		if (isA($this, Has_Counter::class)) {
-			$counter = Dao::searchOne(['class_name' => get_class($this)], Counter::class);
-			if (!isset($counter)) {
-				/** @noinspection PhpUnhandledExceptionInspection constant */
-				$counter = Builder::create(Counter::class, [get_class($this)]);
-			}
-			$this->setCounter($counter->increment());
+		if (!isA($this, Has_Counter::class)) {
+			return;
 		}
+		$counter = Dao::searchOne(['class_name' => get_class($this)], Counter::class);
+		if (!isset($counter)) {
+			/** @noinspection PhpUnhandledExceptionInspection constant */
+			$counter = Builder::create(Counter::class, [get_class($this)]);
+		}
+		$this->setCounter($counter->increment());
 	}
 
 }

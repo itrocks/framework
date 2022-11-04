@@ -11,6 +11,6 @@ trait Has_Deleted
 	/**
 	 * @var boolean
 	 */
-	public $deleted;
+	public bool $deleted = false;
 
 }

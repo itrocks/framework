@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Reflection\Type;
 
 define('IMAGETYPE_EPS', 102);
 define('IMAGETYPE_SVG', 101);
@@ -16,13 +17,13 @@ class Image
 	/**
 	 * @var integer
 	 */
-	public $height;
+	public int $height = 0;
 
 	//------------------------------------------------------------------------------------- $resource
 	/**
 	 * @var resource
 	 */
-	public $resource;
+	public mixed $resource;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -30,13 +31,13 @@ class Image
 	 *
 	 * @var integer
 	 */
-	public $type;
+	public int $type;
 
 	//---------------------------------------------------------------------------------------- $width
 	/**
 	 * @var integer
 	 */
-	public $width;
+	public int $width = 0;
 
 	//--------------------------------------------------------------------------------------- __clone
 	/**
@@ -53,19 +54,18 @@ class Image
 	/**
 	 * Constructs an image
 	 *
-	 * @param $width    integer the image width (mandatory)
-	 * @param $height   integer the image height (mandatory)
-	 * @param $resource resource the image resource. If not set, an empty image will be created
-	 * @param $type     integer one of the IMAGETYPE_XXX constants, for automatic save
+	 * @param $width    integer|null the image width (mandatory)
+	 * @param $height   integer|null the image height (mandatory)
+	 * @param $resource resource|null the image resource. If not set, an empty image will be created
+	 * @param $type     integer|null one of the IMAGETYPE_XXX constants, for automatic save
 	 */
-	public function __construct($width = null, $height = null, $resource = null, $type = null)
-	{
+	public function __construct(
+		int $width = null, int $height = null, mixed $resource = null, int $type = null
+	) {
 		if (isset($height)) $this->height = $height;
 		if (isset($type))   $this->type   = $type;
 		if (isset($width))  $this->width  = $width;
-		$this->resource = isset($resource)
-			? $resource
-			: imagecreatetruecolor($this->width, $this->height);
+		$this->resource = $resource ?? imagecreatetruecolor($this->width, $this->height);
 	}
 
 	//---------------------------------------------------------------------------------------- asFile
@@ -73,9 +73,9 @@ class Image
 	 * @param $file_name string
 	 * @return File
 	 */
-	public function asFile($file_name = null)
+	public function asFile(string $file_name = '') : File
 	{
-		if (!isset($file_name)) {
+		if (!$file_name) {
 			$file_name = uniqid() . DOT . $this->fileExtension();
 		}
 		$this->save('/tmp/' . $file_name);
@@ -88,7 +88,7 @@ class Image
 	 *
 	 * @return integer
 	 */
-	public function createBackgroundColor()
+	public function createBackgroundColor() : int
 	{
 		return $this->hasTransparency()
 			? imagecolorallocatealpha($this->resource, 0, 0, 0, 127)
@@ -100,7 +100,7 @@ class Image
 	 * @param $file File|string
 	 * @return static
 	 */
-	public static function createFromFile($file)
+	public static function createFromFile(File|string $file) : static
 	{
 		return static::createFromString(file_get_contents(
 			($file instanceof File) ? $file->temporary_file_name : $file
@@ -112,7 +112,7 @@ class Image
 	 * @param $image string
 	 * @return static
 	 */
-	public static function createFromString($image)
+	public static function createFromString(string $image) : static
 	{
 		if (!str_contains($image, '<svg')) {
 			$size = getimagesizefromstring($image);
@@ -126,11 +126,11 @@ class Image
 		}
 		elseif (
 			isset($attributes->viewBox)
-			&& ($viewbox = explode(SP, preg_replace('/[\s+]/', SP, $attributes->viewBox)))
-			&& (count($viewbox) >= 4)
+			&& ($view_box = explode(SP, preg_replace('/[\s+]/', SP, $attributes->viewBox)))
+			&& (count($view_box) >= 4)
 		) {
-			$height = $viewbox[3];
-			$width  = $viewbox[2];
+			$height = $view_box[3];
+			$width  = $view_box[2];
 		}
 		else {
 			$height = 150;
@@ -145,14 +145,14 @@ class Image
 	 */
 	public function display()
 	{
-		$this->save(null);
+		$this->save();
 	}
 
 	//--------------------------------------------------------------------------------- fileExtension
 	/**
 	 * @return string
 	 */
-	public function fileExtension()
+	public function fileExtension() : string
 	{
 		switch ($this->type) {
 			case IMAGETYPE_BMP:  return 'bmp';
@@ -170,9 +170,9 @@ class Image
 	/**
 	 * Fills the image with a given color
 	 *
-	 * @param $color integer If not set, a transparent / white color is created to fill the image
+	 * @param $color integer|null If not set, a transparent / white color is created to fill the image
 	 */
-	public function fillImage($color = null)
+	public function fillImage(int $color = null)
 	{
 		if (!isset($color)) {
 			$color = $this->createBackgroundColor();
@@ -188,18 +188,18 @@ class Image
 	 *
 	 * @return boolean
 	 */
-	public function hasTransparency()
+	public function hasTransparency() : bool
 	{
 		return in_array($this->type, [IMAGETYPE_GIF, IMAGETYPE_ICO, IMAGETYPE_PNG, IMAGETYPE_PSD]);
 	}
 
 	//---------------------------------------------------------------------------- newImageKeepsAlpha
 	/**
-	 * @param $width  integer
-	 * @param $height integer
+	 * @param $width  integer|null
+	 * @param $height integer|null
 	 * @return static
 	 */
-	public function newImageKeepsAlpha($width = null, $height = null)
+	public function newImageKeepsAlpha(int $width = null, int $height = null) : static
 	{
 		if (!$height) $height = $this->height;
 		if (!$width)  $width  = $this->width;
@@ -231,8 +231,8 @@ class Image
 	 * @param $source_height integer
 	 */
 	public function paste(
-		Image $source_image, $left = 0, $top = 0, $source_left = 0, $source_top = 0,
-		$source_width = 0, $source_height = 0
+		Image $source_image, int $left = 0, int $top = 0, int $source_left = 0, int $source_top = 0,
+		int $source_width = 0, int $source_height = 0
 	) {
 		if (!$source_width) {
 			$source_width = $source_image->width - $source_left;
@@ -264,12 +264,12 @@ class Image
 	/**
 	 * Gets a resized version of the image
 	 *
-	 * @param $width      integer the width of the new image. null for automatic
-	 * @param $height     integer the height of the new image. null for automatic
+	 * @param $width      integer|null the width of the new image. null for automatic
+	 * @param $height     integer|null the height of the new image. null for automatic
 	 * @param $keep_ratio boolean keep image ratio (margins are added if image ratio changes)
 	 * @return static
 	 */
-	public function resize($width = null, $height = null, $keep_ratio = true)
+	public function resize(int $width = null, int $height = null, bool $keep_ratio = true) : static
 	{
 		[$dx, $dy, $dw, $dh] = $this->resizeData($width, $height, $keep_ratio);
 		$destination = $this->newImageKeepsAlpha($width, $height);
@@ -284,12 +284,12 @@ class Image
 	/**
 	 * Calculate data for resize (without resizing)
 	 *
-	 * @param $width      integer the width of the new image. null for automatic
-	 * @param $height     integer the height of the new image. null for automatic
+	 * @param $width      integer|null the width of the new image. null for automatic
+	 * @param $height     integer|null the height of the new image. null for automatic
 	 * @param $keep_ratio boolean keep image ratio (margins are added if image ratio changes)
 	 * @return integer[] [$left, $top, $width, $height]
 	 */
-	public function resizeData($width = null, $height = null, $keep_ratio = true)
+	public function resizeData(int $width = null, int $height = null, bool $keep_ratio = true) : array
 	{
 		$source_ratio = $this->width / $this->height;
 		if (is_null($width) && is_numeric($height)) {
@@ -327,18 +327,17 @@ class Image
 	 * @param $angle float Rotation angle in degrees
 	 * @return static
 	 */
-	public function rotate(float $angle)
+	public function rotate(float $angle) : static
 	{
-		while ($angle > 359.99) $angle -= 360;
-		while ($angle < 0)      $angle += 360;
+		$angle = $angle % 360.0;
 		if (!$angle) {
 			$destination = clone $this;
 		}
-		elseif ($angle === 180.0) {
+		elseif (Type::floatEqual($angle, 180.0)) {
 			$destination           = $this->newImageKeepsAlpha();
 			$destination->resource = imagerotate($this->resource, $angle, 0);
 		}
-		elseif (in_array($angle, [90, 270])) {
+		elseif (Type::floatIn($angle, [90.0, 270.0])) {
 			$destination           = $this->newImageKeepsAlpha($this->height, $this->width);
 			$destination->resource = imagerotate($this->resource, $angle, 0);
 		}
@@ -353,14 +352,15 @@ class Image
 
 	//------------------------------------------------------------------------------------------ save
 	/**
-	 * @param $filename string if null, the image is displayed instead of being saved
-	 * @param $type     integer Image type is one of the IMAGETYPE_XXX image types, or current if null
-	 * @param $quality  integer Image quality (percent)
-	 * @return static
+	 * @param $filename string|null  If null, the image is displayed instead of being saved
+	 * @param $type     integer|null Image type is one of the IMAGETYPE_XXX image types,
+	 *                               or current if null
+	 * @param $quality  integer|null Image quality (percent)
+	 * @return $this
 	 */
-	public function save($filename, $type = null, $quality = null)
+	public function save(string $filename = null, int $type = null, int $quality = null) : static
 	{
-		if (!isset($type))    $type = $this->type;
+		if (!isset($type))    $type    = $this->type;
 		if (!isset($quality)) $quality = 80;
 
 		switch ($type) {
@@ -386,15 +386,16 @@ class Image
 	 *
 	 * @param $image          string binary data of the original image
 	 * @param $thumbnail_file string the thumbnail image file name
-	 * @param $width          integer the thumbnail image file width. null for automatic
-	 * @param $height         integer the thumbnail image file height. null for automatic
-	 * @param $type           integer IMAGETYPE_XXX image type constant
-	 * @param $quality        integer
+	 * @param $width          integer|null the thumbnail image file width. null for automatic
+	 * @param $height         integer|null the thumbnail image file height. null for automatic
+	 * @param $type           integer|null IMAGETYPE_XXX image type constant
+	 * @param $quality        integer|null
 	 * @return static
 	 */
 	public static function stringToThumbnailFile(
-		$image, $thumbnail_file, $width = null, $height = null, $type = null, $quality = null
-	) {
+		string $image, string $thumbnail_file, int $width = null, int $height = null, int $type = null,
+		int $quality = null
+	) : static {
 		return static::createFromString($image)->resize(
 			$width, $height)->save($thumbnail_file, $type, $quality
 		);

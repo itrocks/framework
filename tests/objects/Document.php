@@ -19,7 +19,7 @@ abstract class Document
 	 * @mandatory
 	 * @var Date_Time
 	 */
-	private $date;
+	private Date_Time|string $date;
 
 	//--------------------------------------------------------------------------------- $has_workflow
 	/**
@@ -28,7 +28,7 @@ abstract class Document
 	 * @mandatory
 	 * @var boolean
 	 */
-	public $has_workflow;
+	public bool $has_workflow;
 
 	//--------------------------------------------------------------------------------------- $number
 	/**
@@ -38,14 +38,14 @@ abstract class Document
 	 * @search_range
 	 * @var string
 	 */
-	private $number;
+	private string $number;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $date   string|Date_Time
-	 * @param $number string
+	 * @param $date   Date_Time|string|null
+	 * @param $number string|null
 	 */
-	public function __construct($date = null, $number = null)
+	public function __construct(Date_Time|string $date = null, string $number = null)
 	{
 		if (isset($date))   $this->date   = $date;
 		if (isset($number)) $this->number = $number;
@@ -55,7 +55,7 @@ abstract class Document
 	/**
 	 * @param $counter integer
 	 */
-	public function setCounter($counter)
+	public function setCounter(int $counter)
 	{
 		$this->number = $counter;
 	}

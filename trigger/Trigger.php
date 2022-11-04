@@ -21,7 +21,7 @@ abstract class Trigger
 	 * @var Action[]
 	 * @widget Map_As_Collection
 	 */
-	public $actions;
+	public array $actions;
 
 	//-------------------------------------------------------------------------------- executeActions
 	/**
@@ -30,7 +30,7 @@ abstract class Trigger
 	 * @param $object object|string can receive a context object or class name
 	 * @return Action[]
 	 */
-	public function executeActions($object)
+	public function executeActions(object|string $object) : array
 	{
 		$actions = [];
 		foreach ($this->actions as $action) {

@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Tests;
 
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Locale\Loc;
 
 /**
  * All unit test classes must extend this, to access its begin(), end() and assume() methods
@@ -64,7 +63,7 @@ abstract class Test extends Testable
 	 * @param $already object[] objects hash table to avoid recursion
 	 * @return mixed
 	 */
-	private function toArray($array, array $already = []) : mixed
+	private function toArray(mixed $array, array $already = []) : mixed
 	{
 		if (is_object($array)) {
 			if (isset($already[md5(spl_object_hash($array))])) {
@@ -80,11 +79,8 @@ abstract class Test extends Testable
 			foreach ($array as $key => $value) {
 				$array[$key] = $this->toArray($value, $already);
 			}
-			return $array;
 		}
-		else {
-			return $array;
-		}
+		return $array;
 	}
 
 }

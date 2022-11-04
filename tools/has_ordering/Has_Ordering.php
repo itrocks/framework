@@ -27,7 +27,7 @@ trait Has_Ordering
 	 * @param $objects_having_ordering object[]|self[]
 	 * @return object[]|self[]
 	 */
-	public static function reorder(array $objects_having_ordering)
+	public static function reorder(array $objects_having_ordering) : array
 	{
 		$ordering = 0;
 		foreach ($objects_having_ordering as $object) {
@@ -43,7 +43,7 @@ trait Has_Ordering
 	 * @param $objects_having_ordering static[]
 	 * @return static[]
 	 */
-	public static function sort(array $objects_having_ordering)
+	public static function sort(array $objects_having_ordering) : array
 	{
 		uasort($objects_having_ordering, function ($object1, $object2) {
 			return cmp($object1->ordering, $object2->ordering);

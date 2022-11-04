@@ -5,6 +5,7 @@ use Iterator;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ReturnTypeWillChange;
 
 /**
  * The default Set class for set of objects
@@ -188,9 +189,9 @@ class Set implements Iterator
 	/**
 	 * Return the key of the current element designed by the pointer of the set
 	 *
-	 * @return int|null|string
+	 * @return int|string|null
 	 */
-	public function key() : int|null|string
+	public function key() : int|string|null
 	{
 		return key($this->elements);
 	}
@@ -221,7 +222,8 @@ class Set implements Iterator
 	/**
 	 * Set the pointer of the set into the next element and return this element
 	 */
-	public function next() : void
+	#[ReturnTypeWillChange]
+	public function next()
 	{
 		next($this->elements);
 	}

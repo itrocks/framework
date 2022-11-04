@@ -35,7 +35,7 @@ abstract class Files
 	 * @param $ignore      string[] List of files/directories to ignore
 	 * @return boolean true if copy succeeds, else false
 	 */
-	public static function copy($source, $destination, array $ignore = [])
+	public static function copy(string $source, string $destination, array $ignore = []) : bool
 	{
 		if (is_dir($source)) {
 			$result = true;
@@ -66,7 +66,7 @@ abstract class Files
 	 * @param $path string path of file or directory to delete
 	 * @return boolean true if the directory is correctly deleted, else false
 	 */
-	public static function delete($path)
+	public static function delete(string $path) : bool
 	{
 		if (is_dir($path)) {
 			$path       = self::appendSlash($path);
@@ -97,9 +97,9 @@ abstract class Files
 	 *
 	 * @param $name string the file name
 	 * @param $type string the mime type of the file (ie 'application/xml')
-	 * @param $size integer the file size, if known
+	 * @param $size integer|null the file size, if known
 	 */
-	public static function downloadOutput($name, $type, $size = null)
+	public static function downloadOutput(string $name, string $type, int $size = null)
 	{
 		header('Content-Disposition: attachment; filename=' . DQ . $name . DQ);
 		if (!str_contains($type, SL)) {
@@ -120,7 +120,7 @@ abstract class Files
 	 * @param $path      string
 	 * @return boolean
 	 */
-	public static function isInPath($file_name, $path)
+	public static function isInPath(string $file_name, string $path) : bool
 	{
 		return ($file_name === $path) || (substr($file_name, 0, strlen($path) + 1) === ($path . SL));
 	}
@@ -135,7 +135,7 @@ abstract class Files
 	 * @param $mode      integer chmod the created directory : default is the largest possible
 	 * @return boolean true if a folder was created or existed, false if any error occurred
 	 */
-	public static function mkdir($directory, $mode = 0777)
+	public static function mkdir(string $directory, int $mode = 0777) : bool
 	{
 		if (is_dir($directory)) {
 			$result = true;
@@ -156,7 +156,7 @@ abstract class Files
 	 * @param $directory string path of the directory to be deleted
 	 * @return boolean true if a folder was removed or was not existing, false if any error occurred
 	 */
-	public static function rmdir($directory)
+	public static function rmdir(string $directory) : bool
 	{
 		if (!empty($directory) && is_dir($directory)) {
 			foreach (array_diff(scandir($directory), [DOT, DD]) as $entry) {
@@ -179,7 +179,7 @@ abstract class Files
 	 * @param $directory string
 	 * @return string[] each string is the path of the file, relative to the directory
 	 */
-	public static function scanDirForFiles($directory)
+	public static function scanDirForFiles(string $directory) : array
 	{
 		$files = [];
 		foreach (array_diff(scandir($directory), [DOT, DD]) as $entry) {

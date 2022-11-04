@@ -12,15 +12,15 @@ class String_Class
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
-	 * @var string
+	 * @var Date_Time|string
 	 */
-	public $value;
+	public Date_Time|string $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value Date_Time|string
 	 */
-	public function __construct($value = '')
+	public function __construct(Date_Time|string $value = '')
 	{
 		$this->value = $value;
 	}
@@ -31,7 +31,7 @@ class String_Class
 	 */
 	public function __toString() : string
 	{
-		return strval($this->value);
+		return $this->value;
 	}
 
 	//------------------------------------------------------------------------------------------- abs
@@ -50,12 +50,12 @@ class String_Class
 	 * @example
 	 * cleanWord('Albert, ') => return 'Albert'
 	 * cleanWord(' list : ') => return 'list'
-	 * @return String_Class the clean word.
+	 * @return static the clean word.
 	 * @todo see if there is any conceptual difference with strSimplify. If not, replace it !
 	 */
-	function cleanWord()
+	function cleanWord() : static
 	{
-		return new String_Class(
+		return new static(
 			preg_replace('#[^a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ_\-\'\\\/]#', '', $this->value)
 		);
 	}
@@ -64,34 +64,34 @@ class String_Class
 	/**
 	 * @return string
 	 */
-	public function display()
+	public function display() : string
 	{
 		return str_replace('_', SP, $this->value);
 	}
 
 	//---------------------------------------------------------------------------------------- escape
 	/**
-	 * @return String_Class
+	 * @return static
 	 */
-	public function escape()
+	public function escape() : static
 	{
-		return new String_Class(str_replace(BS, BS . BS, $this->value));
+		return new static(str_replace(BS, BS . BS, $this->value));
 	}
 
 	//----------------------------------------------------------------------------------------- first
 	/**
 	 * First element of a separated string
 	 *
-	 * @return String_Class
+	 * @return static
 	 */
-	public function first()
+	public function first() : static
 	{
 		foreach ([':', DOT, '-', ','] as $char) {
 			if (str_contains($this->value, $char)) {
-				return new String_Class(substr($this->value, 0, strpos($this->value, $char)));
+				return new static(substr($this->value, 0, strpos($this->value, $char)));
 			}
 		}
-		return new String_Class($this->value);
+		return new static($this->value);
 	}
 
 	//----------------------------------------------------------------------------------------- geshi
@@ -99,25 +99,25 @@ class String_Class
 	 * Parse with geshi
 	 *
 	 * @param $programming_language string
-	 * @return String_Class
+	 * @return static
 	 */
-	public function geshi($programming_language = 'php')
+	public function geshi(string $programming_language = 'php') : static
 	{
 		$wiki = new Wiki();
 		if ($programming_language === 'php' && !str_contains($this->value, '<?php')) {
 			$programming_language = 'html';
 		}
 		$text = $wiki->geshi('@' . $programming_language . LF . $this->value . LF . '@');
-		return new String_Class($text);
+		return new static($text);
 	}
 
 	//---------------------------------------------------------------------------------- htmlEntities
 	/**
-	 * @return String_Class
+	 * @return static
 	 */
-	public function htmlEntities()
+	public function htmlEntities() : static
 	{
-		return new String_Class(htmlentities($this->value, ENT_QUOTES|ENT_HTML5));
+		return new static(htmlentities($this->value, ENT_QUOTES|ENT_HTML5));
 	}
 
 	//------------------------------------------------------------------------------ htmlSpecialChars
@@ -126,7 +126,7 @@ class String_Class
 	 */
 	public function htmlSpecialChars() : static
 	{
-		return new String_Class(htmlspecialchars($this->value));
+		return new static(htmlspecialchars($this->value));
 	}
 
 	//----------------------------------------------------------------------------------------- idTag
@@ -135,7 +135,7 @@ class String_Class
 	 *
 	 * @return string
 	 */
-	public function idTag()
+	public function idTag() : string
 	{
 		return str_replace([DOT, SL], '-', $this->uri());
 	}
@@ -144,9 +144,9 @@ class String_Class
 	/**
 	 * Test is the string like a word
 	 *
-	 * @return integer 0 if it's not a word.
+	 * @return bool false if it's not a word.
 	 */
-	public function isWord()
+	public function isWord() : bool
 	{
 		return preg_match('#[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]#', $this->value);
 	}
@@ -156,16 +156,16 @@ class String_Class
 	 * Last element of a separated string
 	 *
 	 * @param $count integer
-	 * @return String_Class
+	 * @return static
 	 */
-	public function last($count = 1)
+	public function last(int $count = 1) : static
 	{
 		foreach ([':', DOT, '-', ','] as $char) {
 			if (strrpos($this->value, $char) !== false) {
-				return new String_Class(rLastParse($this->value, $char, $count, true));
+				return new static(rLastParse($this->value, $char, $count, true));
 			}
 		}
-		return new String_Class($this->value);
+		return new static($this->value);
 	}
 
 	//------------------------------------------------------------------------------------------ left
@@ -173,36 +173,39 @@ class String_Class
 	 * @param $length integer
 	 * @return string
 	 */
-	public function left(int $length)
+	public function left(int $length) : string
 	{
-		return new String_Class(substr($this->value, 0, $length));
+		return new static(substr($this->value, 0, $length));
 	}
 
 	//---------------------------------------------------------------------------------------- length
 	/**
 	 * @return integer
 	 */
-	public function length()
+	public function length() : int
 	{
 		return strlen($this->value);
 	}
 
 	//----------------------------------------------------------------------------------------- lower
 	/**
-	 * @return String_Class
+	 * @return static
 	 */
-	public function lower()
+	public function lower() : static
 	{
-		return new String_Class(strtolower($this->value));
+		return new static(strtolower($this->value));
 	}
 
 	//------------------------------------------------------------------------------------------ nbsp
 	/**
-	 * @return String_Class
+	 * If string is empty, return an unbreakable HTML space. Useful to avoid empty cells.
+	 *
+	 * @noinspection PhpUnused list_/body.html
+	 * @return static
 	 */
-	public function nbsp()
+	public function emptyNbsp() : static
 	{
-		return empty($this->value) ? new String_Class('&nbsp;') : $this;
+		return empty($this->value) ? new static('&nbsp;') : $this;
 	}
 
 	//-------------------------------------------------------------------------------------------- of
@@ -210,32 +213,32 @@ class String_Class
 	 * Constructs a new String
 	 *
 	 * @param $string string
-	 * @return self
+	 * @return static
 	 */
-	public static function of($string)
+	public static function of(string $string) : static
 	{
-		return new String_Class($string);
+		return new static($string);
 	}
 
 	//------------------------------------------------------------------------------------------ path
 	/**
 	 * Changes a 'A\Class\Name' into 'A/Class/Name'
 	 *
-	 * @return String_Class
+	 * @return static
 	 */
-	public function path()
+	public function path() : static
 	{
-		return new String_Class(str_replace(BS, SL, Builder::current()->sourceClassName($this->value)));
+		return new static(str_replace(BS, SL, Builder::current()->sourceClassName($this->value)));
 	}
 
 	//----------------------------------------------------------------------------------------- right
 	/**
 	 * @param $length integer
-	 * @return string
+	 * @return static
 	 */
-	public function right(int $length)
+	public function right(int $length) : static
 	{
-		return new String_Class(substr($this->value, -$length));
+		return new static(substr($this->value, -$length));
 	}
 
 	//----------------------------------------------------------------------------------------- round
@@ -250,20 +253,20 @@ class String_Class
 
 	//----------------------------------------------------------------------------------------- short
 	/**
-	 * @return String_Class
+	 * @return static
 	 */
-	public function short()
+	public function short() : static
 	{
-		return new String_Class(Namespaces::shortClassName($this->value));
+		return new static(Namespaces::shortClassName($this->value));
 	}
 
 	//------------------------------------------------------------------------------------------ sign
 	/**
 	 * @return string
 	 */
-	public function sign()
+	public function sign() : string
 	{
-		return (substr($this->value, 0, 1) === '-') ? '-' : '+';
+		return str_starts_with($this->value, '-') ? '-' : '+';
 	}
 
 	//---------------------------------------------------------------------------------------- source
@@ -272,55 +275,51 @@ class String_Class
 	 */
 	public function source()
 	{
-		return new String_Class(Builder::current()->sourceClassName($this->value));
+		return new static(Builder::current()->sourceClassName($this->value));
 	}
 
 	//---------------------------------------------------------------------------------------- substr
 	/**
 	 * @param $index  integer
-	 * @param $length integer
-	 * @return String_Class
+	 * @param $length integer|null
+	 * @return static
 	 */
-	public function substr($index, $length = null)
+	public function substr(int $index, int $length = null) : static
 	{
-		return new String_Class(
-			isset($length) ? substr($this->value, $index, $length) : substr($this->value, $index)
-		);
+		return new static(substr($this->value, $index, $length));
 	}
 
 	//------------------------------------------------------------------------------------- substring
 	/**
 	 * @param $start integer
-	 * @param $stop  integer
-	 * @return String_Class
+	 * @param $stop  integer|null
+	 * @return static
 	 */
-	public function substring($start, $stop = null)
+	public function substring(int $start, int $stop = null) : static
 	{
-		return new String_Class(
-			isset($stop) ? substr($this->value, $start, $stop - $start) : substr($this->value, $start)
-		);
+		return new static(substr($this->value, $start, isset($stop) ? ($stop - $start) : null));
 	}
 
 	//--------------------------------------------------------------------------------------- textile
 	/**
 	 * Parse to textile
 	 *
-	 * @return String_Class
+	 * @return static
 	 */
-	public function textile()
+	public function textile() : static
 	{
 		$wiki = new Wiki();
 		$text = $wiki->geshi($this->value, false);
 		$text = $wiki->textile($text);
 		$text = $wiki->geshiSolve($text);
-		return new String_Class($text);
+		return new static($text);
 	}
 
 	//------------------------------------------------------------------------------------- toInteger
 	/**
 	 * @return integer
 	 */
-	public function toInteger()
+	public function toInteger() : int
 	{
 		return intval($this->value);
 	}
@@ -329,7 +328,7 @@ class String_Class
 	/**
 	 * @return integer
 	 */
-	public function toWeeks()
+	public function toWeeks() : int
 	{
 		if ($this->value instanceof DateTime) {
 			return $this->value->format('W');
@@ -341,57 +340,57 @@ class String_Class
 	/**
 	 * The two last elements of a separated string
 	 *
-	 * @return String_Class
+	 * @return static
 	 * @todo remove and replace .twoLast by .last(2) (needs debugging of Html_Template)
 	 */
-	public function twoLast() : String_Class
+	public function twoLast() : static
 	{
 		return $this->last(2);
 	}
 
 	//--------------------------------------------------------------------------------------- ucfirst
 	/**
-	 * @return String_Class
+	 * @return static
 	 */
-	public function ucfirst()
+	public function ucfirst() : static
 	{
-		return new String_Class(ucfirst($this->value));
+		return new static(ucfirst($this->value));
 	}
 
 	//--------------------------------------------------------------------------------------- ucwords
 	/**
-	 * @return String_Class
+	 * @return static
 	 */
-	public function ucwords()
+	public function ucwords() : static
 	{
-		return new String_Class(ucwords($this->value));
+		return new static(ucwords($this->value));
 	}
 
 	//----------------------------------------------------------------------------------------- upper
 	/**
-	 * @return String_Class
+	 * @return static
 	 */
-	public function upper()
+	public function upper() : static
 	{
-		return new String_Class(strtoupper($this->value));
+		return new static(strtoupper($this->value));
 	}
 
 	//------------------------------------------------------------------------------------------- uri
 	/**
-	 * @return String_Class
+	 * @return static
 	 */
-	public function uri()
+	public function uri() : static
 	{
-		return new String_Class(strUri($this->value));
+		return new static(strUri($this->value));
 	}
 
 	//------------------------------------------------------------------------------------ uriElement
 	/**
-	 * @return String_Class
+	 * @return static
 	 */
-	public function uriElement()
+	public function uriElement() : static
 	{
-		return new String_Class(strUriElement($this->value));
+		return new static(strUriElement($this->value));
 	}
 
 }

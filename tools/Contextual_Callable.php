@@ -16,20 +16,20 @@ class Contextual_Callable
 	/**
 	 * @var string
 	 */
-	private $callable_string;
+	private string $callable_string;
 
 	//-------------------------------------------------------------------------------------- $context
 	/**
 	 * @var object
 	 */
-	private $context;
+	private object $context;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @var $callable_string string
-	 * @var $context         object
+	 * @var $callable_string string|null
+	 * @var $context         object|null
 	 */
-	public function __construct($callable_string = null, $context = null)
+	public function __construct(string $callable_string = null, object $context = null)
 	{
 		if (isset($callable_string)) $this->callable_string = $callable_string;
 		if (isset($context))         $this->context         = $context;

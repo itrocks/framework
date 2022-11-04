@@ -10,11 +10,11 @@ interface List_Row
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name string
-	 * @param $object     object
+	 * @param $object     mixed Object or object identifier
 	 * @param $values     string[]
 	 * @param $list       List_Data
 	 */
-	public function __construct(string $class_name, $object, array $values, List_Data $list);
+	public function __construct(string $class_name, mixed $object, array $values, List_Data $list);
 
 	//----------------------------------------------------------------------------------------- count
 	/**
@@ -36,7 +36,7 @@ interface List_Row
 	 *
 	 * @return object
 	 */
-	public function getObject();
+	public function getObject() : object;
 
 	//-------------------------------------------------------------------------------------- getValue
 	/**
@@ -45,7 +45,7 @@ interface List_Row
 	 * @param $property string the path of the property
 	 * @return mixed
 	 */
-	public function getValue(string $property);
+	public function getValue(string $property) : mixed;
 
 	//------------------------------------------------------------------------------------- getValues
 	/**
@@ -61,13 +61,13 @@ interface List_Row
 	 *
 	 * @return mixed
 	 */
-	public function id();
+	public function id() : mixed;
 
 	//-------------------------------------------------------------------------------------- setValue
 	/**
 	 * @param $property string the path of the property
 	 * @param $value    mixed the new value
 	 */
-	public function setValue(string $property, $value);
+	public function setValue(string $property, mixed $value);
 
 }

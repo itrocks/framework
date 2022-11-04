@@ -15,9 +15,9 @@ class Date_Interval_Test extends Test
 	//-------------------------------------------------------------------------------- adjustProvider
 	/**
 	 * @return array
-	 * @see Date_Interval_Test::testAdjust()
+	 * @see testAdjust
 	 */
-	public function adjustProvider()
+	public function adjustProvider() : array
 	{
 		return [
 			'25 hours'           => [25,  0, 'P0Y0M1DT1H0M0S', 0],
@@ -29,11 +29,10 @@ class Date_Interval_Test extends Test
 
 	//------------------------------------------------------------------------------ fromDurationData
 	/**
-	 * Provider for Date_Interval_Test::testDays
-	 *
 	 * @return array
+	 * @see testDays
 	 */
-	public function fromDurationData()
+	public function fromDurationData() : array
 	{
 		return [
 			'Zero'                         => [0, 'P0Y0M0DT0H0M0S', 0],
@@ -45,16 +44,15 @@ class Date_Interval_Test extends Test
 
 	//------------------------------------------------------------------------------------ testAdjust
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @dataProvider adjustProvider
-	 * @param $hour            string
+	 * @param $hour            integer
 	 * @param $invert          integer
 	 * @param $expected_format string
 	 * @param $expected_invert integer
-	 * @see Date_Interval::adjust()
 	 */
-	public function testAdjust($hour, $invert, $expected_format, $expected_invert)
-	{
+	public function testAdjust(
+		int $hour, int $invert, string $expected_format, int $expected_invert
+	) {
 		// Minus one hour interval
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$interval         = new DateInterval(Date_Interval::EMPTY_SPEC);
@@ -72,9 +70,8 @@ class Date_Interval_Test extends Test
 	 * @param $duration        integer
 	 * @param $expected_format string
 	 * @param $expected_invert integer
-	 * @see Date_Interval::fromDuration()
 	 */
-	public function testFromDuration($duration, $expected_format, $expected_invert)
+	public function testFromDuration(int $duration, string $expected_format, int $expected_invert)
 	{
 		$interval = Date_Interval::fromDuration($duration);
 		static::assertEquals($expected_format, $interval->format(Date_Interval::FULL_FORMAT));
@@ -86,11 +83,10 @@ class Date_Interval_Test extends Test
 	 * @dataProvider toDaysProvider
 	 * @param $duration integer
 	 * @param $expected integer
-	 * @param $round    string
-	 * @see Date_Interval::toDays()
+	 * @param $round    ?string
 	 * @throws Date_Interval_Exception
 	 */
-	public function testToDays($duration, $expected, $round)
+	public function testToDays(int $duration, int $expected, ?string $round)
 	{
 		static::assertEquals(
 			$expected, Date_Interval::toDays(Date_Interval::fromDuration($duration), $round)
@@ -99,7 +95,6 @@ class Date_Interval_Test extends Test
 
 	//----------------------------------------------------------------------------- testToDaysIllegal
 	/**
-	 * @see Date_Interval::toDays()
 	 * @throws Date_Interval_Exception
 	 */
 	public function testToDaysIllegal()
@@ -112,14 +107,11 @@ class Date_Interval_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testToHours
-	/**
-	 * @see Date_Interval::toHours()
-	 */
 	public function testToHours()
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
-			25, Date_Interval::toHours(Date_Interval::fromDuration(86401), PHP_CEIL)
+			25, Date_Interval::toHours(Date_Interval::fromDuration(86401))
 		);
 		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
@@ -128,14 +120,11 @@ class Date_Interval_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testToMinutes
-	/**
-	 * @see Date_Interval::toMinutes()
-	 */
 	public function testToMinutes()
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
-			61, Date_Interval::toMinutes(Date_Interval::fromDuration(3601), PHP_CEIL)
+			61, Date_Interval::toMinutes(Date_Interval::fromDuration(3601))
 		);
 		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
@@ -144,9 +133,6 @@ class Date_Interval_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testToSeconds
-	/**
-	 * @see Date_Interval::toSeconds()
-	 */
 	public function testToSeconds()
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
@@ -156,14 +142,11 @@ class Date_Interval_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testToWeeks
-	/**
-	 * @see Date_Interval::toWeeks()
-	 */
 	public function testToWeeks()
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
-			2, Date_Interval::toWeeks(Date_Interval::fromDuration(86400 * 7 + 1), PHP_CEIL)
+			2, Date_Interval::toWeeks(Date_Interval::fromDuration(86400 * 7 + 1))
 		);
 		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
@@ -174,9 +157,9 @@ class Date_Interval_Test extends Test
 	//-------------------------------------------------------------------------------- toDaysProvider
 	/**
 	 * @return array
-	 * @see Date_Interval_Test::testToDays()
+	 * @see testToDays
 	 */
-	public function toDaysProvider()
+	public function toDaysProvider() : array
 	{
 		return [
 			[  86400,  1, PHP_CEIL ],

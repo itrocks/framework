@@ -14,9 +14,9 @@ trait With_Constructor
 	/**
 	 * A constructor for your Has_Object class
 	 *
-	 * @param $object object
+	 * @param $object object|null
 	 */
-	public function __construct($object = null)
+	public function __construct(object $object = null)
 	{
 		if (isset($object)) {
 			$this->object = $object;

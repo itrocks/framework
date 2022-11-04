@@ -13,7 +13,7 @@ abstract class State
 	/**
 	 * @var integer[] ['/my/file/path' => filemtime]
 	 */
-	public static $files = [];
+	public static array $files = [];
 
 	//------------------------------------------------------------------------------------------- get
 	/**
@@ -23,7 +23,7 @@ abstract class State
 	 * @param $file File
 	 * @return boolean
 	 */
-	public static function get(File $file)
+	public static function get(File $file) : bool
 	{
 		if (!isset(static::$files[$file->file_path])) {
 			return true;

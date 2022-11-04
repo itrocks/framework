@@ -25,10 +25,11 @@ trait Has_Default
 	/**
 	 * @var boolean
 	 */
-	public $default = false;
+	public bool $default = false;
 
 	//---------------------------------------------------------------------------- doNotRemoveDefault
 	/**
+	 * @noinspection PhpUnused @validate
 	 * @return boolean|string
 	 */
 	public function doNotRemoveDefault() : bool|string
@@ -52,10 +53,10 @@ trait Has_Default
 	
 	//------------------------------------------------------------------------------------ getDefault
 	/**
-	 * @return static|null
+	 * @return ?static
 	 * @return_constant
 	 */
-	public static function getDefault() : static|null
+	public static function getDefault() : ?static
 	{
 		return Dao::searchOne(['default' => true], static::class);
 	}
@@ -69,16 +70,17 @@ trait Has_Default
 	 */
 	public function onlyOneDefault()
 	{
-		if ($this->default) {
-			Dao::begin();
-			foreach (Dao::search(['default' => true], static::class) as $object) {
-				if (!Dao::is($object, $this)) {
-					$object->default = false;
-					Dao::write($object, Dao::only('default'));
-				}
-			}
-			Dao::commit();
+		if (!$this->default) {
+			return;
 		}
+		Dao::begin();
+		foreach (Dao::search(['default' => true], static::class) as $object) {
+			if (!Dao::is($object, $this)) {
+				$object->default = false;
+				Dao::write($object, Dao::only('default'));
+			}
+		}
+		Dao::commit();
 	}
 
 }

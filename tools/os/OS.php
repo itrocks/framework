@@ -13,8 +13,6 @@ abstract class OS
 	 *
 	 * @var string
 	 */
-	public static $include_separator;
+	public static string $include_separator = (PHP_OS === 'WINNT') ? ';' : ':';
 
 }
-
-OS::$include_separator = (PHP_OS === 'WINNT') ? ';' : ':';

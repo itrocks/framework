@@ -51,13 +51,13 @@ class Color implements Stringable
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $color string
+	 * @param $string string
 	 * @return static
 	 */
-	public static function fromString(string $color) : static
+	public static function fromString(string $string) : static
 	{
-		/** @noinspection PhpUnhandledExceptionInspection static */
-		return Builder::create(static::class, [$color]);
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		return Builder::create(static::class, [$string]);
 	}
 
 	//--------------------------------------------------------------------------------- getBrightness
@@ -80,11 +80,15 @@ class Color implements Stringable
 	/**
 	 * Return "white" if the complementary color is more white than black, "black" else.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return static
 	 */
 	public function whiteOrBlack() : static
 	{
-		return new static(($this->getBrightness() < 130) ? self::WHITE : self::BLACK);
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		return Builder::create(
+			static::class, [($this->getBrightness() < 130) ? self::WHITE : self::BLACK]
+		);
 	}
 
 }

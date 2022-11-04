@@ -12,8 +12,8 @@ trait Has_Model
 	//---------------------------------------------------------------------------------------- $model
 	/**
 	 * @link Object
-	 * @var Model
+	 * @var ?Model
 	 */
-	public $model;
+	public ?Model $model;
 
 }

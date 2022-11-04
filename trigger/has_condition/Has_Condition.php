@@ -19,23 +19,23 @@ trait Has_Condition
 	/**
 	 * @link Object
 	 * @store json
-	 * @var Where
+	 * @var ?Where
 	 */
-	public $after_condition;
+	public ?Where $after_condition;
 
 	//----------------------------------------------------------------------------- $before_condition
 	/**
 	 * @link Object
 	 * @store json
-	 * @var Where
+	 * @var ?Where
 	 */
-	public $before_condition;
+	public ?Where $before_condition;
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//-------------------------------------------------------------------------------------- $running
 	/**
@@ -43,16 +43,16 @@ trait Has_Condition
 	 * @user invisible
 	 * @var Run[]
 	 */
-	public $running;
+	public array $running;
 
 	//---------------------------------------------------------------------------- conditionIsNotNull
 	/**
 	 * Return true if $condition is Func::isNotNull()
 	 *
-	 * @param $condition Where
+	 * @param $condition ?Where
 	 * @return boolean
 	 */
-	public function conditionIsNotNull(Where $condition = null)
+	public function conditionIsNotNull(?Where $condition) : bool
 	{
 		return ($condition instanceof Comparison)
 			&& ($condition->sign !== Comparison::EQUAL)
@@ -63,10 +63,10 @@ trait Has_Condition
 	/**
 	 * Return true if $condition is Func::isNull()
 	 *
-	 * @param $condition Where
+	 * @param $condition ?Where
 	 * @return boolean
 	 */
-	public function conditionIsNull(Where $condition = null)
+	public function conditionIsNull(?Where $condition) : bool
 	{
 		return ($condition instanceof Comparison)
 			&& ($condition->sign === Comparison::EQUAL)
@@ -76,10 +76,10 @@ trait Has_Condition
 	//------------------------------------------------------------------------------ verifyConditions
 	/**
 	 * @param $object    object
-	 * @param $condition Where @values $after_condition, $before_condition
+	 * @param $condition ?Where @values $after_condition, $before_condition
 	 * @return boolean
 	 */
-	public function verifyConditions($object, Where $condition = null)
+	public function verifyConditions(object $object, ?Where $condition) : bool
 	{
 		if (!$condition) {
 			return true;

@@ -53,7 +53,7 @@ class Property implements Field
 	/**
 	 * @return string
 	 */
-	public function getName()
+	public function getName() : string
 	{
 		return $this->name;
 	}
@@ -62,7 +62,7 @@ class Property implements Field
 	/**
 	 * @return Type
 	 */
-	public function getType()
+	public function getType() : Type
 	{
 		return $this->type;
 	}

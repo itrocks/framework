@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
+use ITRocks\Framework\Traits\Has_Code;
+
 /**
  * An item class
  *
@@ -10,47 +12,42 @@ namespace ITRocks\Framework\Tests\Objects;
  */
 class Item
 {
-
-	//----------------------------------------------------------------------------------------- $code
-	/**
-	 * @var string
-	 */
-	public $code;
+	use Has_Code;
 
 	//-------------------------------------------------------------------------------- $cross_selling
 	/**
 	 * @link Map
 	 * @var Item[]
 	 */
-	public $cross_selling;
+	public array $cross_selling;
 
 	//---------------------------------------------------------------------------------------- $lines
 	/**
 	 * @link Map
 	 * @var Order_Line[]
 	 */
-	public $lines;
+	public array $lines;
 
 	//-------------------------------------------------------------------------------- $main_category
 	/**
 	 * @link Object
-	 * @var Category
+	 * @var ?Category
 	 */
-	public $main_category;
+	public ?Category $main_category;
 
 	//---------------------------------------------------------------------------------------- $model
 	/**
 	 * @link Object
-	 * @var Item
+	 * @var ?Item
 	 */
-	public $model;
+	public ?Item $model;
 
 	//------------------------------------------------------------------------- $secondary_categories
 	/**
 	 * @link Map
 	 * @var Category[]
 	 */
-	public $secondary_categories;
+	public array $secondary_categories;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -58,7 +55,7 @@ class Item
 	 */
 	public function __toString() : string
 	{
-		return strval($this->code);
+		return $this->code;
 	}
 
 	//----------------------------------------------------------------------------------- beforeWrite

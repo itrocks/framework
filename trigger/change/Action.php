@@ -21,10 +21,10 @@ class Action extends Trigger\Action
 	 * TODO replace this by an @override of status with STATIC as default value
 	 * Needs that the maintainer detects @business false well (this is not the case today)
 	 *
-	 * @param $action string
+	 * @param $action string|null
 	 * @param $next   Date_Time|null
 	 */
-	public function __construct($action = null, Date_Time $next = null)
+	public function __construct(string $action = null, Date_Time $next = null)
 	{
 		parent::__construct($action, $next);
 		if (($this->status === status::PENDING) || !isset($this->status)) {

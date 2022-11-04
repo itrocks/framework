@@ -13,13 +13,13 @@ class Period
 	/**
 	 * @var Date_Time
 	 */
-	public $begin;
+	public Date_Time $begin;
 
 	//------------------------------------------------------------------------------------------ $end
 	/**
 	 * @var Date_Time
 	 */
-	public $end;
+	public Date_Time $end;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -51,7 +51,7 @@ class Period
 	 * @param $period Period
 	 * @return Period[] Can return 0, 1 or 2 periods
 	 */
-	public function exclude(Period $period)
+	public function exclude(Period $period) : array
 	{
 		if ($this->out($period)) {
 			return [clone $this];
@@ -85,7 +85,7 @@ class Period
 	 * @return string
 	 * @see DateInterval::format()
 	 */
-	public function format($format = null)
+	public function format(string $format = '') : string
 	{
 		$diff = $this->begin->diff($this->end, true);
 		if (!$format) {
@@ -114,7 +114,7 @@ class Period
 	 * @param $period Period
 	 * @return boolean
 	 */
-	public function in(Period $period)
+	public function in(Period $period) : bool
 	{
 		return $this->begin->isAfterOrEqual($period->begin)
 			&& $this->end->isBeforeOrEqual($period->end);
@@ -125,9 +125,9 @@ class Period
 	 * Return a period of current period in main period
 	 *
 	 * @param $main_period Period
-	 * @return Period|null
+	 * @return ?Period
 	 */
-	public function intersect(Period $main_period)
+	public function intersect(Period $main_period) : ?Period
 	{
 		$begin = $this->begin->latest($main_period->begin);
 		$end   = $this->end->earliest($main_period->end);
@@ -141,7 +141,7 @@ class Period
 	 * @param $period Period
 	 * @return boolean
 	 */
-	public function out(Period $period)
+	public function out(Period $period) : bool
 	{
 		return $this->end->isBefore($period->begin) || $this->begin->isAfter($period->end);
 	}
@@ -152,7 +152,7 @@ class Period
 	 *
 	 * @return Date_Time[]
 	 */
-	public function toMonths()
+	public function toMonths() : array
 	{
 		$start  = $this->begin->toBeginOf(Date_Time::MONTH);
 		$stop   = $this->end->toBeginOf(Date_Time::MONTH);
@@ -172,7 +172,7 @@ class Period
 	 * @param $period Period
 	 * @return Period[] Can return 1 or 2 periods.
 	 */
-	public function union(Period $period)
+	public function union(Period $period) : array
 	{
 		if ($this->out($period)) {
 			return [clone $this, clone $period];

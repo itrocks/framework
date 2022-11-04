@@ -18,15 +18,16 @@ trait Category
 	 * @getter getSubCategories
 	 * @var static[]
 	 */
-	public $sub_categories;
+	public array $sub_categories;
 
 	//------------------------------------------------------------------------------- $super_category
 	/**
 	 * @foreign sub_category
 	 * @link Object
-	 * @var static
+	 * @noinspection PhpDocFieldTypeMismatchInspection static
+	 * @var ?static
 	 */
-	public $super_category;
+	public ?object $super_category;
 
 	//--------------------------------------------------------------------------- getAllSubCategories
 	/**
@@ -34,7 +35,7 @@ trait Category
 	 *
 	 * @return static[]
 	 */
-	public function getAllSubCategories()
+	public function getAllSubCategories() : array
 	{
 		return $this->getAllSub('sub_categories', 'super_category');
 	}
@@ -47,7 +48,7 @@ trait Category
 	 *
 	 * @return static[]
 	 */
-	public function getAllSuperCategories()
+	public function getAllSuperCategories() : array
 	{
 		return $this->getAllSuper('super_category');
 	}
@@ -56,7 +57,7 @@ trait Category
 	/**
 	 * @return static[]
 	 */
-	protected function getSubCategories()
+	protected function getSubCategories() : array
 	{
 		return $this->readSub('sub_categories', 'super_category');
 	}
@@ -67,7 +68,7 @@ trait Category
 	 *
 	 * @return static
 	 */
-	public function getTopCategory()
+	public function getTopCategory() : static
 	{
 		return $this->getTop('super_category');
 	}

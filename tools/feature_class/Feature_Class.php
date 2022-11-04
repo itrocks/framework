@@ -22,15 +22,15 @@ class Feature_Class
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name string the name of the source class
-	 * @param $name       string the displayed name (matches @display of the built class)
+	 * @param $class_name string|null the name of the source class
+	 * @param $name       string|null the displayed name (matches @display of the built class)
 	 */
-	public function __construct($class_name = null, $name = null)
+	public function __construct(string $class_name = null, string $name = null)
 	{
 		if (isset($class_name)) {
 			$this->class_name = $class_name;

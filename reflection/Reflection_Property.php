@@ -366,9 +366,9 @@ class Reflection_Property extends ReflectionProperty
 
 	//--------------------------------------------------------------------------------- getEmptyValue
 	/**
-	 * @return array|bool|float|int|null|string
+	 * @return array|bool|float|int|string|null
 	 */
-	public function getEmptyValue() : array|bool|float|int|null|string
+	public function getEmptyValue() : array|bool|float|int|string|null
 	{
 		return match($this->getType()->asString()) {
 			Type::_ARRAY  => [],

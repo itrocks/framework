@@ -15,13 +15,13 @@ class PDF
 	/**
 	 * @var string
 	 */
-	public $file_name;
+	public string $file_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $file_name string
+	 * @param $file_name string|null
 	 */
-	public function __construct($file_name = null)
+	public function __construct(string $file_name = null)
 	{
 		if (isset($file_name)) {
 			$this->file_name = $file_name;
@@ -36,7 +36,7 @@ class PDF
 	 * @requires apt install imagetools
 	 * @return string[] png files names (one per converted page)
 	 */
-	public function toPng($resolution = 300)
+	public function toPng(int $resolution = 300) : array
 	{
 		$file_root    = str_replace(DOT, '-', uniqid('pdf-', true));
 		$output_file  = Application::current()->getTemporaryFilesPath() . SL . $file_root;
@@ -62,7 +62,7 @@ class PDF
 	 * @requires apt install pdf2svg
 	 * @return string[] svg files names (one per converted page)
 	 */
-	public function toSvg()
+	public function toSvg() : array
 	{
 		$file_root = Application::current()->getTemporaryFilesPath() . SL
 			. str_replace(DOT, '-', uniqid('pdf-', true));

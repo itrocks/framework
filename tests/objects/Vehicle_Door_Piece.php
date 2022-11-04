@@ -11,8 +11,8 @@ use ITRocks\Framework\Traits\Has_Name;
  */
 class Vehicle_Door_Piece
 {
-	use Mapper\Component;
 	use Has_Name;
+	use Mapper\Component;
 
 	//----------------------------------------------------------------------------------------- $door
 	/**
@@ -20,6 +20,6 @@ class Vehicle_Door_Piece
 	 * @link Object
 	 * @var Vehicle_Door
 	 */
-	public $door;
+	public Vehicle_Door $door;
 
 }

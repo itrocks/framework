@@ -46,8 +46,10 @@ trait Hierarchical
 	 * @return static[]
 	 */
 	protected function getAllSub(
-		$sub_property, $super_property, $limit_recursion = PHP_INT_MAX, $limit_objects = PHP_INT_MAX
-	) {
+		string $sub_property, string $super_property, int $limit_recursion = PHP_INT_MAX,
+		int $limit_objects = PHP_INT_MAX
+	) : array
+	{
 		if ($limit_recursion <= 0) {
 			return [];
 		}
@@ -82,7 +84,7 @@ trait Hierarchical
 	 * @param $limit          integer limit objects recursion depth to avoid cyclic recursion
 	 * @return static[]
 	 */
-	protected function getAllSuper($super_property, $limit = 100)
+	protected function getAllSuper(string $super_property, int $limit = 100) : array
 	{
 		if (!$limit) {
 			return [];
@@ -102,9 +104,9 @@ trait Hierarchical
 	 * Gets super object
 	 *
 	 * @param $super_property string super object property name
-	 * @return static
+	 * @return ?static
 	 */
-	protected function getSuper($super_property)
+	protected function getSuper(string $super_property) : ?static
 	{
 		return $this->$super_property;
 	}
@@ -116,7 +118,7 @@ trait Hierarchical
 	 * @param $super_property string super object property name
 	 * @return static
 	 */
-	protected function getTop($super_property)
+	protected function getTop(string $super_property) : static
 	{
 		$super = $this->getSuper($super_property);
 		return ($super ? $super->getTop($super_property) : $this);
@@ -135,7 +137,8 @@ trait Hierarchical
 	 * @param $limit          integer
 	 * @return static[]
 	 */
-	protected function readSub($sub_property, $super_property, $limit = PHP_INT_MAX)
+	protected function readSub(string $sub_property, string $super_property, int $limit = PHP_INT_MAX)
+		: array
 	{
 		if (isset($this->$sub_property)) {
 			return $this->$sub_property;
@@ -159,7 +162,7 @@ trait Hierarchical
 	 * @param $sub_property   string sub objects property name
 	 * @param $super_property string super object property name
 	 */
-	protected function writeSub($sub_property, $super_property)
+	protected function writeSub(string $sub_property, string $super_property)
 	{
 		$written = [];
 		// update $super_property into new $sub_properties

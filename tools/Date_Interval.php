@@ -44,7 +44,7 @@ abstract class Date_Interval
 	 * @param $interval DateInterval
 	 * @return DateInterval
 	 */
-	public static function adjust(DateInterval $interval)
+	public static function adjust(DateInterval $interval) : DateInterval
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constant date */
 		$begin_date = new DateTime('2000-01-01', new DateTimeZone('UTC'));
@@ -70,7 +70,7 @@ abstract class Date_Interval
 	 * @param   $duration integer The duration in seconds, may be negative
 	 * @return  DateInterval
 	 */
-	public static function fromDuration($duration)
+	public static function fromDuration(int $duration) : DateInterval
 	{
 		// Initialize a DateInterval in seconds
 		/** @noinspection PhpUnhandledExceptionInspection constant format is valid */
@@ -85,7 +85,7 @@ abstract class Date_Interval
 	 * @return integer
 	 * @throws Date_Interval_Exception
 	 */
-	private static function getDays(DateInterval $interval)
+	private static function getDays(DateInterval $interval) : int
 	{
 		if (!$interval->days && ($interval->m || $interval->y)) {
 			throw new Date_Interval_Exception();
@@ -99,7 +99,7 @@ abstract class Date_Interval
 	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
 	 * @return integer
 	 */
-	private static function round($duration, $round_mode)
+	private static function round(float $duration, int|string $round_mode) : int
 	{
 		switch ($round_mode) {
 			case PHP_CEIL:
@@ -121,8 +121,9 @@ abstract class Date_Interval
 	 * @throws Date_Interval_Exception
 	 */
 	public static function toDays(
-		DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false
-	) {
+		DateInterval $interval, int|string $round_mode = PHP_CEIL, bool $absolute = false
+	) : int
+	{
 		return static::round(static::toSeconds($interval, $absolute) / 86400, $round_mode);
 	}
 
@@ -136,7 +137,9 @@ abstract class Date_Interval
 	 * @return integer
 	 * @throws Date_Interval_Exception
 	 */
-	public static function toHours(DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false)
+	public static function toHours(
+		DateInterval $interval, int|string $round_mode = PHP_CEIL, bool $absolute = false
+	) : int
 	{
 		return static::round(static::toSeconds($interval, $absolute) / 3600, $round_mode);
 	}
@@ -152,8 +155,9 @@ abstract class Date_Interval
 	 * @throws Date_Interval_Exception
 	 */
 	public static function toMinutes(
-		DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false
-	) {
+		DateInterval $interval, int|string $round_mode = PHP_CEIL, bool $absolute = false
+	) : int
+	{
 		return static::round(static::toSeconds($interval, $absolute) / 60, $round_mode);
 	}
 
@@ -166,7 +170,7 @@ abstract class Date_Interval
 	 * @return integer
 	 * @throws Date_Interval_Exception
 	 */
-	public static function toSeconds(DateInterval $interval, $absolute = false)
+	public static function toSeconds(DateInterval $interval, bool $absolute = false) : int
 	{
 		$duration  = static::getDays($interval) * 86400;
 		$duration += $interval->h * 3600;
@@ -185,7 +189,9 @@ abstract class Date_Interval
 	 * @return integer
 	 * @throws Date_Interval_Exception
 	 */
-	public static function toWeeks(DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false)
+	public static function toWeeks(
+		DateInterval $interval, int|string $round_mode = PHP_CEIL, bool $absolute = false
+	) : int
 	{
 		return static::round(static::toSeconds($interval, $absolute) / 604800, $round_mode);
 	}

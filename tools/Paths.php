@@ -17,7 +17,7 @@ abstract class Paths
 	 * @example /home/itrocks/www/
 	 * @var string
 	 */
-	public static $file_root;
+	public static string $file_root;
 
 	//--------------------------------------------------------------------------------- $project_root
 	/**
@@ -26,7 +26,7 @@ abstract class Paths
 	 * @example /home/vendor/project/environment
 	 * @var string
 	 */
-	public static $project_root;
+	public static string $project_root;
 
 	//---------------------------------------------------------------------------------- $project_uri
 	/**
@@ -36,7 +36,7 @@ abstract class Paths
 	 * @example /test/bappli
 	 * @var string
 	 */
-	public static $project_uri;
+	public static string $project_uri;
 
 	//---------------------------------------------------------------------------------- $script_name
 	/**
@@ -47,7 +47,7 @@ abstract class Paths
 	 * @example bappli
 	 * @var string
 	 */
-	public static $script_name;
+	public static string $script_name;
 
 	//------------------------------------------------------------------------------------- $uri_base
 	/**
@@ -58,7 +58,7 @@ abstract class Paths
 	 * @example /bappli
 	 * @var string
 	 */
-	public static $uri_base;
+	public static string $uri_base;
 
 	//------------------------------------------------------------------------------------- $uri_root
 	/**
@@ -68,7 +68,7 @@ abstract class Paths
 	 * @example /
 	 * @var string
 	 */
-	public static $uri_root;
+	public static string $uri_root;
 
 	//---------------------------------------------------------------------------------- absoluteBase
 	/**
@@ -92,7 +92,7 @@ abstract class Paths
 	 * @param $file_name string
 	 * @return string
 	 */
-	public static function getRelativeFileName($file_name)
+	public static function getRelativeFileName(string $file_name) : string
 	{
 		// replace /dir/../ with /
 		while (($j = strpos($file_name, '/../')) !== false) {
@@ -119,15 +119,15 @@ abstract class Paths
 	 * @example with the class name of User : 'https://itrocks.org/itrocks/ITRocks/Framework/User'
 	 * @example with a User object of id = 1 : 'https://itrocks.org/itrocks/ITRocks/Framework/User/1'
 	 * @param $object      object|string Object or class name.
-	 * @param $server_name string|null   Environment to use.
+	 * @param $server_name string        Environment to use.
 	 * @return string
 	 */
-	public static function getUrl($object = null, $server_name = null)
+	public static function getUrl(object|string $object = '', string $server_name = '')
 	{
 		return static::protocol() . '://'
 			. ($server_name ?: static::server())
 			. Paths::$uri_base
-			. (isset($object) ? (SL . Names::classToUri($object)) : '');
+			. ($object ? (SL . Names::classToUri($object)) : '');
 	}
 
 	//-------------------------------------------------------------------------------------- protocol
@@ -135,10 +135,10 @@ abstract class Paths
 	 * @example https
 	 * @return string
 	 */
-	public static function protocol()
+	public static function protocol() : string
 	{
 		return isset($_SERVER['SERVER_NAME'])
-			? ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https' : 'http')
+			? (($_SERVER['HTTPS'] ?? false) ? 'https' : 'http')
 			: Session::current()->domainScheme();
 	}
 
@@ -147,7 +147,7 @@ abstract class Paths
 	 * @example https://itrocks.org
 	 * @return string
 	 */
-	public static function protocolServer()
+	public static function protocolServer() : string
 	{
 		return isset($_SERVER['SERVER_NAME'])
 			? (static::protocol() . '://' . static::server())
@@ -173,7 +173,7 @@ abstract class Paths
 	 * @example itrocks.org
 	 * @return string
 	 */
-	public static function server()
+	public static function server() : string
 	{
 		return $_SERVER['SERVER_NAME'] ?? Session::current()->domainName() ?: 'itrocks.org';
 	}

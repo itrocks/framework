@@ -70,7 +70,7 @@ class Runner
 	public function purgeCompleteRuns()
 	{
 		$search = [
-			'last_update' => Func::less(Date_Time::now()->sub(1, Date_Time::DAY)),
+			'last_update' => Func::less(Date_Time::now()->sub(1)),
 			'step'        => Run::COMPLETE
 		];
 		foreach (Dao::search($search, Run::class) as $run) {

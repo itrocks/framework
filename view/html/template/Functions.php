@@ -63,10 +63,10 @@ class Functions
 	/**
 	 * Gets the name of the source class for $object
 	 *
-	 * @param $object object|null
-	 * @return Displayable|null
+	 * @param $object object|string|null
+	 * @return ?Displayable
 	 */
-	protected function displayableClassNameOf($object)
+	protected function displayableClassNameOf(object|string|null $object) : ?Displayable
 	{
 		return $object
 			? new Displayable(
@@ -123,7 +123,7 @@ class Functions
 	 * @param $feature string
 	 * @return string
 	 */
-	public function getAbsoluteLink(Template $template, $feature = null)
+	public function getAbsoluteLink(Template $template, string $feature = '')
 	{
 		return Paths::getUrl() . $this->getLink($template, $feature);
 	}
@@ -158,9 +158,9 @@ class Functions
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $template Template
-	 * @return string|null
+	 * @return string
 	 */
-	public function getConditionClass(Template $template)
+	public function getConditionClass(Template $template) : string
 	{
 		// the property path is the key for the Func\Comparison or Func\In nearest object
 		$property_path = $this->getConditionLabel($template, false);
@@ -896,7 +896,7 @@ class Functions
 	 * @param $feature  string
 	 * @return string
 	 */
-	public function getLink(Template $template, $feature = null)
+	public function getLink(Template $template, string $feature = '')
 	{
 		foreach ($template->objects as $object) {
 			if (is_string($object)) {

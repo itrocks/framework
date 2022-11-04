@@ -23,13 +23,13 @@ class Editor implements Configurable
 	/**
 	 * @var array
 	 */
-	private $settings;
+	private array $settings;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
 		$this->settings = [];
 		foreach ($configuration as $key => $setting) {
@@ -45,7 +45,7 @@ class Editor implements Configurable
 	 * @param $version string
 	 * @return string
 	 */
-	public static function buildClassName($version)
+	public static function buildClassName(string $version) : string
 	{
 		$settings = Session::current()->plugins->get(Editor::class)->settings;
 		$version  = trim($version);

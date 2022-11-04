@@ -30,17 +30,16 @@ class Schedule extends Trigger
 	 * @user hide_empty
 	 * @var string
 	 */
-	public $days_of_month;
+	public string $days_of_month = '';
 
 	//--------------------------------------------------------------------------------- $days_of_week
 	/**
-	 * @getter
 	 * @ordered_values
 	 * @user hide_empty
 	 * @values self::DAYS_OF_WEEK
 	 * @var string[]
 	 */
-	public $days_of_week = [];
+	public array $days_of_week = [];
 
 	//---------------------------------------------------------------------------------- $hour_ranges
 	/**
@@ -48,32 +47,34 @@ class Schedule extends Trigger
 	 * @user hide_empty
 	 * @var Hour_Range[]
 	 */
-	public $hour_ranges = [];
+	public array $hour_ranges = [];
 
 	//---------------------------------------------------------------------------------------- $hours
 	/**
 	 * @user hide_empty
 	 * @var string
 	 */
-	public $hours;
+	public string $hours = '';
 
 	//--------------------------------------------------------------------------------------- $months
 	/**
 	 * @user hide_empty
 	 * @var string
 	 */
-	public $months;
+	public string $months = '';
 
 	//---------------------------------------------------------------------------------------- $years
 	/**
 	 * @user hide_empty
 	 * @var string
 	 */
-	public $years;
+	public string $years = '';
 
 	//------------------------------------------------------------ calculateActionsNextLaunchDateTime
 	/**
 	 * Must be called on actions that are already written into database (after write)
+	 *
+	 * @noinspection PhpUnused @after_write
 	 */
 	public function calculateActionsNextLaunchDateTime()
 	{
@@ -90,24 +91,9 @@ class Schedule extends Trigger
 	/**
 	 * @return string[] @max_value 31 @min_value 01
 	 */
-	public function getDaysOfMonth()
+	public function getDaysOfMonth() : array
 	{
 		return $this->rangesListToArray($this->days_of_month, 31);
-	}
-
-	//--------------------------------------------------------------------------------- getDaysOfWeek
-	/**
-	 * Fix static schedule write
-	 * TODO HIGH Remove this patch when days of week with one value will return an array too
-	 *
-	 * @return string[]
-	 */
-	public function getDaysOfWeek() : array
-	{
-		if (is_string($this->days_of_week)) {
-			$this->days_of_week = $this->days_of_week ? explode(',', $this->days_of_week) : [];
-		}
-		return $this->days_of_week ?: [];
 	}
 
 	//------------------------------------------------------------------------- getExtendedHourRanges
@@ -116,9 +102,8 @@ class Schedule extends Trigger
 	 *
 	 * @return Hour_Range[]
 	 */
-	public function getExtendedHourRanges()
+	public function getExtendedHourRanges() : array
 	{
-		/** @var $hour_ranges Hour_Range[] */
 		$hour_ranges = array_merge($this->hour_ranges, $this->hourRangesListToRanges($this->hours));
 		if ($hour_ranges) {
 			foreach ($hour_ranges as $hour_range) {
@@ -141,7 +126,7 @@ class Schedule extends Trigger
 	/**
 	 * @return string[] @max_value 12 @min_value 01
 	 */
-	public function getMonths()
+	public function getMonths() : array
 	{
 		return $this->rangesListToArray($this->months, 12);
 	}
@@ -150,14 +135,10 @@ class Schedule extends Trigger
 	/**
 	 * @return integer[] @max_value 7 @min_value 1
 	 */
-	public function getNumericDaysOfWeek()
+	public function getNumericDaysOfWeek() : array
 	{
 		$days        = [];
 		$day_numbers = array_flip(self::DAYS_OF_WEEK);
-		// TODO HIGH Remove this patch when days of week with one value will return an array too
-		if (!is_array($this->days_of_week)) {
-			$this->days_of_week = [$this->days_of_week];
-		}
 		foreach ($this->days_of_week as $day) {
 			$days[] = $day_numbers[$day] + 1;
 		}
@@ -168,7 +149,7 @@ class Schedule extends Trigger
 	/**
 	 * @return string[] @max_value 2999 @min_value 2000
 	 */
-	public function getYears()
+	public function getYears() : array
 	{
 		return $this->rangesListToArray($this->years, 2999);
 	}
@@ -178,7 +159,7 @@ class Schedule extends Trigger
 	 * @param $values_string string
 	 * @return Hour_Range[]
 	 */
-	protected function hourRangesListToRanges($values_string)
+	protected function hourRangesListToRanges(string $values_string) : array
 	{
 		$list        = $values_string ? explode(',', str_replace(SP, '', $values_string)) : [];
 		$hour_ranges = [];
@@ -205,7 +186,7 @@ class Schedule extends Trigger
 	 * @param $max_value     integer
 	 * @return string[]
 	 */
-	protected function rangesListToArray($values_string, $max_value)
+	protected function rangesListToArray(string $values_string, int $max_value) : array
 	{
 		$list       = $values_string ? explode(',', str_replace(SP, '', $values_string)) : [];
 		$max_length = strlen($max_value);
@@ -219,7 +200,7 @@ class Schedule extends Trigger
 			else {
 				[$start, $stop] = explode('-', $element);
 				$start = intval($start) ?: 1;
-				$stop  = intval($stop) ?: $max_value;
+				$stop  = intval($stop)  ?: $max_value;
 				for ($element = $start; $element <= $stop; $element++) {
 					$value          = str_pad($element, $max_length, '0', STR_PAD_LEFT);
 					$values[$value] = $value;

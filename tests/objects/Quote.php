@@ -17,7 +17,7 @@ class Quote extends Document
 	 * @mandatory
 	 * @var Client
 	 */
-	public $client;
+	public Client $client;
 
 	//------------------------------------------------------------------------------------- $salesmen
 	/**
@@ -28,6 +28,6 @@ class Quote extends Document
 	 * @link Collection
 	 * @var Quote_Salesman[]
 	 */
-	public $salesmen;
+	public array $salesmen;
 
 }

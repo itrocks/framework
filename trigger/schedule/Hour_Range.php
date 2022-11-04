@@ -18,17 +18,16 @@ class Hour_Range
 	/**
 	 * @max_value 36000
 	 * @min_value 1
-	 * @null
 	 * @var integer
 	 */
-	public $frequency;
+	public int $frequency = 0;
 
 	//------------------------------------------------------------------------------- $frequency_unit
 	/**
 	 * @values seconds, minutes, hours, days, months, years
 	 * @var string
 	 */
-	public $frequency_unit;
+	public string $frequency_unit = '';
 
 	//----------------------------------------------------------------------------------------- $from
 	/**
@@ -38,7 +37,7 @@ class Hour_Range
 	 * @regexp [0-2][0-9]:[0-5][0-9]([0-5][0-9])?
 	 * @var string
 	 */
-	public $from;
+	public string $from = '';
 
 	//------------------------------------------------------------------------------------- $schedule
 	/**
@@ -46,7 +45,7 @@ class Hour_Range
 	 * @link Object
 	 * @var Schedule
 	 */
-	public $schedule;
+	public Schedule $schedule;
 
 	//---------------------------------------------------------------------------------------- $until
 	/**
@@ -56,16 +55,16 @@ class Hour_Range
 	 * @regexp [0-2][0-9]:[0-5][0-9]([0-5][0-9])?
 	 * @var string
 	 */
-	public $until;
+	public string $until = '';
 
 	//------------------------------------------------------------------------------------- normalize
 	/**
 	 * Replace empty range limits from and to by their default values 00:00:00 and 23:59:59
 	 * Complete with default minutes / seconds
 	 *
-	 * @param $until string @default 23:59:59
+	 * @param $until string
 	 */
-	public function normalize($until = '23:59:59')
+	public function normalize(string $until = '23:59:59')
 	{
 		if (!$this->from) {
 			$this->from = '00:00:00';

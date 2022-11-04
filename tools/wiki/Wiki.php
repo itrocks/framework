@@ -23,7 +23,7 @@ class Wiki implements Registerable
 	 *
 	 * @var integer
 	 */
-	private $dont_parse_wiki = 0;
+	private int $dont_parse_wiki = 0;
 
 	//-------------------------------------------------------------------------------- $geshi_replace
 	/**
@@ -32,7 +32,7 @@ class Wiki implements Registerable
 	 *
 	 * @var string[] key is the replacement code `#1`, value is the geshi parsed code
 	 */
-	private $geshi_replace = [];
+	private array $geshi_replace = [];
 
 	//----------------------------------------------------------------------------------------- geshi
 	/**
@@ -50,7 +50,7 @@ class Wiki implements Registerable
 	 * @param $solve  boolean
 	 * @return string
 	 */
-	public function geshi($string, $solve = true)
+	public function geshi(string $string, bool $solve = true) : string
 	{
 		$lf    = LF;
 		$count = count($this->geshi_replace);
@@ -94,7 +94,7 @@ class Wiki implements Registerable
 	 * @param $string string
 	 * @return string
 	 */
-	public function geshiSolve($string)
+	public function geshiSolve(string $string) : string
 	{
 		foreach ($this->geshi_replace as $replacement => $geshi) {
 			$string = str_replace(
@@ -112,7 +112,7 @@ class Wiki implements Registerable
 	 * @param $var_name  string can be an unique var or path.of.vars
 	 * @param $joinpoint Around_Method
 	 */
-	public function noParseZone($var_name, Around_Method $joinpoint)
+	public function noParseZone(string $var_name, Around_Method $joinpoint)
 	{
 		$is_include = str_starts_with($var_name, SL);
 		if (!$is_include) {

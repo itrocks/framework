@@ -14,6 +14,6 @@ class Best_Line
 	 * @link Map
 	 * @var Order_Line[]
 	 */
-	public $lines;
+	public array $lines;
 
 }

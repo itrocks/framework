@@ -94,7 +94,7 @@ $(document).ready(function()
 	//---------------------------------------------------------------------------------- elementValue
 	/**
 	 * @param $element jQuery
-	 * @return string|null
+	 * @return ?string
 	 */
 	const elementValue = function($element)
 	{

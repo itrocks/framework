@@ -12,21 +12,21 @@ class Client
 
 	//--------------------------------------------------------------------------------------- $client
 	/**
-	 * Link to its own client (for recursivity tests)
+	 * Link to its own client (for recursive tests)
 	 *
 	 * @link Object
-	 * @var Client
+	 * @var ?Client
 	 */
-	public $client;
+	public ?Client $client;
 
 	//----------------------------------------------------------------------------- $client_component
 	/**
 	 * @component
 	 * @integrated simple
 	 * @link Object
-	 * @var Client_Component
+	 * @var ?Client_Component
 	 */
-	public $client_component;
+	public ?Client_Component $client_component;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
@@ -34,7 +34,7 @@ class Client
 	 *
 	 * @var string
 	 */
-	public $name;
+	public string $name = '';
 
 	//--------------------------------------------------------------------------------------- $number
 	/**
@@ -42,7 +42,7 @@ class Client
 	 *
 	 * @var string
 	 */
-	public $number;
+	public string $number = '';
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -50,7 +50,7 @@ class Client
 	 */
 	public function __toString() : string
 	{
-		return strval($this->number) . SP . strval($this->name);
+		return $this->number . SP . $this->name;
 	}
 
 }

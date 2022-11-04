@@ -26,20 +26,20 @@ class Password
 	/**
 	 * @var string
 	 */
-	public $encryption_algorithm = Encryption::SHA1;
+	public string $encryption_algorithm = Encryption::SHA1;
 
 	//------------------------------------------------------------------------------------- $password
 	/**
 	 * @var string
 	 */
-	private $password;
+	private string $password;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $password             string
-	 * @param $encryption_algorithm string
+	 * @param $password             string|null
+	 * @param $encryption_algorithm string|null
 	 */
-	public function __construct($password = null, $encryption_algorithm = null)
+	public function __construct(string $password = null, string $encryption_algorithm = null)
 	{
 		if (isset($password))             $this->password             = $password;
 		if (isset($encryption_algorithm)) $this->encryption_algorithm = $encryption_algorithm;
@@ -63,7 +63,7 @@ class Password
 	 * @return string
 	 * @throws InvalidArgumentException
 	 */
-	public function encrypted()
+	public function encrypted() : string
 	{
 		return Encryption::encrypt($this->password, $this->encryption_algorithm);
 	}
@@ -78,8 +78,10 @@ class Password
 	 * @return Password
 	 */
 	public function generate(
-		$length = 9, $characters_type = self::T_ALL, $specials = '()[]<>{}_+-*/@$=#!:;,.&'
-	) {
+		int $length = 9, int $characters_type = self::T_ALL,
+		string $specials = '()[]<>{}_+-*/@$=#!:;,.&'
+	) : Password
+	{
 		$string = (($characters_type & self::T_LOWERCASE) ? 'abcdefghijklmnopqrstuvwxyz' : '')
 			. (($characters_type & self::T_UPPERCASE)       ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' : '')
 			. (($characters_type & self::T_NUMERIC)         ? '0123456789' : '')

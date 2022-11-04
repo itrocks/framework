@@ -82,9 +82,9 @@ class Default_List_Data extends Set implements List_Data
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * @param $row_index integer
-	 * @return ?object
+	 * @return object
 	 */
-	public function getObject(int $row_index) : ?object
+	public function getObject(int $row_index) : object
 	{
 		return $this->getRow($row_index)->getObject();
 	}

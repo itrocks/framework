@@ -22,7 +22,7 @@ class Key
 	 * @mandatory
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//-------------------------------------------------------------------------------- $property_name
 	/**
@@ -32,14 +32,14 @@ class Key
 	 * @null
 	 * @var string
 	 */
-	public $property_name;
+	public string $property_name;
 
 	//--------------------------------------------------------------------------------------- $secret
 	/**
 	 * @max_length 10000
 	 * @var string
 	 */
-	public $secret;
+	public string $secret;
 
 	//----------------------------------------------------------------------------------------- $user
 	/**
@@ -47,13 +47,13 @@ class Key
 	 * @mandatory
 	 * @var User
 	 */
-	public $user;
+	public User $user;
 
 	//------------------------------------------------------------------------------------- getSecret
 	/**
-	 * @return string|null
+	 * @return ?string
 	 */
-	public function getSecret()
+	public function getSecret() : ?string
 	{
 		if (!isset($_POST['password'])) {
 			return null;
@@ -73,7 +73,7 @@ class Key
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $secret string
 	 */
-	public function setSecret($secret)
+	public function setSecret(string $secret)
 	{
 		if (!isset($_POST['password'])) {
 			return;

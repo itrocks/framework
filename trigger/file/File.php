@@ -24,13 +24,13 @@ class File extends Trigger
 	 *
 	 * @var boolean
 	 */
-	public $delete_flag_file;
+	public bool $delete_flag_file = false;
 
 	//------------------------------------------------------------------------------------ $file_path
 	/**
 	 * @var string
 	 */
-	public $file_path;
+	public string $file_path;
 
 	//------------------------------------------------------------------------------- $trigger_static
 	/**
@@ -42,6 +42,6 @@ class File extends Trigger
 	 *
 	 * @var boolean
 	 */
-	public $trigger_static;
+	public bool $trigger_static = false;
 
 }

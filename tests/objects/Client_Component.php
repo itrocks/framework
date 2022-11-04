@@ -18,12 +18,12 @@ class Client_Component
 	 * @link Object
 	 * @var Client
 	 */
-	public $client;
+	public Client $client;
 
 	//---------------------------------------------------------------------------------- $little_name
 	/**
 	 * @var string
 	 */
-	public $little_name;
+	public string $little_name = '';
 
 }

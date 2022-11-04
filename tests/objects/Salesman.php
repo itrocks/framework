@@ -10,17 +10,6 @@ use ITRocks\Framework\Traits\Has_Name;
  */
 class Salesman
 {
-	use Has_Name;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * Salesman constructor
-	 *
-	 * @param $name string
-	 */
-	public function __construct($name = null)
-	{
-		if (isset($name)) $this->name = $name;
-	}
+	use Has_Name\With_Constructor;
 
 }

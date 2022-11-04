@@ -12,39 +12,39 @@ class Line
 
 	//----------------------------------------------------------------------------------------- $args
 	/**
-	 * @var array
+	 * @var ?array
 	 */
-	private $args;
+	private ?array $args = null;
 
 	//------------------------------------------------------------------------------------ $arguments
 	/**
-	 * @var array
+	 * @var ?array
 	 */
-	public $arguments;
+	public ?array $arguments = null;
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * @var string
 	 */
-	public $class;
+	public string $class = '';
 
 	//----------------------------------------------------------------------------------------- $file
 	/**
 	 * @var string
 	 */
-	public $file;
+	public string $file = '';
 
 	//------------------------------------------------------------------------------------- $function
 	/**
 	 * @var string
 	 */
-	public $function;
+	public string $function = '';
 
 	//----------------------------------------------------------------------------------------- $line
 	/**
 	 * @var integer
 	 */
-	public $line;
+	public int $line = 0;
 
 	//-------------------------------------------------------------------------- $max_argument_length
 	/**
@@ -52,25 +52,25 @@ class Line
 	 *
 	 * @var integer
 	 */
-	static public $max_argument_length = 100;
+	static public int $max_argument_length = 100;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
-	 * @var object
+	 * @var ?object
 	 */
-	public $object;
+	public ?object $object = null;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * @var string
 	 */
-	public $type;
+	public string $type = '';
 
 	//------------------------------------------------------------------------------- argumentsAsText
 	/**
 	 * @return string
 	 */
-	public function argumentsAsText()
+	public function argumentsAsText() : string
 	{
 		$arguments = [];
 		foreach ($this->arguments as $argument) {
@@ -88,7 +88,7 @@ class Line
 	 * @param $max_array_length integer
 	 * @return string
 	 */
-	protected function dumpArgument($argument, $max_length, $max_array_length)
+	protected function dumpArgument(mixed $argument, int $max_length, int $max_array_length) : string
 	{
 		if (is_object($argument)) {
 			$identifier = ($argument instanceof Closure) ? null : Dao::getObjectIdentifier($argument);
@@ -127,7 +127,7 @@ class Line
 	 * @param $max_array_length integer
 	 * @return string
 	 */
-	public function dumpArray(array $array, $max_length, $max_array_length)
+	public function dumpArray(array $array, int $max_length, int $max_array_length) : string
 	{
 		$array_count = count($array);
 		if (!$array_count) {
@@ -176,14 +176,14 @@ class Line
 	 * @param $debug_backtrace array
 	 * @return Line
 	 */
-	public static function fromDebugBackTraceArray(array $debug_backtrace)
+	public static function fromDebugBackTraceArray(array $debug_backtrace) : Line
 	{
 		$line = new Line();
 		foreach ($debug_backtrace as $key => $value) {
 			$line->$key = $value;
 		}
 		$line->arguments =& $line->args;
-		if (is_null($line->arguments)) {
+		if (!isset($line->arguments)) {
 			$line->arguments = [];
 		}
 		return $line;

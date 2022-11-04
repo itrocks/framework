@@ -18,7 +18,7 @@ class Tests_Configurator implements Configurable
 	/**
 	 * @var string[]
 	 */
-	public $phpunit_options;
+	public array $phpunit_options;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -26,7 +26,7 @@ class Tests_Configurator implements Configurable
 	 *
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
 		$this->phpunit_options = $configuration[static::PHPUNIT_OPTIONS];
 	}

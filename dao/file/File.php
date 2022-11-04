@@ -55,9 +55,9 @@ class File
 	/**
 	 * @link DateTime
 	 * @mandatory
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public Date_Time $updated_on;
+	public Date_Time|string $updated_on;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -86,7 +86,7 @@ class File
 	{
 		/** @noinspection PhpExpressionResultUnusedInspection force @getter call */
 		$this->content;
-		$this->hash = isset($this->content) ? md5($this->content) : null;
+		$this->hash = isset($this->content) ? md5($this->content) : '';
 	}
 
 	//------------------------------------------------------------------------------------ getContent
@@ -97,7 +97,7 @@ class File
 	 */
 	public function getContent() : ?string
 	{
-		if (!empty($this->temporary_file_name) && !isset($this->content)) {
+		if ($this->temporary_file_name && !isset($this->content)) {
 			$this->content = file_exists($this->temporary_file_name)
 				? file_get_contents($this->temporary_file_name)
 				: null;

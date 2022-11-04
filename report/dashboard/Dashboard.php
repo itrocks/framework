@@ -26,7 +26,10 @@ class Dashboard
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * A constructor for your Has_Name class
+	 *
 	 * @param $name string|null
+	 * @todo use With_Constructor : needs AOP compiler update
 	 */
 	public function __construct(string $name = null)
 	{

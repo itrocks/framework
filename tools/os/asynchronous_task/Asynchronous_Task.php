@@ -57,7 +57,7 @@ class Asynchronous_Task
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param string|null $command
+	 * @param $command string|null
 	 */
 	public function __construct(string $command = null)
 	{
@@ -71,9 +71,6 @@ class Asynchronous_Task
 	}
 
 	//------------------------------------------------------------------------------------------- add
-	/**
-	 * @var string
-	 */
 	public function add()
 	{
 		if ($this->wrapper) {

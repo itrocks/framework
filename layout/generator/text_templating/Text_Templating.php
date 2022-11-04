@@ -27,9 +27,9 @@ class Text_Templating
 	/**
 	 * @param $property_path string
 	 * @param $element       Text
-	 * @return int|null|string
+	 * @return int|string|null
 	 */
-	protected function pageProperty(string $property_path, Text $element) : int|null|string
+	protected function pageProperty(string $property_path, Text $element) : int|string|null
 	{
 		switch ($property_path) {
 			case 'page.number': return $element->page->number;

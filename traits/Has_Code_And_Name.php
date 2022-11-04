@@ -37,16 +37,16 @@ trait Has_Code_And_Name
 	public static function fromString(string $value) : ?static
 	{
 		$objects = static::fromStringMultiple($value);
-		if (!$objects) {
-			/** @noinspection PhpUnhandledExceptionInspection class */
-			$object = Builder::create(static::class);
-			$object->code = lParse(trim($value), SP);
-			if (str_contains($value, SP)) {
-				$object->name = trim(substr($value, strlen($object->code) + 1));
-			}
-			$objects = [$object];
+		if ($objects) {
+			return reset($objects);
 		}
-		return reset($objects);
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$object = Builder::create(static::class);
+		$object->code = lParse(trim($value), SP);
+		if (str_contains($value, SP)) {
+			$object->name = trim(substr($value, strlen($object->code) + 1));
+		}
+		return $object;
 	}
 
 	//---------------------------------------------------------------------------- fromStringMultiple

@@ -11,6 +11,6 @@ trait Has_Email
 	/**
 	 * @var string
 	 */
-	public $email;
+	public string $email = '';
 
 }

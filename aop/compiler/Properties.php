@@ -716,7 +716,7 @@ class Properties
 				);
 			}
 			elseif ($action === 'trait') {
-				// TODO don't know what has to be done for this case
+				// TODO eg __construct into a trait, we have to rename to __construct_* on use for
 				trigger_error("Don't know how to $action {$this->class->name}::$method_name");
 			}
 			else {

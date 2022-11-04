@@ -21,9 +21,10 @@ class Process
 	 * The first two elements are the callable
 	 * Next optional elements are parameters that will be transmitted to the callable
 	 *
-	 * @var callable|array
+	 * @noinspection PhpDocFieldTypeMismatchInspection callable type not allowed
+	 * @var callable
 	 */
-	public $callback;
+	public array|string $callback = '';
 
 	//-------------------------------------------------------------------------------------- $command
 	/**
@@ -31,7 +32,7 @@ class Process
 	 *
 	 * @var string
 	 */
-	public $command;
+	public string $command = '';
 
 	//--------------------------------------------------------------------------------------- $errors
 	/**
@@ -39,9 +40,9 @@ class Process
 	 * - if status() returns true (running) : a resource containing the errors stream
 	 * - if status() returns false (done) : the full errors stream text
 	 *
-	 * @var string|resource
+	 * @var resource|string
 	 */
-	public $errors;
+	public mixed $errors;
 
 	//----------------------------------------------------------------------------------- $identifier
 	/**
@@ -50,7 +51,7 @@ class Process
 	 * @null
 	 * @var integer
 	 */
-	public $identifier;
+	public int $identifier = 0;
 
 	//--------------------------------------------------------------------------------------- $output
 	/**
@@ -58,9 +59,9 @@ class Process
 	 * - if status() returns true (running) : a resource containing the output stream
 	 * - if status() returns false (done) : the full output stream text
 	 *
-	 * @var string|resource
+	 * @var resource|string
 	 */
-	public $output;
+	public mixed $output;
 
 	//-------------------------------------------------------------------------------------- $process
 	/**
@@ -71,7 +72,7 @@ class Process
 	 *
 	 * @var resource
 	 */
-	public $process;
+	public mixed $process;
 
 	//----------------------------------------------------------------------------------- $session_id
 	/**
@@ -79,7 +80,7 @@ class Process
 	 *
 	 * @var string
 	 */
-	public $session_id;
+	public string $session_id = '';
 
 	//---------------------------------------------------------------------------- $unique_identifier
 	/**
@@ -87,7 +88,7 @@ class Process
 	 *
 	 * @var string
 	 */
-	public $unique_identifier;
+	public string $unique_identifier = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -152,7 +153,7 @@ class Process
 	 *
 	 * @return boolean true if the process is running, false if it's done
 	 */
-	public function status()
+	public function status() : bool
 	{
 		if ($this->process) {
 			$status = proc_get_status($this->process);

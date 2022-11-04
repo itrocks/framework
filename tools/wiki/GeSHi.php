@@ -15,7 +15,7 @@ class GeSHi
 	/**
 	 * @var \GeSHi[]
 	 */
-	private static $geshis;
+	private static array $geshis;
 
 	//----------------------------------------------------------------------------------------- parse
 	/**
@@ -25,7 +25,7 @@ class GeSHi
 	 * @param $language string
 	 * @return string
 	 */
-	public static function parse($source, $language)
+	public static function parse(string $source, string $language) : string
 	{
 		if (class_exists('\GeSHi')) {
 			// geshi extension is installed : use it

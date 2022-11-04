@@ -13,19 +13,19 @@ class Counter
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name = '';
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * @var integer
 	 */
-	private $value = 0;
+	private int $value = 0;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
+	 * @param $class_name string|null
 	 */
-	public function __construct($class_name = null)
+	public function __construct(string $class_name = null)
 	{
 		if (isset($class_name)) {
 			$this->class_name = $class_name;
@@ -36,7 +36,7 @@ class Counter
 	/**
 	 * @return integer
 	 */
-	public function increment()
+	public function increment() : int
 	{
 		return ++ $this->value;
 	}

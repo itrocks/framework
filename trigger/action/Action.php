@@ -26,15 +26,15 @@ class Action
 	 * @max_length 50000
 	 * @var string
 	 */
-	public $action = '';
+	public string $action = '';
 
 	//-------------------------------------------------------------------------------------- $as_user
 	/**
 	 * @conditions keep_user=false
 	 * @link Object
-	 * @var User
+	 * @var ?User
 	 */
-	public $as_user;
+	public ?User $as_user;
 
 	//------------------------------------------------------------------------------------ $keep_user
 	/**
@@ -42,7 +42,7 @@ class Action
 	 *
 	 * @var boolean
 	 */
-	public $keep_user;
+	public bool $keep_user = false;
 
 	//----------------------------------------------------------------------------------------- $last
 	/**
@@ -50,9 +50,9 @@ class Action
 	 *
 	 * @link DateTime
 	 * @user readonly
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $last;
+	public Date_Time|string $last;
 
 	//----------------------------------------------------------------------------------------- $next
 	/**
@@ -60,17 +60,17 @@ class Action
 	 *
 	 * @link DateTime
 	 * @user readonly
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $next;
+	public Date_Time|string $next;
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
 	 * @link Object
 	 * @user invisible
-	 * @var Action
+	 * @var ?Action
 	 */
-	public $parent;
+	public ?Action $parent;
 
 	//--------------------------------------------------------------------------- $request_identifier
 	/**
@@ -78,21 +78,21 @@ class Action
 	 *
 	 * @var string
 	 */
-	public $request_identifier;
+	public string $request_identifier = '';
 
 	//--------------------------------------------------------------------------------------- $status
 	/**
 	 * @values Status::const
 	 * @var string
 	 */
-	public $status = Status::PENDING;
+	public string $status = Status::PENDING;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $action string|null
 	 * @param $next   Date_Time|null
 	 */
-	public function __construct(string $action = null, Date_Time|null $next = null)
+	public function __construct(string $action = null, Date_Time $next = null)
 	{
 		if (isset($action)) {
 			$this->action = $action;
@@ -118,9 +118,9 @@ class Action
 	 * To really launch planned actions, you must make /ITRocks/Framework/Trigger/Server/run as daemon
 	 *
 	 * @param $object object|string|null object or class name
-	 * @return static|null scheduled action
+	 * @return ?static scheduled action
 	 */
-	public function execute(object|string $object = null) : static|null
+	public function execute(object|string $object = null) : ?static
 	{
 		// can execute an action twice only if it is not running nor planned for now at this time
 		$now = Date_Time::now();
@@ -191,7 +191,6 @@ class Action
 	 */
 	public function getLogEntry() : Entry
 	{
-		/** @noinspection PhpIncompatibleReturnTypeInspection inspector mismatch */
 		return Dao::searchOne(['data.request_identifier' => $this->request_identifier], Entry::class);
 	}
 
@@ -233,9 +232,9 @@ class Action
 	 * This does not change the value of $next
 	 *
 	 * @param $last Date_Time|null the reference date time for calculation @default Date_Time::now
-	 * @return Date_Time|null null if its not a scheduled action : then it will never execute again
+	 * @return ?Date_Time null if its not a scheduled action : then it will never execute again
 	 */
-	protected function nextExecutionTime(Date_Time $last = null) : Date_Time|null
+	protected function nextExecutionTime(Date_Time $last = null) : ?Date_Time
 	{
 		if (!$last) {
 			$last = Date_Time::now();

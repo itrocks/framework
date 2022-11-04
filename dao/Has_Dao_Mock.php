@@ -23,9 +23,9 @@ trait Has_Dao_Mock
 
 	//----------------------------------------------------------------------------------------- $link
 	/**
-	 * @var Dao\Mysql\Link|null
+	 * @var ?Dao\Mysql\Link|null
 	 */
-	private Dao\Mysql\Link|null $link = null;
+	private ?Dao\Mysql\Link $link = null;
 
 	//------------------------------------------------------------------------------------ $link_mock
 	/**

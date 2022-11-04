@@ -21,6 +21,9 @@ class Change extends Trigger
 	use Has_Condition;
 
 	//------------------------------------------------------------------------------ resetPluginCache
+	/**
+	 * @noinspection PhpUnused @after_write, @before_delete
+	 */
 	public function resetPluginCache()
 	{
 		if (!$this->class_name || !Plugin::registered()) {

@@ -12,7 +12,7 @@ abstract class Locks
 	/**
 	 * @var integer[] $lock_count integer[$lock_name string]
 	 */
-	private static $locks = [];
+	private static array $locks = [];
 
 	//--------------------------------------------------------------------------------- decrementLock
 	/**
@@ -24,9 +24,9 @@ abstract class Locks
 	 * @param $lock_name string
 	 * @return boolean
 	 */
-	public static function decrementLock($lock_name)
+	public static function decrementLock(string $lock_name) : bool
 	{
-		Locks::$locks[$lock_name]--;
+		Locks::$locks[$lock_name] --;
 		if (!Locks::$locks[$lock_name]) {
 			unset(Locks::$locks[$lock_name]);
 			return true;
@@ -39,12 +39,12 @@ abstract class Locks
 	 * Locks the given lock name
 	 *
 	 * At first call : set lock to true and return false
-	 * At next calls until noRecurseEnd() is called : return true to stop recursivity
+	 * At next calls until noRecurseEnd() is called : return true to stop recursion
 	 *
 	 * @param $lock_name string
 	 * @return boolean
 	 */
-	public static function lock($lock_name)
+	public static function lock(string $lock_name) : bool
 	{
 		if (isset(Locks::$locks[$lock_name])) {
 			Locks::$locks[$lock_name]++;
@@ -60,7 +60,7 @@ abstract class Locks
 	 *
 	 * @param $lock_name string
 	 */
-	public static function unlock($lock_name)
+	public static function unlock(string $lock_name)
 	{
 		if (isset(Locks::$locks[$lock_name])) {
 			unset(Locks::$locks[$lock_name]);

@@ -16,6 +16,6 @@ class Run extends Has_Condition\Run
 	 * @link Object
 	 * @var Feature
 	 */
-	public $feature;
+	public Feature $feature;
 
 }

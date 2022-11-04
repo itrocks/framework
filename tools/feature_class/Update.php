@@ -58,7 +58,7 @@ class Update implements Registerable, Updatable
 	 * @param $write           Keep[]
 	 */
 	protected function updateClassName(
-		$class_name, array &$class_names, array &$feature_classes, array &$write
+		string $class_name, array &$class_names, array &$feature_classes, array &$write
 	) {
 		if (isset($class_names[$class_name]) || !class_exists($class_name)) {
 			return;
@@ -107,7 +107,7 @@ class Update implements Registerable, Updatable
 	/**
 	 * @return array [$class_names string[], $feature_classes Keep[], $write Keep[]]
 	 */
-	protected function updateInit()
+	protected function updateInit() : array
 	{
 		Dao::createStorage(Keep::class);
 		$feature_classes = Dao::readAll(Keep::class, Dao::key('class_name'));

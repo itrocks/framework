@@ -90,7 +90,7 @@ class Search_Array_Builder
 	 * @param $prepend                 string
 	 * @param $append                  string
 	 * @param $translated              array string[][] translations, by property name
-	 * @return Logical|array
+	 * @return array|Logical
 	 */
 	public function buildMultiple(
 		array|Reflection_Class $property_names_or_class, string $search_phrase, string $prepend = '',

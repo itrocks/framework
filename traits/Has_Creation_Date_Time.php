@@ -17,9 +17,9 @@ trait Has_Creation_Date_Time
 	 * @default Date_Time::now
 	 * @link DateTime
 	 * @user invisible_edit, invisible_output, readonly
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $creation;
+	public Date_Time|string $creation;
 
 	//--------------------------------------------------------------------- calculateCreationDateTime
 	/**

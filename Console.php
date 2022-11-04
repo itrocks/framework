@@ -226,16 +226,16 @@ class Console
 	//-------------------------------------------------------------------------------- procInfoGetCwd
 	/**
 	 * @param $pid integer|null null for 'current pid'
-	 * @return string|null null if pid is not running
+	 * @return string '' if pid is not running
 	 */
-	private function procInfoGetCwd(int $pid = null) : string|null
+	private function procInfoGetCwd(int $pid = null) : string
 	{
 		if (!$pid) {
 			$pid = getmypid();
 		}
 		$path = $this->procPath();
 		$file = "$path/$pid/cwd";
-		return file_exists($file) ? readlink($file) : null;
+		return file_exists($file) ? readlink($file) : '';
 	}
 
 	//--------------------------------------------------------------------------------- procInfoPurge

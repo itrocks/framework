@@ -17,16 +17,16 @@ class Order extends Document
 	 * @mandatory
 	 * @var Client
 	 */
-	private $client;
+	private Client $client;
 
 	//------------------------------------------------------------------------------ $delivery_client
 	/**
 	 * Delivery client
 	 *
 	 * @link Object
-	 * @var Client
+	 * @var ?Client
 	 */
-	private $delivery_client;
+	private ?Client $delivery_client;
 
 	//---------------------------------------------------------------------------------------- $lines
 	/**
@@ -36,7 +36,7 @@ class Order extends Document
 	 * @mandatory
 	 * @var Order_Line[]
 	 */
-	private $lines;
+	private array $lines;
 
 	//------------------------------------------------------------------------------------- $salesmen
 	/**
@@ -47,7 +47,7 @@ class Order extends Document
 	 * @link Map
 	 * @var Salesman[]
 	 */
-	private $salesmen;
+	private array $salesmen;
 
 	//-------------------------------------------------------------------------------------- addLines
 	/**

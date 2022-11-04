@@ -22,7 +22,7 @@ abstract class Names
 	/**
 	 * This nouns and adjectives are invariant and should not be changed from/to singular / plural
 	 */
-	public static $irregular = [
+	public static array $irregular = [
 		// invariant nouns @see https://en.wiktionary.org/wiki/Category:English_invariant_nouns
 		'aircraft', 'bass', 'radar', 'sheep',
 		// invariant adjectives : they are all invariant
@@ -33,7 +33,7 @@ abstract class Names
 	/**
 	 * @var string[] key is the name of the set class, value is the matching name of the single class
 	 */
-	private static $sets = [];
+	private static array $sets = [];
 
 	//------------------------------------------------------------------------------ classToDirectory
 	/**
@@ -42,7 +42,7 @@ abstract class Names
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function classToDirectory($class_name)
+	public static function classToDirectory(string $class_name) : string
 	{
 		return strtolower(Namespaces::shortClassName($class_name));
 	}
@@ -56,7 +56,7 @@ abstract class Names
 	 * @param $annotation boolean if true, will use the value of @display first, if exists
 	 * @return string
 	 */
-	public static function classToDisplay($class_name, $annotation = true)
+	public static function classToDisplay(string $class_name, bool $annotation = true) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection Should be called with valid class name */
 		$display = ($annotation && class_exists($class_name))
@@ -74,7 +74,7 @@ abstract class Names
 	 * @param $annotation boolean if true, will use the value of @displays first, if exists
 	 * @return string
 	 */
-	public static function classToDisplays($class_name, $annotation = true)
+	public static function classToDisplays(string $class_name, bool $annotation = true) : string
 	{
 		if (!class_exists($class_name)) {
 			$class_name = static::setToClass($class_name);
@@ -98,7 +98,7 @@ abstract class Names
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function classToFilePath($class_name)
+	public static function classToFilePath(string $class_name) : string
 	{
 		$file_path = Autoloader::getFilePath($class_name);
 		if (!$file_path) {
@@ -116,13 +116,13 @@ abstract class Names
 	 * Changes 'A\Namespace\Class_Name' into 'className'
 	 *
 	 * @param $class_name string
-	 * @param $prefix string
+	 * @param $prefix     string
 	 * @return string
 	 */
-	public static function classToMethod($class_name, $prefix = null)
+	public static function classToMethod(string $class_name, string $prefix = '') : string
 	{
 		$method_name = str_replace('_', '', Namespaces::shortClassName($class_name));
-		return $prefix ? $prefix . $method_name : lcfirst($method_name);
+		return $prefix ? ($prefix . $method_name) : lcfirst($method_name);
 	}
 
 	//----------------------------------------------------------------------------------- classToPath
@@ -136,7 +136,7 @@ abstract class Names
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function classToPath($class_name)
+	public static function classToPath(string $class_name) : string
 	{
 		$i = strrpos($class_name, BS);
 		return str_replace(BS, SL, strtolower(substr($class_name, 0, $i)) . substr($class_name, $i));
@@ -149,7 +149,7 @@ abstract class Names
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function classToProperty($class_name)
+	public static function classToProperty(string $class_name) : string
 	{
 		return strtolower(Namespaces::shortClassName($class_name));
 	}
@@ -162,7 +162,7 @@ abstract class Names
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function classToSet($class_name)
+	public static function classToSet(string $class_name) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection Must be called with a valid class name */
 		return Set_Annotation::of(new Reflection_Class($class_name))->value;
@@ -178,7 +178,7 @@ abstract class Names
 	 * @param $class_name object|string
 	 * @return string
 	 */
-	public static function classToUri($class_name)
+	public static function classToUri(object|string $class_name) : string
 	{
 		// get object id, if object
 		if (is_object($class_name)) {
@@ -206,7 +206,7 @@ abstract class Names
 	 * @param $display string
 	 * @return string
 	 */
-	public static function displayToClass($display)
+	public static function displayToClass(string $display) : string
 	{
 		return str_replace(SP, '_', ucwords(str_replace('_', SP, $display)));
 	}
@@ -218,7 +218,7 @@ abstract class Names
 	 * @param $display string
 	 * @return string
 	 */
-	public static function displayToDirectory($display)
+	public static function displayToDirectory(string $display) : string
 	{
 		return strtolower(str_replace(SP, '_', $display));
 	}
@@ -230,7 +230,7 @@ abstract class Names
 	 * @param $display string
 	 * @return string
 	 */
-	public static function displayToProperty($display)
+	public static function displayToProperty(string $display) : string
 	{
 		return strtolower(str_replace(SP, '_', $display));
 	}
@@ -245,12 +245,12 @@ abstract class Names
 	 * @param $file_name string
 	 * @return string
 	 */
-	public static function fileToClass($file_name)
+	public static function fileToClass(string $file_name) : string
 	{
 		$class_name = self::pathToClass(lParse($file_name, DOT));
 		if (!(
 			class_exists($class_name)
-			|| trait_exists($class_name, true)
+			|| trait_exists($class_name)
 			|| interface_exists($class_name)
 		)) {
 			$class_name = lLastParse($class_name, BS);
@@ -266,7 +266,7 @@ abstract class Names
 	 * @param $file_name string
 	 * @return string
 	 */
-	public static function fileToDisplay($file_name)
+	public static function fileToDisplay(string $file_name) : string
 	{
 		if (($i = strpos($file_name, SL)) !== false) {
 			$file_name = substr($file_name, $i + 1);
@@ -284,7 +284,7 @@ abstract class Names
 	 * @param $method_name string
 	 * @return string
 	 */
-	public static function methodToClass($method_name)
+	public static function methodToClass(string $method_name) : string
 	{
 		return ucfirst(preg_replace('%([a-z|0-9])([A-Z])%', '$1_$2', $method_name));
 	}
@@ -296,7 +296,7 @@ abstract class Names
 	 * @param $method_name string
 	 * @return string
 	 */
-	public static function methodToDisplay($method_name)
+	public static function methodToDisplay(string $method_name) : string
 	{
 		return strtolower(preg_replace('%([a-z])([A-Z])%', '$1 $2', $method_name));
 	}
@@ -308,7 +308,7 @@ abstract class Names
 	 * @param $method_name string
 	 * @return string
 	 */
-	public static function methodToProperty($method_name)
+	public static function methodToProperty(string $method_name) : string
 	{
 		$property_name = strtolower(preg_replace('%([a-z])([A-Z])%', '$1_$2', $method_name));
 		if (str_starts_with($property_name, 'get_') || str_starts_with($property_name, 'set_')) {
@@ -324,7 +324,7 @@ abstract class Names
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function pathToClass($class_name)
+	public static function pathToClass(string $class_name) : string
 	{
 		return str_replace(SL, BS, ucfirst(preg_replace_callback(
 			'%[_/][a-z]%', function($matches) { return strtoupper($matches[0]); }, $class_name
@@ -338,7 +338,7 @@ abstract class Names
 	 * @param $property_name string
 	 * @return string
 	 */
-	public static function propertyPathToField($property_name)
+	public static function propertyPathToField(string $property_name) : string
 	{
 		if ($i = strpos($property_name, DOT)) {
 			$property_name = substr($property_name, 0, $i)
@@ -354,7 +354,7 @@ abstract class Names
 	 * @param $property_name string
 	 * @return string
 	 */
-	public static function propertyToClass($property_name)
+	public static function propertyToClass(string $property_name) : string
 	{
 		return str_replace(SP, '_', ucwords(str_replace('_', SP, $property_name)));
 	}
@@ -366,7 +366,7 @@ abstract class Names
 	 * @param $property_name string
 	 * @return string
 	 */
-	public static function propertyToDisplay($property_name)
+	public static function propertyToDisplay(string $property_name) : string
 	{
 		return str_replace('_', SP, $property_name);
 	}
@@ -379,14 +379,14 @@ abstract class Names
 	 * @param $prefix string
 	 * @return string
 	 */
-	public static function propertyToMethod($property_name, $prefix = null)
+	public static function propertyToMethod(string $property_name, string $prefix = '') : string
 	{
 		$method = '';
 		$name = explode('_', $property_name);
 		foreach ($name as $value) {
 			$method .= ucfirst($value);
 		}
-		return $prefix ? $prefix . $method : lcfirst($method);
+		return $prefix ? ($prefix . $method) : lcfirst($method);
 	}
 
 	//------------------------------------------------------------------------------------ setToClass
@@ -403,12 +403,12 @@ abstract class Names
 		if (isset(self::$sets[$class_name])) {
 			return self::$sets[$class_name];
 		}
-		// if $class_name is explicitely declared as 'singular' : return it
+		// if $class_name is explicitly declared as 'singular' : return it
 		if (Dependency::hasSet($class_name)) {
 			self::$sets[$class_name] = $class_name;
 			return $class_name;
 		}
-		// explicitely declared as 'plural of ...' : return the matching class name
+		// explicitly declared as 'plural of ...' : return the matching class name
 		if ($dependency_class_name = Dependency::dependencyToClass($class_name)) {
 			self::$sets[$class_name] = $dependency_class_name;
 			return $dependency_class_name;
@@ -441,8 +441,8 @@ abstract class Names
 					trigger_error('No class found for set ' . $set_class_name, E_USER_ERROR);
 				}
 				else {
-					$right      = substr($class_name, $i) . $right;
-					$class_name = substr($class_name, 0, $i);
+					$right      = $class_name . $right;
+					$class_name = '';
 				}
 			}
 			else {
@@ -474,17 +474,17 @@ abstract class Names
 	 * @param $set string
 	 * @return string
 	 */
-	public static function setToSingle($set)
+	public static function setToSingle(string $set) : string
 	{
 		if ($found = array_search($set, static::$irregular)) {
 			return is_numeric($found) ? $set : $found;
 		}
-		if (substr($set, -2) !== 'ss') {
-			if     (substr($set, -3) === 'ies')   return substr($set, 0, -3) . 'y';
-			elseif (substr($set, -3) === 'ses')   return substr($set, 0, -2);
-			elseif (substr($set, -4) === 'ches')  return substr($set, 0, -2);
-			elseif (substr($set, -1) === 's')     return substr($set, 0, -1);
-			elseif (substr($set, -3) === 'men')   return substr($set, 0, -3) . 'man';
+		if (!str_ends_with($set, 'ss')) {
+			if     (str_ends_with($set, 'ies'))   return substr($set, 0, -3) . 'y';
+			elseif (str_ends_with($set, 'ses'))   return substr($set, 0, -2);
+			elseif (str_ends_with($set, 'ches'))  return substr($set, 0, -2);
+			elseif (str_ends_with($set, 's'))     return substr($set, 0, -1);
+			elseif (str_ends_with($set, 'men'))   return substr($set, 0, -3) . 'man';
 		}
 		return $set;
 	}
@@ -495,7 +495,7 @@ abstract class Names
 	 * @param $single string
 	 * @return string
 	 */
-	public static function singleToSet($single)
+	public static function singleToSet(string $single) : string
 	{
 		if (isset(static::$irregular[$single])) {
 			return static::$irregular[$single];
@@ -504,11 +504,11 @@ abstract class Names
 			return $single;
 		}
 		return
-			(substr($single, -2) === 'ay')  ? ($single . 's') : (
-			(substr($single, -1) === 'y')   ? (substr($single, 0, -1) . 'ies') : (
-			(substr($single, -3) === 'man') ? (substr($single, 0, -3) . 'men') : (
-			(substr($single, -2) === 'ss')  ? ($single . 'es') : (
-			(substr($single, -1) === 's')   ? $single : (
+			str_ends_with($single, 'ay')  ? ($single . 's') : (
+			str_ends_with($single, 'y')   ? (substr($single, 0, -1) . 'ies') : (
+			str_ends_with($single, 'man') ? (substr($single, 0, -3) . 'men') : (
+			str_ends_with($single, 'ss')  ? ($single . 'es') : (
+			str_ends_with($single, 's')   ? $single : (
 				$single . 's'
 			)))));
 	}
@@ -518,7 +518,7 @@ abstract class Names
 	 * @param $uri string
 	 * @return string
 	 */
-	public static function uriToClass($uri)
+	public static function uriToClass(string $uri) : string
 	{
 		while (!ctype_upper(substr(rLastParse($uri, SL), 0, 1))) {
 			$uri = lLastParse($uri, SL);

@@ -14,10 +14,10 @@ trait Current_With_Default
 	/**
 	 * Gets/sets current environment's object
 	 *
-	 * @param $set_current static
-	 * @return static|null
+	 * @param $set_current object|null
+	 * @return ?object
 	 */
-	public static function current($set_current = null)
+	public static function current(object $set_current = null) : ?object
 	{
 		$current = self::pCurrent($set_current);
 		if (!isset($current)) {

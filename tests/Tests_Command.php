@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Tests;
 
 use ITRocks\Framework\Logger\Text_Output;
 use PHPUnit\TextUI\Command;
+use PHPUnit\TextUI\Exception;
 use ReflectionClass;
 
 /**
@@ -15,7 +16,7 @@ class Tests_Command extends Command
 	/**
 	 * @var Tests_Configurator
 	 */
-	public $configurator;
+	public Tests_Configurator $configurator;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -31,7 +32,7 @@ class Tests_Command extends Command
 	 * @param $options string[] array of options key=>value
 	 * @return string[] of options as un command line
 	 */
-	public function parsePHPUnitOptions(array $options)
+	public function parsePHPUnitOptions(array $options) : array
 	{
 		$parsed_options = [];
 
@@ -49,11 +50,12 @@ class Tests_Command extends Command
 	}
 
 	//-------------------------------------------------------------------------------------- runTests
+
 	/**
 	 * Run the required tests
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $query_options string[] Other options passed from query params
+	 * @throws Exception
 	 */
 	public function runTests(array $query_options = [])
 	{
@@ -67,7 +69,6 @@ class Tests_Command extends Command
 		$output->log('Running tests with options : ');
 
 		$class_name  = '';
-		$file_path   = '';
 		$method_name = '';
 		$previous    = '';
 		$run_options = [];
@@ -75,13 +76,12 @@ class Tests_Command extends Command
 			if (($previous === '--configuration') || !$key) {
 				$option = realpath($option);
 			}
-			/** @noinspection PhpUnhandledExceptionInspection options must be valid class names */
 			if (
 				strlen($option)
 				&& ctype_upper($option[0])
 				&& ($option !== Tests_Html_ResultPrinter::class)
 				&& class_exists($option)
-				&& ($file_path = (new ReflectionClass($option))->getFileName())
+				&& (new ReflectionClass($option))->getFileName()
 			) {
 				$class_name = $option;
 			}

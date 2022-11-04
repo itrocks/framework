@@ -517,10 +517,10 @@ class Template
 	 * Gets the first parent of current (last) object that is an object
 	 *
 	 * @param $instance_of class-string<T>|null class name
-	 * @return T|null
+	 * @return ?T
 	 * @template T
 	 */
-	public function getParentObject(string $instance_of = null) : object|null
+	public function getParentObject(string $instance_of = null) : ?object
 	{
 		$object = null;
 		if (reset($this->objects)) {
@@ -933,11 +933,11 @@ class Template
 	 * Parses included view controller call result (must be an html view) or includes html template
 	 *
 	 * @param $include_uri string
-	 * @return string|null included template, parsed, or null if included file was not found
+	 * @return string included template, parsed, or null if included file was not found
 	 */
-	protected function parseInclude($include_uri)
+	protected function parseInclude(string $include_uri) : string
 	{
-		return ((substr($include_uri, -5) === '.html') || (substr($include_uri, -4) === '.php'))
+		return strEndsWith($include_uri, ['.html', '.php'])
 			? $this->parseIncludeTemplate($include_uri)
 			: $this->parseIncludeController($include_uri);
 	}
@@ -1706,7 +1706,7 @@ class Template
 			$object = $this->parseArrayElement($object, $property_name);
 		}
 		elseif (!is_object($object) && !array_key_exists($property_name, $this->parameters)) {
-			$object = $this->parseString($object, $property_name);
+			$object = $this->parseString(strval($object), $property_name);
 		}
 		elseif (
 			(is_object($object) || (is_string($object) && !empty($object) && ctype_upper($object[0])))
@@ -1827,7 +1827,7 @@ class Template
 	 * @param $property_name string
 	 * @return mixed
 	 */
-	protected function parseString($string, $property_name)
+	protected function parseString(string $string, string $property_name) : mixed
 	{
 		$string = new String_Class($string);
 		if (method_exists($string, $property_name)) {

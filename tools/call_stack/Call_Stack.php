@@ -18,7 +18,7 @@ class Call_Stack
 	/**
 	 * @var boolean
 	 */
-	public $is_exception = false;
+	public bool $is_exception = false;
 
 	//---------------------------------------------------------------------------------------- $stack
 	/**
@@ -27,13 +27,13 @@ class Call_Stack
 	 *
 	 * @var array
 	 */
-	private $stack;
+	private array $stack;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Constructs a call stack analyzer object, for a given exception or from current call stack
 	 *
-	 * @param $exception Exception
+	 * @param $exception Exception|null
 	 */
 	public function __construct(Exception $exception = null)
 	{
@@ -51,7 +51,7 @@ class Call_Stack
 	/**
 	 * @return string
 	 */
-	public function asHtml()
+	public function asHtml() : string
 	{
 		$lines_count = 0;
 		$result      = [
@@ -81,7 +81,7 @@ class Call_Stack
 	/**
 	 * @return string
 	 */
-	public function asText()
+	public function asText() : string
 	{
 		$lines_count = 0;
 		$result      = ($this->is_exception ? 'Exception' : 'Error') . ' stack trace:' . LF;
@@ -105,12 +105,18 @@ class Call_Stack
 	//------------------------------------------------------------------------- calledMethodArguments
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $method    callable|array
-	 * @param $arguments mixed[] key is the argument number or name (slower)
-	 * @return Line|null
+	 * @param $method    array
+	 * @param $arguments array key is the argument number or name (slower)
+	 * @return ?Line
 	 */
-	public function calledMethodArguments(array $method, array $arguments)
+	public function calledMethodArguments(array $method, array $arguments) : ?Line
 	{
+		if (!is_array($method)) {
+			/** @noinspection PhpUnhandledExceptionInspection Programming error */
+			throw new Exception(
+				__CLASS__ . '::calledMethodArguments callable $method must be an array', E_USER_ERROR
+			);
+		}
 		foreach ($arguments as $argument_name => $argument) {
 			if (is_string($argument_name)) {
 				if (!isset($reflection_method)) {
@@ -127,7 +133,7 @@ class Call_Stack
 			if ($this->methodMatches($stack, $method)) {
 				$found = true;
 				foreach ($arguments as $argument_number => $argument) {
-					if (is_object($argument) && ($identifier = Dao::getObjectIdentifier($argument))) {
+					if (is_object($argument) && Dao::getObjectIdentifier($argument)) {
 						if (!Dao::is($argument, $stack['args'][$argument_number])) {
 							$found = false;
 							break;
@@ -153,7 +159,7 @@ class Call_Stack
 	 * @param $class_name string
 	 * @return boolean
 	 */
-	public function containsClass($class_name)
+	public function containsClass(string $class_name) : bool
 	{
 		foreach ($this->stack as $stack) {
 			if (isset($stack['class']) && ($stack['class'] === $class_name)) {
@@ -167,10 +173,10 @@ class Call_Stack
 	/**
 	 * Get top matching method Line
 	 *
-	 * @param $method callable|array if object, must be exactly the same instance
+	 * @param $method array if object, must be exactly the same instance
 	 * @return boolean
 	 */
-	public function containsMethod(array $method)
+	public function containsMethod(array $method) : bool
 	{
 		foreach ($this->stack as $stack) {
 			if ($this->methodMatches($stack, $method)) {
@@ -187,7 +193,7 @@ class Call_Stack
 	 * @param $namespace string
 	 * @return boolean
 	 */
-	public function containsNamespace($namespace)
+	public function containsNamespace(string $namespace) : bool
 	{
 		$length = strlen($namespace);
 		foreach ($this->stack as $stack) {
@@ -209,7 +215,7 @@ class Call_Stack
 	 * @param $object object|string object or class name
 	 * @return boolean
 	 */
-	public function containsObject($object)
+	public function containsObject(object|string $object) : bool
 	{
 		if (is_string($object)) {
 			foreach ($this->stack as $stack) {
@@ -293,9 +299,9 @@ class Call_Stack
 	/**
 	 * Get current call feature from call stack
 	 *
-	 * @return string|null
+	 * @return ?string
 	 */
-	public function getFeature()
+	public function getFeature() : ?string
 	{
 		if ($template = $this->getObject(Template::class)) {
 			return $template->getFeature();
@@ -307,10 +313,10 @@ class Call_Stack
 	/**
 	 * Get top matching method Line
 	 *
-	 * @param $method callable|array if object, must be exactly the same instance
-	 * @return Line|null
+	 * @param $method array if object, must be exactly the same instance
+	 * @return ?Line
 	 */
-	public function getMethod(array $method)
+	public function getMethod(array $method) : ?Line
 	{
 		foreach ($this->stack as $stack) {
 			if ($this->methodMatches($stack, $method)) {
@@ -324,11 +330,11 @@ class Call_Stack
 	/**
 	 * Get top matching method argument value
 	 *
-	 * @param $method          callable|array if object, must be exactly the same instance
+	 * @param $method          array if object, must be exactly the same instance
 	 * @param $argument_number integer argument number (0..n)
 	 * @return mixed null if not found or value was null
 	 */
-	public function getMethodArgument(array $method, $argument_number = 0)
+	public function getMethodArgument(array $method, int $argument_number = 0) : mixed
 	{
 		foreach ($this->stack as $stack) {
 			if ($this->methodMatches($stack, $method)) {
@@ -343,10 +349,10 @@ class Call_Stack
 	 * Get top object that is an instance of $class_name from the call stack
 	 *
 	 * @param $class_name class-string<T> Can be a the name of a class, interface or trait
-	 * @return T|null
+	 * @return ?T
 	 * @template T
 	 */
-	public function getObject(string $class_name) : object|null
+	public function getObject(string $class_name) : ?object
 	{
 		foreach ($this->stack as $stack) {
 			if (isset($stack['object']) && isA($stack['object'], $class_name)) {
@@ -361,10 +367,10 @@ class Call_Stack
 	 * Get top object that is the value of an argument of $class_name
 	 *
 	 * @param $class_name class-string<T> Can be the name of a class, interface or trait
-	 * @return object|null
+	 * @return ?T
 	 * @template T
 	 */
-	public function getObjectArgument(string $class_name) : object|null
+	public function getObjectArgument(string $class_name) : ?object
 	{
 		foreach ($this->stack as $stack) {
 			if (isset($stack['args'])) {
@@ -382,7 +388,7 @@ class Call_Stack
 	/**
 	 * @return Line[]
 	 */
-	public function lines()
+	public function lines() : array
 	{
 		$lines = [];
 		foreach ($this->stack as $line) {
@@ -395,10 +401,10 @@ class Call_Stack
 	/**
 	 * Get method call count
 	 *
-	 * @param $method callable|array if object, must be exactly the same instance
+	 * @param $method array if object, must be exactly the same instance
 	 * @return integer
 	 */
-	public function methodCount(array $method)
+	public function methodCount(array $method) : int
 	{
 		$method_count = 0;
 		foreach ($this->stack as $stack) {
@@ -412,10 +418,10 @@ class Call_Stack
 	//--------------------------------------------------------------------------------- methodMatches
 	/**
 	 * @param $stack  array Call stack entry
-	 * @param $method array|callable
+	 * @param $method array
 	 * @return boolean
 	 */
-	protected function methodMatches(array $stack, array $method)
+	protected function methodMatches(array $stack, array $method) : bool
 	{
 		return isset($stack['args'])
 			&& isset($stack['function']) && ($stack['function'] === $method[1])
@@ -437,9 +443,9 @@ class Call_Stack
 
 	//------------------------------------------------------------------------------------------- pop
 	/**
-	 * @return static
+	 * @return $this
 	 */
-	public function pop()
+	public function pop() : static
 	{
 		array_shift($this->stack);
 		return $this;
@@ -450,9 +456,9 @@ class Call_Stack
 	 * Returns true if the call stack contains any of the given functions
 	 *
 	 * @param $functions string[] The searched functions
-	 * @return Line|null The first matching line if found, else false
+	 * @return ?Line The first matching line if found, else false
 	 */
-	public function searchFunctions(array $functions)
+	public function searchFunctions(array $functions) : ?Line
 	{
 		foreach ($this->stack as $stack) {
 			if (
@@ -469,9 +475,9 @@ class Call_Stack
 	//----------------------------------------------------------------------------------------- shift
 	/**
 	 * @param $count integer
-	 * @return static
+	 * @return $this
 	 */
-	public function shift($count = 1)
+	public function shift(int $count = 1) : static
 	{
 		while ($count-- > 0) {
 			array_shift($this->stack);

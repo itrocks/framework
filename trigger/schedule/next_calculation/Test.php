@@ -19,7 +19,7 @@ class Test extends Tests\Test
 	 * @param $schedule Schedule
 	 * @param $values   string[] key is the source value, expected is the next one
 	 */
-	protected function executeTests(Schedule $schedule, $values)
+	protected function executeTests(Schedule $schedule, array $values)
 	{
 		$calculation = new Next_Calculation();
 		foreach ($values as $source => $expected) {

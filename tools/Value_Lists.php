@@ -11,7 +11,7 @@ class Value_Lists
 	/**
 	 * @var array string[][]
 	 */
-	public $lists;
+	public array $lists;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

@@ -13,6 +13,6 @@ trait Has_Comment
 	 * @multiline
 	 * @var string
 	 */
-	public $comment;
+	public string $comment;
 
 }

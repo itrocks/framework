@@ -6,17 +6,6 @@ namespace ITRocks\Framework\Traits;
  */
 class Identifier
 {
-	use Has_Name;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $name string
-	 */
-	public function __construct($name = null)
-	{
-		if (isset($name)) {
-			$this->name = $name;
-		}
-	}
+	use Has_Name\With_Constructor;
 
 }

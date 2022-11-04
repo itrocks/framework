@@ -14,20 +14,20 @@ class Next_Calculation
 	/**
 	 * @var Date_Time
 	 */
-	protected $date;
+	protected Date_Time $date;
 
 	//------------------------------------------------------------------------------------- $schedule
 	/**
 	 * @var Schedule
 	 */
-	protected $schedule;
+	protected Schedule $schedule;
 
 	//------------------------------------------------------------------------------------------ next
 	/**
 	 * Calculate the next schedule, after the given datetime
 	 *
 	 * @param $schedule Schedule
-	 * @param $date     Date_Time @default Date_Time::now()
+	 * @param $date     Date_Time|null @default Date_Time::now()
 	 * @return Date_Time
 	 */
 	public function next(Schedule $schedule, Date_Time $date = null)
@@ -45,7 +45,7 @@ class Next_Calculation
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return boolean true if date changed, else false
 	 */
-	protected function nextDayOfMonth()
+	protected function nextDayOfMonth() : bool
 	{
 		if ($this->date->isMax()) {
 			return false;
@@ -90,7 +90,7 @@ class Next_Calculation
 	 *
 	 * @return boolean true if date changed, else false
 	 */
-	protected function nextDayOfWeek()
+	protected function nextDayOfWeek() : bool
 	{
 		if ($this->date->isMax()) {
 			return false;
@@ -124,7 +124,7 @@ class Next_Calculation
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return boolean true if date changed, else false
 	 */
-	protected function nextMonth()
+	protected function nextMonth() : bool
 	{
 		if ($this->date->isMax()) {
 			return false;
@@ -165,7 +165,7 @@ class Next_Calculation
 	 * @param $forward boolean
 	 * @return boolean true if date changed, else false
 	 */
-	protected function nextTime($forward = false)
+	protected function nextTime(bool $forward = false) : bool
 	{
 		if ($this->date->isMax()) {
 			return false;
@@ -242,7 +242,7 @@ class Next_Calculation
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return boolean true if date changed, else false
 	 */
-	protected function nextYear()
+	protected function nextYear() : bool
 	{
 		if ($this->date->isMax() || !trim($this->schedule->years)) {
 			return false;

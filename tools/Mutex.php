@@ -1,8 +1,6 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
-use phpDocumentor\Reflection\Types\Boolean;
-
 /**
  * Mutual exclusion management : these locks are local to your server
  */
@@ -13,25 +11,25 @@ class Mutex
 	/**
 	 * @var resource
 	 */
-	protected $file;
+	protected mixed $file;
 
 	//------------------------------------------------------------------------------------ $file_name
 	/**
 	 * @var string
 	 */
-	protected $file_name;
+	protected string $file_name;
 
 	//------------------------------------------------------------------------------------------ $key
 	/**
 	 * @var string
 	 */
-	protected $key;
+	protected string $key;
 
 	//------------------------------------------------------------------------------------------ $own
 	/**
 	 * @var boolean
 	 */
-	public $own = false;
+	public bool $own = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -58,7 +56,7 @@ class Mutex
 	 * @param $blocking boolean if false, lock will not wait for file unlock
 	 * @return boolean
 	 */
-	public function lock($blocking = true) : bool
+	public function lock(bool $blocking = true) : bool
 	{
 		if (!flock($this->file, $blocking ? LOCK_EX : (LOCK_EX | LOCK_NB))) {
 			return false;

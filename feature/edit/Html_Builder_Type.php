@@ -54,9 +54,9 @@ class Html_Builder_Type
 	 * The key is the name of the condition, the value is the name of the value that enables
 	 * the condition
 	 *
-	 * @var string[]
+	 * @var ?string[]
 	 */
-	public array $conditions;
+	public ?array $conditions = null;
 
 	//----------------------------------------------------------------------------------------- $data
 	/**
@@ -189,18 +189,19 @@ class Html_Builder_Type
 	 */
 	protected function addConditionsToElement(Element $element)
 	{
-		if ($this->conditions) {
-			$html_conditions = [];
-			$old_name        = $this->name;
-			foreach ($this->conditions as $condition_name => $condition_value) {
-				$this->name = $condition_name;
-				$name       = $this->getFieldName('', false, $old_name);
-				$operator   = strStartsWith($condition_value, ['<', '>']) ? '' : '=';
-				$html_conditions[] = $name . $operator . $condition_value;
-			}
-			$this->name = $old_name;
-			$element->setData('conditions', join(';', $html_conditions));
+		if (!$this->conditions) {
+			return;
 		}
+		$html_conditions = [];
+		$old_name        = $this->name;
+		foreach ($this->conditions as $condition_name => $condition_value) {
+			$this->name = $condition_name;
+			$name       = $this->getFieldName('', false, $old_name);
+			$operator   = strStartsWith($condition_value, ['<', '>']) ? '' : '=';
+			$html_conditions[] = $name . $operator . $condition_value;
+		}
+		$this->name = $old_name;
+		$element->setData('conditions', join(';', $html_conditions));
 	}
 
 	//----------------------------------------------------------------------------------------- build

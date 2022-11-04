@@ -48,7 +48,7 @@ class Cache_Result implements Option
 	 * @param $where      array|object
 	 * @param $class_name string
 	 * @param $options    Option[]
-	 * @return object[]|null null if there is no cached result
+	 * @return ?object[] null if there is no cached result
 	 */
 	public function cachedResult(array|object $where, string $class_name, array $options) : ?array
 	{

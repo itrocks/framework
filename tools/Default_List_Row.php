@@ -144,7 +144,7 @@ class Default_List_Row implements List_Row
 	 * May be null if link is deactivated, eg by an ACL feature
 	 *
 	 * @noinspection PhpUnused html
-	 * @return string|null
+	 * @return ?string
 	 */
 	public function getOutputLink() : ?string
 	{

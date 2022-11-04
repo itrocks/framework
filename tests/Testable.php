@@ -22,7 +22,7 @@ abstract class Testable extends TestCase
 	/**
 	 * @var integer
 	 */
-	public $errors_count = 0;
+	public int $errors_count = 0;
 
 	//--------------------------------------------------------------------------------------- $header
 	/**
@@ -31,20 +31,20 @@ abstract class Testable extends TestCase
 	 *
 	 * @var string
 	 */
-	public $header;
+	public string $header = '';
 
 	//----------------------------------------------------------------------------------------- $show
 	/**
 	 * @values all, errors, none
 	 * @var string
 	 */
-	public $show = self::ERRORS;
+	public string $show = self::ERRORS;
 
 	//---------------------------------------------------------------------------------- $tests_count
 	/**
 	 * @var integer
 	 */
-	public $tests_count = 0;
+	public int $tests_count = 0;
 
 	//----------------------------------------------------------------------------------------- begin
 	/**
@@ -78,7 +78,7 @@ abstract class Testable extends TestCase
 	 * @deprecated PhpUnit already register method name
 	 * @param $method_name string
 	 */
-	public function method($method_name)
+	public function method(string $method_name)
 	{
 		$this->show('<h4>' . $method_name . '</h4>' . LF);
 	}
@@ -87,7 +87,7 @@ abstract class Testable extends TestCase
 	/**
 	 * @param $show string
 	 */
-	protected function show($show)
+	protected function show(string $show)
 	{
 		if (($this->show === self::ALL) || ($this->errors_count && ($this->show === self::ERRORS))) {
 			echo $show;

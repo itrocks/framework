@@ -121,9 +121,9 @@ class Builder extends File
 	 * Search a built class, and return its object if exist
 	 *
 	 * @param $class_name string
-	 * @return Built|null
+	 * @return ?Built
 	 */
-	public function search(string $class_name) : Built|null
+	public function search(string $class_name) : ?Built
 	{
 		foreach ($this->classes as $built) {
 			if (($built instanceof Built) && ($built->class_name === $class_name)) {

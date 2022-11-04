@@ -13,6 +13,6 @@ trait Has_Note
 	 * @multiline
 	 * @var string
 	 */
-	public $note;
+	public string $note = '';
 
 }

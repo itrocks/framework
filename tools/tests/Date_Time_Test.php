@@ -13,13 +13,11 @@ class Date_Time_Test extends Test
 
 	//----------------------------------------------------------------------------------- providerAdd
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return array
 	 * @see testAdd
 	 */
-	public function providerAdd()
+	public function providerAdd() : array
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constants */
 		return [
 			'1 day'          => [new Date_Time('2016-09-24T11:04:02'), [ 1                   ]],
 			'1 minute ago'   => [new Date_Time('2016-09-23T11:03:02'), [-1, Date_Time::MINUTE]],
@@ -30,39 +28,27 @@ class Date_Time_Test extends Test
 
 	//--------------------------------------------------------------------------------------- testAdd
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @dataProvider providerAdd
 	 * @param $expected Date_Time
-	 * @param $args array
+	 * @param $args int[]|string[]
 	 */
-	public function testAdd($expected, $args)
+	public function testAdd(Date_Time $expected, array $args)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$base = new Date_Time('2016-09-23T11:04:02');
 		static::assertEquals($expected, $base->add(...$args));
 	}
 
 	//--------------------------------------------------------------------------------- testConstruct
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testConstruct()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant  */
 		$date = new Date_Time('2016-11-05T19:46:32.56');
 		static::assertEquals('2016-11-05 19:46:32', $date->format('Y-m-d H:i:s'));
 	}
 
 	//-------------------------------------------------------------------------------------- testDiff
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @see Date_Time::diff()
-	 */
 	public function testDiff()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constants */
 		$yesterday = new Date_Time('2016-11-01 16:11:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constants */
 		$tomorrow  = new Date_Time('2016-11-03 15:10:49');
 
 		// Chronological
@@ -87,16 +73,10 @@ class Date_Time_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------- testEarliest
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testEarliest()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$earlier = new Date_Time('2006-01-01 13:29:18');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$now     = new Date_Time('2016-10-24 10:48:12');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$later   = new Date_Time('2034-05-12 10:00:00');
 		 static::assertEquals($earlier, $earlier->earliest($later),       'one argument');
 		 static::assertEquals($earlier, $earlier->earliest($later, $now), 'two arguments');
@@ -108,17 +88,14 @@ class Date_Time_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------------- testIs
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testIs()
 	{
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
 		$tomorrow_string = '2016-07-14 00:00:00';
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
+		/** @noinspection PhpUnhandledExceptionInspection valid date-time */
 		$empty_date      = new Date_Time($empty_string);
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
+		/** @noinspection PhpUnhandledExceptionInspection valid date-time */
 		$today_date      = new Date_Time($today_string);
 		$min_date        = Date_Time::min();
 		$max_date        = Date_Time::max();
@@ -153,17 +130,14 @@ class Date_Time_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testIsAfter
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testIsAfter()
 	{
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
 		$tomorrow_string = '2016-07-14 00:00:00';
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
+		/** @noinspection PhpUnhandledExceptionInspection valid date-time */
 		$empty_date      = new Date_Time($empty_string);
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
+		/** @noinspection PhpUnhandledExceptionInspection valid date-time */
 		$today_date      = new Date_Time($today_string);
 		$min_date        = Date_Time::min();
 		$max_date        = Date_Time::max();
@@ -198,17 +172,14 @@ class Date_Time_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------- testIsAfterOrEqual
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testIsAfterOrEqual()
 	{
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
 		$tomorrow_string = '2016-07-14 00:00:00';
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
+		/** @noinspection PhpUnhandledExceptionInspection valid date-time */
 		$empty_date      = new Date_Time($empty_string);
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
+		/** @noinspection PhpUnhandledExceptionInspection valid date-time */
 		$today_date      = new Date_Time($today_string);
 		$min_date        = Date_Time::min();
 		$max_date        = Date_Time::max();
@@ -243,9 +214,6 @@ class Date_Time_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------- testIsBefore
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testIsBefore()
 	{
 		$empty_string    = '0000-00-00 00:00:00';
@@ -288,9 +256,6 @@ class Date_Time_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------- testIsBeforeOrEqual
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testIsBeforeOrEqual()
 	{
 		$empty_string    = '0000-00-00 00:00:00';
@@ -333,9 +298,6 @@ class Date_Time_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testIsEmpty
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testIsEmpty()
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
@@ -351,9 +313,6 @@ class Date_Time_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------- testIsMax
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testIsMax()
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
@@ -369,14 +328,9 @@ class Date_Time_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------- testIsMin
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testIsMin()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$empty_date = new Date_Time('0000-00-00 00:00:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$today_date = new Date_Time('2016-07-13 09:47:05');
 		$min_date   = Date_Time::min();
 		$max_date   = Date_Time::max();
@@ -387,16 +341,10 @@ class Date_Time_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------ testLatest
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testLatest()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$earlier = new Date_Time('2006-01-01 13:29:18');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$now     = new Date_Time('2016-10-24 10:48:12');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$later   = new Date_Time('2034-05-12 10:00:00');
 		 static::assertEquals($later, $earlier->latest($later),       'one argument');
 		 static::assertEquals($later, $earlier->latest($later, $now), 'two arguments');
@@ -408,9 +356,6 @@ class Date_Time_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testToMonth
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testToMonth()
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */

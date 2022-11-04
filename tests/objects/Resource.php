@@ -18,31 +18,34 @@ class Resource
 	 * @mandatory
 	 * @var Salesman
 	 */
-	public $mandatory_object;
+	public Salesman $mandatory_object;
 
 	//------------------------------------------------------------------------------------------ $map
 	/**
 	 * @link Map
 	 * @var Salesman[]
 	 */
-	public $map;
+	public array $map;
 
 	//------------------------------------------------------------------------------ $optional_object
 	/**
 	 * @link Object
-	 * @var Salesman
+	 * @var ?Salesman
 	 */
-	public $optional_object;
+	public ?Salesman $optional_object;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Object constructor
+	 * A constructor for your Has_Name class
 	 *
-	 * @param $name string
+	 * @param $name string|null
+	 * @todo use With_Constructor : needs AOP compiler update
 	 */
-	public function __construct($name = null)
+	public function __construct(string $name = null)
 	{
-		if (isset($name)) $this->name = $name;
+		if (isset($name)) {
+			$this->name = $name;
+		}
 	}
 
 }

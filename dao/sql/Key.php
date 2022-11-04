@@ -1,12 +1,10 @@
 <?php
 namespace ITRocks\Framework\Dao\Sql;
 
-use ITRocks\Framework\Tools\Field;
-
 /**
  * A common interface for Dao key object representation
  */
-interface Key extends Field
+interface Key
 {
 
 	//----------------------------------------------------------------------------------------- equiv
@@ -16,6 +14,14 @@ interface Key extends Field
 	 * @param $key Key
 	 */
 	public function equiv(Key $key);
+
+	//--------------------------------------------------------------------------------------- getName
+	/**
+	 * Gets the field name
+	 *
+	 * @return string
+	 */
+	public function getName() : string;
 
 	//------------------------------------------------------------------------------------ getSqlType
 	/**
@@ -32,5 +38,13 @@ interface Key extends Field
 	 * @return string
 	 */
 	public function toSql() : string;
+
+	//--------------------------------------------------------------------------------------- getType
+	/**
+	 * Gets the type for the field
+	 *
+	 * @return string
+	 */
+	public function getType() : string;
 
 }

@@ -27,13 +27,13 @@ class Convert
 	/**
 	 * @var string
 	 */
-	protected $convert_method_name;
+	protected string $convert_method_name;
 
 	//----------------------------------------------------------------------------- $from_method_name
 	/**
 	 * @var string
 	 */
-	protected $from_method_name;
+	protected string $from_method_name;
 
 	//------------------------------------------------------------------------------------ $from_unit
 	/**
@@ -41,13 +41,13 @@ class Convert
 	 *
 	 * @var string
 	 */
-	public $from_unit;
+	public string $from_unit;
 
 	//-------------------------------------------------------------------------------------- $options
 	/**
 	 * @var integer[]
 	 */
-	public $options = [
+	public array $options = [
 		self::DAY_HALF     => true,
 		self::HOURS_IN_DAY => 7.8
 	];
@@ -56,7 +56,7 @@ class Convert
 	/**
 	 * @var string
 	 */
-	protected $to_method_name;
+	protected string $to_method_name;
 
 	//-------------------------------------------------------------------------------------- $to_unit
 	/**
@@ -64,14 +64,14 @@ class Convert
 	 *
 	 * @var string
 	 */
-	public $to_unit;
+	public string $to_unit;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $from_unit string @values Unit::const
 	 * @param $to_unit   string @values Unit::const
 	 */
-	public function __construct($from_unit, $to_unit)
+	public function __construct(string $from_unit, string $to_unit)
 	{
 		$this->setUnits($from_unit, $to_unit);
 	}
@@ -83,7 +83,7 @@ class Convert
 	 * @param $value float|integer|string
 	 * @return integer|float|string|null
 	 */
-	public function convert($value)
+	public function convert(float|int|string $value) : int|float|string|null
 	{
 		if ($this->convert_method_name) {
 			return $this->{$this->convert_method_name}($value);
@@ -98,7 +98,7 @@ class Convert
 	/**
 	 * @return boolean true if a method is available to convert from $from_unit to $to_unit
 	 */
-	protected function findMethod()
+	protected function findMethod() : bool
 	{
 		$convert_method_name = Names::propertyToMethod($this->from_unit . '_to_' . $this->to_unit);
 		$from_method_name    = Names::propertyToMethod('from_' . $this->from_unit);
@@ -138,7 +138,7 @@ class Convert
 	 * @param $value float|integer
 	 * @return integer
 	 */
-	protected function from($value)
+	protected function from(float|int $value) : int
 	{
 		return $value;
 	}
@@ -148,7 +148,7 @@ class Convert
 	 * @param $from_unit string @values Unit::const
 	 * @param $to_unit   string @values Unit::const
 	 */
-	public function setUnits($from_unit, $to_unit)
+	public function setUnits(string $from_unit, string $to_unit)
 	{
 		$this->from_unit = $from_unit;
 		$this->to_unit   = $to_unit;
@@ -158,9 +158,9 @@ class Convert
 	//---------------------------------------------------------------------------------------- toDays
 	/**
 	 * @param $value float|integer
-	 * @return float|integer
+	 * @return integer
 	 */
-	protected function toDays($value)
+	protected function toDays(float|int $value) : int
 	{
 		return ($this->options[self::DAY_HALF])
 			? (round(2 * $value / $this->options[self::HOURS_IN_DAY] / 3600) / 2)
@@ -172,7 +172,7 @@ class Convert
 	 * @param $value float|integer
 	 * @return string
 	 */
-	protected function toHoursMinutes($value)
+	protected function toHoursMinutes(float|int $value) : string
 	{
 		return sprintf(
 			'%s:%02s',
@@ -186,7 +186,7 @@ class Convert
 	 * @param $value float|integer
 	 * @return string
 	 */
-	protected function toHoursMinutesSeconds($value)
+	protected function toHoursMinutesSeconds(float|int $value) : string
 	{
 		return sprintf(
 			'%s:%02s:%02s',

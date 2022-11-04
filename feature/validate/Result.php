@@ -26,7 +26,7 @@ abstract class Result
 	/**
 	 * @param $result     string|null|true
 	 * @param $and_result string|null|true
-	 * @return string|null|true
+	 * @return string|true|null
 	 */
 	public static function andResult(bool|string|null $result, bool|string|null $and_result)
 		: bool|string|null

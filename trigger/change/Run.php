@@ -16,7 +16,7 @@ class Run extends Has_Condition\Run
 	 * @link Map
 	 * @var Action[]
 	 */
-	public $actions;
+	public array $actions;
 
 	//--------------------------------------------------------------------------------------- $change
 	/**
@@ -24,6 +24,6 @@ class Run extends Has_Condition\Run
 	 * @link Object
 	 * @var Change
 	 */
-	public $change;
+	public Change $change;
 
 }

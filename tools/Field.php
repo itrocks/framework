@@ -15,7 +15,7 @@ interface Field
 	 *
 	 * @return string
 	 */
-	public function getName();
+	public function getName() : string;
 
 	//--------------------------------------------------------------------------------------- getType
 	/**
@@ -24,6 +24,6 @@ interface Field
 	 * @return Type
 	 * @values float, integer, string, Date_Time, *
 	 */
-	public function getType();
+	public function getType() : Type;
 
 }

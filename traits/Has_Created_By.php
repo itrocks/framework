@@ -16,9 +16,9 @@ trait Has_Created_By
 	/**
 	 * @link Object
 	 * @user invisible_edit, invisible_output, readonly
-	 * @var User
+	 * @var ?User
 	 */
-	public $created_by;
+	public ?User $created_by;
 
 	//---------------------------------------------------------------------------------- setCreatedBy
 	/**

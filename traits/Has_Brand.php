@@ -12,8 +12,8 @@ trait Has_Brand
 	//---------------------------------------------------------------------------------------- $brand
 	/**
 	 * @link Object
-	 * @var Brand
+	 * @var ?Brand
 	 */
-	public $brand;
+	public ?Brand $brand;
 
 }

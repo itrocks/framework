@@ -12,6 +12,9 @@ trait Has_Name_Duplicate
 {
 
 	//--------------------------------------------------------------------------------- duplicateName
+	/**
+	 * @noinspection PhpUnused @duplicate
+	 */
 	public function duplicateName()
 	{
 		/** @var $this Duplicate_Discriminate_By_Counter|self */

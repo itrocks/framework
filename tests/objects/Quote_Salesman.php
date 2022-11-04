@@ -19,20 +19,20 @@ class Quote_Salesman extends Salesman
 	/**
 	 * @var integer
 	 */
-	public $percentage;
+	public int $percentage;
 
 	//---------------------------------------------------------------------------------------- $quote
 	/**
 	 * @link Object
-	 * @var Quote
+	 * @var ?Quote
 	 */
-	public $quote;
+	public ?Quote $quote;
 
 	//------------------------------------------------------------------------------------- $salesman
 	/**
 	 * @link Object
-	 * @var Salesman
+	 * @var ?Salesman
 	 */
-	public $salesman;
+	public ?Salesman $salesman;
 
 }

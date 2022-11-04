@@ -328,12 +328,10 @@ class Email
 	 */
 	private function uniqueAttachments()
 	{
-		$search = Search_Object::create(Attachment::class);
 		foreach ($this->attachments as $attachment) {
-			$search->hash = $attachment->hash;
 			if (
-				$search->hash
-				&& ($find = Dao::searchOne($search))
+				($search['hash'] = $attachment->hash)
+				&& ($find = Dao::searchOne($search, Attachment::class))
 				&& ($find->name === $attachment->name)
 				&& ($find->content === $attachment->content)
 			) {

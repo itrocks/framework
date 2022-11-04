@@ -10,7 +10,7 @@ use ITRocks\Framework\Session;
  * All classes that have a global current value should use this trait to manage the current() method
  *
  * @example
- * The current() method should be overridden to improve IDE's auto-completion capability, like this
+ * The current() method should be overridden to improve IDE auto-completion capability, like this
  * class A_Class
  * {
  *   use Current { current as private pCurrent; }
@@ -37,18 +37,18 @@ trait Current
 
 	//-------------------------------------------------------------------------------------- $current
 	/**
-	 * @var static
+	 * @var ?object
 	 */
-	protected static $current = null;
+	protected static ?object $current = null;
 
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * Gets/sets current environment's object
 	 *
 	 * @param $set_current object|null
-	 * @return object|null
+	 * @return ?object
 	 */
-	public static function current(object $set_current = null) : object|null
+	public static function current(object $set_current = null) : ?object
 	{
 		$called_class = static::class;
 

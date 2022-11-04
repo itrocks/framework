@@ -61,22 +61,22 @@ abstract class Run
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name = '';
 
 	//----------------------------------------------------------------------------------- $identifier
 	/**
-	 * @var integer
+	 * @var ?integer
 	 */
-	public $identifier;
+	public ?int $identifier = null;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * @getter
 	 * @setter
 	 * @store false
-	 * @var object
+	 * @var ?object
 	 */
-	public $object;
+	public ?object $object;
 
 	//----------------------------------------------------------------------------------------- $step
 	/**
@@ -84,13 +84,13 @@ abstract class Run
 	 * @values before, after, pending, running, complete
 	 * @var string
 	 */
-	public $step;
+	public string $step;
 
 	//------------------------------------------------------------------------------------- getObject
 	/**
-	 * @return object
+	 * @return ?object
 	 */
-	protected function getObject()
+	protected function getObject() : ?object
 	{
 		return ($this->class_name && $this->identifier)
 			? Dao::read($this->identifier, $this->class_name)
@@ -99,12 +99,14 @@ abstract class Run
 
 	//------------------------------------------------------------------------------------- setObject
 	/**
-	 * @param $object object
+	 * @noinspection PhpUnused @setter
+	 * @param $object ?object
 	 */
-	protected function setObject($object)
+	protected function setObject(?object $object)
 	{
 		if (!$object || !($identifier = Dao::getObjectIdentifier($object))) {
 			trigger_error('You must set a stored object', E_USER_ERROR);
+			/** @noinspection PhpUnreachableStatementInspection Error may be captured for continue */
 			$this->class_name = '';
 			$this->identifier = null;
 			return;

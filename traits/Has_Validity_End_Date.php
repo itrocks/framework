@@ -13,8 +13,8 @@ trait Has_Validity_End_Date
 	/**
 	 * @default Date_Time::max
 	 * @link DateTime
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $validity_end_date;
+	public Date_Time|string $validity_end_date;
 
 }

@@ -181,12 +181,12 @@ class Object_Builder_Array
 	/**
 	 * @param $property Reflection_Property
 	 * @param $value    array|boolean|float|integer|null|string
-	 * @return array|boolean|float|integer|null|string
+	 * @return array|boolean|float|integer|string|null
 	 * @throws User_Error_Exception
 	 */
 	private function buildBasicValue(
 		Reflection_Property $property, array|bool|float|int|null|string $value
-	) : array|bool|float|int|null|string
+	) : array|bool|float|int|string|null
 	{
 		if (!is_null($value) || !Null_Annotation::of($property)->value) {
 			if (is_string($value)) {
@@ -746,10 +746,10 @@ class Object_Builder_Array
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $array  array
 	 * @param $object ?object
-	 * @return array|null
+	 * @return ?array
 	 * @throws User_Error_Exception
 	 */
-	private function initLinkObject(array &$array, ?object &$object) : array|null
+	private function initLinkObject(array &$array, ?object &$object) : ?array
 	{
 		$link = Class_\Link_Annotation::of($this->class);
 		if ($link->value) {

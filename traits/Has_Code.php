@@ -14,6 +14,6 @@ trait Has_Code
 	 * @unique
 	 * @var string
 	 */
-	public $code;
+	public string $code = '';
 
 }

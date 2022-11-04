@@ -41,14 +41,14 @@ class Displayable extends String_Class
 	 * @values class, method, property, string
 	 * @var string
 	 */
-	private $type;
+	private string $type;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value string
 	 * @param $type  string the type of the displayable object : class, method, property or string
 	 */
-	public function __construct($value, $type = self::TYPE_STRING)
+	public function __construct(string $value, string $type = self::TYPE_STRING)
 	{
 		parent::__construct($value);
 		$this->type = $type;
@@ -58,7 +58,7 @@ class Displayable extends String_Class
 	/**
 	 * @return string
 	 */
-	public function display()
+	public function display() : string
 	{
 		switch ($this->type) {
 			case self::TYPE_CLASS:    return Names::classToDisplay($this->value);
@@ -74,7 +74,7 @@ class Displayable extends String_Class
 	 *
 	 * @return string
 	 */
-	public function json()
+	public function json() : string
 	{
 		return is_object($this->value)
 			? (new Json)->encodeObject($this->value)
@@ -83,65 +83,65 @@ class Displayable extends String_Class
 
 	//----------------------------------------------------------------------------------------- lower
 	/**
-	 * @return string
+	 * @return static
 	 */
-	public function lower()
+	public function lower() : static
 	{
-		return strtolower($this->display());
+		return new static(strtolower($this->display()));
 	}
 
 	//--------------------------------------------------------------------------------------- ucfirst
 	/**
-	 * @return string
+	 * @return static
 	 */
-	public function ucfirst()
+	public function ucfirst() : static
 	{
-		return ucfirst($this->display());
+		return new static(ucfirst($this->display()));
 	}
 
 	//--------------------------------------------------------------------------------------- ucwords
 	/**
-	 * @return string
+	 * @return static
 	 */
-	public function ucwords()
+	public function ucwords() : static
 	{
-		return ucwords($this->display());
+		return new static(ucwords($this->display()));
 	}
 
 	//----------------------------------------------------------------------------------------- under
 	/**
-	 * @return string
+	 * @return static
 	 */
-	public function under()
+	public function under() : static
 	{
-		return str_replace(SP, '_', $this->display());
+		return new static(str_replace(SP, '_', $this->display()));
 	}
 
 	//----------------------------------------------------------------------------------------- upper
 	/**
-	 * @return string
+	 * @return static
 	 */
-	public function upper()
+	public function upper() : static
 	{
-		return strtoupper($this->display());
+		return new static(strtoupper($this->display()));
 	}
 
 	//------------------------------------------------------------------------------------------- uri
 	/**
-	 * @return string
+	 * @return static
 	 */
-	public function uri()
+	public function uri() : static
 	{
-		return strUri($this->value);
+		return new static(strUri($this->value));
 	}
 
 	//------------------------------------------------------------------------------------ uriElement
 	/**
-	 * @return string
+	 * @return static
 	 */
-	public function uriElement()
+	public function uriElement() : static
 	{
-		return strUriElement($this->value);
+		return new static(strUriElement($this->value));
 	}
 
 }

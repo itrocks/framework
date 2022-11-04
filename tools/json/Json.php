@@ -57,7 +57,7 @@ class Json
 	 * @param $object array|object
 	 * @return string
 	 */
-	public function encodeObject($object)
+	public function encodeObject(array|object $object) : string
 	{
 		return json_encode($object);
 	}
@@ -77,7 +77,7 @@ class Json
 	 * @param $business_object object business object to convert in his unduplicate representation
 	 * @return string
 	 */
-	protected function getUnduplicateNameFromObject($business_object)
+	protected function getUnduplicateNameFromObject(object $business_object) : string
 	{
 		return Dao::current()->storeNameOf(get_class($business_object))
 			. SL
@@ -89,7 +89,7 @@ class Json
 	 * @param $property Reflection_Property
 	 * @return boolean
 	 */
-	protected function isBrowsableProperty(Reflection_Property $property)
+	protected function isBrowsableProperty(Reflection_Property $property) : bool
 	{
 		return $property->getAnnotation('component')->value
 			|| Link_Annotation::of($property)->isCollection();
@@ -102,8 +102,9 @@ class Json
 	 * @param $standard_object stdClass object resulting
 	 * @param $business_object object   object to convert to stdClass
 	 */
-	protected function notBrowsableObjectToStdClass(stdClass $standard_object, $business_object)
-	{
+	protected function notBrowsableObjectToStdClass(
+		stdClass $standard_object, object $business_object
+	) {
 		$standard_object->id        = Dao::getObjectIdentifier($business_object);
 		$standard_object->as_string = strval($business_object);
 	}
@@ -120,15 +121,16 @@ class Json
 	 * @throws Exception
 	 */
 	protected function objectToStdClassInternal(
-		stdClass $standard_object, $business_object, $parent_tree = []
-	) {
+		stdClass $standard_object, object $business_object, array $parent_tree = []
+	) : bool
+	{
 		/** @noinspection PhpUnhandledExceptionInspection An object is always valid */
 		$class      = new Reflection_Class($business_object);
 		$properties = $class->getProperties([T_EXTENDS, T_USE, Reflection_Class::T_SORT]);
 		// bloc to avoid "death kiss" (infinite loop), detect when a parent is exactly the same object
 		$unduplicate_name = $this->getUnduplicateNameFromObject($business_object);
 		if (in_array($unduplicate_name, $parent_tree)) return false;
-		array_push($parent_tree, $unduplicate_name);
+		$parent_tree[] = $unduplicate_name;
 		foreach ($properties as $property) {
 			if ($this->shouldExportProperty($property)) {
 				$name                   = $property->name;
@@ -149,7 +151,7 @@ class Json
 	 *
 	 * @param $property    Reflection_Property
 	 * @param $value       mixed
-	 * @param $type        Type
+	 * @param $type        Type|null
 	 * @param $parent_tree array array of unduplicate name for each object in calling hierarchy
 	 *     $parent_tree[0] => unduplicate name for top most object (first object parsed)
 	 *     $parent_tree[]  => unduplicate name for collection or component property of direct above object
@@ -157,53 +159,39 @@ class Json
 	 * @throws Exception
 	 */
 	protected function propertyToStdInternal(
-		Reflection_Property $property, $value, Type $type = null, $parent_tree = []
-	) {
-
+		Reflection_Property $property, mixed $value, Type $type = null, array $parent_tree = []
+	) : mixed
+	{
 		if (!isset($type)) {
 			$type = $property->getType();
 		}
 		if ($type->isStrictlyBasic() || $type->isMultipleString()) {
 			return $value;
 		}
-		elseif ($type->isMultipleString()) {
-			// TODO: check with many values, if $property_value is still a string with comma or directly an array?
-			return ($value === '') ? [] : explode(',', $value);
-		}
-		elseif ($type->isDateTime()) {
+		if ($type->isDateTime()) {
 			if (($value instanceof Date_Time) && !($value instanceof Date_Time_Error)) {
 				return $value->toISO();
 			}
-			else {
-				return null;
-			}
+			return null;
 		}
-		elseif ($type->isClass()) {
-			if ($type->isStringable()) {
-				return strval($value);
-			}
-			else {
-				if (!$value) {
-					return null;
-				}
-				else {
-					$browse = $this->isBrowsableProperty($property);
-					if ($type->isMultiple()) {
-						$array = [];
-						if ($value) foreach ($value as $business_object) {
-							$array[] = $this->subObjectToStdClassInternal($browse, $business_object, $parent_tree);
-						}
-						return $array;
-					}
-					else {
-						return $this->subObjectToStdClassInternal($browse, $value, $parent_tree);
-					}
-				}
-			}
-		}
-		else {
+		if (!$type->isClass()) {
 			throw new Exception('Missing type case for Json::propertyToStdInternal');
 		}
+		if ($type->isStringable()) {
+			return strval($value);
+		}
+		if (!$value) {
+			return null;
+		}
+		$browse = $this->isBrowsableProperty($property);
+		if (!$type->isMultiple()) {
+			return $this->subObjectToStdClassInternal($browse, $value, $parent_tree);
+		}
+		$array = [];
+		foreach ($value as $business_object) {
+			$array[] = $this->subObjectToStdClassInternal($browse, $business_object, $parent_tree);
+		}
+		return $array;
 	}
 
 	//-------------------------------------------------------------------------- shouldExportProperty
@@ -229,10 +217,11 @@ class Json
 	 * @return stdClass
 	 * @throws Exception
 	 */
-	protected function subObjectToStdClassInternal($browse, $business_object, array $parent_tree)
+	protected function subObjectToStdClassInternal(
+		bool $browse, mixed $business_object, array $parent_tree
+	) : stdClass
 	{
 		$sub_object = new stdClass();
-
 		// case we should expand
 		if ($browse) {
 			if (!$this->objectToStdClassInternal($sub_object, $business_object, $parent_tree)) {
@@ -243,17 +232,16 @@ class Json
 		else {
 			$this->notBrowsableObjectToStdClass($sub_object, $business_object);
 		}
-
 		return $sub_object;
 	}
 
 	//---------------------------------------------------------------------------------------- toJson
 	/**
-	 * @param $standard_object stdClass|array
+	 * @param $standard_object array|object
 	 * @param $options         integer options for json_encode
 	 * @return string json encoded representation of object
 	 */
-	public function toJson($standard_object, $options = 0)
+	public function toJson(array|object $standard_object, int $options = 0) : string
 	{
 		return json_encode($standard_object, $options);
 	}
@@ -264,7 +252,7 @@ class Json
 	 * @return stdClass representation of object with visible properties
 	 * @throws Exception
 	 */
-	public function toStdObject($business_object)
+	public function toStdObject(object $business_object) : stdClass
 	{
 		$standard_object = new stdClass();
 		$this->objectToStdClassInternal($standard_object, $business_object);

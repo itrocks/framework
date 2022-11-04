@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Tests;
 
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
+use PHPUnit\TextUI\Exception;
 
 /**
  * Tests run controller
@@ -19,6 +20,7 @@ class Run_Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------- run
+
 	/**
 	 * Optional parameters :
 	 *   /A/Test/Class/Path
@@ -30,6 +32,7 @@ class Run_Controller implements Feature_Controller
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @return ?string
+	 * @throws Exception
 	 */
 	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{

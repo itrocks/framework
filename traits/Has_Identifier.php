@@ -16,7 +16,7 @@ trait Has_Identifier
 	 * @unique
 	 * @var string
 	 */
-	public $identifier;
+	public string $identifier = '';
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -24,7 +24,7 @@ trait Has_Identifier
 	 */
 	public function __toString() : string
 	{
-		return strval($this->identifier);
+		return $this->identifier;
 	}
 
 }

@@ -16,7 +16,7 @@ trait Has_Object
 	 * @mandatory
 	 * @var object
 	 */
-	public $object;
+	public object $object;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**

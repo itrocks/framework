@@ -14,18 +14,11 @@ class Period_Test extends Test
 
 	//-------------------------------------------------------------------------------- formatProvider
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return array [[Period, string|null $format, string $expected_result]]
 	 */
 	public function formatProvider()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constants */
 		return [
-			[
-				new Period(new Date_Time('2017-01-01 00:00:00'), new Date_Time('2018-02-03 01:02:03')),
-				null,
-				'398 days 1 hour 2 minutes 3 seconds'
-			],
 			[
 				new Period(new Date_Time('2017-01-01 00:00:00'), new Date_Time('2018-02-03 01:02:03')),
 				'',
@@ -40,9 +33,6 @@ class Period_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testConstruct
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testConstruct()
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
@@ -53,28 +43,21 @@ class Period_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testExclude
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testExclude()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date1  = new Date_Time('2016-05-03 12:05:15');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date2  = new Date_Time('2016-06-08 13:02:00');
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date2b = (new Date_Time($date2))->add(-1, Date_Time::SECOND);
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date2c = (new Date_Time($date2))->add(1, Date_Time::SECOND);
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date3  = new Date_Time('2016-06-09 10:00:00');
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date3b = (new Date_Time($date3))->add(-1, Date_Time::SECOND);
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date3c = (new Date_Time($date3))->add(1, Date_Time::SECOND);
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
+		/** @noinspection DuplicatedCode I don't mind */
 		$date4  = new Date_Time('2016-06-09 10:05:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date5  = new Date_Time('2016-06-09 10:05:01');
 		$begin  = new Period($date1, $date2);
 		$begin2 = new Period($date1, $date2b);
@@ -105,7 +88,7 @@ class Period_Test extends Test
 	 * @param $format          string
 	 * @param $expected_result string
 	 */
-	public function testFormat($period, $format, $expected_result)
+	public function testFormat(Period $period, string $format, string $expected_result)
 	{
 		$loc_enabled = Loc::enable(false);
 		static::assertEquals($expected_result, $period->format($format));
@@ -113,18 +96,12 @@ class Period_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------------- testIn
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testIn()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
+		/** @noinspection DuplicatedCode I don't mind */
 		$date1  = new Date_Time('2015-05-03 12:05:15');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date2  = new Date_Time('2016-06-08 13:02:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date3  = new Date_Time('2016-06-09 10:00:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date4  = new Date_Time('2016-06-09 10:05:00');
 		$begin  = new Period($date1, $date2);
 		$middle = new Period($date2, $date3);
@@ -145,19 +122,12 @@ class Period_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testIntersect
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testIntersect()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
+		/** @noinspection DuplicatedCode I don't mind */
 		$date1  = new Date_Time('2015-05-03 12:05:15');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date2  = new Date_Time('2016-06-08 13:02:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date3  = new Date_Time('2016-06-09 10:00:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date4  = new Date_Time('2016-06-09 10:05:00');
 		$begin  = new Period($date1, $date2);
 		$middle = new Period($date2, $date3);
@@ -176,19 +146,12 @@ class Period_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------------- testOut
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testOut()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
+		/** @noinspection DuplicatedCode I don't mind */
 		$date1  = new Date_Time('2015-05-03 12:05:15');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date2  = new Date_Time('2016-06-08 13:02:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date3  = new Date_Time('2016-06-09 10:00:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date4  = new Date_Time('2016-06-09 10:05:00');
 		$begin  = new Period($date1, $date2);
 		$middle = new Period($date2, $date3);
@@ -210,16 +173,10 @@ class Period_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------- testToMonths
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testToMonths()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date1  = new Date_Time('2016-05-03 12:05:15');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date2  = new Date_Time('2015-06-08 13:02:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constants */
 		$months = [
 			new Date_Time('2015-06-01'),
 			new Date_Time('2015-07-01'),
@@ -243,21 +200,13 @@ class Period_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------- testUnion
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testUnion()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date1  = new Date_Time('2016-05-03 12:05:15');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date2  = new Date_Time('2016-06-08 13:02:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date3  = new Date_Time('2016-06-09 10:00:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date4  = new Date_Time('2016-06-09 10:05:00');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
+		/** @noinspection DuplicatedCode I don't mind */
 		$date5  = new Date_Time('2016-06-09 10:05:01');
 		$begin  = new Period($date1, $date2);
 		$middle = new Period($date2, $date3);

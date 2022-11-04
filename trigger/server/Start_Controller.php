@@ -29,7 +29,7 @@ class Start_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files) : string
 	{
-		(new Asynchronous)->call(View::link(Server::class, Run_Controller::FEATURE), null, false, false);
+		(new Asynchronous)->call(View::link(Server::class, Run_Controller::FEATURE), null, false);
 		return 'OK';
 	}
 

@@ -12,8 +12,8 @@ trait Has_Validity_Begin_Date
 	//-------------------------------------------------------------------------- $validity_begin_date
 	/**
 	 * @link DateTime
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $validity_begin_date;
+	public Date_Time|string $validity_begin_date;
 
 }

@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
+use ITRocks\Framework\Traits\Has_Name;
+
 /**
  * A shop class
  *
@@ -8,27 +10,13 @@ namespace ITRocks\Framework\Tests\Objects;
  */
 class Shop
 {
+	use Has_Name;
 
 	//----------------------------------------------------------------------------------- $categories
 	/**
 	 * @link Map
 	 * @var Category[]
 	 */
-	public $categories;
-
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public $name;
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString() : string
-	{
-		return strval($this->name);
-	}
+	public array $categories;
 
 }

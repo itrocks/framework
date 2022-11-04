@@ -18,7 +18,7 @@ class Textile extends Parser
 	 *
 	 * @var boolean
 	 */
-	protected $in_code = false;
+	protected bool $in_code = false;
 
 	//----------------------------------------------------------------------------------- $span_depth
 	/**
@@ -35,7 +35,7 @@ class Textile extends Parser
 	 *
 	 * @param $doc_type string The output document type, either 'xhtml' or 'html5'
 	 */
-	public function __construct($doc_type = 'html5')
+	public function __construct(string $doc_type = 'html5')
 	{
 		parent::__construct($doc_type);
 
@@ -60,7 +60,7 @@ class Textile extends Parser
 	 * @param $text string The input
 	 * @return string Processed text
 	 */
-	protected function code($text)
+	protected function code($text) : string
 	{
 		$this->in_code = true;
 		$result        = parent::code($text);
@@ -76,7 +76,7 @@ class Textile extends Parser
 	 * @param $quotes boolean Encode quotes
 	 * @return string Encoded string
 	 */
-	protected function encodeHTML($string, $quotes = true)
+	protected function encodeHTML($string, $quotes = true) : string
 	{
 		return $this->in_code ? $string : parent::encodeHTML($string, $quotes);
 	}
@@ -91,7 +91,7 @@ class Textile extends Parser
 	 * @param  $m array
 	 * @return string HTML list
 	 */
-	protected function fTextileList($m)
+	protected function fTextileList($m) : string
 	{
 		// Ignores "Trying to access array offset on value of type bool in /home/baptiste/PhpStorm/itrocks/itrocks-wiki/vendor/netcarver/textile/src/Netcarver/Textile/Parser.php on line 3089"
 		// They test $prev['ml'] but $prev equals false, the first time.
@@ -106,7 +106,7 @@ class Textile extends Parser
 	 * @param $text string
 	 * @return string
 	 */
-	public function parse($text)
+	public function parse($text) : string
 	{
 		$text   = strReplace(['@@@' => '@&at;', '@@' => '&at;'], $text);
 		$result = parent::parse($text);
@@ -121,7 +121,7 @@ class Textile extends Parser
 	 * @param  $text string The textile document to perform the replacements in
 	 * @return string The textile document with spans replaced by their HTML inline equivalents
 	 */
-	protected function spans($text)
+	protected function spans($text) : string
 	{
 		$span_tags = array_keys($this->span_tags);
 		/** @noinspection SpellCheckingInspection copy-paste from netcarver/textile */
@@ -130,16 +130,15 @@ class Textile extends Parser
 
 		if ($this->span_depth <= $this->max_span_depth) {
 			foreach ($span_tags as $tag) {
-				$content_tag = 'content';
 				$tag         = preg_quote($tag);
 				$text        = (string)preg_replace_callback(
 					"`
-					(?P<before>^|(?<=[\s>$pnct\(])|[{[])
+					(?P<before>^|(?<=[\s>$pnct(])|[{[])
 					(?P<tag>$tag)(?!$tag)
-					(?P<atts>{$this->cls})
+					(?P<atts>$this->cls)
 					(?!$tag)
 					(?::(?P<cite>\S+[^$tag]{$this->regex_snippets['space']}))?
-					(?P<$content_tag>[^{$this->regex_snippets['space']}$tag]+|\S.*?[^\s$tag\n])
+					(?P<content>[^{$this->regex_snippets['space']}$tag]+|\S.*?[^\s$tag\n])
 					(?P<end>[$pnct]*)
 					$tag
 					(?P<after>$|[\[\]}<]|(?=[$pnct]{1,2}[^0-9]|\s|\)))

@@ -22,14 +22,14 @@ class Plugin extends Trigger\Plugin
 	 *
 	 * @var array Change[][]
 	 */
-	protected $no_change_cache = [];
+	protected array $no_change_cache = [];
 
 	//------------------------------------------------------------------------------------ afterWrite
 	/**
 	 * @param $object object
 	 * @param $after_write_annotation string @values after_create, after_update, after_write
 	 */
-	public function afterWrite($object, $after_write_annotation)
+	public function afterWrite(object $object, string $after_write_annotation)
 	{
 		if (!($identifier = Dao::getObjectIdentifier($object))) {
 			return;
@@ -73,7 +73,7 @@ class Plugin extends Trigger\Plugin
 	/**
 	 * @param $object object
 	 */
-	public function beforeWrite($object)
+	public function beforeWrite(object $object)
 	{
 		if (!($identifier = Dao::getObjectIdentifier($object))) {
 			return;
@@ -101,7 +101,7 @@ class Plugin extends Trigger\Plugin
 	 * @param $object object
 	 * @return Change[]
 	 */
-	protected function changeTriggers($object)
+	protected function changeTriggers(object $object) : array
 	{
 		$class_name = get_class($object);
 		if (!isset($this->no_change_cache[$class_name])) {
@@ -130,7 +130,7 @@ class Plugin extends Trigger\Plugin
 	/**
 	 * @param $class_name string
 	 */
-	public function resetCache($class_name)
+	public function resetCache(string $class_name)
 	{
 		do {
 			if (isset($this->no_change_cache[$class_name])) {

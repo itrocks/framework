@@ -41,11 +41,10 @@ interface IManager
 	 * @param $class_name class-string<T>
 	 * @param $level      string|null
 	 * @param $register   boolean
-	 * @return T|null
+	 * @return ?T
 	 * @template T
 	 */
-	public function get(string $class_name, string $level = null, bool $register = false)
-		: object|null;
+	public function get(string $class_name, string $level = null, bool $register = false) : ?object;
 
 	//-------------------------------------------------------------------------------------- register
 	/**

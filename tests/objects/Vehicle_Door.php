@@ -34,14 +34,14 @@ class Vehicle_Door
 	 * @length 6
 	 * @var string
 	 */
-	public $code;
+	public string $code = '';
 
 	//--------------------------------------------------------------------------------------- $pieces
 	/**
 	 * @link Collection
 	 * @var Vehicle_Door_Piece[]
 	 */
-	public $pieces;
+	public array $pieces;
 
 	//----------------------------------------------------------------------------------------- $side
 	/**
@@ -49,7 +49,7 @@ class Vehicle_Door
 	 * @var string
 	 * @warning sideNotTrunk
 	 */
-	public $side;
+	public string $side;
 
 	//-------------------------------------------------------------------------------------- $vehicle
 	/**
@@ -57,7 +57,7 @@ class Vehicle_Door
 	 * @link Object
 	 * @var Vehicle
 	 */
-	public $vehicle;
+	public Vehicle $vehicle;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -65,25 +65,25 @@ class Vehicle_Door
 	 */
 	public function __toString() : string
 	{
-		return Loc::tr(strval($this->side));
+		return Loc::tr($this->side);
 	}
 
 	//------------------------------------------------------------------------------------- codeValid
 	/**
-	 * @return boolean
+	 * @return string|true
 	 */
-	public function codeValid()
+	public function codeValid() : bool|string
 	{
-		return strlen($this->code)
+		return ($this->code !== '')
 			? true
 			: (Loc::tr('code is not valid') . ' : ' . Loc::tr('must not be empty'));
 	}
 
 	//---------------------------------------------------------------------------------- sideNotTrunk
 	/**
-	 * @return boolean|string
+	 * @return string|true
 	 */
-	public function sideNotTrunk()
+	public function sideNotTrunk() : bool|string
 	{
 		return ($this->side === self::TRUNK) ? Loc::tr('side should not be trunk') : true;
 	}

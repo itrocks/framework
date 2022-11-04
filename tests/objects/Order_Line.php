@@ -14,21 +14,21 @@ class Order_Line
 
 	//--------------------------------------------------------------------------------------- $client
 	/**
-	 * Delivery client for the line (for recursivity tests)
+	 * Delivery client for the line (for recursive tests)
 	 *
 	 * @link Object
-	 * @var Client
+	 * @var ?Client
 	 */
-	public $client;
+	public ?Client $client;
 
 	//----------------------------------------------------------------------------------------- $item
 	/**
 	 * Item
 	 *
 	 * @link Object
-	 * @var Item
+	 * @var ?Item
 	 */
-	public $item;
+	public ?Item $item;
 
 	//--------------------------------------------------------------------------------------- $number
 	/**
@@ -37,7 +37,7 @@ class Order_Line
 	 * @mandatory
 	 * @var integer
 	 */
-	public $number;
+	public int $number = 1;
 
 	//---------------------------------------------------------------------------------------- $order
 	/**
@@ -48,10 +48,9 @@ class Order_Line
 	 *
 	 * @composite
 	 * @link Object
-	 * @mandatory
 	 * @var Order
 	 */
-	public $order;
+	public Order $order;
 
 	//------------------------------------------------------------------------------------- $quantity
 	/**
@@ -60,13 +59,13 @@ class Order_Line
 	 * @mandatory
 	 * @var float
 	 */
-	public $quantity;
+	public float $quantity = 1;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $number integer
+	 * @param $number integer|null
 	 */
-	public function __construct($number = null)
+	public function __construct(int $number = null)
 	{
 		if (isset($number)) {
 			$this->number = $number;
@@ -79,7 +78,7 @@ class Order_Line
 	 */
 	public function __toString() : string
 	{
-		return strval($this->number) . ' : ' . $this->item;
+		return $this->number . ' : ' . $this->item;
 	}
 
 }

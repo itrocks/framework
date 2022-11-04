@@ -16,9 +16,9 @@ trait Has_Identifier
 	//----------------------------------------------------------------------------------- $identifier
 	/**
 	 * @link Object
-	 * @var Identifier
+	 * @var ?Identifier
 	 */
-	public $identifier;
+	public ?Identifier $identifier;
 
 	//------------------------------------------------------------------------------ uniqueIdentifier
 	/**
@@ -26,15 +26,16 @@ trait Has_Identifier
 	 */
 	public function uniqueIdentifier()
 	{
-		if (isset($this->identifier)) {
-			$search       = Search_Object::create(Identifier::class);
-			$search->name = $this->identifier->name;
-			if ($find = Dao::searchOne($search)) {
-				Dao::replace($this->identifier, $find, false);
-			}
-			else {
-				Dao::disconnect($this->identifier);
-			}
+		if (!isset($this->identifier)) {
+			return;
+		}
+		$search       = Search_Object::create(Identifier::class);
+		$search->name = $this->identifier->name;
+		if ($find = Dao::searchOne($search)) {
+			Dao::replace($this->identifier, $find, false);
+		}
+		else {
+			Dao::disconnect($this->identifier);
 		}
 	}
 

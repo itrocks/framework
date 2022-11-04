@@ -19,13 +19,13 @@ class Feature extends Trigger
 	/**
 	 * @var string
 	 */
-	public $feature_name;
+	public string $feature_name;
 
 	//----------------------------------------------------------------------------------------- $when
 	/**
 	 * @values after, before
 	 * @var string
 	 */
-	public $when;
+	public string $when;
 
 }

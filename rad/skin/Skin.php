@@ -8,17 +8,6 @@ use ITRocks\Framework\Traits\Has_Name;
  */
 class Skin
 {
-	use Has_Name;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $name string|null
-	 */
-	public function __construct(string $name = null)
-	{
-		if (isset($name)) {
-			$this->name = $name;
-		}
-	}
+	use Has_Name\With_Constructor;
 
 }

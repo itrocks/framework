@@ -19,40 +19,40 @@ class Asynchronous
 	 *
 	 * @var string[]
 	 */
-	public $free_sessions = [];
+	public array $free_sessions = [];
 
 	//-------------------------------------------------------------------------------- $max_processes
 	/**
 	 * @setter
 	 * @var integer
 	 */
-	public $max_processes = 8;
+	public int $max_processes = 8;
 
 	//---------------------------------------------------------------------------- $running_processes
 	/**
 	 * @var Process[]
 	 */
-	public $running_processes = [];
+	public array $running_processes = [];
 
 	//------------------------------------------------------------------------------ $session_counter
 	/**
 	 * @var integer
 	 */
-	public $session_counter = 0;
+	public int $session_counter = 0;
 
 	//---------------------------------------------------------------------------- $waiting_processes
 	/**
 	 * @var Process[]
 	 */
-	public $waiting_processes = [];
+	public array $waiting_processes = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Constructs an asynchronous calls stack
 	 *
-	 * @param $max_processes integer
+	 * @param $max_processes integer|null
 	 */
-	public function __construct($max_processes = null)
+	public function __construct(int $max_processes = null)
 	{
 		if (isset($max_processes)) {
 			$this->max_processes = $max_processes;
@@ -65,12 +65,14 @@ class Asynchronous
 	 * the caller
 	 *
 	 * @param $uri              string Call this URI : link to a controller, including parameters
-	 * @param $then             callable|array A callback called when the job is done
+	 * @param $then             callable|null A callback called when the job is done
 	 * @param $needs_session    boolean true automatically clones current session (authenticated call)
 	 * @param $needs_identifier boolean true generates an unique identifier for X-Request-ID
 	 * @return Process
 	 */
-	public function call($uri, array $then = null, $needs_session = true, $needs_identifier = false)
+	public function call(
+		string $uri, callable $then = null, bool $needs_session = true, bool $needs_identifier = false
+	) : Process
 	{
 		if ($position = strpos($uri, '?')) {
 			$uri[$position] = SP;
@@ -80,7 +82,7 @@ class Asynchronous
 		}
 		if ($needs_identifier) {
 			$unique_identifier = uniqid('async-', true);
-			$parameters        = $needs_identifier ? (' -h X-Request-ID=' . $unique_identifier) : '';
+			$parameters        = ' -h X-Request-ID=' . $unique_identifier;
 		}
 		else {
 			$parameters = '';
@@ -126,7 +128,7 @@ class Asynchronous
 	 *
 	 * @return integer
 	 */
-	public function processesCount()
+	public function processesCount() : int
 	{
 		return count($this->running_processes) + count($this->waiting_processes);
 	}
@@ -136,11 +138,11 @@ class Asynchronous
 	 * Calls a command line asynchronously
 	 *
 	 * @param $command       string The command line to run
-	 * @param $then          array A callback called when the job is done
+	 * @param $then          callable|null A callback called when the job is done
 	 * @param $needs_session boolean true to automatically clone current session (authenticated call)
 	 * @return Process
 	 */
-	public function run(string $command, array $then = [], bool $needs_session = false) : Process
+	public function run(string $command, callable $then = null, bool $needs_session = false) : Process
 	{
 		$process = new Process($command, $then);
 		if ($needs_session) {
@@ -192,9 +194,9 @@ class Asynchronous
 	/**
 	 * $max_processes @setter : if increased, runs waiting processes immediately
 	 *
-	 * @param $max_processes string
+	 * @param $max_processes int
 	 */
-	protected function setMaxProcesses($max_processes)
+	protected function setMaxProcesses(int $max_processes)
 	{
 		$this->max_processes = $max_processes;
 		$this->runWaitingProcesses();
@@ -210,10 +212,10 @@ class Asynchronous
 	 *                $max_processes are still running.
 	 * @param $sleep  float The sleep between each wait control, in seconds (default: .1s)
 	 */
-	public function wait($reload = false, $sleep = .1)
+	public function wait(bool|callable $reload = false, float $sleep = .1)
 	{
 		$sleep = floor($sleep * 1000000);
-		if ($reload && ($reload !== true) && (count($this->running_processes) < $this->max_processes)) {
+		if (is_callable($reload) && (count($this->running_processes) < $this->max_processes)) {
 			call_user_func($reload);
 		}
 		while ($processes_count = $this->processesCount()) {

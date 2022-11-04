@@ -18,24 +18,24 @@ trait Has_Begin_End_Dates
 	//----------------------------------------------------------------------------------- $begin_date
 	/**
 	 * @link DateTime
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $begin_date;
+	public Date_Time|string $begin_date;
 
 	//------------------------------------------------------------------------------------- $end_date
 	/**
 	 * @default Date_Time::max
 	 * @link DateTime
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $end_date;
+	public Date_Time|string $end_date;
 
 	//-------------------------------------------------------------------------------------- activeAt
 	/**
 	 * Gets the active object for a given date (day)
 	 *
 	 * @param $date_time Date_Time|null @default Date_Time::now
-	 * @return static|null
+	 * @return ?static
 	 */
 	public static function activeAt(Date_Time $date_time = null) : ?Has_Begin_End_Dates
 	{
@@ -59,12 +59,12 @@ trait Has_Begin_End_Dates
 	 *
 	 * @param $array      static[] an array of elements with begin-end dates
 	 * @param $array_name string|null a name for the object that contains the array
-	 * @return boolean|string|array
+	 * @return array|boolean|string
 	 * boolean : true if there is no overlapping error
 	 * string : first error message (if $array_name is set only)
 	 * array[object $first_element, object $second_element] : if $array_name is null, returns overlaps
 	 */
-	public static function checkOverlaps(array $array, string $array_name = null)
+	public static function checkOverlaps(array $array, string $array_name = null) : array|bool|string
 	{
 		$overlaps = [];
 		foreach ($array as $first_element) {

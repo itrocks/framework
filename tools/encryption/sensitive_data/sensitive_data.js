@@ -4,15 +4,15 @@ $(document).ready(function()
 		'dblclick', 'article input[data-sensitive], article textarea[data-sensitive]',
 		function()
 		{
-			var $this   = $(this);
-			var $window = $this.closest('article[data-class]');
-			var uri     = '/ITRocks/Framework/User/password'
+			const $this   = $(this)
+			const $window = $this.closest('article[data-class]')
+			const uri     = '/ITRocks/Framework/User/password'
 				+ SL + $window.data('class').repl(BS, SL)
 				+ SL + $window.data('id')
 				+ SL + $window.data('feature')
-				+ '?as_widget';
+				+ '?as_widget'
 
-			$('article.user.password').parent().remove();
+			$('article.user.password').parent().remove()
 
 			redirect(
 				uri,
@@ -22,11 +22,11 @@ $(document).ready(function()
 					$target.draggable({
 						handle: 'h2',
 						stop: function() {
-							$(this).find('h2').data('stop-click', true);
+							$(this).find('h2').data('stop-click', true)
 						}
-					});
+					})
 				}
-			);
+			)
 		}
-	);
-});
+	)
+})

@@ -25,13 +25,13 @@ class Plugin implements Configurable, Registerable
 	 *
 	 * @var integer
 	 */
-	public $rate = 1000;
+	public int $rate = 1000;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $configuration string|string[]
 	 */
-	public function __construct($configuration = null)
+	public function __construct(mixed $configuration = null)
 	{
 		if (!$configuration) {
 			return;

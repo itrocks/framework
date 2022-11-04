@@ -47,7 +47,7 @@ class Phone_Format implements Configurable
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
-	 * @return string|null
+	 * @return ?string
 	 */
 	public function getCountryCode(object $object) : ?string
 	{

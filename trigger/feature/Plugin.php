@@ -92,7 +92,7 @@ class Plugin extends Trigger\Plugin
 	 * @param $object object
 	 * @return Feature[]
 	 */
-	protected function featureTriggers(object $object)
+	protected function featureTriggers(object $object) : array
 	{
 		$class_name = Builder::current()->sourceClassName(get_class($object));
 		if (!isset($this->no_feature_cache[$class_name])) {

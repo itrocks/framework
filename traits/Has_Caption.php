@@ -11,6 +11,6 @@ trait Has_Caption
 	/**
 	 * @var string
 	 */
-	public $caption;
+	public string $caption = '';
 
 }
