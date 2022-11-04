@@ -28,7 +28,7 @@ class Group
 	 * @link Map
 	 * @var Feature[]
 	 */
-	public $features;
+	public array $features;
 
 	//--------------------------------------------------------------------------- addLowLevelFeatures
 	/**
@@ -39,7 +39,7 @@ class Group
 	 * @param $features     Low_Level_Feature[] existing features (list to grow)
 	 * @param $new_features Low_Level_Feature[] added features
 	 */
-	private function addLowLevelFeatures(array &$features, array $new_features)
+	private function addLowLevelFeatures(array &$features, array $new_features) : void
 	{
 		foreach ($new_features as $path => $new_feature) {
 			if (isset($features[$path])) {
@@ -60,7 +60,7 @@ class Group
 	 *
 	 * @return Low_Level_Feature[]
 	 */
-	public function getLowLevelFeatures()
+	public function getLowLevelFeatures() : array
 	{
 		/** @var $features Low_Level_Feature[] */
 		$features = [];

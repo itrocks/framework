@@ -18,7 +18,6 @@ use ITRocks\Framework\View\Html\Template;
 
 /**
  * @extends Password
- * @see Password
  */
 trait Reset
 {

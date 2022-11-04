@@ -21,14 +21,15 @@ class Token
 	/**
 	 * @var boolean
 	 */
-	public $single_use = true;
+	public bool $single_use = true;
 
 	//----------------------------------------------------------------------------------------- $user
 	/**
 	 * @link Object
+	 * @mandatory
 	 * @var User
 	 */
-	public $user;
+	public User $user;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -46,7 +47,7 @@ class Token
 	 * @noinspection PhpUnused @default
 	 * @return Date_Time
 	 */
-	public function defaultValidityEndDate()
+	public function defaultValidityEndDate() : Date_Time
 	{
 		return Date_Time::now()->add(1, $this->single_use ? Date_Time::MINUTE : Date_Time::MONTH);
 	}

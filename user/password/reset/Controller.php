@@ -7,6 +7,7 @@ use ITRocks\Framework\Mapper\Object_Builder_Array;
 use ITRocks\Framework\User\Password;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\View\User_Error_Exception;
 
 /**
  * Password reset controller
@@ -18,11 +19,13 @@ class Controller implements Feature_Controller
 	const FEATURE = 'reset';
 
 	//------------------------------------------------------------------------------------------- run
+
 	/**
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @return ?string
+	 * @throws User_Error_Exception
 	 */
 	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{

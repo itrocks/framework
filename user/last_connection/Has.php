@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\User\Last_Connection;
 
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\User;
 
 /**
  * User last connexion date
@@ -15,8 +16,8 @@ trait Has
 	/**
 	 * @link DateTime
 	 * @user readonly
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $last_connection;
+	public Date_Time|string $last_connection;
 
 }

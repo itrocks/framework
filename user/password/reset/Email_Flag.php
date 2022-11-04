@@ -22,13 +22,13 @@ class Email_Flag implements Configurable, Registerable
 	/**
 	 * @var string
 	 */
-	public $file_path;
+	public string $file_path;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $configuration string|string[]
 	 */
-	public function __construct($configuration = null)
+	public function __construct(mixed $configuration = null)
 	{
 		if (!$configuration) {
 			return;

@@ -7,7 +7,6 @@ use ITRocks\Framework\Layout\Print_Model\Status;
 /**
  * @before_update setStatusToCustom
  * @extends Print_Model
- * @see Print_Model
  */
 trait Has
 {

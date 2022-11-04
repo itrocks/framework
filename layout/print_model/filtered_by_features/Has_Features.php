@@ -13,7 +13,6 @@ use ITRocks\Framework\RAD\Feature\Status;
  *
  * @extends Print_Model
  * @filter filterByFeatures
- * @see Print_Model
  */
 trait Has_Features
 {

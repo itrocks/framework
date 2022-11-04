@@ -32,12 +32,10 @@ class Widget_Controller implements Feature_Controller
 			array_unshift($parameters, $user);
 			return View::run($parameters, $form, $files, get_class($user), 'display');
 		}
-		else {
-			/** @noinspection PhpUnhandledExceptionInspection class */
-			$user = Builder::create(User::class);
-			array_unshift($parameters, $user);
-			return View::run($parameters, $form, $files, get_class($user), Feature::F_LOGIN);
-		}
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$user = Builder::create(User::class);
+		array_unshift($parameters, $user);
+		return View::run($parameters, $form, $files, get_class($user), Feature::F_LOGIN);
 	}
 
 }

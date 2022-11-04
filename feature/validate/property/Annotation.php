@@ -12,7 +12,6 @@ use TypeError;
  *
  * @extends Reflection\Annotation
  * @implements Property_Context_Annotation
- * @see Property_Context_Annotation
  */
 trait Annotation
 {

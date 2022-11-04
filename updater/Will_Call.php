@@ -15,7 +15,7 @@ class Will_Call
 	/**
 	 * @var callable[] An additional element indexed 2 can contain an updates count before running
 	 */
-	public $callables = [];
+	public array $callables = [];
 
 	//------------------------------------------------------------------------------------------- add
 	/**
@@ -24,20 +24,20 @@ class Will_Call
 	 * @param $callable callable
 	 * @param $wait     integer number of clicks to wait before executing the callable
 	 */
-	public static function add($callable, $wait = 0)
+	public static function add(callable $callable, int $wait = 0) : void
 	{
 		$will_call = Session::current()->get(static::class, true);
 		if ($wait) {
 			$callable[2] = $wait;
 		}
-		array_push($will_call->callables, $callable);
+		$will_call->callables[] = $callable;
 	}
 
 	//------------------------------------------------------------------------------------------ call
 	/**
 	 * Call all waiting callables now, and reset session queue
 	 */
-	public static function call()
+	public static function call() : void
 	{
 		$will_call = Session::current()->get(static::class);
 		if (!$will_call) {
@@ -68,7 +68,7 @@ class Will_Call
 	 *
 	 * @return boolean
 	 */
-	public static function isDone()
+	public static function isDone() : bool
 	{
 		return !Session::current()->get(static::class);
 	}

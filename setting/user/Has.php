@@ -11,7 +11,6 @@ use ITRocks\Framework\Setting\Has_Settings;
  * @business
  * @extends Framework\User
  * @implements Has_Settings
- * @see Framework\User
  */
 trait Has
 {

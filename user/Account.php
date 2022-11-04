@@ -20,7 +20,7 @@ trait Account
 	 * @mandatory
 	 * @var string
 	 */
-	public $login;
+	public string $login = '';
 
 	//------------------------------------------------------------------------------------- $password
 	/**
@@ -28,7 +28,7 @@ trait Account
 	 * @password sha1
 	 * @var string
 	 */
-	public $password;
+	public string $password = '';
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -36,7 +36,7 @@ trait Account
 	 */
 	public function __toString() : string
 	{
-		return strval($this->login);
+		return $this->login;
 	}
 
 }

@@ -6,7 +6,6 @@ use ITRocks\Framework\User\Group;
 /**
  * @extends Group
  * @feature Select an access group for guest users
- * @see Group
  */
 trait Has_Guest
 {
@@ -15,6 +14,6 @@ trait Has_Guest
 	/**
 	 * @var boolean
 	 */
-	public $guest = false;
+	public bool $guest = false;
 
 }

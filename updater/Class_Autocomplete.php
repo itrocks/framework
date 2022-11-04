@@ -8,7 +8,7 @@ class Class_Autocomplete
 {
 
 	//-------------------------------------------------------------------------------------- complete
-	public function complete()
+	public function complete() : void
 	{
 	}
 

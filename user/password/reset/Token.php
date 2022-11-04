@@ -15,35 +15,35 @@ class Token
 	/**
 	 * @default Date_Time::now
 	 * @link DateTime
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $date;
+	public Date_Time|string $date;
 
 	//----------------------------------------------------------------------------------------- $done
 	/**
 	 * @link DateTime
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
-	public $done;
+	public Date_Time|string $done;
 
 	//----------------------------------------------------------------------------------- $identifier
 	/**
 	 * @var string
 	 */
-	public $identifier;
+	public string $identifier;
 
 	//--------------------------------------------------------------------------------- $new_password
 	/**
 	 * @password sha1
 	 * @var string
 	 */
-	public $new_password;
+	public string $new_password;
 
 	//----------------------------------------------------------------------------------------- $user
 	/**
 	 * @link Object
-	 * @var User
+	 * @var ?User
 	 */
-	public $user;
+	public ?User $user;
 
 }

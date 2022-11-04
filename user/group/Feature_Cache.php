@@ -107,7 +107,7 @@ class Feature_Cache
 	 *
 	 * @param $features Feature[]
 	 */
-	public function saveToCache(array $features)
+	public function saveToCache(array $features) : void
 	{
 		Dao::begin();
 		$old_features = Dao::readAll(Feature::class, Dao::key('path'));

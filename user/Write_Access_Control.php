@@ -44,6 +44,7 @@ class Write_Access_Control implements Registerable
 	 * @param $files array[]
 	 */
 	public function checkAccess(string &$uri, array &$get = [], array &$post = [], array &$files = [])
+		: void
 	{
 		if (User::current() || ($uri === '/ITRocks/Framework/User/Password/reset')) {
 			return;
@@ -60,7 +61,7 @@ class Write_Access_Control implements Registerable
 	/**
 	 * @param $result string The link (result of View::link())
 	 */
-	public function checkAccessToLink(string &$result)
+	public function checkAccessToLink(string &$result) : void
 	{
 		if (User::current() || ($result === '/ITRocks/Framework/User/Password/reset')) {
 			return;
@@ -75,7 +76,7 @@ class Write_Access_Control implements Registerable
 	/**
 	 * @param $result ?Item
 	 */
-	public function checkAccessToMenuItem(Item &$result = null)
+	public function checkAccessToMenuItem(Item &$result = null) : void
 	{
 		if (User::current() || !isset($result)) {
 			return;
@@ -99,7 +100,7 @@ class Write_Access_Control implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
 		$aop->afterMethod([List_\Controller::class, 'getGeneralButtons'], [$this, 'removeButtons']);
@@ -114,7 +115,7 @@ class Write_Access_Control implements Registerable
 	/**
 	 * @param $result Button[]
 	 */
-	public function removeButtons(array &$result)
+	public function removeButtons(array &$result) : void
 	{
 		if (User::current()) {
 			return;

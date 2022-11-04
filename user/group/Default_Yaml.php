@@ -15,38 +15,38 @@ class Default_Yaml
 	/**
 	 * @var string
 	 */
-	private $class;
+	private string $class;
 
 	//--------------------------------------------------------------------------- $collection_classes
 	/**
 	 * @var string[]
 	 */
-	private $collection_classes;
+	private array $collection_classes;
 
 	//--------------------------------------------------------------------------------- $dependencies
 	/**
 	 * @var string[]
 	 */
-	private $dependencies;
+	private array $dependencies;
 
 	//-------------------------------------------------------------------------------------- $feature
 	/**
 	 * @var string
 	 */
-	private $feature;
+	private string $feature;
 
 	//----------------------------------------------------------------------------- $features_classes
 	/**
 	 * @var string[]
 	 */
-	private $features_classes;
+	private array $features_classes;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class string
-	 * @param $feature string
+	 * @param $class   string|null
+	 * @param $feature string|null
 	 */
-	public function __construct($class = null, $feature = null)
+	public function __construct(string $class = null, string $feature = null)
 	{
 		if (isset($class)) {
 			$this->class = $class;
@@ -61,7 +61,7 @@ class Default_Yaml
 	 * @param $features   string[]
 	 * @param $class_name string
 	 */
-	private function addCollectionDependencies(array $features, $class_name)
+	private function addCollectionDependencies(array $features, string $class_name) : void
 	{
 		if (!isset($this->collection_classes[$class_name])) {
 			$this->collection_classes[$class_name] = true;
@@ -74,7 +74,7 @@ class Default_Yaml
 	 * @param $features   string[]
 	 * @param $class_name string
 	 */
-	private function addObjectDependencies(array $features, $class_name)
+	private function addObjectDependencies(array $features, string $class_name) : void
 	{
 		if (!isset($this->features_classes[$class_name])) {
 			$this->features_classes[$class_name] = true;
@@ -91,10 +91,10 @@ class Default_Yaml
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $features   string[]
-	 * @param $class_name string
+	 * @param $class_name string|null
 	 * @return string[]
 	 */
-	private function getDependencies(array $features, $class_name = null)
+	private function getDependencies(array $features, string $class_name = null) : array
 	{
 		if (!isset($class_name)) {
 			$this->features_classes = [];
@@ -106,7 +106,7 @@ class Default_Yaml
 			$class = new Reflection_Class($class_name);
 			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
 				$link = Link_Annotation::of($property);
-				if ($link) {
+				if ($link->value) {
 					if ($link->is(Link_Annotation::MAP, Link_Annotation::OBJECT)) {
 						$this->addObjectDependencies(
 							$features, $property->getType()->getElementTypeAsString()
@@ -127,8 +127,10 @@ class Default_Yaml
 	/**
 	 * Initialises $this->yaml with implicit data.
 	 * Called when no file was found for an implicit feature.
+	 *
+	 * @return false|Yaml
 	 */
-	public function toYaml()
+	public function toYaml() : bool|Yaml
 	{
 		$feature = $this->feature;
 		if (in_array($feature, Feature::ADMIN)) {

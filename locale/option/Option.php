@@ -4,7 +4,7 @@ namespace ITRocks\Framework\Locale;
 /**
  * Option for locale functions
  *
- * @see Loc::tr()
+ * @see Loc::tr
  */
 abstract class Option
 {

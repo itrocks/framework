@@ -33,28 +33,28 @@ class Yaml
 	 *
 	 * @var array
 	 */
-	private $data;
+	private array $data;
 
 	//------------------------------------------------------------------------------------- $filename
 	/**
 	 * The name of the file where the end-user feature is stored.
-	 * - null if not set (the getter sets this on first read)
-	 * - string if a file was found by fileMatches()
-	 * - true if the file is implicit (then a default raw content has been set)
-	 * - false if there is no file nor implicit configuration for this path
+	 * - null   : not set (the getter sets this on first read)
+	 * - string : a file was found by fileMatches()
+	 * - true   : the file is implicit (then a default raw content has been set)
+	 * - false  : there is no file nor implicit configuration for this path
 	 *
 	 * @store false
-	 * @var string|boolean
+	 * @var bool|string|null
 	 */
-	public $filename;
+	public bool|string|null $filename;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Yaml file constructor
 	 *
-	 * @param $filename string
+	 * @param $filename string|null
 	 */
-	public function __construct($filename = null)
+	public function __construct(string $filename = null)
 	{
 		if (isset($filename)) {
 			$this->data     = yaml_parse_file($filename);
@@ -81,7 +81,7 @@ class Yaml
 	 * @param $feature string
 	 * @param $options array
 	 */
-	public function addFeature($feature, array $options = [])
+	public function addFeature(string $feature, array $options = []) : void
 	{
 		if (!isset($this->data[self::FEATURES])) {
 			$this->data[self::FEATURES] = [];
@@ -104,7 +104,7 @@ class Yaml
 	 * @param $feature string An implicit end-user feature name
 	 * @return string The content of the yaml file
 	 */
-	public static function defaultFileName($feature)
+	public static function defaultFileName(string $feature) : string
 	{
 		return self::DEFAULTS_DIR . SL . $feature . DOT . self::YAML;
 	}
@@ -118,7 +118,7 @@ class Yaml
 	 * will be read as ['includes' => 'edit, output']
 	 * extendsYaml will change it to ['includes' => ['edit', 'output']]
 	 */
-	public function extendYaml()
+	public function extendYaml() : void
 	{
 		foreach ([self::FEATURES, self::INCLUDES] as $key) {
 			if (isset($this->data[$key]) && is_string($this->data[$key])) {
@@ -135,7 +135,7 @@ class Yaml
 	/**
 	 * Returns true if the yaml file matches (contains) the feature path
 	 *
-	 * The file matches the path if it contains a end-user feature without any path (not set),
+	 * The file matches the path if it contains an end-user feature without any path (not set),
 	 * or if the path of the end-user feature matches $feature->path.
 	 *
 	 * If a matching end-user feature if found, sets $feature->raw and returns true
@@ -143,7 +143,7 @@ class Yaml
 	 * @param $path string The full path of the atomic end-user feature to match
 	 * @return boolean
 	 */
-	public function fileMatches($path)
+	public function fileMatches(string $path) : bool
 	{
 		$default_path = lLastParse($path, SL);
 		foreach ($this->data as $yaml_path => $feature_data) {
@@ -176,11 +176,10 @@ class Yaml
 	 * @param $filename string
 	 * @return Yaml[]
 	 */
-	public static function fromFile($filename)
+	public static function fromFile(string $filename) : array
 	{
-		$default_path = null;
 		$result = [];
-		$yaml = new Yaml($filename);
+		$yaml   = new Yaml($filename);
 		foreach ($yaml->data as $path => $feature_data) {
 			if ($path === self::FEATURES) {
 				$yaml->extendYaml();
@@ -209,7 +208,7 @@ class Yaml
 	 * @param $default_path string
 	 * @return Low_Level_Feature[]
 	 */
-	public function getFeatures($default_path)
+	public function getFeatures(string $default_path) : array
 	{
 		$features = [];
 		if (isset($this->data[self::FEATURES])) {
@@ -243,7 +242,7 @@ class Yaml
 	 * a/full/path/Class_Name_feature.yaml -> a/full/path/Class_Name/feature
 	 * @return string
 	 */
-	private function getFilenamePath()
+	private function getFilenamePath() : string
 	{
 		$path       = lLastParse($this->filename, SL);
 		$file_parts = explode('_', lParse(rLastParse($this->filename, SL), DOT));
@@ -263,7 +262,7 @@ class Yaml
 	 * @param $default_path string
 	 * @return Feature[]
 	 */
-	public function getIncludes($default_path)
+	public function getIncludes(string $default_path) : array
 	{
 		$includes = [];
 		if (isset($this->data[self::INCLUDES])) {
@@ -281,11 +280,11 @@ class Yaml
 	/**
 	 * Gets the atomic end-user feature name stored into the yaml file
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	public function getName()
+	public function getName() : ?string
 	{
-		return isset($this->data[self::NAME]) ? $this->data[self::NAME] : null;
+		return $this->data[self::NAME] ?? null;
 	}
 
 	//--------------------------------------------------------------------------------------- getPath
@@ -294,7 +293,7 @@ class Yaml
 	 *
 	 * @return string
 	 */
-	private function getPath()
+	private function getPath() : string
 	{
 		if (isset($this->data[self::PATH])) {
 			$path = $this->data[self::PATH];

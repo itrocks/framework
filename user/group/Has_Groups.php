@@ -24,7 +24,7 @@ trait Has_Groups
 	 * @link Map
 	 * @var Group[]
 	 */
-	public $groups;
+	public array $groups;
 
 	//------------------------------------------------------------------------------ getAccessOptions
 	/**

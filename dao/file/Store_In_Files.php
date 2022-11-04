@@ -9,7 +9,6 @@ use ITRocks\Framework\Dao\File;
  *
  * @extends File
  * @override content @dao files
- * @see File
  */
 interface Store_In_Files
 {

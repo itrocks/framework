@@ -15,7 +15,8 @@ trait Serialized
 	 * @param $prefix  string serialized prefix @example O for object, s for string
 	 * @return boolean true if something changed
 	 */
-	public function replace(&$value, $search, $replace, $prefix = 'O')
+	public function replace(string &$value, string $search, string $replace, string $prefix = 'O')
+		: bool
 	{
 		if (!str_contains($value, $search)) {
 			return false;
@@ -49,7 +50,7 @@ trait Serialized
 	 * @param $search_replaces array string[][] [string $search => string $replace]
 	 * @return boolean true if something changed
 	 */
-	public function replaceMultiple(&$value, array $search_replaces)
+	public function replaceMultiple(string &$value, array $search_replaces) : bool
 	{
 		$changed = false;
 		foreach ($search_replaces as $search => $replace) {

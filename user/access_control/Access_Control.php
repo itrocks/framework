@@ -103,7 +103,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
 		if (isset($configuration[self::ALL_USERS])) {
 			$this->all_users = array_merge($this->all_users, $configuration[self::ALL_USERS]);
@@ -300,7 +300,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * Change a full-featured uri to something simple (/Path/Class/Feature)
 	 *
-	 * @example '/ITRocks/Framework/Property/18/select/Bappli/Sfkgroup/Claims'
+	 * @example '/ITRocks/Framework/Property/18/select/Bappli/Super/Claims'
 	 * will become '/ITRocks/Framework/Property/select'
 	 * @example '/ITRocks/Framework/Users' will become '/ITRocks/Framework/User/listData'
 	 * @param $uri string
@@ -434,7 +434,7 @@ class Access_Control implements Configurable, Registerable
 
 	//----------------------------------------------------------------------- removeButtonsWithNoLink
 	/**
-	 * Remove buttons which link is empty (eg due to access control limitation)
+	 * Remove buttons which link is empty (e.g. due to access control limitation)
 	 *
 	 * @param $parameters Button[]
 	 */

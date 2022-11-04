@@ -5,7 +5,6 @@ use ITRocks\Framework\Configuration\File\Writer;
 
 /**
  * @extends Writer
- * @see Writer
  */
 trait Namespace_White_Lines
 {

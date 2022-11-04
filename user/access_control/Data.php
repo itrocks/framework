@@ -31,7 +31,7 @@ class Data implements Registerable
 	 * @param $files  array[]
 	 */
 	public function checkDataAccess(
-		Access_Control $object, &$result, &$uri, array &$get, array &$post, array &$files
+		Access_Control $object, bool &$result, string &$uri, array &$get, array &$post, array &$files
 	) {
 		$access_control = $object;
 		if (!$result) {
@@ -39,7 +39,7 @@ class Data implements Registerable
 		}
 		$uri_object = new Uri(lParse($uri, '?'));
 		$class_name = Builder::className(Names::setToClass($uri_object->controller_name));
-		// in some rare cases, controllers may exist without a real class (eg Mysql/maintain)
+		// in some rare cases, controllers may exist without a real class (e.g. Mysql/maintain)
 		if (!class_exists($class_name)) {
 			return;
 		}

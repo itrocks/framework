@@ -14,7 +14,7 @@ class Versions implements Configurable
 	 * @param $configuration array
 	 * @todo store configuration and do the job on update !
 	 */
-	public function __construct($configuration)
+	public function __construct(mixed $configuration)
 	{
 	}
 

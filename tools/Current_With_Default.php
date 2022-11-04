@@ -3,8 +3,6 @@ namespace ITRocks\Framework\Tools;
 
 /**
  * Use this trait into classes to have a default current value of an object into the current context
- *
- * @see Current
  */
 trait Current_With_Default
 {

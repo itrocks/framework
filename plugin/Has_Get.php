@@ -11,7 +11,6 @@ use ITRocks\Framework\Session;
  * All plugins should use this trait
  *
  * @extends Plugin
- * @see Plugin
  */
 trait Has_Get
 {

@@ -37,7 +37,7 @@ class Admin_Plugin implements Installable, Registerable, Updatable
 	 *
 	 * All users set as super-administrator, if they have no group
 	 */
-	public function initializeDefaultUserGroup()
+	public function initializeDefaultUserGroup() : void
 	{
 		// create the default super-administrator group
 		$group_name = Loc::tr('Super-administrator');
@@ -62,7 +62,7 @@ class Admin_Plugin implements Installable, Registerable, Updatable
 	/**
 	 * @param $installer Installer
 	 */
-	public function install(Installer $installer)
+	public function install(Installer $installer) : void
 	{
 		$installer->addPlugin($this);
 		$installer->addToClass(User::class, Has_Groups::class);
@@ -75,7 +75,7 @@ class Admin_Plugin implements Installable, Registerable, Updatable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		Application_Updater::get()->addUpdatable($this);
 	}
@@ -86,7 +86,7 @@ class Admin_Plugin implements Installable, Registerable, Updatable
 	 *
 	 * @param $last_time integer
 	 */
-	public function update(int $last_time)
+	public function update(int $last_time) : void
 	{
 		$feature_cache = new Feature_Cache();
 		if ($files = $feature_cache->invalidate($last_time)) {

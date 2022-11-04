@@ -75,12 +75,12 @@ class Feature
 	/**
 	 * The low-level features activated by this end-user feature
 	 *
-	 * @getter getFeatures
+	 * @getter
 	 * @link Collection
 	 * @store false
 	 * @var Low_Level_Feature[]
 	 */
-	public $features;
+	public array $features;
 
 	//------------------------------------------------------------------------------------- $implicit
 	/**
@@ -91,18 +91,18 @@ class Feature
 	 *
 	 * @var string[]
 	 */
-	public static $implicit;
+	public static array $implicit;
 
 	//------------------------------------------------------------------------------------- $includes
 	/**
 	 * Included end-user features
 	 *
-	 * @getter getIncludes
+	 * @getter
 	 * @link Collection
 	 * @store false
 	 * @var Feature[]
 	 */
-	public $includes;
+	public array $includes;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
@@ -110,11 +110,11 @@ class Feature
 	 * Default will be calculated from $path :
 	 * Names::classToDisplay(getClassName()) . SP . Names::methodToDisplay(getFeatureName())
 	 *
-	 * @getter getName
+	 * @getter
 	 * @mandatory
 	 * @var string
 	 */
-	public $name;
+	public string $name;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -123,10 +123,10 @@ class Feature
 	 * Respect the case, the same used for URIs !
 	 *
 	 * @example A/Module/Namespace/A_Class/featureName
-	 * @see getFileNames() for possible storage files for a the example path
+	 * @see getFileNames() for possible storage files for the example path
 	 * @var string
 	 */
-	public $path;
+	public string $path;
 
 	//----------------------------------------------------------------------------------------- $yaml
 	/**
@@ -137,18 +137,18 @@ class Feature
 	 * Set by :
 	 * - fileMatches() (once a file matches)
 	 *
-	 * @getter getYaml
+	 * @getter
 	 * @store false
-	 * @var Yaml|boolean false if the feature is not applicable (no file, not implicit)
+	 * @var false|Yaml|null false if the feature is not applicable (no file, not implicit)
 	 */
-	public $yaml;
+	public bool|Yaml|null $yaml;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $path string eg 'A/Module/Namespace/A_Class/featureName' always the full path
-	 * @param $name string eg 'A class feature name'
+	 * @param $path string|null eg 'A/Module/Namespace/A_Class/featureName' always the full path
+	 * @param $name string|null eg 'A class feature name'
 	 */
-	public function __construct($path = null, $name = null)
+	public function __construct(string $path = null, string $name = null)
 	{
 		if (isset($path)) {
 			$this->path = $path;
@@ -156,19 +156,20 @@ class Feature
 		if (isset($name)) {
 			$this->name = $this->resolveName($name);
 		}
-		if (!isset(self::$implicit)) {
-			$implicit_features = array_merge(
-				Feature::ADMIN,
-				Feature::API,
-				Feature::EDIT,
-				Feature::EXPORT,
-				Feature::F_PRINT,
-				Feature::IMPORT,
-				Feature::JSON,
-				Feature::OUTPUT
-			);
-			Feature::$implicit = array_combine($implicit_features, $implicit_features);
+		if (isset(self::$implicit)) {
+			return;
 		}
+		$implicit_features = array_merge(
+			Feature::ADMIN,
+			Feature::API,
+			Feature::EDIT,
+			Feature::EXPORT,
+			Feature::F_PRINT,
+			Feature::IMPORT,
+			Feature::JSON,
+			Feature::OUTPUT
+		);
+		Feature::$implicit = array_combine($implicit_features, $implicit_features);
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -177,17 +178,15 @@ class Feature
 	 */
 	public function __toString() : string
 	{
-		return strval($this->name);
+		return $this->name;
 	}
 
 	//----------------------------------------------------------------------------------- beforeWrite
 	/**
-	 * Called @before_write
-	 *
 	 * Call all getters necessary for a correct write of the feature into the data link
 	 * (needs name)
 	 */
-	public function beforeWrite()
+	public function beforeWrite() : void
 	{
 		$this->getName();
 	}
@@ -199,7 +198,7 @@ class Feature
 	 * @noinspection PhpUnused @after_read
 	 * @todo HIGHER when all configurations are updated with the right names, we will not need this
 	 */
-	public function emptyName()
+	public function emptyName() : void
 	{
 		$old_name   = $this->name;
 		$this->name = null;
@@ -215,7 +214,7 @@ class Feature
 	 *
 	 * @return Low_Level_Feature[]
 	 */
-	public function getAllFeatures()
+	public function getAllFeatures() : array
 	{
 		$features = [];
 		foreach ($this->includes as $include) {
@@ -232,7 +231,7 @@ class Feature
 	 * the class name is 'A/Module/Namespace/A_Class';
 	 * @return string
 	 */
-	private function getClassName()
+	private function getClassName() : string
 	{
 		return Names::pathToClass($this->getClassPath());
 	}
@@ -243,7 +242,7 @@ class Feature
 	 *
 	 * @return string
 	 */
-	private function getClassPath()
+	private function getClassPath() : string
 	{
 		return lLastParse($this->path, SL);
 	}
@@ -256,7 +255,7 @@ class Feature
 	 * the feature name is 'featureName';
 	 * @return string
 	 */
-	private function getFeatureName()
+	private function getFeatureName() : string
 	{
 		return rLastParse($this->path, SL);
 	}
@@ -266,9 +265,10 @@ class Feature
 	 * Low-level features are always stored into yaml files or implicit, not in databases or others
 	 * data links
 	 *
+	 * @noinspection PhpUnused @getter
 	 * @return Low_Level_Feature[]
 	 */
-	protected function getFeatures()
+	protected function getFeatures() : array
 	{
 		if (!isset($this->features)) {
 			$class_name = $this->getClassName();
@@ -300,7 +300,7 @@ class Feature
 	 * - multi-features file 'a/module/namespace/A_Class.yaml'
 	 * @return string[]
 	 */
-	private function getFileNames()
+	private function getFileNames() : array
 	{
 		$class_name     = $this->getClassName();
 		$class_path     = strtolower(Names::classToPath($class_name));
@@ -324,7 +324,7 @@ class Feature
 	 *
 	 * @return string[] @example ['admin', 'edit', 'export', 'output']
 	 */
-	public static function getImplicitFeatures()
+	public static function getImplicitFeatures() : array
 	{
 		return [
 			Controller\Feature::F_ADMIN,
@@ -342,9 +342,10 @@ class Feature
 	/**
 	 * Get included end-user features
 	 *
+	 * @noinspection PhpUnused @getter
 	 * @return Feature[]
 	 */
-	protected function getIncludes()
+	protected function getIncludes() : array
 	{
 		if (!isset($this->includes)) {
 			$this->includes = $this->yaml ? $this->yaml->getIncludes($this->path) : [];
@@ -356,9 +357,10 @@ class Feature
 	/**
 	 * Initialises the name from the yaml file or generate its default value from $path
 	 *
+	 * @noinspection PhpUnused @getter
 	 * @return string
 	 */
-	protected function getName()
+	protected function getName() : string
 	{
 		if (empty($this->name)) {
 			$name = $this->yaml ? $this->yaml->getName() : null;
@@ -387,7 +389,7 @@ class Feature
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Low_Level_Feature[]
 	 */
-	private function getPropertiesFeatures()
+	private function getPropertiesFeatures() : array
 	{
 		/** @var $features Low_Level_Feature[] */
 		$features = [];
@@ -421,9 +423,9 @@ class Feature
 	 * Gets the yaml object of the feature : matches the file that contains the end-user feature data,
 	 * or false if there is no file and the feature is not implicit (bad feature).
 	 *
-	 * @return Yaml|boolean
+	 * @return false|Yaml
 	 */
-	protected function getYaml()
+	protected function getYaml() : bool|Yaml
 	{
 		if (isset($this->yaml)) {
 			return $this->yaml;
@@ -470,7 +472,7 @@ class Feature
 	 *
 	 * @return boolean
 	 */
-	private function isImplicit()
+	private function isImplicit() : bool
 	{
 		return isset(self::$implicit[$this->getFeatureName()]);
 	}
@@ -480,7 +482,7 @@ class Feature
 	 * @param $name string
 	 * @return string
 	 */
-	private function resolveName($name)
+	private function resolveName(string $name) : string
 	{
 		// name can contain $class and $feature
 		if (str_contains($name, '$')) {

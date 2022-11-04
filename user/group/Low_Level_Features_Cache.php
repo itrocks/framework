@@ -16,7 +16,7 @@ class Low_Level_Features_Cache
 	/**
 	 * @var Low_Level_Feature[]
 	 */
-	public $features;
+	public array $features;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -31,10 +31,11 @@ class Low_Level_Features_Cache
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current Low_Level_Feature
-	 * @return Low_Level_Features_Cache
+	 * @param $set_current Low_Level_Feature|T|null
+	 * @return T
+	 * @template T
 	 */
-	public static function current($set_current = null)
+	public static function current($set_current = null) : Low_Level_Features_Cache
 	{
 		$current = self::pCurrent($set_current);
 		if (!isset($current)) {
@@ -56,7 +57,7 @@ class Low_Level_Features_Cache
 	 * @param $features Low_Level_Feature[]
 	 * @return array
 	 */
-	private static function lowLevelFeaturesToSearchArray(array $features)
+	private static function lowLevelFeaturesToSearchArray(array $features) : array
 	{
 		$array = [];
 		foreach ($features as $feature) {

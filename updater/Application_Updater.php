@@ -46,7 +46,7 @@ class Application_Updater implements Configurable
 	 * @example 1000000 (μs = 1s)
 	 * @var integer
 	 */
-	private static $delay_between_two_lock_tries = 1000000;
+	private static int $delay_between_two_lock_tries = 1000000;
 
 	//------------------------------------------------------------------------------------ $lock_file
 	/**
@@ -54,7 +54,7 @@ class Application_Updater implements Configurable
 	 *
 	 * @var resource
 	 */
-	private static $lock_file;
+	private static mixed $lock_file;
 
 	//------------------------------------------------------------------------------------- $maintain
 	/**
@@ -62,7 +62,7 @@ class Application_Updater implements Configurable
 	 *
 	 * @var boolean
 	 */
-	public static $maintain = true;
+	public static bool $maintain = true;
 
 	//-------------------------------------------------------------------------- $nb_max_lock_retries
 	/**
@@ -71,7 +71,7 @@ class Application_Updater implements Configurable
 	 * @example 240 (* 1000000μs = 4 minutes)
 	 * @var integer
 	 */
-	private static $nb_max_lock_retries = 300;
+	private static int $nb_max_lock_retries = 300;
 
 	//-------------------------------------------------------------------------------------- $running
 	/**
@@ -79,7 +79,7 @@ class Application_Updater implements Configurable
 	 *
 	 * @var boolean
 	 */
-	private static $running = false;
+	private static bool $running = false;
 
 	//----------------------------------------------------------------------------------- $updatables
 	/**
@@ -87,13 +87,13 @@ class Application_Updater implements Configurable
 	 *
 	 * @var Updatable[]|string[]
 	 */
-	private static $updatables = [];
+	private static array $updatables = [];
 
 	//---------------------------------------------------------------------------------- $update_time
 	/**
-	 * @var integer
+	 * @var ?integer
 	 */
-	private static $update_time;
+	private static ?int $update_time;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -102,7 +102,7 @@ class Application_Updater implements Configurable
 	 *
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
 		$this->setConfiguration($configuration);
 
@@ -130,12 +130,11 @@ class Application_Updater implements Configurable
 		foreach (self::$updatables as $updatable) {
 			$updatables[] = is_object($updatable) ? get_class($updatable) : $updatable;
 		}
-		$configuration = [
+		return [
 			self::DELAY_BETWEEN_TWO_LOCK_TRIES => self::$delay_between_two_lock_tries,
 			self::NB_MAX_LOCK_RETRIES          => self::$nb_max_lock_retries,
 			self::UPDATABLES                   => $updatables
 		];
-		return $configuration;
 	}
 
 	//--------------------------------------------------------------------------------- __unserialize
@@ -154,9 +153,9 @@ class Application_Updater implements Configurable
 	 * This can be called before the application updater plugin is registered, all updatable objects
 	 * will be kept
 	 *
-	 * @param $object Updatable|string object or class name
+	 * @param $object string|Updatable object or class name
 	 */
-	public function addUpdatable($object)
+	public function addUpdatable(string|Updatable $object)
 	{
 		/**
 		 * This is called each time the plugin is registered (means on session creation/reset) and it
@@ -180,7 +179,7 @@ class Application_Updater implements Configurable
 	 * @return boolean true if updates were made
 	 * @throws Application_Updater_Exception
 	 */
-	public function autoUpdate(Main $controller)
+	public function autoUpdate(Main $controller) : bool
 	{
 		if ($this->mustUpdate()) {
 			try {
@@ -208,18 +207,16 @@ class Application_Updater implements Configurable
 	 *
 	 * @return string
 	 */
-	private function confirmFullUpdateView()
+	private function confirmFullUpdateView() : string
 	{
 		// Does not use View, as it is not ready and this may crash if called at this step
-		$html = file_get_contents(__DIR__ . SL . 'Application_Updater_confirmFullUpdate.html');
-		$html = strReplace(
+		return strReplace(
 			[
 				'{memory_limit}' => ini_get('memory_limit'),
 				'{time_limit}'   => ini_get('max_execution_time')
 			],
-			$html
+			file_get_contents(__DIR__ . SL . 'Application_Updater_confirmFullUpdate.html')
 		);
-		return $html;
 	}
 
 	//------------------------------------------------------------------------------------------ done
@@ -237,7 +234,6 @@ class Application_Updater implements Configurable
 			unlink(self::UPDATE_FILE);
 		}
 		if (function_exists('opcache_reset')) {
-			/** @noinspection PhpComposerExtensionStubsInspection function_exists */
 			opcache_reset();
 		}
 		if (isset($_GET['Z']) && isset($_POST['Z'])) {
@@ -252,7 +248,7 @@ class Application_Updater implements Configurable
 	 *
 	 * @return string
 	 */
-	private function fullUpdateDoneView()
+	private function fullUpdateDoneView() : string
 	{
 		// Does not use View, as it is not ready and this may crash if called at this step
 		return file_get_contents(__DIR__ . SL . 'Application_Updater_fullUpdateDone.html');
@@ -262,7 +258,7 @@ class Application_Updater implements Configurable
 	/**
 	 * @return string
 	 */
-	private function getLastUpdateFileName()
+	private function getLastUpdateFileName() : string
 	{
 		return Application::getCacheDir() . SL . self::LAST_UPDATE_FILE;
 	}
@@ -271,7 +267,7 @@ class Application_Updater implements Configurable
 	/**
 	 * @return integer last compile time
 	 */
-	private function getLastUpdateTime()
+	private function getLastUpdateTime() : int
 	{
 		$file_name = $this->getLastUpdateFileName();
 		return file_exists($file_name) ? filemtime($file_name) : 0;
@@ -283,7 +279,7 @@ class Application_Updater implements Configurable
 	 *
 	 * @return boolean
 	 */
-	public function isRunning()
+	public function isRunning() : bool
 	{
 		return self::$running;
 	}
@@ -294,7 +290,7 @@ class Application_Updater implements Configurable
 	 *
 	 * @return boolean
 	 */
-	private function lock()
+	private function lock() : bool
 	{
 		self::$lock_file = fopen(self::UPDATE_FILE, 'r');
 		// wait for update lock file to be released by another update in progress then :
@@ -319,7 +315,7 @@ class Application_Updater implements Configurable
 	 *
 	 * @return boolean
 	 */
-	public function mustUpdate()
+	public function mustUpdate() : bool
 	{
 		if (file_exists(self::UPDATE_FILE)) {
 			return true;
@@ -334,7 +330,7 @@ class Application_Updater implements Configurable
 	private function release()
 	{
 		if (self::$lock_file) {
-			// Note: fclose() will also unlock the file, but it's proper do do it explicitly !
+			// Note: fclose() will also unlock the file, but it's proper to do it explicitly !
 			flock(self::$lock_file, LOCK_UN);
 			// TODO ask for stop (update file does this job) and wait for running tasks to stop
 			fclose(self::$lock_file);
@@ -343,9 +339,9 @@ class Application_Updater implements Configurable
 
 	//--------------------------------------------------------------------------------- runMaintainer
 	/**
-	 * @return static
+	 * @return $this
 	 */
-	public function runMaintainer()
+	public function runMaintainer() : static
 	{
 		if (self::$maintain && (Session::current()->environment !== Environment::DEVELOPMENT)) {
 			$asynchronous = new Asynchronous();
@@ -385,7 +381,7 @@ class Application_Updater implements Configurable
 	/**
 	 * @param $update_time integer
 	 */
-	private function setLastUpdateTime($update_time)
+	private function setLastUpdateTime(int $update_time)
 	{
 		$updated = $this->getLastUpdateFileName();
 		touch($updated, $update_time);

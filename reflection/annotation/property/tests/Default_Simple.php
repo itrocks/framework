@@ -8,7 +8,6 @@ use ITRocks\Framework\Tools\Date_Time;
  *
  * @override age @default Default_Simple::defaultAge
  * @override null_age @default defaultAge
- * @see Default_Simple
  */
 class Default_Simple extends Default_Extended
 {

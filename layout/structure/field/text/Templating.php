@@ -8,7 +8,6 @@ use ITRocks\Framework\Tools\Names;
  * Text templating trait
  *
  * @extends Text
- * @see Text
  */
 trait Templating
 {

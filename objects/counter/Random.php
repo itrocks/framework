@@ -7,7 +7,6 @@ use ITRocks\Framework\Objects\Counter;
 /**
  * @extends Counter
  * @feature Random counters
- * @see Counter
  */
 trait Random
 {

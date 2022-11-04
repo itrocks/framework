@@ -7,7 +7,6 @@ use ITRocks\Framework\Layout\Structure\Field\Text;
  * Formatted text feature
  *
  * @extends Text
- * @see Text
  */
 trait Formatted
 {

@@ -21,7 +21,7 @@ class Last_Connection implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register)
+	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod(
 			[Authentication::class, 'authenticate'], [$this, 'saveLastConnectionDate']
@@ -32,7 +32,7 @@ class Last_Connection implements Registerable
 	/**
 	 * @param $user User|Has
 	 */
-	public function saveLastConnectionDate(User|Has $user)
+	public function saveLastConnectionDate(User|Has $user) : void
 	{
 		$user->last_connection = Date_Time::now();
 		Dao::write($user, Dao::only('last_connection'));

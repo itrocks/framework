@@ -5,7 +5,6 @@ use ITRocks\Framework\User;
 
 /**
  * @extends User
- * @see User
  */
 trait Has_Active
 {
@@ -14,6 +13,6 @@ trait Has_Active
 	/**
 	 * @var boolean
 	 */
-	public $active = true;
+	public bool $active = true;
 
 }

@@ -22,11 +22,12 @@ class User
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $set_current User|object Only set when an user, but other parameters
+	 * @noinspection PhpDocSignatureInspection $set_current static
+	 * @param $set_current static Only set when a user, but other parameters
 	 *        set by @default User::current or @user_default User::current can be set and ignored
 	 * @return static
 	 */
-	public static function current($set_current = null)
+	public static function current(object $set_current = null) : object
 	{
 		$user = self::pCurrent(($set_current instanceof User) ? $set_current : null);
 		if (

@@ -53,7 +53,7 @@ abstract class Authentication
 	 *
 	 * @param $user User
 	 */
-	public static function authenticate(User $user)
+	public static function authenticate(User $user) : void
 	{
 		User::current($user);
 		// TODO LOW if Low_Level_Features_Cache is not used in minimal use, should be moved into feature
@@ -105,7 +105,7 @@ abstract class Authentication
 	 *
 	 * Call this to disconnect user
 	 */
-	public static function disconnect()
+	public static function disconnect() : void
 	{
 		User::unsetCurrent();
 		Session::current()->removeAny(Builder::className(User::class));

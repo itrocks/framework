@@ -10,7 +10,6 @@ use ITRocks\Framework\Layout\Model;
  * @override model @var Display_Model
  * @override ordering @max_length 2
  * @property Display_Model model
- * @see Display_Model
  * @store_name display_model_pages
  */
 class Page extends Model\Page

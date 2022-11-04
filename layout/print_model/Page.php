@@ -11,7 +11,6 @@ use ITRocks\Framework\Layout\Print_Model;
  * @override model @var Print_Model
  * @override ordering @max_length 2
  * @property Print_Model model
- * @see Print_Model
  * @store_name print_model_pages
  */
 class Page extends Model\Page

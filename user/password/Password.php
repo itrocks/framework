@@ -14,20 +14,20 @@ class Password
 	/**
 	 * @var string
 	 */
-	public $login;
+	public string $login = '';
 
 	//------------------------------------------------------------------------------------- $password
 	/**
 	 * @password sha1
 	 * @var string
 	 */
-	public $password;
+	public string $password = '';
 
 	//------------------------------------------------------------------------------------ $password2
 	/**
 	 * @password sha1
 	 * @var string
 	 */
-	public $password2;
+	public string $password2 = '';
 
 }

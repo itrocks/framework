@@ -15,8 +15,7 @@ use ITRocks\Framework\User\Authenticate\Authentication;
  * @feature Users can be deactivated
  * @feature_build User + Has_Active
  * @priority lowest
- * @see Has_Active
- * @see User
+ * @see Has_Active, User
  */
 class Active implements Registerable
 {
@@ -40,7 +39,7 @@ class Active implements Registerable
 	/**
 	 * @param $register Register
 	 */
-	public function register(Register $register) : void
+	public function register(Register $register)
 	{
 		$register->aop->afterMethod(
 			[Authentication::class, 'userMatch'], [$this, 'resultFalseJoinpoint']

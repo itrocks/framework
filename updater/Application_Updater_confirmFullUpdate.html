@@ -7,10 +7,17 @@
 <body>
 <!--BEGIN-->
 
-	<form action="?X&Z&memory_limit={memory_limit}" method="post">
-		<p>Do you confirm the complete UPDATE / RESET of your application cache ?</p>
-		<p>This may freeze access to the server for a while, and may cause errors if some processes are running during the update process.</p>
-		<p>Please do not confirm if you don't know what you are doing.</p>
+	<form action="?X&Z&memory_limit=(memory_limit)" method="post">
+		<p>
+			Do you confirm the complete UPDATE / RESET of your application cache ?
+		</p>
+		<p>
+			This may freeze access to the server for a while, and may cause errors if some processes are
+			running during the update process.
+		</p>
+		<p>
+			Please do not confirm if you don't know what you are doing.
+		</p>
 		<input name="Z" type="hidden" value="confirmed">
 		<p>
 			<input id="verbose" type="checkbox" name="verbose">
