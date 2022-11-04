@@ -4,6 +4,7 @@ namespace ITRocks\Framework\AOP\Compiler;
 use ITRocks\Framework\AOP\Weaver\Handler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Method;
+use ITRocks\Framework\PHP\Reflection_Source;
 
 /**
  * Aspect weaver properties compiler
@@ -48,7 +49,7 @@ class Properties
 	 * @param $advices array
 	 * @return string[]
 	 */
-	public function compile(array $advices)
+	public function compile(array $advices) : array
 	{
 		$this->actions = [];
 		$methods       = [];
@@ -309,11 +310,31 @@ class Properties
 			if (isset($property_advices['default'])) {
 				[$object, $method] = $property_advices['default'];
 				$operator          = ($object === '$this') ? '->' : '::';
-				$code .= "if (!isset(\$this->$property_name)) {
+				if (in_array($object, ['$this', 'self', 'static'])) {
+					$reflection_class = $this->class;
+				}
+				else {
+					$class_name = $this->class->source->fullClassName($object);
+					// may be quite slow, but I have to check if there is a $property parameter into default
+					$reflection_source = Reflection_Source::ofClass($class_name);
+					$reflection_class  = $reflection_source->getClass($class_name);
+				}
+				// TODO BUG getMethods on Date_Time stops after min method : there are missing lot of them !
+				$reflection_methods = $reflection_class->getMethods([T_EXTENDS, T_IMPLEMENTS, T_USE]);
+				$reflection_method  = $reflection_methods[$method] ?? null;
+				$parameter_names    = $reflection_method?->getParametersNames(false) ?: [];
+				if (($parameter_names[0] ?? null) === 'property') {
+					$code .= "if (!isset(\$this->$property_name)) {
 			\$this->$property_name = $object$operator$method(
 				new \\ITRocks\\Framework\\Reflection\\Reflection_Property(__CLASS__, '$property_name')
 			);
 		}" . LF . TAB . TAB;
+				}
+				else {
+					$code .= "if (!isset(\$this->$property_name)) {
+			\$this->$property_name = $object$operator$method();
+		}" . LF . TAB . TAB;
+				}
 			}
 		}
 		if (!isset($operator) && str_starts_with($over['call'], 'parent::')) {
@@ -704,7 +725,7 @@ class Properties
 	 * - rename will change the name of the method
 	 * - trait will ?
 	 */
-	private function executeActions()
+	private function executeActions() : void
 	{
 		foreach ($this->actions as $method_name => $action) {
 			if ($action === 'rename') {
@@ -730,7 +751,7 @@ class Properties
 	 * @param $init string[]
 	 * @return string
 	 */
-	private function initCode(array $init)
+	private function initCode(array $init) : string
 	{
 		if (isset($init['7.element_type_name']) && isset($init['7.class_name'])) {
 			$init['7.class_name_element_type_name'] = '$class_name = ' . $init['7.element_type_name'];
