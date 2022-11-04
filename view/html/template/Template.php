@@ -2173,10 +2173,10 @@ class Template
 		}
 
 		$i = 0;
-		while (($i = strpos($content, 'data-each="{', $i)) !== false) {
-			$i += 12;
+		while (($i = strpos($content, ' data-each="{', $i)) !== false) {
+			$i += 13;
 			$j  = strpos($content, '}' . DQ, $i);
-			$content = substr($content, 0, $i - 12)
+			$content = substr($content, 0, $i - 13)
 				. '<!--' . substr($content, $i, $j - $i) . '--> data-{@key}="{.}"<!--end-->'
 				. substr($content, $j + 2);
 		}

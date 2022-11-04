@@ -14,15 +14,15 @@
 
 	<ul class="selection actions">
 		<!--selection_buttons-->
-		<li class="{class}" data-each="{data}">
-			<a class="submit" data-class="{?data_object.@class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" data-id="{?data_object.id}" href="app://(link)" target="{?target}" title="|{?hint.ucfirst}|">
+		<li class="submit {?class}" data-each="{data}">
+			<a data-class="{?data_object.@class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" data-id="{?data_object.id}" href="app://(link)" target="{?target}" title="|{?hint.ucfirst}|">
 				|{caption}|
 			</a>
 			<!--sub_buttons?-->
 			<ul>
 				<!--sub_buttons-->
-				<li class="{class}">
-					<a class="submit" data-class="{?data_object.@class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" data-id="{?data_object.id}" href="app://(link)" target="{?target}">
+				<li class="submit {?class}">
+					<a data-class="{?data_object.@class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" data-id="{?data_object.id}" href="app://(link)" target="{?target}">
 						|{caption}|
 					</a>
 				</li>
@@ -37,19 +37,19 @@
 		<li class="print">
 			<a class="submit" href="app://ITRocks/Framework/Users/print">Print</a>
 			<ul>
-				<li class="add">
-					<a class="submit" href="app://ITRocks/Framework/Layout/Model/add/class_name/ITRocks/Framework/User" target="#main">New print model</a>
+				<li class="submit add">
+					<a href="app://ITRocks/Framework/Layout/Model/add/class_name/ITRocks/Framework/User" target="#main">New print model</a>
 				</li>
-				<li>
-					<a class="submit" href="app://ITRocks/Framework/Users/print" target="#responses">Standard model</a>
+				<li class="submit">
+					<a href="app://ITRocks/Framework/Users/print" target="#responses">Standard model</a>
 				</li>
-				<li>
-					<a class="submit" href="app://ITRocks/Framework/Users/print" target="#responses">Secondary model</a>
+				<li class="submit">
+					<a href="app://ITRocks/Framework/Users/print" target="#responses">Secondary model</a>
 				</li>
 			</ul>
 		</li>
-		<li class="delete">
-			<a class="submit" href="app://ITRocks/Framework/Users/delete" target="#responses">Delete</a>
+		<li class="submit delete">
+			<a href="app://ITRocks/Framework/Users/delete" target="#responses">Delete</a>
 		</li>
 		<!--end-->
 	</ul>

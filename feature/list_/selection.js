@@ -162,7 +162,9 @@ $(document).ready(function()
 		}
 
 		//----------------------------------------------------------- .selection.actions a.submit click
-		$article.find('.selection.actions a.submit:not([target^="#"])').click(function(event)
+		const selection_actions = '.selection.actions a.submit:not([target^="#"])'
+			+ ', .selection.actions .submit > a:not([target^="#"])'
+		$article.find(selection_actions).click(function(event)
 		{
 			const data = {
 				excluded_selection: $selector.children('input[name=excluded_selection]').val(),

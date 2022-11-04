@@ -445,7 +445,7 @@
 					let   jax
 					let   xhr = undefined
 					requestTargetHeaders($anchor)
-					if ($anchor.hasClass(settings.submit)) {
+					if ($anchor.hasClass(settings.submit) || $anchor.parent().hasClass(settings.submit)) {
 						$anchor.addClass('disabled progress')
 						const $parent_form = $anchor.closest('form')
 						if ($parent_form.length) {
