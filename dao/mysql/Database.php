@@ -31,7 +31,7 @@ class Database implements Sql\Database
 	/**
 	 * @return string @example CHARACTER SET utf8 COLLATE utf8_general_ci
 	 */
-	public static function characterSetCollateSql()
+	public static function characterSetCollateSql() : string
 	{
 		return static::characterSetSql() . SP . static::collateSql();
 	}
@@ -40,7 +40,7 @@ class Database implements Sql\Database
 	/**
 	 * @return string @example CHARACTER SET utf8
 	 */
-	public static function characterSetSql()
+	public static function characterSetSql() : string
 	{
 		return 'CHARACTER SET ' . static::CHARACTER_SET;
 	}
@@ -49,7 +49,7 @@ class Database implements Sql\Database
 	/**
 	 * @return string @example COLLATE utf8_general_ci
 	 */
-	public static function collateSql()
+	public static function collateSql() : string
 	{
 		return 'COLLATE ' . static::COLLATE;
 	}

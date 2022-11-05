@@ -104,7 +104,8 @@ class Json
 	 */
 	protected function notBrowsableObjectToStdClass(
 		stdClass $standard_object, object $business_object
-	) {
+	) : void
+	{
 		$standard_object->id        = Dao::getObjectIdentifier($business_object);
 		$standard_object->as_string = strval($business_object);
 	}

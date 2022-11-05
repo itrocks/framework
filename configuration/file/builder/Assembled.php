@@ -36,7 +36,7 @@ class Assembled extends Built
 	 * @param $interfaces_traits string|string[]
 	 * @param $builder           Builder
 	 */
-	public function add(array|string $interfaces_traits, Builder $builder)
+	public function add(array|string $interfaces_traits, Builder $builder) : void
 	{
 		$compatibility  = new Compatibility_Class();
 		$all_components = $compatibility->allComponents($this->components);
@@ -75,12 +75,12 @@ class Assembled extends Built
 	 * @param $interface_trait string
 	 * @param $builder         Builder
 	 */
-	public function insertSorted(string $interface_trait, Builder $builder)
+	public function insertSorted(string $interface_trait, Builder $builder) : void
 	{
 		$this->components = arrayInsertSorted(
 			$this->components,
 			$interface_trait,
-			function($class1, $class2) use ($builder) {
+			function(string $class1, string $class2) use ($builder) : int {
 				$class1 = $builder->shortClassNameOf($class1);
 				$class2 = $builder->shortClassNameOf($class2);
 				if (str_starts_with($class1, AT)) $class1 = SP . $class1;
@@ -95,7 +95,7 @@ class Assembled extends Built
 	 * @param $interfaces_traits string|string[]
 	 * @param $builder           Builder
 	 */
-	public function remove(array|string $interfaces_traits, Builder $builder)
+	public function remove(array|string $interfaces_traits, Builder $builder) : void
 	{
 		$compatibility  = new Compatibility_Class();
 		$all_components = $compatibility->allComponents($this->components);
@@ -130,7 +130,7 @@ class Assembled extends Built
 	 *
 	 * @param $interface_trait string
 	 */
-	protected function simpleRemove(string $interface_trait)
+	protected function simpleRemove(string $interface_trait) : void
 	{
 		$key = array_search($interface_trait, $this->components);
 		if ($key > -1) {

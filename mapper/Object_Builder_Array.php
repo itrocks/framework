@@ -271,7 +271,8 @@ class Object_Builder_Array
 	 */
 	private function buildDottedProperty(
 		Object_Builder_Array_Tool $build, string $property_name, mixed $value, int $pos
-	) {
+	) : void
+	{
 		$property_path = substr($property_name, $pos + 1);
 		$property_name = substr($property_name, 0, $pos);
 		$this->extractAsterisk($property_name);
@@ -430,7 +431,7 @@ class Object_Builder_Array
 	 * @param $build Object_Builder_Array_Tool
 	 * @throws User_Error_Exception
 	 */
-	private function buildProperties(Object_Builder_Array_Tool $build)
+	private function buildProperties(Object_Builder_Array_Tool $build) : void
 	{
 		foreach ($build->array as $property_name => $value) {
 			if ($pos = strpos($property_name, DOT)) {
@@ -574,7 +575,8 @@ class Object_Builder_Array
 	 */
 	private function buildSimpleProperty(
 		Object_Builder_Array_Tool $build, string $property_name, mixed $value
-	) {
+	) : void
+	{
 		$asterisk = $this->extractAsterisk($property_name);
 		$property = $this->properties[$property_name] ?? null;
 		if (
@@ -707,7 +709,7 @@ class Object_Builder_Array
 	 * @param $build Object_Builder_Array_Tool
 	 * @throws User_Error_Exception
 	 */
-	private function buildSubObjects(Object_Builder_Array_Tool $build)
+	private function buildSubObjects(Object_Builder_Array_Tool $build) : void
 	{
 		foreach ($build->objects as $property_name => $value) {
 			$property = $this->properties[$property_name];
@@ -892,7 +894,7 @@ class Object_Builder_Array
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 */
-	public function setClass(string $class_name)
+	public function setClass(string $class_name) : void
 	{
 		if ($this->started) {
 			$this->stop();
@@ -905,7 +907,7 @@ class Object_Builder_Array
 	/**
 	 * @param $class_name string|null
 	 */
-	public function start(string $class_name = null)
+	public function start(string $class_name = null) : void
 	{
 		if (isset($class_name)) {
 			$this->setClass($class_name);
@@ -919,7 +921,7 @@ class Object_Builder_Array
 	}
 
 	//------------------------------------------------------------------------------------------ stop
-	public function stop()
+	public function stop() : void
 	{
 		$this->started = false;
 	}

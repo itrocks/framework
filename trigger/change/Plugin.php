@@ -29,7 +29,7 @@ class Plugin extends Trigger\Plugin
 	 * @param $object object
 	 * @param $after_write_annotation string @values after_create, after_update, after_write
 	 */
-	public function afterWrite(object $object, string $after_write_annotation)
+	public function afterWrite(object $object, string $after_write_annotation) : void
 	{
 		if (!($identifier = Dao::getObjectIdentifier($object))) {
 			return;
@@ -73,7 +73,7 @@ class Plugin extends Trigger\Plugin
 	/**
 	 * @param $object object
 	 */
-	public function beforeWrite(object $object)
+	public function beforeWrite(object $object) : void
 	{
 		if (!($identifier = Dao::getObjectIdentifier($object))) {
 			return;
@@ -130,7 +130,7 @@ class Plugin extends Trigger\Plugin
 	/**
 	 * @param $class_name string
 	 */
-	public function resetCache(string $class_name)
+	public function resetCache(string $class_name) : void
 	{
 		do {
 			if (isset($this->no_change_cache[$class_name])) {

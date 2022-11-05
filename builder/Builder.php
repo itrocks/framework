@@ -93,13 +93,13 @@ class Builder implements Activable
 	/**
 	 * @param $serialized array
 	 */
-	public function __unserialize(array $serialized)
+	public function __unserialize(array $serialized) : void
 	{
 		[$this->compositions, $this->replacements] = $serialized;
 	}
 
 	//-------------------------------------------------------------------------------------- activate
-	public function activate()
+	public function activate() : void
 	{
 		self::current($this);
 	}

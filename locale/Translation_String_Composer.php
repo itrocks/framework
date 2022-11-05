@@ -28,7 +28,7 @@ class Translation_String_Composer
 	 * @param $context    string
 	 * @return string[] key is $1, $2, $3, until $F. Value is the matching translated text.
 	 */
-	protected function holePipes(string &$text, Translator $translator, string $context)
+	protected function holePipes(string &$text, Translator $translator, string $context) : array
 	{
 		$elements = [];
 		$i        = 0;

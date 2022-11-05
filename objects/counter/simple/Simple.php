@@ -89,7 +89,7 @@ class Simple extends Counter
 	/**
 	 * Change format to simple assistant form fields
 	 */
-	public function formatToSimple()
+	public function formatToSimple() : void
 	{
 		$this->prefix                 = lParse(lParse($this->format, '%'), '{');
 		$this->yearly_reset           = str_contains($this->format, '{YEAR');
@@ -104,7 +104,7 @@ class Simple extends Counter
 	/**
 	 * Change simple assistant form fields to format
 	 */
-	public function simpleToFormat()
+	public function simpleToFormat() : void
 	{
 		$format = $this->prefix;
 		if ($this->yearly_reset) {

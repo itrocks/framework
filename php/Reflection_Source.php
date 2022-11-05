@@ -35,7 +35,7 @@ class Reflection_Source
 	//---------------------------------------------------------------------------------------- $cache
 	/**
 	 * Reflection_Source cache : all files are kept here with two indices : file name and class name
-	 * This allow to always have only one version of a Source, at any time (needed for PHP Compiler)
+	 * This allows to always have only one version of a Source, at any time (needed for PHP Compiler)
 	 *
 	 * The cache is filled in when you use __construct(), ofClass() or ofFile().
 	 * But the cache is not used into __construct(), so you may have duplicates if you do not use of()
@@ -178,7 +178,7 @@ class Reflection_Source
 	 *
 	 * @param $bigger_than integer
 	 */
-	public function free(int $bigger_than = 1)
+	public function free(int $bigger_than = 1) : void
 	{
 		if (isset($this->classes)) {
 			foreach ($this->classes as $class) {
@@ -216,7 +216,7 @@ class Reflection_Source
 	/**
 	 * @param $filter integer[] what to you want to get
 	 */
-	private function get(array $filter)
+	private function get(array $filter) : void
 	{
 		$filter = array_flip($filter);
 		$f_classes      = isset($filter[self::CLASSES]);
@@ -733,7 +733,7 @@ class Reflection_Source
 	/**
 	 * @param $filters array
 	 */
-	protected function getFilters(array $filters)
+	protected function getFilters(array $filters) : void
 	{
 		if (!isset($this->namespaces)) $filters[] = self::NAMESPACES;
 		if (!isset($this->requires))   $filters[] = self::REQUIRES;
@@ -955,7 +955,7 @@ class Reflection_Source
 	 * - When getSource() will be called, this always be the original file
 	 * - Free source if was already loaded with acceptance of compiled source
 	 */
-	public function refuseCompiledSource()
+	public function refuseCompiledSource() : void
 	{
 		if ($this->accept_compiled_source) {
 			$this->accept_compiled_source = false;
@@ -1009,8 +1009,8 @@ class Reflection_Source
 	/**
 	 * Sets the new source code
 	 *
-	 * Internals : Every properties but the file name are reset to zero by this change.
-	 * If you modify the source into a tokens loop, you should set $reset to false to avoid
+	 * Internals : Every property but the file name are reset to zero by this change.
+	 * If you modify the source into a tokens loop, you should set $reset false to avoid
 	 * strange things into your tokens structure.
 	 *
 	 * @param $source string

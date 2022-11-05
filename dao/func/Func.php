@@ -361,7 +361,7 @@ class Func
 	/**
 	 * @return Comparison
 	 */
-	public static function notNull()
+	public static function notNull() : Comparison
 	{
 		return new Comparison(Comparison::NOT_EQUAL, null);
 	}

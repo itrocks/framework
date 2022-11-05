@@ -20,7 +20,7 @@ class Spreadsheet_File
 	 *
 	 * @param $data string
 	 */
-	protected function cleanupIncomingData(string &$data)
+	protected function cleanupIncomingData(string &$data) : void
 	{
 		foreach (['…' => '...', ' ' => ' ', '  ' => ' '] as $search => $replace) {
 			while (str_contains($data, $search)) {

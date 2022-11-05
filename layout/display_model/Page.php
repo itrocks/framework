@@ -100,7 +100,7 @@ class Page extends Model\Page
 	/**
 	 * Calculate ratio, size, font size, etc.
 	 */
-	protected function calculateSize()
+	protected function calculateSize() : void
 	{
 		$ratio_width = 100;
 		$size        = static::SIZES[$this->ordering];

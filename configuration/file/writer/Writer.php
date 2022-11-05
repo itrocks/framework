@@ -40,7 +40,7 @@ abstract class Writer
 	 *
 	 * @param $buffer string
 	 */
-	protected function removeMultipleWhiteLines(string &$buffer)
+	protected function removeMultipleWhiteLines(string &$buffer) : void
 	{
 		while (str_contains($buffer, LF . LF . LF)) {
 			$buffer = str_replace(LF . LF . LF, LF . LF, $buffer);
@@ -91,7 +91,7 @@ abstract class Writer
 	}
 
 	//----------------------------------------------------------------------------------------- write
-	public function write()
+	public function write() : void
 	{
 		$this->lines = [];
 		$this->writeBeginLines();
@@ -112,7 +112,7 @@ abstract class Writer
 	/**
 	 * Begin lines (between the last use clause and the configuration) into $this->lines[]
 	 */
-	protected function writeBeginLines()
+	protected function writeBeginLines() : void
 	{
 		if ($this->file->begin_lines) {
 			$this->lines = array_merge($this->lines, $this->file->begin_lines);
@@ -128,7 +128,7 @@ abstract class Writer
 	 *
 	 * @param $write_buffer string
 	 */
-	protected function writeBuffer(string $write_buffer)
+	protected function writeBuffer(string $write_buffer) : void
 	{
 		if (file_get_contents($this->file->file_name) !== $write_buffer) {
 			script_put_contents($this->file->file_name, $write_buffer);
@@ -139,13 +139,13 @@ abstract class Writer
 	/**
 	 * Configuration into $this->lines[]
 	 */
-	abstract protected function writeConfiguration();
+	abstract protected function writeConfiguration() : void;
 
 	//--------------------------------------------------------------------------------- writeEndLines
 	/**
 	 * End lines (after configuration) into $this->lines[]
 	 */
-	protected function writeEndLines()
+	protected function writeEndLines() : void
 	{
 		if ($this->file->end_lines) {
 			$this->lines = array_merge($this->lines, $this->file->end_lines);
@@ -169,7 +169,7 @@ abstract class Writer
 	 *
 	 * @param $buffer string
 	 */
-	protected function writeNamespace(string &$buffer)
+	protected function writeNamespace(string &$buffer) : void
 	{
 		if ($this->file->namespace) {
 			$buffer = 'namespace ' . $this->file->namespace . ';' . LF . LF . $buffer;
@@ -182,7 +182,7 @@ abstract class Writer
 	 *
 	 * @param $buffer string
 	 */
-	protected function writeUse(string &$buffer)
+	protected function writeUse(string &$buffer) : void
 	{
 		if ($this->file->use) {
 			$uses = [];

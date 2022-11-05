@@ -25,7 +25,7 @@ class Dispatch_Iterations
 	/**
 	 * @param $group Group
 	 */
-	protected function group(Group $group)
+	protected function group(Group $group) : void
 	{
 		$previous_iterations_height = 0;
 		foreach ($group->iterations as $iteration) {
@@ -44,7 +44,7 @@ class Dispatch_Iterations
 	 *
 	 * @param $elements Element[]
 	 */
-	protected function ignoreEmptyLines(array $elements)
+	protected function ignoreEmptyLines(array $elements) : void
 	{
 		$line_has_value = false;
 		$line_top       = reset($elements)->top;

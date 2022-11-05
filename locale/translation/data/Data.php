@@ -88,7 +88,7 @@ class Data
 	/**
 	 * @param $value object
 	 */
-	protected function setObject(object $value)
+	protected function setObject(object $value) : void
 	{
 		$this->class_name = Builder::current()->sourceClassName(get_class($value));
 		$this->object     = $value;

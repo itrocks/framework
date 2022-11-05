@@ -78,7 +78,7 @@ class String_Functions_Test extends Test
 	}
 
 	//----------------------------------------------------------------------- testBase64EncodeUrlSafe
-	public function testBase64EncodeUrlSafe()
+	public function testBase64EncodeUrlSafe() : void
 	{
 		static::assertEquals(
 			'VGVzdCBlbmNvZGFnZSBhdmVjIGRlcyArLCAvIGV0ID0.',
@@ -94,13 +94,13 @@ class String_Functions_Test extends Test
 	 * @param $string   string The string to replace accents in
 	 * @param $expected string The expected result for the given string
 	 */
-	public function testRemoveAccents(string $string, string $expected)
+	public function testRemoveAccents(string $string, string $expected) : void
 	{
 		static::assertEquals($expected, removeAccents($string));
 	}
 
 	//-------------------------------------------------------------------------------- testStrReplace
-	public function testStrReplace()
+	public function testStrReplace() : void
 	{
 		$subject = 'This is a text where some things wanna be searched and replaced';
 		$replace = [

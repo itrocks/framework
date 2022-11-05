@@ -37,7 +37,7 @@ abstract class State
 	 *
 	 * @param $file File
 	 */
-	public static function set(File $file)
+	public static function set(File $file) : void
 	{
 		static::$files[$file->file_path] = filemtime($file->file_path);
 	}
@@ -46,7 +46,7 @@ abstract class State
 	/**
 	 * Purge files that do not exist anymore
 	 */
-	public static function purge()
+	public static function purge() : void
 	{
 		foreach (array_keys(static::$files) as $file_path) {
 			if (!file_exists($file_path)) {

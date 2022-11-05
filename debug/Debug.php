@@ -14,7 +14,7 @@ abstract class Debug
 	/**
 	 * @param $text string
 	 */
-	public static function display(string $text)
+	public static function display(string $text) : void
 	{
 		echo date('Y-m-d H:i:s') . SP . $text . BR . LF;
 	}
@@ -63,7 +63,7 @@ abstract class Debug
 	/**
 	 * @param $text string
 	 */
-	public static function log(string $text)
+	public static function log(string $text) : void
 	{
 		$f = fopen('debug.log', 'ab');
 		fputs($f, date('Y-m-d H:i:s') . ' #' . getmypid() . SP . $text . LF);
@@ -71,7 +71,7 @@ abstract class Debug
 	}
 
 	//---------------------------------------------------------------------------------- logCallStack
-	public static function logCallStack()
+	public static function logCallStack() : void
 	{
 		self::log('CALL STACK :');
 		$f = fopen('debug.log', 'ab');

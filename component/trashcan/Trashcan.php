@@ -24,7 +24,7 @@ class Trashcan implements Plugin
 	 *
 	 * @param $object object
 	 */
-	public function drop(object $object)
+	public function drop(object $object) : void
 	{
 		echo '<pre>drop into trashcan ' . print_r($object, true) . '</pre>';
 	}
@@ -35,7 +35,7 @@ class Trashcan implements Plugin
 	 *
 	 * @param $object object
 	 */
-	public function store(object $object)
+	public function store(object $object) : void
 	{
 		echo '<pre>store into trashcan ' . print_r($object, true) . '</pre>';
 	}

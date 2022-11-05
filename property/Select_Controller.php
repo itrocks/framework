@@ -276,10 +276,9 @@ class Select_Controller implements Feature_Controller
 	/**
 	 * @param $properties Reflection_Property[]
 	 */
-	protected function sortProperties(array &$properties)
+	protected function sortProperties(array &$properties) : void
 	{
-		uasort($properties, function(Reflection_Property $p1, Reflection_Property $p2)
-		{
+		uasort($properties, function(Reflection_Property $p1, Reflection_Property $p2) : int {
 			return ($p2->getType()->isBasic() - $p1->getType()->isBasic())
 				?: strcmp(Loc::tr(Names::propertyToDisplay($p1)), Loc::tr(Names::propertyToDisplay($p2)));
 		});

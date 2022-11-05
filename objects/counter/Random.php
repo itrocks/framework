@@ -31,7 +31,7 @@ trait Random
 	 * @param $class_name    string
 	 * @param $property_name string
 	 */
-	protected function decrement(string $class_name, string $property_name)
+	protected function decrement(string $class_name, string $property_name) : void
 	{
 		if ($this->random) {
 			return;

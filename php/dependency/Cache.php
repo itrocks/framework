@@ -37,7 +37,7 @@ class Cache
 	/**
 	 * Generate cache files
 	 */
-	public function generate()
+	public function generate() : void
 	{
 		if (!is_dir(static::CACHE_DIR)) {
 			mkdir(static::CACHE_DIR);

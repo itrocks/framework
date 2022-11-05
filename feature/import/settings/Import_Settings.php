@@ -95,7 +95,7 @@ class Import_Settings extends Setting\Custom\Set
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $constants string[] key is the property path (can be translated or alias)
 	 */
-	public function setConstants(array $constants)
+	public function setConstants(array $constants) : void
 	{
 		$class_name              = $this->getClassName();
 		$properties_alias        = Import_Array::getPropertiesAlias($class_name);

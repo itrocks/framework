@@ -29,7 +29,7 @@ class Controller implements Default_Feature_Controller
 	{
 		$parameters = $parameters->getObjects();
 		$feature    = $parameters[Feature::FEATURE] ?? Feature::F_OUTPUT;
-		$controller_class = Getter::get($class_name, $feature, 'Controller', 'php')[0];
+		$controller_class = Getter::get($class_name, $feature)[0];
 		/** @noinspection PhpUnhandledExceptionInspection controller class must be valid */
 		/** @var $output_controller Output\Controller */
 		$output_controller = Builder::create($controller_class);

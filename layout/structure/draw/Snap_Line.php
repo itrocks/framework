@@ -28,7 +28,7 @@ class Snap_Line extends Element implements Has_Init
 	/**
 	 * Initialize horizontal or vertical snap line
 	 */
-	public function init()
+	public function init() : void
 	{
 		if (!$this->left) {
 			$this->direction = self::HORIZONTAL;

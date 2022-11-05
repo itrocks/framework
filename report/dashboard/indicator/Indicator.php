@@ -169,7 +169,7 @@ class Indicator
 	 * @param $grid_x integer
 	 * @param $grid_y integer
 	 */
-	public function moveTo(int $grid_x, int $grid_y)
+	public function moveTo(int $grid_x, int $grid_y) : void
 	{
 		$grid = $this->dashboard->fullHeightGrid();
 		if ($swap_indicator = $grid[$grid_y][$grid_x]) {
@@ -186,7 +186,7 @@ class Indicator
 	/**
 	 * Places the current indicator into the dashboard grid, at the first available place
 	 */
-	public function placeOnGrid()
+	public function placeOnGrid() : void
 	{
 		$grid = $this->dashboard->grid();
 		foreach ($grid as $grid_y => $row) {

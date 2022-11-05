@@ -36,7 +36,7 @@ class Update implements Registerable, Updatable
 	 *
 	 * @param $last_time integer
 	 */
-	public function update(int $last_time)
+	public function update(int $last_time) : void
 	{
 		/** @var $class_names     string[] */
 		/** @var $feature_classes Keep[] */
@@ -58,8 +58,9 @@ class Update implements Registerable, Updatable
 	 * @param $write           Keep[]
 	 */
 	protected function updateClassName(
-		string $class_name, array &$class_names, array &$feature_classes, array &$write
-	) {
+		string $class_name, array $class_names, array &$feature_classes, array &$write
+	) : void
+	{
 		if (isset($class_names[$class_name]) || !class_exists($class_name)) {
 			return;
 		}
@@ -121,7 +122,7 @@ class Update implements Registerable, Updatable
 	 * @param $feature_classes Keep[]
 	 * @param $write           Keep[]
 	 */
-	protected function writeFeatureClasses(array $feature_classes, array $write)
+	protected function writeFeatureClasses(array $feature_classes, array $write) : void
 	{
 		Dao::begin();
 		foreach ($feature_classes as $feature_class) {

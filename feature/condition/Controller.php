@@ -56,7 +56,7 @@ class Controller implements Default_Feature_Controller
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 */
-	protected function prepareProperties(string $class_name)
+	protected function prepareProperties(string $class_name) : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		foreach ((new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]) as $property) {
@@ -79,7 +79,7 @@ class Controller implements Default_Feature_Controller
 	 *
 	 * - get back @user readonly
 	 */
-	protected function resetProperties()
+	protected function resetProperties() : void
 	{
 		foreach ($this->mandatory_annotations as $mandatory) {
 			$mandatory->value = true;

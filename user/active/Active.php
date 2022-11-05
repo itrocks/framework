@@ -25,7 +25,7 @@ class Active implements Registerable
 	/**
 	 * Disconnect the current user if not active
 	 */
-	public function autoDisconnect()
+	public function autoDisconnect() : void
 	{
 		/** @var $user User|Has_Active */
 		$user = User::current();
@@ -59,7 +59,7 @@ class Active implements Registerable
 	 * @param $user   User|Has_Active
 	 * @param $result boolean
 	 */
-	public function resultFalseJoinpoint(User|Has_Active $user, bool &$result)
+	public function resultFalseJoinpoint(User|Has_Active $user, bool &$result) : void
 	{
 		if ($result && !$user->active) {
 			$result = false;
@@ -73,7 +73,7 @@ class Active implements Registerable
 	 * @param $user      User|Has_Active
 	 * @param $joinpoint Before_Method
 	 */
-	public function stopCallJoinpoint(User|Has_Active $user, Before_Method $joinpoint)
+	public function stopCallJoinpoint(User|Has_Active $user, Before_Method $joinpoint) : void
 	{
 		if (!$user->active) {
 			$joinpoint->stop = true;

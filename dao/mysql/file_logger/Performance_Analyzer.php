@@ -31,7 +31,7 @@ class Performance_Analyzer
 	/**
 	 * @param $line string
 	 */
-	protected function parseLine(string $line)
+	protected function parseLine(string $line) : void
 	{
 		// TODO HIGH measurements, log long executions
 		/*
@@ -47,7 +47,7 @@ class Performance_Analyzer
 	}
 
 	//------------------------------------------------------------------------------------------- run
-	public function run()
+	public function run() : void
 	{
 		$start = 0;
 		while ($stop = strpos($this->sql_log, LF, $start)) {

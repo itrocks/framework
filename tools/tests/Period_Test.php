@@ -16,7 +16,7 @@ class Period_Test extends Test
 	/**
 	 * @return array [[Period, string|null $format, string $expected_result]]
 	 */
-	public function formatProvider()
+	public function formatProvider() : array
 	{
 		return [
 			[
@@ -33,7 +33,7 @@ class Period_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testConstruct
-	public function testConstruct()
+	public function testConstruct() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date1 = new Date_Time('2016-05-03 12:05:15');
@@ -43,7 +43,7 @@ class Period_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testExclude
-	public function testExclude()
+	public function testExclude() : void
 	{
 		$date1  = new Date_Time('2016-05-03 12:05:15');
 		$date2  = new Date_Time('2016-06-08 13:02:00');
@@ -88,7 +88,7 @@ class Period_Test extends Test
 	 * @param $format          string
 	 * @param $expected_result string
 	 */
-	public function testFormat(Period $period, string $format, string $expected_result)
+	public function testFormat(Period $period, string $format, string $expected_result) : void
 	{
 		$loc_enabled = Loc::enable(false);
 		static::assertEquals($expected_result, $period->format($format));
@@ -96,7 +96,7 @@ class Period_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------------- testIn
-	public function testIn()
+	public function testIn() : void
 	{
 		/** @noinspection DuplicatedCode I don't mind */
 		$date1  = new Date_Time('2015-05-03 12:05:15');
@@ -122,7 +122,7 @@ class Period_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testIntersect
-	public function testIntersect()
+	public function testIntersect() : void
 	{
 		/** @noinspection DuplicatedCode I don't mind */
 		$date1  = new Date_Time('2015-05-03 12:05:15');
@@ -146,7 +146,7 @@ class Period_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------------- testOut
-	public function testOut()
+	public function testOut() : void
 	{
 		/** @noinspection DuplicatedCode I don't mind */
 		$date1  = new Date_Time('2015-05-03 12:05:15');
@@ -173,7 +173,7 @@ class Period_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------- testToMonths
-	public function testToMonths()
+	public function testToMonths() : void
 	{
 		$date1  = new Date_Time('2016-05-03 12:05:15');
 		$date2  = new Date_Time('2015-06-08 13:02:00');
@@ -200,7 +200,7 @@ class Period_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------- testUnion
-	public function testUnion()
+	public function testUnion() : void
 	{
 		$date1  = new Date_Time('2016-05-03 12:05:15');
 		$date2  = new Date_Time('2016-06-08 13:02:00');

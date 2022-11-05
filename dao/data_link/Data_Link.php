@@ -38,7 +38,7 @@ abstract class Data_Link
 	 * - in case of transactional data-link but outside a transaction : after each call to write
 	 * - in case of transactional data-link, inside a transaction : after call of commit()
 	 */
-	public function afterCommit()
+	public function afterCommit() : void
 	{
 		if (!$this->after_commit) {
 			return;
@@ -52,7 +52,7 @@ abstract class Data_Link
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 */
-	public function afterRead(object $object)
+	public function afterRead(object $object) : void
 	{
 		$options = [];
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
@@ -67,7 +67,7 @@ abstract class Data_Link
 	 * @param $objects object[]
 	 * @param $options Option[]
 	 */
-	public function afterReadMultiple(array $objects, array &$options = [])
+	public function afterReadMultiple(array $objects, array &$options = []) : void
 	{
 		if ($objects) {
 			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
@@ -163,7 +163,7 @@ abstract class Data_Link
 	 * @param $load_linked_objects boolean if true, load linked objects before disconnect
 	 * @see Data_Link::disconnect()
 	 */
-	abstract public function disconnect(object $object, bool $load_linked_objects = false);
+	abstract public function disconnect(object $object, bool $load_linked_objects = false) : void;
 
 	//---------------------------------------------------------------------------------- escapeString
 	/**
@@ -290,8 +290,8 @@ abstract class Data_Link
 	 * same data source identifier. You will still be able to write() either source or destination
 	 * after call to replace().
 	 *
-	 * @param $destination T destination object
-	 * @param $source      T source object
+	 * @param $destination T Destination object
+	 * @param $source      T Source object
 	 * @param $write       boolean true if the destination object must be immediately written
 	 * @return T the resulting $destination object
 	 * @template T
@@ -403,7 +403,7 @@ abstract class Data_Link
 	 *
 	 * @param $class_name string
 	 */
-	abstract public function truncate(string $class_name);
+	abstract public function truncate(string $class_name) : void;
 
 	//---------------------------------------------------------------------------------- valueChanged
 	/**
@@ -470,6 +470,6 @@ abstract class Data_Link
 	 */
 	abstract public function writeProperty(
 		object $object, string $property_name, mixed $value = null
-	);
+	) : void;
 
 }

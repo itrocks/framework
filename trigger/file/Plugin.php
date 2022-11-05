@@ -49,7 +49,7 @@ class Plugin implements Configurable, Registerable
 	 * @param $file  File
 	 * @param $files string[]
 	 */
-	protected function multipleFiles(File $file, array $files)
+	protected function multipleFiles(File $file, array $files) : void
 	{
 		$file_path = $file->file_path;
 		foreach ($files as $file_path) {
@@ -76,7 +76,7 @@ class Plugin implements Configurable, Registerable
 	 *
 	 * @param $file File
 	 */
-	protected function singleFile(File $file)
+	protected function singleFile(File $file) : void
 	{
 		if ($file->delete_flag_file) {
 			unlink($file->file_path);
@@ -95,7 +95,7 @@ class Plugin implements Configurable, Registerable
 	/**
 	 * @param $file File
 	 */
-	protected function triggerActions(File $file)
+	protected function triggerActions(File $file) : void
 	{
 		$date = Date_Time::now();
 		if ($file->delete_flag_file) {
@@ -119,7 +119,7 @@ class Plugin implements Configurable, Registerable
 	}
 
 	//------------------------------------------------------------------------------------ watchFiles
-	public function watchFiles()
+	public function watchFiles() : void
 	{
 		clearstatcache();
 		foreach (Dao::readAll(File::class) as $file) {

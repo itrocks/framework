@@ -56,7 +56,7 @@ trait Tokens_Parser
 	/**
 	 * @param $method string
 	 */
-	private function eofError(string $method)
+	private function eofError(string $method) : void
 	{
 		// display current object to know more about the execution context (ie which file ?)
 		echo '<PRE>';
@@ -69,7 +69,7 @@ trait Tokens_Parser
 		// calculate context
 		$where = '';
 		$context = array_slice($this->tokens, $this->token_debug);
-		array_walk_recursive($context, function($value) use(&$where) {
+		array_walk_recursive($context, function(mixed $value) use(&$where) : void {
 			if (is_string($value)) {
 				$where .= $value;
 			}

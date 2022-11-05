@@ -107,7 +107,7 @@ class Comparator
 	 * @param $objects object[]
 	 * @param $sort_callback string You can define which sort function to call
 	 */
-	public function sort(array &$objects, string $sort_callback = 'uasort')
+	public function sort(array &$objects, string $sort_callback = 'uasort') : void
 	{
 		call_user_func_array($sort_callback, [&$objects, [$this, 'compare']]);
 	}

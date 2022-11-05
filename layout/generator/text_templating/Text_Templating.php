@@ -42,7 +42,7 @@ class Text_Templating
 	/**
 	 * Parse final data
 	 */
-	public function run()
+	public function run() : void
 	{
 		foreach ($this->structure->pages as $page) {
 			foreach ($page->elements as $element) {
@@ -72,7 +72,7 @@ class Text_Templating
 	/**
 	 * @param $element Text
 	 */
-	protected function text(Text $element)
+	protected function text(Text $element) : void
 	{
 		if (str_starts_with($element->text, '#')) {
 			foreach (static::PAGE_SIMPLE_PATHS as $simple_path => $extended_path) {

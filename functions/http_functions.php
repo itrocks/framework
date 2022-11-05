@@ -1,7 +1,7 @@
 <?php
 
 //-------------------------------------------------------------------------------------------- cors
-function cors()
+function cors() : void
 {
 	static $already = false;
 	if ($already) {

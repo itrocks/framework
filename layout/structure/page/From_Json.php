@@ -123,7 +123,7 @@ class From_Json
 	 * @param $element     Element
 	 * @param $raw_element string[]
 	 */
-	protected function buildElement(Element $element, array $raw_element)
+	protected function buildElement(Element $element, array $raw_element) : void
 	{
 		$class_name = get_class($element);
 		foreach ($raw_element as $field_name => $value) {

@@ -34,7 +34,7 @@ class Priority_Test extends Test
 	 * @param $expected boolean
 	 * @param $value    string
 	 */
-	public function testValid(bool $expected, string $value)
+	public function testValid(bool $expected, string $value) : void
 	{
 		static::assertEquals($expected, Priority::valid($value));
 	}

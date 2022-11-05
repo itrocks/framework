@@ -50,14 +50,13 @@ class Tests_Command extends Command
 	}
 
 	//-------------------------------------------------------------------------------------- runTests
-
 	/**
 	 * Run the required tests
 	 *
 	 * @param $query_options string[] Other options passed from query params
 	 * @throws Exception
 	 */
-	public function runTests(array $query_options = [])
+	public function runTests(array $query_options = []) : void
 	{
 		set_time_limit(0);
 

@@ -93,7 +93,7 @@ class Dashboard
 	/**
 	 * Sets this dashboard as the current / default one for the session
 	 */
-	public function setCurrent()
+	public function setCurrent() : void
 	{
 		Session::current()->set($this);
 	}

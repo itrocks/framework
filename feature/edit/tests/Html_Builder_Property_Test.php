@@ -32,7 +32,7 @@ class Html_Builder_Property_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------- testBuildCollection
-	public function testBuildCollection()
+	public function testBuildCollection() : void
 	{
 		$object                    = new Has_Collection();
 		$object->simple_collection = [
@@ -59,7 +59,7 @@ class Html_Builder_Property_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------- testBuildMap
-	public function testBuildMap()
+	public function testBuildMap() : void
 	{
 		$object             = new Has_Map();
 		$object->simple_map = [
@@ -79,7 +79,7 @@ class Html_Builder_Property_Test extends Test
 	}
 
 	//-------------------------------------------------------------------- testBuildMapIntoCollection
-	public function testBuildMapIntoCollection()
+	public function testBuildMapIntoCollection() : void
 	{
 		$object                     = new Has_Map_Into_Collection();
 		$object->collection_has_map = [

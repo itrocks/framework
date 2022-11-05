@@ -50,7 +50,7 @@ abstract class Testable extends TestCase
 	/**
 	 * Begin of a unit test class
 	 */
-	public function begin()
+	public function begin() : void
 	{
 		$this->show('<h3>' . get_class($this) . '</h3>' . LF . '<ul>' . LF);
 	}
@@ -59,13 +59,13 @@ abstract class Testable extends TestCase
 	/**
 	 * End of a unit test class
 	 */
-	public function end()
+	public function end() : void
 	{
 		$this->show('</ul>' . LF);
 	}
 
 	//----------------------------------------------------------------------------------------- flush
-	public function flush()
+	public function flush() : void
 	{
 		echo $this->header;
 		$this->header = '';
@@ -78,7 +78,7 @@ abstract class Testable extends TestCase
 	 * @deprecated PhpUnit already register method name
 	 * @param $method_name string
 	 */
-	public function method(string $method_name)
+	public function method(string $method_name) : void
 	{
 		$this->show('<h4>' . $method_name . '</h4>' . LF);
 	}
@@ -87,7 +87,7 @@ abstract class Testable extends TestCase
 	/**
 	 * @param $show string
 	 */
-	protected function show(string $show)
+	protected function show(string $show) : void
 	{
 		if (($this->show === self::ALL) || ($this->errors_count && ($this->show === self::ERRORS))) {
 			echo $show;

@@ -26,13 +26,13 @@ trait Is_Immutable
 	 *
 	 * Ignores the object identifier, and identifies it only with its property values :
 	 * - If an object with the same property values exist in data store, then it will be linked to it
-	 * - If it is a new object, it will created
+	 * - If it is a new object, it will be created
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @noinspection PhpUnused @before_write
 	 * @param $link Data_Link|null
 	 */
-	public function beforeWriteOfImmutable(Data_Link $link = null)
+	public function beforeWriteOfImmutable(Data_Link $link = null) : void
 	{
 		if (!$link) {
 			$link = Dao::current();

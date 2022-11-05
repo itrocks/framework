@@ -33,7 +33,7 @@ class Plugin implements Installable, Registerable
 	/**
 	 * @param $installer Installer
 	 */
-	public function install(Installer $installer)
+	public function install(Installer $installer) : void
 	{
 		$installer->addPlugin($this);
 	}

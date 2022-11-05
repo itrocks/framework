@@ -15,7 +15,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
  * - readonly : the property will be displayed but will not be accessible for modification
  * Value that only works for basic type (not supported on collection and map)
  * - if_empty : the property will be displayed editable if value is empty, read_only otherwise
- *   notes: incompatible with @user_default, incompatible with "hide_empty" value.
+ *   notes: incompatible with @user_default incompatible with "hide_empty" value.
  * Value that only works for collection/map
  * - no_add : forbids user to add a new element
  * - no_delete : forbids user to delete any element
@@ -60,7 +60,7 @@ class User_Annotation extends List_Annotation
 
 	//------------------------------------------------------------------------------ STRICT_READ_ONLY
 	/**
-	 * Strict read-only : displayed without <input name=...> : you will not be able to use it with js
+	 * Strict read-only : displayed without <input name=...> : you will not be able to use it with js,
 	 * but you will get better performance if you have got a lot of data
 	 */
 	const STRICT_READ_ONLY = 'strict_read_only';
@@ -83,12 +83,11 @@ class User_Annotation extends List_Annotation
 	 * Adds a value to the annotation list of values
 	 *
 	 * @param $value string
-	 * @return boolean
 	 */
-	public function add(string $value) : bool
+	public function add(string $value) : void
 	{
 		parent::add($value);
-		return $this->validate();
+		$this->validate();
 	}
 
 	//---------------------------------------------------------------------------------- isModifiable

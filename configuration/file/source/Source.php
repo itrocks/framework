@@ -59,7 +59,7 @@ class Source extends File
 	 *
 	 * @param $class_interfaces_traits string|string[] class, interface(s) and/or trait(s)
 	 */
-	public function add(array|string $class_interfaces_traits)
+	public function add(array|string $class_interfaces_traits) : void
 	{
 		if (is_string($class_interfaces_traits)) {
 			if (interface_exists($class_interfaces_traits) || trait_exists($class_interfaces_traits)) {
@@ -89,7 +89,7 @@ class Source extends File
 	 * @param $interface string
 	 * @return boolean true if added, false if it was already existing
 	 */
-	protected function addInterface(string $interface)
+	protected function addInterface(string $interface) : bool
 	{
 		if (in_array($interface, $this->class_implements)) {
 			return false;
@@ -99,7 +99,7 @@ class Source extends File
 		$this->class_implements = arrayInsertSorted(
 			$this->class_implements,
 			$interface,
-			function ($interface1, $interface2) use ($source) {
+			function (string $interface1, string $interface2) use ($source) : int {
 				return strcmp(
 					$source->shortClassNameOf($interface1),
 					$source->shortClassNameOf($interface2)
@@ -126,7 +126,7 @@ class Source extends File
 		$this->class_use = arrayInsertSorted(
 			$this->class_use,
 			new Class_Use($trait, ';'),
-			function ($use1, $use2) use ($source) {
+			function (Class_Use|string $use1, Class_Use|string $use2) use ($source) : int {
 				if ($use1 instanceof Class_Use) {
 					$use1 = $source->shortClassNameOf($use1->trait_name);
 				}
@@ -146,7 +146,7 @@ class Source extends File
 	 * @param $class_name string
 	 * @param $force      integer
 	 */
-	public function addUseFor(string $class_name, int $force = 0)
+	public function addUseFor(string $class_name, int $force = 0) : void
 	{
 		$this->addUseForClassName($class_name);
 	}
@@ -196,7 +196,7 @@ class Source extends File
 	/**
 	 * Read from file
 	 */
-	public function read()
+	public function read() : void
 	{
 		(new Source\Reader($this))->read();
 	}
@@ -207,7 +207,7 @@ class Source extends File
 	 *
 	 * @var $class_interfaces_traits string|string[] class, interface(s) and/or trait(s)
 	 */
-	public function remove(array|string $class_interfaces_traits)
+	public function remove(array|string $class_interfaces_traits) : void
 	{
 		if (!is_array($class_interfaces_traits)) {
 			$class_interfaces_traits = [$class_interfaces_traits];
@@ -249,7 +249,7 @@ class Source extends File
 	/**
 	 * Write to file
 	 */
-	public function write()
+	public function write() : void
 	{
 		(new Source\Writer($this))->write();
 	}

@@ -141,7 +141,7 @@ class Application_Updater implements Configurable
 	/**
 	 * @param $serialized array the string representation of the object
 	 */
-	public function __unserialize(array $serialized)
+	public function __unserialize(array $serialized) : void
 	{
 		$this->setConfiguration($serialized);
 	}
@@ -155,7 +155,7 @@ class Application_Updater implements Configurable
 	 *
 	 * @param $object string|Updatable object or class name
 	 */
-	public function addUpdatable(string|Updatable $object)
+	public function addUpdatable(string|Updatable $object) : void
 	{
 		/**
 		 * This is called each time the plugin is registered (means on session creation/reset) and it
@@ -225,7 +225,7 @@ class Application_Updater implements Configurable
 	 *
 	 * After this call, next call to mustUpdate() will return false, until next update is needed
 	 */
-	public function done()
+	public function done() : void
 	{
 		$this->setLastUpdateTime(self::$update_time);
 		self::$update_time = null;
@@ -327,7 +327,7 @@ class Application_Updater implements Configurable
 	/**
 	 * Release the lock
 	 */
-	private function release()
+	private function release() : void
 	{
 		if (self::$lock_file) {
 			// Note: fclose() will also unlock the file, but it's proper to do it explicitly !
@@ -355,7 +355,7 @@ class Application_Updater implements Configurable
 	/**
 	 * @param $configuration array
 	 */
-	protected function setConfiguration(array $configuration = [])
+	protected function setConfiguration(array $configuration = []) : void
 	{
 		foreach ($configuration as $key => $value) {
 			if (is_numeric($key)) {
@@ -381,7 +381,7 @@ class Application_Updater implements Configurable
 	/**
 	 * @param $update_time integer
 	 */
-	private function setLastUpdateTime(int $update_time)
+	private function setLastUpdateTime(int $update_time) : void
 	{
 		$updated = $this->getLastUpdateFileName();
 		touch($updated, $update_time);
@@ -397,7 +397,7 @@ class Application_Updater implements Configurable
 	 *
 	 * @param $main_controller Main
 	 */
-	public function update(Main $main_controller)
+	public function update(Main $main_controller) : void
 	{
 		self::$running = true;
 

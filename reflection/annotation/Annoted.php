@@ -46,12 +46,12 @@ trait Annoted
 	/**
 	 * Add an annotation, to a multiple annotations
 	 *
-	 * Don't call this with non-multiples annotations or it will crash your application !
+	 * Don't call this with non-multiples annotations, or it will crash your application !
 	 *
 	 * @param $annotation_name string
 	 * @param $annotation      Annotation
 	 */
-	public function addAnnotation(string $annotation_name, Annotation $annotation)
+	public function addAnnotation(string $annotation_name, Annotation $annotation) : void
 	{
 		$path = $this->getAnnotationCachePath();
 		$this->getAnnotations($annotation_name);
@@ -60,7 +60,7 @@ trait Annoted
 
 	//--------------------------------------------------------------------------------- getAnnotation
 	/**
-	 * Gets an single annotation of the reflected property
+	 * Gets a single annotation of the reflected property
 	 *
 	 * @param $annotation_name string
 	 * @return Annotation
@@ -123,6 +123,7 @@ trait Annoted
 		}
 		$path = $this->getAnnotationCachePath();
 		if (isset($path)) {
+			/** @noinspection PhpInstanceofIsAlwaysTrueInspection Not 100% sure it is a Has_Doc_Comment */
 			if (
 				!isset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name][$multiple])
 				&& ($this instanceof Has_Doc_Comment)
@@ -185,6 +186,7 @@ trait Annoted
 	public function getListAnnotations(string $annotation_name) : array
 	{
 		$annotations = $this->getCachedAnnotation($annotation_name, true);
+		/** @noinspection PhpDeprecatedStdLibCallInspection inspector bug : this is an array */
 		if ($annotations && !(reset($annotations) instanceof List_Annotation)) {
 			trigger_error(
 				'Bad annotation type getListAnnotations(' . $annotation_name . ')', E_USER_ERROR
@@ -213,12 +215,12 @@ trait Annoted
 	/**
 	 * Remove an annotation, identified by its class and value, from simple & multiple annotations
 	 *
-	 * Don't call this with non-multiples annotations or it will crash your application !
+	 * Don't call this with non-multiples annotations, or it will crash your application !
 	 *
 	 * @param $annotation_name string
 	 * @param $annotation      Annotation|null if null : annotation / all annotations from list
 	 */
-	public function removeAnnotation(string $annotation_name, Annotation $annotation = null)
+	public function removeAnnotation(string $annotation_name, Annotation $annotation = null) : void
 	{
 		$path = $this->getAnnotationCachePath();
 		if (!$annotation) {
@@ -262,6 +264,7 @@ trait Annoted
 	 * @param $annotation      Annotation|null the forced value for the annotation
 	 */
 	public function setAnnotation(string|Annotation $annotation_name, Annotation $annotation = null)
+		: void
 	{
 		if ($annotation_name instanceof Annotation) {
 			$annotation      = $annotation_name;
@@ -274,7 +277,7 @@ trait Annoted
 	//---------------------------------------------------------------------------- setAnnotationLocal
 	/**
 	 * Sets an annotation to local and return the local annotation object.
-	 * This enable to get a copy of the annotation visible into this reflection object only,
+	 * This enables to get a copy of the annotation visible into this reflection object only,
 	 * that you can change without affecting others equivalent reflection objects.
 	 *
 	 * If the annotation was already set to local, this local annotation is returned without reset.
@@ -299,7 +302,7 @@ trait Annoted
 	 * @param $annotation_name string
 	 * @param $annotations     Annotation[]
 	 */
-	public function setAnnotations(string $annotation_name, array $annotations)
+	public function setAnnotations(string $annotation_name, array $annotations) : void
 	{
 		$path = $this->getAnnotationCachePath();
 		self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true] = $annotations;

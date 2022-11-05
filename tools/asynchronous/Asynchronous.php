@@ -103,7 +103,7 @@ class Asynchronous
 	/**
 	 * Flush asynchronous process running events : done processes, callbacks, run waiting processes
 	 */
-	public function flush()
+	public function flush() : void
 	{
 		$done_processes = 0;
 		foreach ($this->running_processes as $key => $process) {
@@ -164,7 +164,7 @@ class Asynchronous
 	 *
 	 * @param $process Process
 	 */
-	protected function runProcess(Process $process)
+	protected function runProcess(Process $process) : void
 	{
 		if ($process->session_id === static::NEEDS_SESSION) {
 			$process->session_id = $this->free_sessions
@@ -179,7 +179,7 @@ class Asynchronous
 	/**
 	 * Runs waiting processes, up to $max_processes simultaneously running processes
 	 */
-	protected function runWaitingProcesses()
+	protected function runWaitingProcesses() : void
 	{
 		while (
 			(count($this->running_processes) < $this->max_processes)
@@ -194,9 +194,9 @@ class Asynchronous
 	/**
 	 * $max_processes @setter : if increased, runs waiting processes immediately
 	 *
-	 * @param $max_processes int
+	 * @param $max_processes integer
 	 */
-	protected function setMaxProcesses(int $max_processes)
+	protected function setMaxProcesses(int $max_processes) : void
 	{
 		$this->max_processes = $max_processes;
 		$this->runWaitingProcesses();
@@ -212,7 +212,7 @@ class Asynchronous
 	 *                $max_processes are still running.
 	 * @param $sleep  float The sleep between each wait control, in seconds (default: .1s)
 	 */
-	public function wait(bool|callable $reload = false, float $sleep = .1)
+	public function wait(bool|callable $reload = false, float $sleep = .1) : void
 	{
 		$sleep = floor($sleep * 1000000);
 		if (is_callable($reload) && (count($this->running_processes) < $this->max_processes)) {

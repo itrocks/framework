@@ -17,7 +17,7 @@ class Reader extends File\Reader
 	/**
 	 * Read configuration : the main part of the file
 	 */
-	protected function readConfiguration()
+	protected function readConfiguration() : void
 	{
 		$built              = null;
 		$built_on_next_line = false;

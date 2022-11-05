@@ -60,7 +60,7 @@ abstract class Locks
 	 *
 	 * @param $lock_name string
 	 */
-	public static function unlock(string $lock_name)
+	public static function unlock(string $lock_name) : void
 	{
 		if (isset(Locks::$locks[$lock_name])) {
 			unset(Locks::$locks[$lock_name]);

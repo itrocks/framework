@@ -17,7 +17,7 @@ class Remover_Tool_Test extends Test
 	/**
 	 * Test Remover_Tool::removeObjectFromComposite
 	 */
-	public function testRemoveObjectFromComposite()
+	public function testRemoveObjectFromComposite() : void
 	{
 		$order = new Order(new Date_Time('2017-01-26 12:34:00'), '0001');
 		$line1 = new Order_Line(1);

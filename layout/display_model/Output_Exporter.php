@@ -20,9 +20,9 @@ class Output_Exporter implements Output
 	/**
 	 * Export the structure into an output HTML template for the class
 	 */
-	public function exportHtml()
+	public function exportHtml() : void
 	{
-		echo "wanna export some HTML ?";
+		echo 'wanna export some HTML ?';
 	}
 
 	//------------------------------------------------------------------------------------ htmlHeight

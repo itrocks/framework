@@ -200,7 +200,7 @@ class Parser
 	/**
 	 * Init self::$default_annotations with cached file content
 	 */
-	private static function initDefaultAnnotations()
+	private static function initDefaultAnnotations() : void
 	{
 		if (!isset(self::$default_annotations)) {
 			if (is_dir(Application::getCacheDir())) {

@@ -21,6 +21,7 @@ use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Search_Array_Builder;
 use ITRocks\Framework\Tools\String_Class;
+use ReflectionException;
 
 /**
  * A default json controller to output any object or objects collection into json format
@@ -51,9 +52,10 @@ class Controller implements Default_Feature_Controller
 	//-------------------------------------------------------------------------- applyFiltersToSearch
 	/**
 	 * @param $search  array|object|null
-	 * @param $filters array[]|string[] list of filters to apply (most of times string[])
+	 * @param $filters array[]|string[] list of filters to apply (most times string[])
+	 * @throws ReflectionException
 	 */
-	protected function applyFiltersToSearch(array|object|null &$search, array $filters)
+	protected function applyFiltersToSearch(array|object|null &$search, array $filters) : void
 	{
 		if (!(is_object($search) && $search->isAnd())) {
 			/** @noinspection PhpConditionAlreadyCheckedInspection Inspector bug : may be [] */
@@ -167,6 +169,7 @@ class Controller implements Default_Feature_Controller
 	/**
 	 * @param $property_path string
 	 * @return boolean
+	 * @throws ReflectionException
 	 */
 	protected function isMultipleValues(string $property_path) : bool
 	{
@@ -184,6 +187,7 @@ class Controller implements Default_Feature_Controller
 	 * @param $class_name string
 	 * @return ?string
 	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public function run(Parameters $parameters, array $form, array $files, string $class_name)
 		: ?string
@@ -308,6 +312,7 @@ class Controller implements Default_Feature_Controller
 	 * @param $class_name string
 	 * @param $parameters array
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	protected function searchObjectsForAutoCompleteCombo(string $class_name, array $parameters)
 		: string

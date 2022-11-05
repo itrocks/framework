@@ -132,7 +132,7 @@ class Generator
 	/**
 	 * Extract structure layout from $this->model->pages to generate a raw initial $this->structure
 	 */
-	protected function modelToStructure()
+	protected function modelToStructure() : void
 	{
 		$this->structure->pages = [];
 		foreach ($this->model->pages as $page) {
@@ -149,7 +149,7 @@ class Generator
 	/**
 	 * Remove snap line elements from pages
 	 */
-	protected function purgeSnapLines()
+	protected function purgeSnapLines() : void
 	{
 		foreach ($this->structure->pages as $page) {
 			foreach ($page->elements as $element_key => $element) {
@@ -164,9 +164,9 @@ class Generator
 	/**
 	 * @param $elements Element[]
 	 */
-	protected function sortElements(array &$elements)
+	protected function sortElements(array &$elements) : void
 	{
-		usort($elements, function(Element $element1, Element $element2) {
+		usort($elements, function(Element $element1, Element $element2) : int {
 			return (abs($element1->top - $element2->top) > Generator::$precision)
 				? cmp($element1->top, $element2->top)
 				: cmp($element1->hotX(), $element2->hotX());
@@ -177,7 +177,7 @@ class Generator
 	/**
 	 * @param $properties boolean
 	 */
-	public function sortPageElements(bool $properties = true)
+	public function sortPageElements(bool $properties = true) : void
 	{
 		foreach ($this->structure->pages as $page) {
 			$this->sortElements($page->elements);

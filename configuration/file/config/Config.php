@@ -32,6 +32,7 @@ class Config extends File
 	 * @see Framework\Plugin\Priority::const
 	 */
 	public function addPlugin(string $priority_value, string $plugin_name, mixed $configuration)
+		: void
 	{
 		$priority = $this->addPriority($priority_value);
 		$priority->addPlugin($plugin_name, $configuration);
@@ -81,7 +82,7 @@ class Config extends File
 	/**
 	 * Read from file
 	 */
-	public function read()
+	public function read() : void
 	{
 		(new Config\Reader($this))->read();
 	}
@@ -90,7 +91,7 @@ class Config extends File
 	/**
 	 * @param $plugin_name string
 	 */
-	public function removePlugin(string $plugin_name)
+	public function removePlugin(string $plugin_name) : void
 	{
 		$recalculate_keys = false;
 		foreach ($this->plugins_by_priority as $key => $priority) {
@@ -143,7 +144,7 @@ class Config extends File
 	/**
 	 * Write to file
 	 */
-	public function write()
+	public function write() : void
 	{
 		(new Config\Writer($this))->write();
 	}

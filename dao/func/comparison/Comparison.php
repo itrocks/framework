@@ -83,7 +83,7 @@ class Comparison implements Negate, Where
 	 *
 	 * @example GREATER will become LESS_OR_EQUAL
 	 */
-	public function negate()
+	public function negate() : void
 	{
 		if (in_array($this->sign, self::REVERSE, true)) {
 			$this->sign = self::REVERSE[$this->sign];

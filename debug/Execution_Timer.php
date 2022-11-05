@@ -29,7 +29,7 @@ class Execution_Timer implements Registerable
 	}
 
 	//-------------------------------------------------------------- afterMainControllerRunController
-	public function afterMainControllerRunController()
+	public function afterMainControllerRunController() : void
 	{
 		$duration = number_format($this->end(), 3, ',', SP);
 		echo '<script type="text/javascript">'
@@ -42,7 +42,7 @@ class Execution_Timer implements Registerable
 	/**
 	 * Record actual microtime as beginnig of the timer
 	 */
-	public function begin()
+	public function begin() : void
 	{
 		$this->start_time = microtime(true);
 	}

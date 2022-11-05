@@ -47,7 +47,7 @@ class Translate_Controller implements Feature_Controller
 	 * @param $parameters Parameters optional ['text', 'context', 'language'] or [0=>, 1=>, 2=>]
 	 * @param $form       string[]   optional [string $text, string $context, string $language]
 	 */
-	protected function parseParameters(Parameters $parameters, array $form)
+	protected function parseParameters(Parameters $parameters, array $form) : void
 	{
 		if (isset($form['text'])) {
 			$this->text     = $form['text'];

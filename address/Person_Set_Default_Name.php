@@ -41,7 +41,7 @@ trait Person_Set_Default_Name
 	 *
 	 * @noinspection PhpUnused @before_write
 	 */
-	public function setDefaultNameIfEmpty()
+	public function setDefaultNameIfEmpty() : void
 	{
 		/** @var $self self|Has_Name */
 		$self = $this;

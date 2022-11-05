@@ -52,7 +52,7 @@ class Button_List
 	/**
 	 * @param $buttons Button[]
 	 */
-	public function setButtons(array $buttons = [])
+	public function setButtons(array $buttons = []) : void
 	{
 		$button_items = [];
 		foreach ($buttons as $button) {

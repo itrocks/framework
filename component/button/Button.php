@@ -238,7 +238,7 @@ class Button
 	 * @param $option array|object|string Single option
 	 * @param $key    string Key name of the option
 	 */
-	public function addOption(array|object|string $option, string $key = '')
+	public function addOption(array|object|string $option, string $key = '') : void
 	{
 		if ($option instanceof Tools\Color) {
 			$this->color = $option;
@@ -331,7 +331,8 @@ class Button
 	 */
 	public static function insertBefore(
 		array &$buttons, Button $button, string $before_feature = '', string $feature = ''
-	) {
+	) : void
+	{
 		if (!isset($buttons[$before_feature])) {
 			$buttons[$feature ?: $button->feature] = $button;
 			return;
@@ -350,7 +351,7 @@ class Button
 	/**
 	 * @param $object object
 	 */
-	public function setObjectContext(object $object)
+	public function setObjectContext(object $object) : void
 	{
 		$this->object = $object;
 		// insert object identifier between the class path and the feature, if missing and if

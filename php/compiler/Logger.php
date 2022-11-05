@@ -30,7 +30,7 @@ class Logger implements Registerable
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $source Reflection_Source
 	 */
-	public function onCompileSource(Reflection_Source $source)
+	public function onCompileSource(Reflection_Source $source) : void
 	{
 		Dao::begin();
 		foreach ($source->getClasses() as $class) {
@@ -48,7 +48,7 @@ class Logger implements Registerable
 	/**
 	 * @param $object Framework\Logger
 	 */
-	public function onLoggerStop(Framework\Logger $object)
+	public function onLoggerStop(Framework\Logger $object) : void
 	{
 		if ($this->log_flag) {
 			Dao::begin();

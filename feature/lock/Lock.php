@@ -26,7 +26,7 @@ class Lock implements Registerable
 	 * @param $object object|Lockable
 	 * @param $result Button[]
 	 */
-	public function afterEditControllerGetGeneralButtons(object $object, array &$result)
+	public function afterEditControllerGetGeneralButtons(object $object, array &$result) : void
 	{
 		if (!isA($object, Lockable::class) || !$object->locked) {
 			return;
@@ -44,7 +44,7 @@ class Lock implements Registerable
 	 * @param $class_name string
 	 * @param $result     Button[]
 	 */
-	public function afterListControllerGetSelectionButtons(string $class_name, array &$result)
+	public function afterListControllerGetSelectionButtons(string $class_name, array &$result) : void
 	{
 		if (!isA($class_name, Lockable::class)) {
 			return;
@@ -65,6 +65,7 @@ class Lock implements Registerable
 	 * @param $joinpoint After_Method
 	 */
 	public function afterOutputControllerGetGeneralButtons(object $object, After_Method $joinpoint)
+		: void
 	{
 		if (!isA($object, Lockable::class)) {
 			return;
@@ -99,7 +100,7 @@ class Lock implements Registerable
 	/**
 	 * @param $parameters Parameters
 	 */
-	public function beforeEditControllerGetViewParameters(Parameters $parameters)
+	public function beforeEditControllerGetViewParameters(Parameters $parameters) : void
 	{
 		/** @var $object Lockable */
 		$object = $parameters->getMainObject();
@@ -116,7 +117,8 @@ class Lock implements Registerable
 	 */
 	public function beforeOutputControllerOnlyPropertiesAuto(
 		array &$properties_filter, array $auto, array $properties
-	) {
+	) : void
+	{
 		if (!isset($auto['@unlocked'])) {
 			return;
 		}

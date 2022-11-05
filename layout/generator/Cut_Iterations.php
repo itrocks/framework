@@ -23,7 +23,7 @@ class Cut_Iterations
 	/**
 	 * @param $group Group
 	 */
-	protected function group(Group $group)
+	protected function group(Group $group) : void
 	{
 		$iterations       = array_values($group->iterations);
 		$iteration_number = 0;

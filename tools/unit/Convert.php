@@ -148,7 +148,7 @@ class Convert
 	 * @param $from_unit string @values Unit::const
 	 * @param $to_unit   string @values Unit::const
 	 */
-	public function setUnits(string $from_unit, string $to_unit)
+	public function setUnits(string $from_unit, string $to_unit) : void
 	{
 		$this->from_unit = $from_unit;
 		$this->to_unit   = $to_unit;

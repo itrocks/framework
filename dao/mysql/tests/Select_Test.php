@@ -92,7 +92,6 @@ class Select_Test extends Test
 	 */
 	private function propertyNames(Reflection_Class $class, int $depth = 1) : array
 	{
-		/** @noinspection PhpUnhandledExceptionInspection comes from Reflection_Class */
 		$properties = Class_\Link_Annotation::of($class)->value
 			? (new Link_Class($class->name))->getLocalProperties()
 			: $class->getProperties([T_EXTENDS, T_USE]);
@@ -157,7 +156,7 @@ class Select_Test extends Test
 	 * @param        $query   string
 	 * @param        $builder Select
 	 */
-	public function testEverything(string $query, Select $builder)
+	public function testEverything(string $query, Select $builder) : void
 	{
 		/** @var $dao Mysql\Link */
 		$dao                      = Dao::current();

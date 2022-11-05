@@ -16,7 +16,7 @@ trait Person_Having_Name
 	/**
 	 * Sets default name to first name + last name
 	 */
-	public function setDefaultName()
+	public function setDefaultName() : void
 	{
 		/** @var $this static|Has_Name */
 		$name = trim($this->first_name . SP . $this->last_name);

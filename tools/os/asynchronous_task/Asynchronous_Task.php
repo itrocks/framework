@@ -71,7 +71,7 @@ class Asynchronous_Task
 	}
 
 	//------------------------------------------------------------------------------------------- add
-	public function add()
+	public function add() : void
 	{
 		if ($this->wrapper) {
 			$this->wrapper->add();
@@ -79,7 +79,7 @@ class Asynchronous_Task
 	}
 
 	//---------------------------------------------------------------------------------------- remove
-	public function remove()
+	public function remove() : void
 	{
 		if ($this->wrapper) {
 			$this->wrapper->remove();

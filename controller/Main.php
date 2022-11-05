@@ -118,7 +118,7 @@ class Main
 	 *
 	 * @throws Application_Updater_Exception
 	 */
-	private function applicationUpdate()
+	private function applicationUpdate() : void
 	{
 		$application_updater = Application_Updater::get();
 		if ($application_updater->autoUpdate($this)) {
@@ -150,7 +150,7 @@ class Main
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $configuration Configuration
 	 */
-	private function createApplication(Configuration $configuration)
+	private function createApplication(Configuration $configuration) : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection always valid application class name */
 		/** @var $application Application */
@@ -169,7 +169,8 @@ class Main
 	 */
 	public function createSession(
 		/** @noinspection PhpUnusedParameterInspection */ array &$get, array &$post
-	) {
+	) : void
+	{
 		$this->resetSession(Session::current(new Session()));
 	}
 
@@ -338,7 +339,7 @@ class Main
 	}
 
 	//--------------------------------------------------------------------------------------- globals
-	private function globals()
+	private function globals() : void
 	{
 		foreach (['D', 'F', 'X'] as $var) {
 			if (isset($_GET[$var])) {
@@ -352,7 +353,7 @@ class Main
 	/**
 	 * @throws Include_Filter\Exception
 	 */
-	private function includes()
+	private function includes() : void
 	{
 		foreach (glob(__DIR__ . '/../functions/*.php') as $file_name) {
 			include_once Include_Filter::file($file_name);
@@ -401,7 +402,7 @@ class Main
 	 * @param $target string|null
 	 * @param $data   array|string|null
 	 */
-	public function redirect(string $uri, string $target = null, array|string $data = null)
+	public function redirect(string $uri, string $target = null, array|string $data = null) : void
 	{
 		if (isset($target)) {
 			$this->redirects[$target] = $data ? [$uri, $data] : $uri;
@@ -418,7 +419,7 @@ class Main
 	 * @param $plugins       Manager
 	 * @param $configuration Configuration
 	 */
-	private function registerPlugins(Manager $plugins, Configuration $configuration)
+	private function registerPlugins(Manager $plugins, Configuration $configuration) : void
 	{
 		$must_register = [];
 		foreach ($configuration->getPlugins() as $level => $sub_plugins) {
@@ -461,7 +462,7 @@ class Main
 	 *
 	 * @param $session Session|null default is current session
 	 */
-	public function resetSession(Session $session = null)
+	public function resetSession(Session $session = null) : void
 	{
 		if (!isset($session)) {
 			$session = Session::current();
@@ -488,7 +489,8 @@ class Main
 	 */
 	private function resumeSession(
 		/** @noinspection PhpUnusedParameterInspection */ array &$get, array &$post
-	) {
+	) : void
+	{
 		$plugins = Session::current()->plugins;
 		$plugins->addPlugins('top_core', $this->top_core_plugins);
 		$plugins->activatePlugins('core');
@@ -575,7 +577,7 @@ class Main
 	 * @param $get  array
 	 * @param $post array
 	 */
-	private function sessionStart(array &$get, array &$post)
+	private function sessionStart(array &$get, array &$post) : void
 	{
 		if (empty($_SESSION)) {
 			ini_set('session.cookie_path', Paths::$uri_base);
@@ -623,7 +625,7 @@ class Main
 	 * @param $session           array
 	 * @param $application_class string
 	 */
-	private function setIncludePath(array &$session, string $application_class)
+	private function setIncludePath(array &$session, string $application_class) : void
 	{
 		if (isset($session['include_path'])) {
 			set_include_path($session['include_path']);

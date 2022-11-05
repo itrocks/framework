@@ -18,7 +18,7 @@ class Func_Test extends Test
 {
 
 	//------------------------------------------------------------------------------ testConcatSelect
-	public function testConcatSelect()
+	public function testConcatSelect() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -32,7 +32,7 @@ class Func_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testCondition
-	public function testCondition()
+	public function testCondition() : void
 	{
 		$search  = (new Tools\Search_Array_Builder())->build('client.number', 'XXXX');
 		$builder = new Select(
@@ -55,7 +55,7 @@ class Func_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------------- testDay
-	public function testDay()
+	public function testDay() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -68,7 +68,7 @@ class Func_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------- testDayInWhere
-	public function testDayInWhere()
+	public function testDayInWhere() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -82,7 +82,7 @@ class Func_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------- testGroupConcat
-	public function testGroupConcat()
+	public function testGroupConcat() : void
 	{
 		$builder = new Select(
 			Client::class,
@@ -103,7 +103,7 @@ class Func_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------- testInSelect
-	public function testInSelect()
+	public function testInSelect() : void
 	{
 		$sub_select = new Select(
 			Order::class,
@@ -125,7 +125,7 @@ class Func_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------- testIsGreatest
-	public function testIsGreatest()
+	public function testIsGreatest() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -145,7 +145,7 @@ class Func_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------------- testLeft
-	public function testLeft()
+	public function testLeft() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -158,7 +158,7 @@ class Func_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------- testLeftInWhere
-	public function testLeftInWhere()
+	public function testLeftInWhere() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -174,7 +174,7 @@ class Func_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testLeftMatch
-	public function testLeftMatch()
+	public function testLeftMatch() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -190,7 +190,7 @@ class Func_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------- testLogicalAnd
-	public function testLogicalAnd()
+	public function testLogicalAnd() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -224,7 +224,7 @@ class Func_Test extends Test
 	}
 
 	//-------------------------------- testLogicalExceptionRaisedOnNotOrTrueOperatorWithArrayArgument
-	public function testLogicalExceptionRaisedOnNotOrTrueOperatorWithArrayArgument()
+	public function testLogicalExceptionRaisedOnNotOrTrueOperatorWithArrayArgument() : void
 	{
 		$check = false;
 		try {
@@ -238,7 +238,7 @@ class Func_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------- testLogicalNot
-	public function testLogicalNot()
+	public function testLogicalNot() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -254,7 +254,7 @@ class Func_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------- testLogicalNotAnd
-	public function testLogicalNotAnd()
+	public function testLogicalNotAnd() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -270,7 +270,7 @@ class Func_Test extends Test
 	}
 
 	//------------------------------------------------------------------------- testLogicalNotNegated
-	public function testLogicalNotNegated()
+	public function testLogicalNotNegated() : void
 	{
 		$argument = Func::notOp(_TRUE);
 		$argument->negate();
@@ -288,7 +288,7 @@ class Func_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------- testLogicalNotNot
-	public function testLogicalNotNot()
+	public function testLogicalNotNot() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -304,7 +304,7 @@ class Func_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testLogicalOr
-	public function testLogicalOr()
+	public function testLogicalOr() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -320,7 +320,7 @@ class Func_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------- testLogicalOrInAnd
-	public function testLogicalOrInAnd()
+	public function testLogicalOrInAnd() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -345,7 +345,7 @@ class Func_Test extends Test
 	/**
 	 * @throws Exception
 	 */
-	public function testLogicalTrueShouldNotBeCalledDirectly()
+	public function testLogicalTrueShouldNotBeCalledDirectly() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -361,7 +361,7 @@ class Func_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------- testLogicalXor
-	public function testLogicalXor()
+	public function testLogicalXor() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -377,7 +377,7 @@ class Func_Test extends Test
 	}
 
 	//------------------------------------------------------------------------- testLogicalXorNegated
-	public function testLogicalXorNegated()
+	public function testLogicalXorNegated() : void
 	{
 		$argument = Func::xorOp([_TRUE, _FALSE]);
 		$argument->negate();
@@ -395,7 +395,7 @@ class Func_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------- testMonth
-	public function testMonth()
+	public function testMonth() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -408,7 +408,7 @@ class Func_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------ testMonthInWhere
-	public function testMonthInWhere()
+	public function testMonthInWhere() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -422,7 +422,7 @@ class Func_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------------- testYear
-	public function testYear()
+	public function testYear() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -435,7 +435,7 @@ class Func_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------- testYearInWhere
-	public function testYearInWhere()
+	public function testYearInWhere() : void
 	{
 		$builder = new Select(
 			Order::class,

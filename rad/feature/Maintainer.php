@@ -178,7 +178,7 @@ class Maintainer implements Registerable, Updatable
 	/**
 	 * @param $last_time integer updates() executes a full update and does not care of it
 	 */
-	public function update(int $last_time)
+	public function update(int $last_time) : void
 	{
 		//$this->installableToFeaturesUpdate();
 	}

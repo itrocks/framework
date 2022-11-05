@@ -43,7 +43,7 @@ class Server
 	/**
 	 * @param $action Action
 	 */
-	public function afterAction(Action $action)
+	public function afterAction(Action $action) : void
 	{
 		$this->launchedActionStatus($action, true);
 	}
@@ -54,7 +54,7 @@ class Server
 	 * @param $action Action
 	 * @param $last   Date_Time
 	 */
-	protected function launchAction(Action $action, Date_Time $last)
+	protected function launchAction(Action $action, Date_Time $last) : void
 	{
 		Dao::begin();
 		$action->status = Action\Status::LAUNCHING;
@@ -86,7 +86,7 @@ class Server
 	 * @param $action       Action
 	 * @param $process_done boolean if true, the process is done and an empty stop date-time is error
 	 */
-	protected function launchedActionStatus(Action $action, bool $process_done = false)
+	protected function launchedActionStatus(Action $action, bool $process_done = false) : void
 	{
 		$data = Dao::searchOne(['request_identifier' => $action->request_identifier], Data::class);
 		if ($data) {
@@ -141,12 +141,12 @@ class Server
 	/**
 	 * Runs the server : will not stop before asked using a 'STOP' action
 	 */
-	public function run()
+	public function run() : void
 	{
 		set_time_limit(0);
 		$this->asynchronous = new Asynchronous();
 		while (!$this->stop) {
-			$next_execution = floatval(floor(microtime(true) + 1));
+			$next_execution = floor(microtime(true) + 1);
 			if (!$this->loop()) {
 				$sleep_duration = max(0, ceil(($next_execution - microtime(true)) * 1000000));
 				usleep($sleep_duration);
@@ -162,7 +162,7 @@ class Server
 	 * @param $action Action
 	 * @param $last   Date_Time
 	 */
-	public function stopAction(Action $action, Date_Time $last)
+	public function stopAction(Action $action, Date_Time $last) : void
 	{
 		$this->stop     = true;
 		$action->last   = $last;
@@ -171,7 +171,7 @@ class Server
 	}
 
 	//------------------------------------------------------------------------------------ wakeFlagUp
-	protected function wakeFlagUp()
+	protected function wakeFlagUp() : void
 	{
 		static $next;
 		if (isset($next) && (microtime(true) <= $next)) {

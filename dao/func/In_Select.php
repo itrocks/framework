@@ -42,7 +42,7 @@ class In_Select implements Negate, Where
 	/**
 	 * Negate the Dao function
 	 */
-	public function negate()
+	public function negate() : void
 	{
 		$this->in = !$this->in;
 	}

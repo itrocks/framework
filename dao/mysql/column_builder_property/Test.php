@@ -282,13 +282,11 @@ class Test extends Tests\Test
 	 * @param $property_prefix string @values decimal, integer
 	 * @throws ReflectionException
 	 */
-	protected function propertyTests(string $property_prefix)
+	protected function propertyTests(string $property_prefix) : void
 	{
-		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$property_type_to_mysql = (new Reflection_Method(
 			Column_Builder_Property::class, 'propertyTypeToMysql'
 		));
-		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($this))->getProperties([]) as $property) {
 			if (str_starts_with($property->name, $property_prefix)) {
 				$assume = $property->getAnnotation('assume')->value;
@@ -304,7 +302,7 @@ class Test extends Tests\Test
 	/**
 	 * @throws ReflectionException
 	 */
-	public function testDecimal()
+	public function testDecimal() : void
 	{
 		$this->propertyTests('decimal');
 	}
@@ -313,7 +311,7 @@ class Test extends Tests\Test
 	/**
 	 * @throws ReflectionException
 	 */
-	public function testInteger()
+	public function testInteger() : void
 	{
 		$this->propertyTests('integer');
 	}

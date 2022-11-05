@@ -43,7 +43,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	 *
 	 * @param $error Handled_Error
 	 */
-	public function displayError(Handled_Error $error)
+	public function displayError(Handled_Error $error) : void
 	{
 		$code = new Error_Code($error->getErrorNumber());
 		if (ini_get('display_errors')) {
@@ -98,7 +98,8 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	 */
 	public function getDisplayedMessage(
 		/** @noinspection PhpUnusedParameterInspection */ Handled_Error $error
-	) {
+	) : string
+	{
 		return ($_SERVER['REMOTE_ADDR'] === 'console')
 			? static::getUserInformationMessage()
 			: (
@@ -113,7 +114,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	/**
 	 * @return string
 	 */
-	static public function getUserInformationMessage()
+	static public function getUserInformationMessage() : string
 	{
 		if (http_response_code() === 500) {
 			// makes sure the user information message will be displayed by the browser
@@ -128,7 +129,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	/**
 	 * @param $error Handled_Error
 	 */
-	public function handle(Handled_Error $error)
+	public function handle(Handled_Error $error) : void
 	{
 		if ($this->call_stack) {
 			$reset_call_stack = false;
@@ -158,6 +159,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	 * @param $as       string @values html, text
 	 */
 	public function logError(Handled_Error $error, string $log_file = null, string $as = self::TEXT)
+		: void
 	{
 		$code = new Error_Code($error->getErrorNumber());
 		if (!$log_file) {
@@ -194,7 +196,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	 * @param $f    ?resource If null : output
 	 * @param $text string
 	 */
-	private function out(mixed $f, string $text)
+	private function out(mixed $f, string $text) : void
 	{
 		if ($f) {
 			fputs($f, $text);

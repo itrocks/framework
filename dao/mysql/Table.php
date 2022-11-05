@@ -56,7 +56,7 @@ class Table implements Sql\Table
 	/**
 	 * @param $column Column
 	 */
-	public function addColumn(Column $column)
+	public function addColumn(Column $column) : void
 	{
 		$this->columns[$column->getName()] = $column;
 	}
@@ -65,7 +65,7 @@ class Table implements Sql\Table
 	/**
 	 * @param $foreign_key Foreign_Key
 	 */
-	public function addForeignKey(Foreign_Key $foreign_key)
+	public function addForeignKey(Foreign_Key $foreign_key) : void
 	{
 		$constraint = $foreign_key->getConstraint();
 		if (isset($this->foreign_keys[$constraint])) {
@@ -78,7 +78,7 @@ class Table implements Sql\Table
 	/**
 	 * @param $index Index
 	 */
-	public function addIndex(Index $index)
+	public function addIndex(Index $index) : void
 	{
 		$this->indexes[$index->getName()] = $index;
 	}

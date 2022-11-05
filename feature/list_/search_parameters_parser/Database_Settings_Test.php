@@ -68,7 +68,7 @@ class Database_Settings_Test extends Test
 	/**
 	 * Read all List_Setting\Set of Settings and Setting\User, and test search expressions
 	 */
-	public function test()
+	public function test() : void
 	{
 		$this->runClass(Setting::class);
 		$this->runClass(Setting\User::class);

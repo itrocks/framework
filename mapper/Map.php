@@ -44,7 +44,7 @@ class Map
 	 *
 	 * @param $element object|object[]
 	 */
-	public function add(array|object $element)
+	public function add(array|object $element) : void
 	{
 		if (is_array($element)) {
 			foreach ($element as $elem) {
@@ -107,7 +107,7 @@ class Map
 	 *
 	 * @param $element object|object[]
 	 */
-	public function remove(array|object $element)
+	public function remove(array|object $element) : void
 	{
 		if (is_array($element)) {
 			foreach ($element as $elem) {
@@ -142,7 +142,7 @@ class Map
 					? new Sort($object->getClassName())
 					: new Sort(get_class($object));
 			}
-			uasort($this->objects, function($object1, $object2) use ($sort)
+			uasort($this->objects, function(object $object1, object $object2) use ($sort) : int
 			{
 				if (($object1 instanceof List_Row) && ($object2 instanceof List_Row)) {
 					$object1 = $object1->getObject();
@@ -153,9 +153,9 @@ class Map
 				foreach ($sort->columns as $sort_column) {
 					$reverse = isset($sort->reverse[strval($sort_column)]);
 					while (($i = strpos($sort_column, DOT)) !== false) {
-						$column  = substr($sort_column, 0, $i);
-						$object1 = $object1?->$column;
-						$object2 = $object2?->$column;
+						$column      = substr($sort_column, 0, $i);
+						$object1     = $object1?->$column;
+						$object2     = $object2?->$column;
 						$sort_column = substr($sort_column, $i + 1);
 					}
 					$value1  = $object1?->$sort_column;

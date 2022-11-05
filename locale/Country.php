@@ -24,7 +24,7 @@ class Country
 	 */
 	public function __toString() : string
 	{
-		return strval($this->name);
+		return $this->name;
 	}
 
 }

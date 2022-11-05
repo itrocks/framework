@@ -64,7 +64,7 @@ class Authentication_Server implements Configurable, Registerable
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $user User
 	 */
-	public function afterAuthenticate(User $user)
+	public function afterAuthenticate(User $user) : void
 	{
 		// create authentication log
 		/** @noinspection PhpUnhandledExceptionInspection constant */
@@ -82,7 +82,7 @@ class Authentication_Server implements Configurable, Registerable
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 */
-	public function beforeDisconnect()
+	public function beforeDisconnect() : void
 	{
 		// create disconnect log
 		$user           = User::current();

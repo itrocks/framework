@@ -16,7 +16,7 @@ class Join_Test extends Test
 {
 
 	//-------------------------------------------------------------------------------- testCollection
-	public function testCollection()
+	public function testCollection() : void
 	{
 		$assume = Join::newInstance(
 			Join::INNER, 't0', 'id', 't1', 'test_order_lines', 'id_order',
@@ -64,7 +64,7 @@ class Join_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------------- testJoin
-	public function testJoin()
+	public function testJoin() : void
 	{
 		$assume = Join::newInstance(
 			Join::INNER, 't0', 'id_order', 't1', 'test_orders', 'id', Join::SIMPLE, Order::class
@@ -87,7 +87,7 @@ class Join_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------------- testMap
-	public function testMap()
+	public function testMap() : void
 	{
 		$assume = Join::newInstance(
 			Join::LEFT, 't1', 'id_salesman', 't2', 'test_salesmen', 'id', Join::SIMPLE, Salesman::class
@@ -115,7 +115,7 @@ class Join_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------ testObject
-	public function testObject()
+	public function testObject() : void
 	{
 		$assume = Join::newInstance(
 			Join::INNER, 't0', 'id_order', 't1', 'test_orders', 'id',
@@ -137,7 +137,7 @@ class Join_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testReverse
-	public function testReverse()
+	public function testReverse() : void
 	{
 		$assume = Join::newInstance(
 			Join::LEFT, 't0', 'id', 't1', 'test_order_lines', 'id_order', Join::SIMPLE, Order_Line::class
@@ -206,7 +206,7 @@ class Join_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------ testSimple
-	public function testSimple()
+	public function testSimple() : void
 	{
 		static::assertEquals(
 			['date' => null, 'number' => null],

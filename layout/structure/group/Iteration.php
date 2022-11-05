@@ -99,7 +99,7 @@ class Iteration extends Element
 	 * @param $height        float The distance to move (mm)
 	 * @param $elements_only boolean   If true, the iteration does not go up : only elements
 	 */
-	public function down(float $height, bool $elements_only = false)
+	public function down(float $height, bool $elements_only = false) : void
 	{
 		$this->up(-$height, $elements_only);
 	}
@@ -147,7 +147,7 @@ class Iteration extends Element
 	 * @param $height        float The distance to move (mm)
 	 * @param $elements_only boolean   If true, the iteration does not go up : only elements
 	 */
-	public function up(float $height, bool $elements_only = false)
+	public function up(float $height, bool $elements_only = false) : void
 	{
 		if (!$elements_only) {
 			$this->top -= $height;

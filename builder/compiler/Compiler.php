@@ -79,7 +79,7 @@ class Compiler implements ICompiler
 	 * @param $class_name   string
 	 * @param $more_sources More_Sources
 	 */
-	protected function moreSourcesAdd(string $class_name, More_Sources $more_sources)
+	protected function moreSourcesAdd(string $class_name, More_Sources $more_sources) : void
 	{
 		$dependency = Dao::searchOne(
 			['class_name' => $class_name, 'dependency_name' => $class_name], Dependency::class
@@ -99,7 +99,7 @@ class Compiler implements ICompiler
 	/**
 	 * @param $more_sources More_Sources
 	 */
-	protected function moreSourcesAddChildren(More_Sources $more_sources)
+	protected function moreSourcesAddChildren(More_Sources $more_sources) : void
 	{
 		$add_to = $more_sources->added;
 		while ($add_to) {
@@ -134,7 +134,7 @@ class Compiler implements ICompiler
 	 *
 	 * @param $more_sources More_Sources
 	 */
-	protected function moreSourcesAddComposites(More_Sources $more_sources)
+	protected function moreSourcesAddComposites(More_Sources $more_sources) : void
 	{
 		foreach (Builder::current()->getCompositions() as $built_class_name => $composition) {
 			if (is_string($composition)) {
@@ -162,7 +162,8 @@ class Compiler implements ICompiler
 	 */
 	protected function moreSourcesAddModifiedOrNewCompositions(
 		More_Sources $more_sources, array $old_compositions, array $new_compositions
-	) {
+	) : void
+	{
 		foreach ($new_compositions as $class_name => $new_composition) {
 			$old_composition = $old_compositions[$class_name] ?? null;
 			if (
@@ -190,7 +191,8 @@ class Compiler implements ICompiler
 	 */
 	protected function moreSourcesAddNewPlugins(
 		More_Sources $more_sources, array $old_levels, array $new_levels
-	) {
+	) : void
+	{
 		foreach ($new_levels as $level => $new_plugins) {
 			foreach ($new_plugins as $class_name => $new_plugin) {
 				if (!isset($old_levels[$level][$class_name])) {
@@ -210,7 +212,8 @@ class Compiler implements ICompiler
 	 */
 	protected function moreSourcesAddRemovedCompositions(
 		More_Sources $more_sources, array $old_compositions, array $new_compositions
-	) {
+	) : void
+	{
 		foreach ($old_compositions as $class_name => $old_composition) {
 			if (!isset($new_compositions[$class_name])) {
 				$this->moreSourcesAdd($class_name, $more_sources);
@@ -228,7 +231,8 @@ class Compiler implements ICompiler
 	 */
 	protected function moreSourcesAddRemovedPlugins(
 		More_Sources $more_sources, array $old_levels, array $new_levels
-	) {
+	) : void
+	{
 		foreach ($old_levels as $level => $old_plugins) {
 			foreach ($old_plugins as $class_name => $old_plugin) {
 				if (!isset($new_levels[$level][$class_name])) {
@@ -242,7 +246,7 @@ class Compiler implements ICompiler
 	/**
 	 * @param $more_sources More_Sources
 	 */
-	public function moreSourcesToCompile(More_Sources $more_sources)
+	public function moreSourcesToCompile(More_Sources $more_sources) : void
 	{
 		if ($this->hasConfigurationFile($more_sources->sources)) {
 			$this->moreSourcesToCompileReload($more_sources);
@@ -257,7 +261,7 @@ class Compiler implements ICompiler
 	 *
 	 * @param $more_sources More_Sources
 	 */
-	protected function moreSourcesToCompileReload(More_Sources $more_sources)
+	protected function moreSourcesToCompileReload(More_Sources $more_sources) : void
 	{
 		// save compositions before changes
 		$old_compositions = Builder::current()->getCompositions();

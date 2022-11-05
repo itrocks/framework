@@ -140,6 +140,7 @@ class Date_Format
 		// prevent some user mistyping
 		$date = str_replace('//', '/', $date);
 		$date = $this->advancedDate($date, $joker);
+		/** @noinspection DuplicatedCode Inspector bug */
 		if (strlen($date) === 10) {
 			if ($max) {
 				$date .= SP . '23:59:59';

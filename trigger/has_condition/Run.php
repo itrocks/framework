@@ -102,7 +102,7 @@ abstract class Run
 	 * @noinspection PhpUnused @setter
 	 * @param $object ?object
 	 */
-	protected function setObject(?object $object)
+	protected function setObject(?object $object) : void
 	{
 		if (!$object || !($identifier = Dao::getObjectIdentifier($object))) {
 			trigger_error('You must set a stored object', E_USER_ERROR);

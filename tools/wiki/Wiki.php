@@ -109,10 +109,10 @@ class Wiki implements Registerable
 	//----------------------------------------------------------------------------------- noParseZone
 	/**
 	 * @output $joinpoint->result string value after reading value or exec specs (can be an object)
-	 * @param $var_name  string can be an unique var or path.of.vars
+	 * @param $var_name  string can be a unique var or path.of.vars
 	 * @param $joinpoint Around_Method
 	 */
-	public function noParseZone(string $var_name, Around_Method $joinpoint)
+	public function noParseZone(string $var_name, Around_Method $joinpoint) : void
 	{
 		$is_include = str_starts_with($var_name, SL);
 		if (!$is_include) {
@@ -140,26 +140,27 @@ class Wiki implements Registerable
 	 * Add wiki to strings
 	 *
 	 * @param $object Reflection_Property_View
-	 * @param $result string
+	 * @param $result ?string
 	 */
-	public function stringWiki(Reflection_Property_View $object, &$result)
+	public function stringWiki(Reflection_Property_View $object, ?string &$result) : void
 	{
-		if (!$this->dont_parse_wiki) {
-			$property = $object->property;
-			if (isset($property->getAnnotation('geshi')->value)) {
-				$programming_language = $property->getAnnotation('geshi')->value ?: 'php';
-				if ($programming_language === 'auto') {
-					$programming_language = str_contains($result, '<?php') ? 'php' : 'html';
-				}
-				$wiki   = new Wiki();
-				$result = $wiki->geshi('@' . $programming_language . LF . $result . LF . '@');
+		if ($this->dont_parse_wiki) {
+			return;
+		}
+		$property = $object->property;
+		if (isset($property->getAnnotation('geshi')->value)) {
+			$programming_language = $property->getAnnotation('geshi')->value ?: 'php';
+			if ($programming_language === 'auto') {
+				$programming_language = str_contains($result, '<?php') ? 'php' : 'html';
 			}
-			if ($property->getAnnotation('textile')->value) {
-				$wiki   = new Wiki();
-				$result = $wiki->geshi($result, false);
-				$result = $wiki->textile($result);
-				$result = $wiki->geshiSolve($result);
-			}
+			$wiki   = new Wiki();
+			$result = $wiki->geshi('@' . $programming_language . LF . $result . LF . '@');
+		}
+		if ($property->getAnnotation('textile')->value) {
+			$wiki   = new Wiki();
+			$result = $wiki->geshi($result, false);
+			$result = $wiki->textile($result);
+			$result = $wiki->geshiSolve($result);
 		}
 	}
 
@@ -170,7 +171,7 @@ class Wiki implements Registerable
 	 * @param $string string
 	 * @return string
 	 */
-	public function textile($string)
+	public function textile(string $string) : string
 	{
 		return (new Textile)->parse($string);
 	}

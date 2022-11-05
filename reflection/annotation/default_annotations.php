@@ -652,7 +652,7 @@ Parser::$default_annotations = [
 
 	/**
 	 * @user_empty_value false
-	 * For @var string with @values, set this false to disable the user choice of an empty value,
+	 * For @ var string with @ values, set this false to disable the user choice of an empty value,
 	 * but an empty value can still be stored
 	 */
 	Parser::T_PROPERTY . '@user_empty_value' => Default_True_Boolean_Annotation::class,

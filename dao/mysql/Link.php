@@ -189,7 +189,7 @@ class Link extends Dao\Sql\Link
 	/**
 	 * @param $parameters string[] ['host', 'login', 'password', 'database']
 	 */
-	private function connect(array $parameters)
+	private function connect(array $parameters) : void
 	{
 		if (!isset($parameters[self::DATABASE]) && isset($parameters['databases'])) {
 			$parameters[self::DATABASE] = str_replace('*', '', $parameters['databases']);
@@ -419,6 +419,7 @@ class Link extends Dao\Sql\Link
 	 * @throws Exception
 	 */
 	private function deleteCollection(object $parent, Reflection_Property $property, mixed $value)
+		: void
 	{
 		$property_name          = $property->name;
 		$parent->$property_name = null;
@@ -602,7 +603,7 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
 	 */
-	public function free(mixed $result_set)
+	public function free(mixed $result_set) : void
 	{
 		$result_set->free();
 	}
@@ -859,7 +860,7 @@ class Link extends Dao\Sql\Link
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 */
-	private function prepareFetch(string $class_name)
+	private function prepareFetch(string $class_name) : void
 	{
 		$this->prepared_fetch = [];
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
@@ -883,7 +884,7 @@ class Link extends Dao\Sql\Link
 	 *
 	 * @param $context_object string|string[] Can be a class name or an array of class names
 	 */
-	public function pushContext(array|string $context_object)
+	public function pushContext(array|string $context_object) : void
 	{
 		$this->connection->contexts[] = $context_object;
 	}
@@ -1228,7 +1229,7 @@ class Link extends Dao\Sql\Link
 	 * @param $lock Lock
 	 * @see lockRecord
 	 */
-	public function unlock(Lock $lock)
+	public function unlock(Lock $lock) : void
 	{
 		$lock_key = $lock->table_name . DOT . $lock->identifier;
 		if (!isset($this->locks[$lock_key])) {

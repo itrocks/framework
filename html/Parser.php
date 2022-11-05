@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection HttpUrlsUsage http has always https too */
 namespace ITRocks\Framework\Html;
 
 /**
@@ -119,7 +119,7 @@ class Parser
 	 * @param $selector   string the selector for elements
 	 * @param $attributes string[] added attributes $attribute_value = string[$attribute_name]
 	 */
-	public function addAttributes(string $selector, array $attributes)
+	public function addAttributes(string $selector, array $attributes) : void
 	{
 		$i = 0;
 		while (($i = $this->selectorPos($selector, $i)) !== false) {
@@ -185,7 +185,8 @@ class Parser
 	public function constructLinks(
 		string $proxy_path = null, string $site_domain = null, string $site_url = null,
 		string $site_path = null
-	) {
+	) : void
+	{
 		if (isset($proxy_path))  $this->proxy_path  = $proxy_path;
 		if (isset($site_domain)) $this->site_domain = $site_domain;
 		if (isset($site_url))    $this->site_url    = $site_url;
@@ -228,7 +229,7 @@ class Parser
 	 *          and the '</div>'
 	 * @param $selector  string
 	 */
-	public function cut(string $selector)
+	public function cut(string $selector) : void
 	{
 		$parts = $this->selectorParts($selector);
 		$content_only = isset($parts[':']['content']);
@@ -251,7 +252,7 @@ class Parser
 	 * @example 'Custom products'
 	 * @param $module string
 	 */
-	public function cutModule(string $module)
+	public function cutModule(string $module) : void
 	{
 		$i = strpos($this->buffer, '<!-- MODULE ' . $module . ' -->') + strlen($module) + 16;
 		$j = strpos($this->buffer, '<!-- /MODULE ' . $module . ' -->');
@@ -262,7 +263,7 @@ class Parser
 	/**
 	 * Displays debugging information
 	 */
-	public function debugDisplayFullInfo()
+	public function debugDisplayFullInfo() : void
 	{
 		echo '<pre>' . htmlentities($this->buffer) . '</pre>';
 	}
@@ -319,11 +320,11 @@ class Parser
 
 	//-------------------------------------------------------------------------------- headersToProxy
 	/**
-	 * Change Location and Set-Cookie headers to refer to the proxy instead of the original web site
+	 * Change Location and Set-Cookie headers to refer to the proxy instead of the original website
 	 *
 	 * @param $headers string[]
 	 */
-	public function headersToProxy(array &$headers)
+	public function headersToProxy(array &$headers) : void
 	{
 		foreach ($headers as $key => $value) {
 			if (str_starts_with($value, 'Location: ')) {
@@ -341,7 +342,7 @@ class Parser
 	 *
 	 * @example into('html', 'body', 'div#content') to add some elements around a cut buffer
 	 */
-	public function into()
+	public function into() : void
 	{
 		$page_begin = [];
 		$page_end   = [];
@@ -362,9 +363,9 @@ class Parser
 
 	//---------------------------------------------------------------------------------- linksToProxy
 	/**
-	 * Changes links contained into the page to refer to the proxy instead of the original web site
+	 * Changes links contained into the page to refer to the proxy instead of the original website
 	 */
-	public function linksToProxy()
+	public function linksToProxy() : void
 	{
 		$this->buffer = str_replace($this->links_from, $this->links_to, $this->buffer);
 	}
@@ -378,7 +379,7 @@ class Parser
 	 * @param $selector    string the element selector where the merged html will be appended into
 	 * @param $merged_html string the merged html
 	 */
-	public function merge(string $selector, string $merged_html)
+	public function merge(string $selector, string $merged_html) : void
 	{
 		$tag = $this->partsTag($this->selectorParts($selector));
 		// remove merged html before / after element
@@ -496,7 +497,7 @@ class Parser
 	 * This should be called before any cut*() call
 	 * To get the header back, call into('html')
 	 */
-	public function saveHeader()
+	public function saveHeader() : void
 	{
 		$i = strpos($this->buffer, '<head');
 		$j = strpos($this->buffer, '</head>') + 7;
@@ -510,7 +511,7 @@ class Parser
 	 * This should be called before any cut*() call
 	 * To get the scripts back, call into('body[.some_classes#or_id]')
 	 */
-	public function saveScripts()
+	public function saveScripts() : void
 	{
 		$this->scripts = [];
 		$i = strpos($this->buffer, '</head>');

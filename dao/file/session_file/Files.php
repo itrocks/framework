@@ -40,7 +40,7 @@ class Files
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $serialized array
 	 */
-	public function __unserialize(array $serialized)
+	public function __unserialize(array $serialized) : void
 	{
 		$this->files = [];
 		foreach ($serialized as $file_hash => $serialized_file) {

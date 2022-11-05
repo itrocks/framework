@@ -18,7 +18,7 @@ class Autoloader
 	 * @param $class_name string class name (with or without namespace)
 	 * @throws Include_Filter\Exception
 	 */
-	public function autoload(string $class_name)
+	public function autoload(string $class_name) : void
 	{
 		$this->tryToLoad($class_name);
 	}
@@ -66,7 +66,7 @@ class Autoloader
 	/**
 	 * Register autoloader
 	 */
-	public function register()
+	public function register() : void
 	{
 		include_once __DIR__ . '/../../vendor/autoload.php';
 		spl_autoload_register([$this, 'autoload'], true, true);

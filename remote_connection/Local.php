@@ -27,7 +27,7 @@ class Local implements Remote_Connection
 	}
 
 	//--------------------------------------------------------------------------------------- connect
-	public function connect()
+	public function connect() : void
 	{
 		// TODO: Implement connect() method.
 	}
@@ -36,7 +36,7 @@ class Local implements Remote_Connection
 	/**
 	 * @param $file string
 	 */
-	public function delete(string $file)
+	public function delete(string $file) : void
 	{
 		// TODO: Implement delete() method.
 	}
@@ -45,13 +45,13 @@ class Local implements Remote_Connection
 	/**
 	 * @param $path string
 	 */
-	public function dir(string $path)
+	public function dir(string $path) : void
 	{
 		// TODO: Implement dir() method.
 	}
 
 	//------------------------------------------------------------------------------------ disconnect
-	public function disconnect()
+	public function disconnect() : void
 	{
 		// TODO: Implement disconnect() method.
 	}
@@ -60,7 +60,7 @@ class Local implements Remote_Connection
 	/**
 	 * @param $path string
 	 */
-	public function mkdir(string $path)
+	public function mkdir(string $path) : void
 	{
 		// TODO: Implement mkdir() method.
 	}
@@ -70,7 +70,7 @@ class Local implements Remote_Connection
 	 * @param $distant string
 	 * @param $local   string
 	 */
-	public function receive(string $distant, string $local)
+	public function receive(string $distant, string $local) : void
 	{
 		// TODO: Implement receive() method.
 	}
@@ -80,7 +80,7 @@ class Local implements Remote_Connection
 	 * @param $local   string
 	 * @param $distant string
 	 */
-	public function send(string $local, string $distant)
+	public function send(string $local, string $distant) : void
 	{
 		// TODO: Implement send() method.
 	}

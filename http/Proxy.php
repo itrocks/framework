@@ -174,7 +174,7 @@ class Proxy
 	/**
 	 * Display debugging information
 	 */
-	public function debugFullInfo()
+	public function debugFullInfo() : void
 	{
 		echo '<pre>REQUEST_HEADERS = '  . print_r($this->request_headers, true)  . '</pre>';
 		echo '<pre>RESPONSE_HEADERS = ' . print_r($this->response_headers, true) . '</pre>';
@@ -189,7 +189,7 @@ class Proxy
 	 *
 	 * @param $buffer string
 	 */
-	public function debugRedirect(string $buffer)
+	public function debugRedirect(string $buffer) : void
 	{
 		if ($location = $this->getResponseHeader('Location')) {
 			$this->setResponse(
@@ -308,7 +308,7 @@ class Proxy
 	 *
 	 * @param $header string
 	 */
-	public function removeResponseHeader(string $header)
+	public function removeResponseHeader(string $header) : void
 	{
 		$header .= ': ';
 		$length = strlen($header);
@@ -420,7 +420,7 @@ class Proxy
 	 *
 	 * @param $send_headers boolean if set to false, headers won't be sent before response html source
 	 */
-	public function sendResponse(bool $send_headers = true)
+	public function sendResponse(bool $send_headers = true) : void
 	{
 		if ($send_headers) {
 			$this->sendResponseHeaders();
@@ -434,7 +434,7 @@ class Proxy
 	 *
 	 * @param $only_headers string[]
 	 */
-	public function sendResponseHeaders(array $only_headers = [])
+	public function sendResponseHeaders(array $only_headers = []) : void
 	{
 		$only_headers = array_flip($only_headers);
 		foreach ($this->response_headers as $header) {
@@ -448,7 +448,7 @@ class Proxy
 	/**
 	 * @param $cookies Cookie[]
 	 */
-	public function setRequestCookies(array $cookies = [])
+	public function setRequestCookies(array $cookies = []) : void
 	{
 		$text = '';
 		foreach ($cookies as $cookie) {
@@ -468,7 +468,7 @@ class Proxy
 	 * @param $headers string[]
 	 * @param $reset   boolean
 	 */
-	public function setRequestHeaders(array $headers = [], bool $reset = false)
+	public function setRequestHeaders(array $headers = [], bool $reset = false) : void
 	{
 		$this->request_headers = $reset ? $headers : array_merge($this->request_headers, $headers);
 	}
@@ -477,7 +477,7 @@ class Proxy
 	/**
 	 * @param $response string
 	 */
-	public function setResponse(string $response)
+	public function setResponse(string $response) : void
 	{
 		$this->response = ($this->getResponseHeader('Content-Encoding') === 'gzip')
 			? gzencode($response)
@@ -490,7 +490,7 @@ class Proxy
 	 * @param $cookies Cookie[]
 	 * @param $replace boolean
 	 */
-	public function setResponseCookies(array $cookies = [], bool $replace = true)
+	public function setResponseCookies(array $cookies = [], bool $replace = true) : void
 	{
 		if ($replace) {
 			foreach ($this->response_headers as $key => $header) {
@@ -537,7 +537,7 @@ class Proxy
 	 *
 	 * @param $method string Http::GET or Http::POST
 	 */
-	public function setStandardRequestHeaders(string $method = Http::GET)
+	public function setStandardRequestHeaders(string $method = Http::GET) : void
 	{
 		$this->method = $method;
 		$this->request_headers = [
@@ -562,7 +562,7 @@ class Proxy
 	 * @param $prefix      string
 	 * @param $default_uri string default uri if server's PATH_INFO is empty
 	 */
-	public function setUrlByPrefix(string $prefix, string $default_uri = '')
+	public function setUrlByPrefix(string $prefix, string $default_uri = '') : void
 	{
 		$uri = isset($_SERVER['PATH_INFO']) ? substr($_SERVER['PATH_INFO'], 1) : '';
 		$this->url = $prefix . ($uri ?: $default_uri);

@@ -17,7 +17,7 @@ interface List_Data extends Iterator
 	 *
 	 * @param $row List_Row
 	 */
-	public function add(List_Row $row);
+	public function add(List_Row $row) : void;
 
 	//----------------------------------------------------------------------------------------- count
 	/**

@@ -38,14 +38,14 @@ class String_Class
 	/**
 	 * @return float|int
 	 */
-	public function abs()
+	public function abs() : float|int
 	{
 		return abs($this->value);
 	}
 
 	//------------------------------------------------------------------------------------- cleanWord
 	/**
-	 * Clean the word, this delete all character who don't have a place in a current word.
+	 * Clean the word, this deletes all character who don't have a place in a current word.
 	 *
 	 * @example
 	 * cleanWord('Albert, ') => return 'Albert'
@@ -273,7 +273,7 @@ class String_Class
 	/**
 	 * Change a class name to a source class name
 	 */
-	public function source()
+	public function source() : static
 	{
 		return new static(Builder::current()->sourceClassName($this->value));
 	}

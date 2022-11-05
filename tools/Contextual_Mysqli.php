@@ -419,7 +419,7 @@ AND `UPDATE_TIME` IS NOT NULL
 	 *
 	 * @param $query string
 	 */
-	public function queryWhenUnlocked(string $query)
+	public function queryWhenUnlocked(string $query) : void
 	{
 		if ($this->lock) {
 			$this->queries_when_unlocked[] = $query;
@@ -450,7 +450,7 @@ AND `UPDATE_TIME` IS NOT NULL
 	 * @param $old_name string
 	 * @param $new_name string
 	 */
-	public function renameTable(string $old_name, string $new_name)
+	public function renameTable(string $old_name, string $new_name) : void
 	{
 		$this->query("RENAME TABLE `$old_name` TO `$new_name`");
 	}

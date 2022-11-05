@@ -75,7 +75,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for correction of date expr with wildcards
 	 */
-	public function testCorrectionOfDateExprWithWildcards()
+	public function testCorrectionOfDateExprWithWildcards() : void
 	{
 		$tests = [
 			'%%%%' => '____',
@@ -143,7 +143,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple AND
 	 */
-	public function testParseAndExpr()
+	public function testParseAndExpr() : void
 	{
 		$this->parser->search = ['number' => 'xxx&yyy'];
 		$check                = $this->parser->parse();
@@ -156,7 +156,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple AND
 	 */
-	public function testParseBooleanFalse()
+	public function testParseBooleanFalse() : void
 	{
 		$this->parser->search = ['has_workflow' => '0,false,no,n'];
 		$check                = $this->parser->parse();
@@ -171,7 +171,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple AND
 	 */
-	public function testParseBooleanTrue()
+	public function testParseBooleanTrue() : void
 	{
 		$this->parser->search   = ['has_workflow' => '1,2,3.5,true,yes,y'];
 		$check                  = $this->parser->parse();
@@ -187,7 +187,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple AND
 	 */
-	public function testParseBooleanWildcard()
+	public function testParseBooleanWildcard() : void
 	{
 		$this->parser->search   = ['has_workflow' => '**'];
 		$check                  = $this->parser->parse();
@@ -200,7 +200,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a full date DD/MM/YYYY with FUll time HH:II:SS
 	 */
-	public function testParseDateAndTime()
+	public function testParseDateAndTime() : void
 	{
 		$this->parser->search = [
 			'date' => '05/03/2015 20:45:57,5/3/2015 8:5:6,05/3/2015 0:0:0,5/03/2015 23:59:59'
@@ -221,7 +221,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a date comparison with many formulas
 	 */
-	public function testParseDateCompareWithFormulas()
+	public function testParseDateCompareWithFormulas() : void
 	{
 		$this->parser->search = [
 			'date' => '<d-1/m-1/y-1, >d+1/m+1/y+1'
@@ -240,7 +240,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for date empty words
 	 */
-	public function testParseDateEmptyWords()
+	public function testParseDateEmptyWords() : void
 	{
 		$this->parser->search = ['date' => 'empty,none, null '];
 		$check                = $this->parser->parse();
@@ -256,7 +256,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a full date DD/MM/YYYY
 	 */
-	public function testParseDateFull()
+	public function testParseDateFull() : void
 	{
 		$this->parser->search = ['date' => '05/03/2015,5/3/2015,05/3/2015,5/03/2015'];
 		$check                = $this->parser->parse();
@@ -275,7 +275,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a full date DD/MM/YYYY with hours and minutes, not seconds
 	 */
-	public function testParseDateHoursMinutes()
+	public function testParseDateHoursMinutes() : void
 	{
 		$this->parser->search = [
 			'date' => '05/03/2015 20:45,5/3/2015 8:5,05/3/2015 0:0,5/03/2015 23:59'
@@ -296,7 +296,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a full date DD/MM/YYYY with hours , not minutes not seconds
 	 */
-	public function testParseDateHoursOnly()
+	public function testParseDateHoursOnly() : void
 	{
 		$this->parser->search = [
 			'date' => '05/03/2015 20,5/3/2015 8,05/3/2015 0,5/03/2015 23'
@@ -317,7 +317,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a date range with many formulas
 	 */
-	public function testParseDateRangeWithFormulas()
+	public function testParseDateRangeWithFormulas() : void
 	{
 		$this->parser->search = [
 			'date'
@@ -341,7 +341,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a date with many formulas
 	 */
-	public function testParseDateTimeWithFormulas()
+	public function testParseDateTimeWithFormulas() : void
 	{
 		$this->parser->search = ['date' => 'd/m/y h:m:s-1,d/m/y h-1, d/m/y h-1:5, d/m/y 13:m-1'];
 		$check                = $this->parser->parse();
@@ -360,7 +360,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a full date DD/MM/YYYY with wildcard
 	 */
-	public function testParseDateTimeWithWildcard()
+	public function testParseDateTimeWithWildcard() : void
 	{
 		$this->parser->search = ['date' => '05/*/2015 2*,?/3/20?5 2*:1*,05/3/20* 2*:1*:*0'];
 		$check                = $this->parser->parse();
@@ -378,7 +378,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for current year words
 	 */
-	public function testParseDateWildcard()
+	public function testParseDateWildcard() : void
 	{
 		$this->parser->search = ['date' => '*,**,*?,?,??'];
 		$check                = $this->parser->parse();
@@ -403,7 +403,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a date with many formulas
 	 */
-	public function testParseDateWithFormulas()
+	public function testParseDateWithFormulas() : void
 	{
 		$this->parser->search = ['date' => 'd/m/y,1/m+1/2016, 1/m+1/y-1, d-3/06/y, d-7/m+2/y-3'];
 		$check                = $this->parser->parse();
@@ -423,7 +423,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a full date DD/MM/YYYY with wildcard
 	 */
-	public function testParseDateWithWildcard()
+	public function testParseDateWithWildcard() : void
 	{
 		$this->parser->search = ['date' => '05/*/2015,?/3/20?5,05/3/20*,*/?/2015'];
 		$check                = $this->parser->parse();
@@ -440,9 +440,9 @@ class Parser_Test extends Test
 
 	//----------------------------------------------------------------------------- testParseDateZero
 	/**
-	 * Test date parser for '00/00/0000'
+	 * Test date parser for 00/00/0000
 	 */
-	public function testParseDateZero()
+	public function testParseDateZero() : void
 	{
 		$this->parser->search = ['date' => '00/00/0000,00/00,00/0000,0000,0'];
 		$check                = $this->parser->parse();
@@ -458,7 +458,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a date DD/MM
 	 */
-	public function testParseDayMonth()
+	public function testParseDayMonth() : void
 	{
 		$this->parser->search = ['date' => '05/03,5/3,05/3,5/03'];
 		$check                = $this->parser->parse();
@@ -477,7 +477,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a single day DD
 	 */
-	public function testParseDayOnly()
+	public function testParseDayOnly() : void
 	{
 		$this->parser->search = ['date' => '05,5'];
 		$check                = $this->parser->parse();
@@ -494,7 +494,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for current day words
 	 */
-	public function testParseDayWords()
+	public function testParseDayWords() : void
 	{
 		$this->parser->search = ['date' => 'today,currentday, current day ,yesterday'];
 		$check                = $this->parser->parse();
@@ -513,7 +513,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for empty words
 	 */
-	public function testParseEmptyWords()
+	public function testParseEmptyWords() : void
 	{
 		//TODO: Do CHeck forcing FR and EN locales
 		$this->parser->search = ['number' => 'empty,none,null'];
@@ -528,7 +528,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple range
 	 */
-	public function testParseInRange()
+	public function testParseInRange() : void
 	{
 		$this->parser->search = ['number' => 'xxx-yyy'];
 		$check                = $this->parser->parse();
@@ -540,7 +540,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple range
 	 */
-	public function testParseInRangeWithWildcard()
+	public function testParseInRangeWithWildcard() : void
 	{
 		$this->parser->search = ['number' => 'x*x-y?y'];
 		$check                = $this->parser->parse();
@@ -552,7 +552,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for current month words
 	 */
-	public function testParseMonthWords()
+	public function testParseMonthWords() : void
 	{
 		$this->parser->search = ['date' => 'currentmonth, current month '];
 		$check                = $this->parser->parse();
@@ -569,7 +569,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a date MM/YYYY
 	 */
-	public function testParseMonthYear()
+	public function testParseMonthYear() : void
 	{
 		$this->parser->search = ['date' => '06/2016,6/2016,2016/06,2016/6'];
 		$check                = $this->parser->parse();
@@ -588,7 +588,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a date m-1/y-1 where it should correctly detect month and year parts
 	 */
-	public function testParseMonthYearWithFormulas()
+	public function testParseMonthYearWithFormulas() : void
 	{
 		$this->parser->search = ['date' => 'm-1/y-1'];
 		$check                = $this->parser->parse();
@@ -602,7 +602,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple NOT
 	 */
-	public function testParseNotExpr()
+	public function testParseNotExpr() : void
 	{
 		$this->parser->search = ['number' => '!xxx'];
 		$check                = $this->parser->parse();
@@ -614,7 +614,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple not in range
 	 */
-	public function testParseNotInRange()
+	public function testParseNotInRange() : void
 	{
 		$this->parser->search = ['number' => '!xxx-yyy'];
 		$check                = $this->parser->parse();
@@ -626,7 +626,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a NOT with Wildcards
 	 */
-	public function testParseNotWithWildcard()
+	public function testParseNotWithWildcard() : void
 	{
 		$this->parser->search = ['number' => '!x*x'];
 		$check                = $this->parser->parse();
@@ -638,7 +638,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple OR
 	 */
-	public function testParseOrExpr()
+	public function testParseOrExpr() : void
 	{
 		$this->parser->search = ['number' => 'xxx,yyy'];
 		$check                = $this->parser->parse();
@@ -650,7 +650,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for both OR with AND
 	 */
-	public function testParseOrWithAnd()
+	public function testParseOrWithAnd() : void
 	{
 		$this->parser->search = ['number' => 'www&xxx,yyy&zzz,aaa'];
 		$check                = $this->parser->parse();
@@ -668,7 +668,7 @@ class Parser_Test extends Test
 	/**
 	 * test date parser for OR with AND
 	 */
-	public function testParseOrWithAndWithNot()
+	public function testParseOrWithAndWithNot() : void
 	{
 		$this->parser->search = ['number' => 'www&!xxx,!yyy&zzz,!aaa,bbb'];
 		$check                = $this->parser->parse();
@@ -687,7 +687,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for OR with AND
 	 */
-	public function testParseOrWithAndWithNotWithRangeWithWildcards()
+	public function testParseOrWithAndWithNotWithRangeWithWildcards() : void
 	{
 		$this->parser->search = ['number' => 'a*a-bb%&!*cc,!d?d-?e?&*f?,!g_g-h*?'];
 		$check                = $this->parser->parse();
@@ -705,7 +705,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple scalar of type integer
 	 */
-	public function testParseScalarFloatType()
+	public function testParseScalarFloatType() : void
 	{
 		$this->parser->search = ['number' => '1.1'];
 		$check                = $this->parser->parse();
@@ -717,7 +717,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple scalar of type integer
 	 */
-	public function testParseScalarIntegerType()
+	public function testParseScalarIntegerType() : void
 	{
 		$this->parser->search = ['number' => '1'];
 		$check                = $this->parser->parse();
@@ -729,7 +729,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple scalar of type string
 	 */
-	public function testParseScalarStringType()
+	public function testParseScalarStringType() : void
 	{
 		$this->parser->search = ['number' => 'xxx'];
 		$check                = $this->parser->parse();
@@ -741,7 +741,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a simple scalar with wildcards
 	 */
-	public function testParseScalarWithWildcards()
+	public function testParseScalarWithWildcards() : void
 	{
 		$this->parser->search = ['number' => 'w?wx*y_yz%'];
 		$check                = $this->parser->parse();
@@ -753,7 +753,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a single day formula
 	 */
-	public function testParseSingleDayFormula()
+	public function testParseSingleDayFormula() : void
 	{
 		$this->parser->search = ['date' => 'd+4,d-4,d,D'];
 		$check                = $this->parser->parse();
@@ -772,7 +772,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a single month formula
 	 */
-	public function testParseSingleMonthFormula()
+	public function testParseSingleMonthFormula() : void
 	{
 		$this->parser->search = ['date' => 'm+4,m-4,m,M'];
 		$check                = $this->parser->parse();
@@ -791,7 +791,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a single year formula
 	 */
-	public function testParseSingleYearFormula()
+	public function testParseSingleYearFormula() : void
 	{
 		$this->parser->search = ['date' => 'y+5,y-5,y,Y'];
 		$check                = $this->parser->parse();
@@ -810,7 +810,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a date YYYY
 	 */
-	public function testParseYear()
+	public function testParseYear() : void
 	{
 		$this->parser->search = ['date' => '2016, 2016 '];
 		$check                = $this->parser->parse();
@@ -827,7 +827,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for a date YYYY with wildcard
 	 */
-	public function testParseYearWithWildcard()
+	public function testParseYearWithWildcard() : void
 	{
 		$this->parser->search = ['date' => '2*6, 201*,201?,20?6'];
 		$check                = $this->parser->parse();
@@ -846,7 +846,7 @@ class Parser_Test extends Test
 	/**
 	 * Test date parser for current year words
 	 */
-	public function testParseYearWords()
+	public function testParseYearWords() : void
 	{
 		$this->parser->search = ['date' => 'currentyear, current year '];
 		$check                = $this->parser->parse();

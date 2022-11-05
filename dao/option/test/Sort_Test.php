@@ -40,14 +40,14 @@ class Sort_Test extends Test
 	 */
 	public function testGetColumn(
 		array|string|null $construct_parameter, string|null $method_parameter, array $expected
-	) {
+	) : void {
 		$sort    = new Sort($construct_parameter);
 		$columns = $sort->getColumns($method_parameter);
 		$this->assertEquals($expected, $columns);
 	}
 
 	//------------------------------------------------------------------- testSortConstructColumnName
-	public function testSortConstructColumnName()
+	public function testSortConstructColumnName() : void
 	{
 		$sort_class_name = new Sort(Simple_Object::class);
 		$sort_property   = new Sort('id');

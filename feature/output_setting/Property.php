@@ -14,7 +14,7 @@ class Property extends Setting\Property
 
 	//----------------------------------------------------------------------------------- $hide_empty
 	/**
-	 * Hide the property if its value if empty while in display mode
+	 * Hide the property if its value is empty while in display mode
 	 * In edit mode and if the property is not read-only, the property will be visible
 	 *
 	 * @var boolean
@@ -34,7 +34,7 @@ class Property extends Setting\Property
 	 * Tab name for grouping
 	 * Forces the group where the property will be included into in order to display it in the
 	 * matching tab
-	 * Empty string ('') means 'out of tabs'
+	 * Empty string means 'out of tabs'
 	 * null means 'use the original value of @group of the matching property / class'
 	 *
 	 * @var string
@@ -50,7 +50,6 @@ class Property extends Setting\Property
 	public string $tooltip;
 
 	//----------------------------------------------------------------------------------- __construct
-
 	/**
 	 * @param $class_name    string|null
 	 * @param $property_path string|null

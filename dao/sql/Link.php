@@ -112,7 +112,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *
 	 * @param $result_set mixed The result set : in most cases, will come from query()
 	 */
-	public abstract function free(mixed $result_set);
+	public abstract function free(mixed $result_set) : void;
 
 	//--------------------------------------------------------------------------------- getColumnName
 	/**
@@ -164,7 +164,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *
 	 * @param $context_object string|string[] Can be a class name or an array of class names
 	 */
-	abstract public function pushContext(array|string $context_object);
+	abstract public function pushContext(array|string $context_object) : void;
 
 	//----------------------------------------------------------------------------------------- query
 	/**
@@ -447,7 +447,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *
 	 * @param $class_name string
 	 */
-	public function truncate(string $class_name)
+	public function truncate(string $class_name) : void
 	{
 		$this->pushContext($class_name);
 		$table_name = $this->storeNameOf($class_name);
@@ -464,7 +464,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @param $property_name string the name of the property
 	 * @param $value         mixed if set (recommended), the value to be stored. default in $object
 	 */
-	public function writeProperty(object $object, string $property_name, mixed $value = null)
+	public function writeProperty(object $object, string $property_name, mixed $value = null) : void
 	{
 		trigger_error(
 			'@dao : property ' . get_class($object) . '::' . $property_name

@@ -76,14 +76,14 @@ class Linked_Classes_Compiler implements ICompiler
 	 * @param $class                  Reflection_Class
 	 * @param $replacement_class_name string
 	 */
-	protected function compileClass(Reflection_Class $class, string $replacement_class_name)
+	protected function compileClass(Reflection_Class $class, string $replacement_class_name) : void
 	{
 		$extended         = null;
 		$buffer           = $class->source->getSource();
 		$short_class_name = Namespaces::shortClassName($class->name);
 		$buffer           = preg_replace_callback(
 			'%(\s+class\s+' . $short_class_name . '\s+extends\s+)([\\\\\w]+)(\s+)%',
-			function ($match) use (&$extended, $replacement_class_name) {
+			function (array $match) use (&$extended, $replacement_class_name) : string {
 				$extended = $match[2];
 				return $match[1] . BS . $replacement_class_name . $match[3];
 			},
@@ -92,7 +92,7 @@ class Linked_Classes_Compiler implements ICompiler
 		if ($extended) {
 			$buffer = preg_replace_callback(
 				'%(\n\s+\*\s+@link\s+)(' . str_replace(BS, BS . BS, $extended) . ')(\s+)%',
-				function ($match) use ($replacement_class_name) {
+				function (array $match) use ($replacement_class_name) : string {
 					return $match[1] . BS . $replacement_class_name . $match[3];
 				},
 				$buffer
@@ -111,12 +111,13 @@ class Linked_Classes_Compiler implements ICompiler
 	 */
 	protected function compileUse(
 		Reflection_Class $class, string $trait_name, string $replacement_trait_name
-	) {
+	) : void
+	{
 		$buffer           = $class->source->getSource();
 		$short_trait_name = $class->short_trait_names[$trait_name] ?? (BS . $trait_name);
 		$buffer = preg_replace_callback(
 			'%(\s+use\s+)(' . str_replace(BS, BS . BS, $short_trait_name) . ')([;\s])%',
-			function($match) use ($replacement_trait_name) {
+			function(array $match) use ($replacement_trait_name) : string {
 				return $match[1] . BS . $replacement_trait_name . $match[3];
 			},
 			$buffer
@@ -130,7 +131,7 @@ class Linked_Classes_Compiler implements ICompiler
 	 *
 	 * @param $more_sources More_Sources
 	 */
-	public function moreSourcesToCompile(More_Sources $more_sources)
+	public function moreSourcesToCompile(More_Sources $more_sources) : void
 	{
 		// we will search all extends and use dependencies
 		$search = ['type' => [Dependency::T_EXTENDS, Dependency::T_USE]];

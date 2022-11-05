@@ -32,7 +32,8 @@ class Data implements Registerable
 	 */
 	public function checkDataAccess(
 		Access_Control $object, bool &$result, string &$uri, array &$get, array &$post, array &$files
-	) {
+	) : void
+	{
 		$access_control = $object;
 		if (!$result) {
 			return;

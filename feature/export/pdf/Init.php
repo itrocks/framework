@@ -16,7 +16,7 @@ trait Init
 	/**
 	 * Call this to prepare a standard pdf document and directly begin with $this->AddPage()
 	 */
-	public function init()
+	public function init() : void
 	{
 		/** @var $this Fpdi|PDF|static */
 		$this->Open();

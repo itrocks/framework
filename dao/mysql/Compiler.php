@@ -47,7 +47,7 @@ class Compiler implements ICompiler
 	 *
 	 * @param $more_sources More_Sources
 	 */
-	public function moreSourcesToCompile(More_Sources $more_sources)
+	public function moreSourcesToCompile(More_Sources $more_sources) : void
 	{
 		// Builder is disabled during the listing as we want to get the original linked class name when
 		// reading class annotation @link

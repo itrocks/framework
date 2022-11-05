@@ -23,7 +23,7 @@ class Controller implements Default_Feature_Controller
 	 *
 	 * @param $class_name string
 	 */
-	protected function newLayoutModel(string $class_name)
+	protected function newLayoutModel(string $class_name) : void
 	{
 		Main::$current->redirect(
 			View::link(

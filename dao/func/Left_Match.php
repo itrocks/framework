@@ -43,7 +43,7 @@ class Left_Match implements Negate, Where
 	/**
 	 * Negate the Dao function
 	 */
-	public function negate()
+	public function negate() : void
 	{
 		$this->match = !$this->match;
 	}

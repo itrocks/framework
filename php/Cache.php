@@ -51,7 +51,7 @@ abstract class Cache
 	/**
 	 * Reset the cache directory if required
 	 */
-	public function manageCacheDirReset()
+	public function manageCacheDirReset() : void
 	{
 		if ($this->full) {
 			$absolute_cache_dir = static::getCacheDir(true);

@@ -104,7 +104,7 @@ class Feature
 	}
 
 	//------------------------------------------------------------------------------------ initModule
-	public function initModule()
+	public function initModule() : void
 	{
 		if ($this->module) {
 			return;

@@ -245,9 +245,9 @@ class Locale implements Configurable, Registerable, Updatable
 
 	//--------------------------------------------------------------------------------- setDateFormat
 	/**
-	 * @param $date_format Date_Format|string if string, must be a date format (ie 'd/m/Y')
+	 * @param $date_format Date_Format|string if a string, must be a date format (ie 'd/m/Y')
 	 */
-	public function setDateFormat(Date_Format|string $date_format)
+	public function setDateFormat(Date_Format|string $date_format) : void
 	{
 		$this->date_format = ($date_format instanceof Date_Format)
 			? $date_format
@@ -258,7 +258,7 @@ class Locale implements Configurable, Registerable, Updatable
 	/**
 	 * @param $language string
 	 */
-	public function setLanguage(string $language)
+	public function setLanguage(string $language) : void
 	{
 		$this->language     = $language;
 		$this->translations = new Translator($this->language);
@@ -270,7 +270,7 @@ class Locale implements Configurable, Registerable, Updatable
 	 *
 	 * @param $number_format Number_Format|int[]|string[]
 	 */
-	public function setNumberFormat(array|Number_Format $number_format)
+	public function setNumberFormat(array|Number_Format $number_format) : void
 	{
 		$this->number_format = ($number_format instanceof Number_Format)
 			? $number_format
@@ -359,7 +359,7 @@ class Locale implements Configurable, Registerable, Updatable
 	/**
 	 * @param $last_time integer
 	 */
-	public function update(int $last_time)
+	public function update(int $last_time) : void
 	{
 		// too slow to be executed on development environment
 		// TODO bring it back when there will not be bad translation entries anymore

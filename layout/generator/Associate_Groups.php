@@ -11,7 +11,7 @@ class Associate_Groups
 	use Has_Structure;
 
 	//------------------------------------------------------------------------------------------- run
-	public function run()
+	public function run() : void
 	{
 		// TODO once the user will be able to add groups to the structure himself
 		// not needed once Generate_Groups is enough.

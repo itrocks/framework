@@ -30,7 +30,7 @@ class Post_Files_Test extends Test
 	}
 
 	//------------------------------------------------------------------------- testAllKeysNonNumeric
-	public function testAllKeysNonNumeric()
+	public function testAllKeysNonNumeric() : void
 	{
 		$files = ['pages' => [
 			'error'    => ['background' => ['U' => 0                ]],
@@ -49,7 +49,7 @@ class Post_Files_Test extends Test
 	}
 
 	//------------------------------------------------------------------------ testSomeKeysNonNumeric
-	public function testSomeKeysNonNumeric()
+	public function testSomeKeysNonNumeric() : void
 	{
 		$files = ['pages' => [
 			'error'    => ['background' => ['U' => 0                , '-1' => 0                ]],

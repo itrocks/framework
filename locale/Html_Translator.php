@@ -17,7 +17,7 @@ class Html_Translator implements Registerable
 	 * @param $content string
 	 * @param $result  integer
 	 */
-	public function doNotTranslateEmptyValue(string &$content, int &$result)
+	public function doNotTranslateEmptyValue(string &$content, int $result) : void
 	{
 		if (substr($content, $result - 2, 2) === PIPE . PIPE) {
 			$content = substr($content, 0, $result - 2) . substr($content, $result);
@@ -73,7 +73,7 @@ class Html_Translator implements Registerable
 	 * @param $position integer
 	 * @param $context  string
 	 */
-	private function translateElement(string &$content, int &$position, string $context)
+	private function translateElement(string &$content, int &$position, string $context) : void
 	{
 		$next = strpos($content, PIPE, $position);
 		if ($next >= $position) {
@@ -90,7 +90,7 @@ class Html_Translator implements Registerable
 	 *
 	 * @param $result string
 	 */
-	public function translateOptionContent(string &$result)
+	public function translateOptionContent(string &$result) : void
 	{
 		if (trim($result)) {
 			$result = Loc::tr($result);
@@ -118,7 +118,7 @@ class Html_Translator implements Registerable
 	 * @param $object        Template
 	 * @param $property_name string
 	 */
-	public function translateString(Template $object, string &$property_name)
+	public function translateString(Template $object, string &$property_name) : void
 	{
 		$this->translateContent($property_name, $object->context());
 	}

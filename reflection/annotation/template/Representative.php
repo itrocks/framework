@@ -41,7 +41,7 @@ class Representative extends List_Annotation
 	 *
 	 * @param $value string
 	 */
-	public function add(string $value)
+	public function add(string $value) : void
 	{
 		if (!$this->has($value)) {
 			parent::add($value);

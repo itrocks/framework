@@ -52,7 +52,8 @@ class Date_Interval_Test extends Test
 	 */
 	public function testAdjust(
 		int $hour, int $invert, string $expected_format, int $expected_invert
-	) {
+	) : void
+	{
 		// Minus one hour interval
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$interval         = new DateInterval(Date_Interval::EMPTY_SPEC);
@@ -72,6 +73,7 @@ class Date_Interval_Test extends Test
 	 * @param $expected_invert integer
 	 */
 	public function testFromDuration(int $duration, string $expected_format, int $expected_invert)
+		: void
 	{
 		$interval = Date_Interval::fromDuration($duration);
 		static::assertEquals($expected_format, $interval->format(Date_Interval::FULL_FORMAT));
@@ -86,7 +88,7 @@ class Date_Interval_Test extends Test
 	 * @param $round    ?string
 	 * @throws Date_Interval_Exception
 	 */
-	public function testToDays(int $duration, int $expected, ?string $round)
+	public function testToDays(int $duration, int $expected, ?string $round) : void
 	{
 		static::assertEquals(
 			$expected, Date_Interval::toDays(Date_Interval::fromDuration($duration), $round)
@@ -97,7 +99,7 @@ class Date_Interval_Test extends Test
 	/**
 	 * @throws Date_Interval_Exception
 	 */
-	public function testToDaysIllegal()
+	public function testToDaysIllegal() : void
 	{
 		$this->expectException(Date_Interval_Exception::class);
 		$this->expectExceptionMessage(Date_Interval_Exception::MESSAGE);
@@ -107,7 +109,7 @@ class Date_Interval_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testToHours
-	public function testToHours()
+	public function testToHours() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
@@ -120,7 +122,7 @@ class Date_Interval_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testToMinutes
-	public function testToMinutes()
+	public function testToMinutes() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
@@ -133,7 +135,7 @@ class Date_Interval_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testToSeconds
-	public function testToSeconds()
+	public function testToSeconds() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(86400, Date_Interval::toSeconds(Date_Interval::fromDuration(86400)));
@@ -142,7 +144,7 @@ class Date_Interval_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testToWeeks
-	public function testToWeeks()
+	public function testToWeeks() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(

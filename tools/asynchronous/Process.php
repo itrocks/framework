@@ -113,7 +113,7 @@ class Process
 	 * - closes the process
 	 * - calls the callback with callback parameters, then the Process as last parameter
 	 */
-	protected function done()
+	protected function done() : void
 	{
 		$this->errors = is_resource($this->errors)
 			? trim(stream_get_contents($this->errors))
@@ -135,7 +135,7 @@ class Process
 	/**
 	 * Runs the command
 	 */
-	public function run()
+	public function run() : void
 	{
 		$this->process = proc_open(
 			$this->command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes

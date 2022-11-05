@@ -22,7 +22,7 @@ trait Options_Annotation
 	 *
 	 * @param $value ?string
 	 */
-	protected function constructOptions(?string &$value)
+	protected function constructOptions(?string &$value) : void
 	{
 		if (isset($value) && str_contains($value, SP)) {
 			[$value, $options] = explode(SP, $value, 2);
@@ -57,7 +57,7 @@ trait Options_Annotation
 	/**
 	 * @param $options string[]
 	 */
-	protected function parseOptions(array $options)
+	protected function parseOptions(array $options) : void
 	{
 		foreach ($options as $option) if (strlen($option = trim($option))) {
 			if (str_contains($option, '=')) {

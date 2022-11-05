@@ -70,7 +70,8 @@ class Property_To_Text
 	 */
 	protected function append(
 		Element|Final_Image|Final_Text $final_element, int $iteration_number = null
-	) {
+	) : void
+	{
 		// append element to the group iteration / page
 		if ($final_element->group) {
 			$iteration                = $this->iteration($final_element->group, $iteration_number);
@@ -88,7 +89,7 @@ class Property_To_Text
 	 *
 	 * @param $group Group
 	 */
-	protected function group(Group $group)
+	protected function group(Group $group) : void
 	{
 		if (reset($group->links) && strcmp(key($group->links), $group->page->number)) {
 			return;
@@ -112,7 +113,7 @@ class Property_To_Text
 	 *
 	 * @param $text Element|Image|Text
 	 */
-	protected function groupElement(Element|Image|Text $text)
+	protected function groupElement(Element|Image|Text $text) : void
 	{
 		$property_path = $text->group->property_path;
 		$values        = $this->values($property_path);
@@ -204,7 +205,7 @@ class Property_To_Text
 	 *
 	 * @param $page Page
 	 */
-	protected function page(Page $page)
+	protected function page(Page $page) : void
 	{
 		$this->iterations = [];
 		foreach ($page->groups as $group) {
@@ -227,7 +228,7 @@ class Property_To_Text
 	 *
 	 * @param $text Text
 	 */
-	protected function pageText(Text $text)
+	protected function pageText(Text $text) : void
 	{
 		$parser     = new Parser($this->object);
 		$value      = $parser->elementText($text);
@@ -241,7 +242,7 @@ class Property_To_Text
 	 *
 	 * @param $property Property
 	 */
-	protected function property(Property $property)
+	protected function property(Property $property) : void
 	{
 		try {
 			$reflection_property = new Reflection_Property(
@@ -332,7 +333,7 @@ class Property_To_Text
 	 *
 	 * @param $object object
 	 */
-	public function run(object $object)
+	public function run(object $object) : void
 	{
 		$this->object = $object;
 		foreach ($this->structure->pages as $page) {

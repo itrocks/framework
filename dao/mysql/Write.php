@@ -83,7 +83,7 @@ class Write extends Data_Link\Write
 	/**
 	 * For each property in only : if there are impacted properties using @impact : add them
 	 */
-	protected function addImpactedProperties()
+	protected function addImpactedProperties() : void
 	{
 		$class_name = get_class($this->object);
 		do {
@@ -125,7 +125,7 @@ class Write extends Data_Link\Write
 	/**
 	 * Scan options for things we need for write
 	 */
-	protected function parseOptions()
+	protected function parseOptions() : void
 	{
 		$this->exclude        = [];
 		$this->only           = [];
@@ -271,7 +271,8 @@ class Write extends Data_Link\Write
 	 */
 	protected function spreadExcludeAndOnly(
 		array &$options, string $property_name, array $exclude, array $only
-	) {
+	) : void
+	{
 		if ($exclude) {
 			$spread_only = (new Option\Only($only))->subObjectOption($property_name);
 			if ($spread_only) {
@@ -292,7 +293,7 @@ class Write extends Data_Link\Write
 	 * @param $properties Reflection_Property[]
 	 * @param $class      Link_Class
 	 */
-	protected function writeArray(array $write, array $properties, Link_Class $class)
+	protected function writeArray(array $write, array $properties, Link_Class $class) : void
 	{
 		$link = Class_\Link_Annotation::of($class);
 		// link class : id is the couple of composite properties values
@@ -393,7 +394,7 @@ class Write extends Data_Link\Write
 	 * @param $property   Reflection_Property
 	 * @param $collection Component[]
 	 */
-	protected function writeCollection(Reflection_Property $property, array $collection)
+	protected function writeCollection(Reflection_Property $property, array $collection) : void
 	{
 		// old collection
 		$old_object = Search_Object::create(get_class($this->object));
@@ -482,7 +483,7 @@ class Write extends Data_Link\Write
 	 * @param $property Reflection_Property
 	 * @param $map      object[]
 	 */
-	protected function writeMap(Reflection_Property $property, array $map)
+	protected function writeMap(Reflection_Property $property, array $map) : void
 	{
 		// old map
 		/** @noinspection PhpUnhandledExceptionInspection object */
@@ -545,7 +546,7 @@ class Write extends Data_Link\Write
 	 * @todo And what if $component_object has a @link class type ?
 	 * @todo working with @dao property annotation
 	 */
-	protected function writeObject(Reflection_Property $property, ?object $component_object)
+	protected function writeObject(Reflection_Property $property, ?object $component_object) : void
 	{
 		// notice that this work only because called after write of $this->object (see searches bellow)
 		// if there is already a stored component object : there must be only one

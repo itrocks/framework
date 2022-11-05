@@ -366,7 +366,7 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	/**
 	 * TODO doc
 	 */
-	private function scanBefore()
+	private function scanBefore() : void
 	{
 		$this->doc_comment = '';
 		$this->is_static   = false;

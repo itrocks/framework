@@ -426,7 +426,7 @@ class Column implements Sql\Column
 	/**
 	 * @param $default mixed
 	 */
-	public function setDefaultValue(mixed $default)
+	public function setDefaultValue(mixed $default) : void
 	{
 		$this->Default = $default;
 	}

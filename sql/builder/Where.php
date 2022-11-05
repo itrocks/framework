@@ -171,6 +171,7 @@ class Where implements With_Build_Column
 						$build = $this->buildPath($path, $value, $sub_clause);
 					}
 					else {
+						/** @noinspection DuplicatedCode too much complicated to mutualise for 4 lines */
 						$prefix      = '';
 						$master_path = (($i = strrpos($property_path, DOT)) !== false)
 							? substr($property_path, 0, $i) : '';
@@ -464,7 +465,7 @@ class Where implements With_Build_Column
 	/**
 	 * @param $where_array array|object|null
 	 */
-	public function restrict(array|object|null $where_array)
+	public function restrict(array|object|null $where_array) : void
 	{
 		$this->where_array = $this->where_array
 			? ['AND' => array_merge($where_array, [$this->where_array])]

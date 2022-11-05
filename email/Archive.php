@@ -30,7 +30,7 @@ class Archive implements Registerable
 	/**
 	 * @param $email Email
 	 */
-	public function save(Email $email)
+	public function save(Email $email) : void
 	{
 		if ($email->send_date->isEmpty()) {
 			$email->send_date = Date_Time::now();

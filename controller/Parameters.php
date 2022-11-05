@@ -339,7 +339,7 @@ class Parameters
 	 * @param $key             integer|string
 	 * @param $from_values_too boolean if true, remove from keys and values
 	 */
-	public function remove(int|string $key, bool $from_values_too = false)
+	public function remove(int|string $key, bool $from_values_too = false) : void
 	{
 		if (isset($this->parameters[$key])) {
 			unset($this->parameters[$key]);
@@ -353,7 +353,7 @@ class Parameters
 	/**
 	 * Resets all parameters and objects
 	 */
-	public function reset()
+	public function reset() : void
 	{
 		$this->objects    = [];
 		$this->parameters = array_key_exists('as_widget', $this->parameters)
@@ -529,7 +529,7 @@ class Parameters
 	 *
 	 * @param $parameter_value mixed
 	 */
-	public function unshift(mixed $parameter_value)
+	public function unshift(mixed $parameter_value) : void
 	{
 		if (is_object($parameter_value)) {
 			$class_name = get_class($parameter_value);
@@ -552,7 +552,7 @@ class Parameters
 	 *
 	 * @param $parameter_value mixed
 	 */
-	public function unshiftUnnamed(mixed $parameter_value)
+	public function unshiftUnnamed(mixed $parameter_value) : void
 	{
 		array_unshift($this->parameters, $parameter_value);
 	}

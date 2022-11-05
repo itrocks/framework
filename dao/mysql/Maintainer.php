@@ -225,7 +225,7 @@ class Maintainer implements Configurable, Registerable
 	 * @param $class_name string
 	 * @param $mysqli     Contextual_Mysqli|null
 	 */
-	private function createTable(string $class_name, Contextual_Mysqli $mysqli = null)
+	private function createTable(string $class_name, Contextual_Mysqli $mysqli = null) : void
 	{
 		if (!$mysqli) {
 			$data_link = Dao::current();
@@ -353,7 +353,7 @@ class Maintainer implements Configurable, Registerable
 	 * @param $class_name string
 	 * @param $mysqli     Contextual_Mysqli|null
 	 */
-	private function createView(string $class_name, Contextual_Mysqli $mysqli = null)
+	private function createView(string $class_name, Contextual_Mysqli $mysqli = null) : void
 	{
 		if (!$mysqli) {
 			$data_link = Dao::current();
@@ -450,7 +450,8 @@ class Maintainer implements Configurable, Registerable
 	 */
 	public function onMysqliQueryError(
 		Contextual_Mysqli $object, string $query, Before_Method $joinpoint
-	) {
+	) : void
+	{
 		$mysqli     = $object;
 		$last_errno = $mysqli->last_errno;
 		$last_error = $mysqli->last_error;
@@ -699,7 +700,7 @@ class Maintainer implements Configurable, Registerable
 	/**
 	 * Starts maintainer simulation
 	 */
-	public function simulationStart()
+	public function simulationStart() : void
 	{
 		$this->simulation = true;
 		$this->requests   = [];
@@ -734,7 +735,8 @@ class Maintainer implements Configurable, Registerable
 	 */
 	private function updateContextAfterCreate(
 		Contextual_Mysqli $mysqli, string $query, string $class_name
-	) {
+	) : void
+	{
 		if (!$query || str_starts_with(trim($query), 'ALTER TABLE')) {
 			if ($context = end($mysqli->contexts)) foreach ($context as $context_class_name) {
 				$same_table = false;
@@ -783,7 +785,8 @@ class Maintainer implements Configurable, Registerable
 	 */
 	private function updateImplicitTable(
 		Reflection_Property $property, string $exclude_class_name, Contextual_Mysqli $mysqli
-	) {
+	) : void
+	{
 		$link_table          = new Link_Table($property);
 		$column_name         = $link_table->masterColumn();
 		$foreign_column_name = $link_table->foreignColumn();
@@ -837,7 +840,8 @@ class Maintainer implements Configurable, Registerable
 	 */
 	private function updateImplicitTables(
 		Reflection_Class $class, string $exclude_class_name, Contextual_Mysqli $mysqli
-	) {
+	) : void
+	{
 		if (Class_\Link_Annotation::of($class)->value) {
 			/** @noinspection PhpUnhandledExceptionInspection class is valid */
 			$link_class = new Link_Class($class->name);

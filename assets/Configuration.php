@@ -97,7 +97,7 @@ class Configuration
 	 * @param $is_plugin boolean
 	 * @throws Assets_Exception
 	 */
-	public function add(string $file_path, bool $is_plugin = true)
+	public function add(string $file_path, bool $is_plugin = true) : void
 	{
 		$file_path = $this->checkPath($file_path);
 		if ($file_path) {
@@ -252,7 +252,7 @@ class Configuration
 	 *
 	 * @throws Assets_Exception
 	 */
-	protected function load()
+	protected function load() : void
 	{
 		$dom = new DOMDocument();
 		if (!$dom->loadHTMLFile($this->file_path)) {

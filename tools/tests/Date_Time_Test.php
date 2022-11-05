@@ -32,21 +32,21 @@ class Date_Time_Test extends Test
 	 * @param $expected Date_Time
 	 * @param $args int[]|string[]
 	 */
-	public function testAdd(Date_Time $expected, array $args)
+	public function testAdd(Date_Time $expected, array $args) : void
 	{
 		$base = new Date_Time('2016-09-23T11:04:02');
 		static::assertEquals($expected, $base->add(...$args));
 	}
 
 	//--------------------------------------------------------------------------------- testConstruct
-	public function testConstruct()
+	public function testConstruct() : void
 	{
 		$date = new Date_Time('2016-11-05T19:46:32.56');
 		static::assertEquals('2016-11-05 19:46:32', $date->format('Y-m-d H:i:s'));
 	}
 
 	//-------------------------------------------------------------------------------------- testDiff
-	public function testDiff()
+	public function testDiff() : void
 	{
 		$yesterday = new Date_Time('2016-11-01 16:11:00');
 		$tomorrow  = new Date_Time('2016-11-03 15:10:49');
@@ -73,7 +73,7 @@ class Date_Time_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------- testEarliest
-	public function testEarliest()
+	public function testEarliest() : void
 	{
 		$earlier = new Date_Time('2006-01-01 13:29:18');
 		$now     = new Date_Time('2016-10-24 10:48:12');
@@ -88,7 +88,7 @@ class Date_Time_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------------- testIs
-	public function testIs()
+	public function testIs() : void
 	{
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
@@ -130,7 +130,7 @@ class Date_Time_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testIsAfter
-	public function testIsAfter()
+	public function testIsAfter() : void
 	{
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
@@ -172,7 +172,7 @@ class Date_Time_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------- testIsAfterOrEqual
-	public function testIsAfterOrEqual()
+	public function testIsAfterOrEqual() : void
 	{
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
@@ -214,7 +214,7 @@ class Date_Time_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------- testIsBefore
-	public function testIsBefore()
+	public function testIsBefore() : void
 	{
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
@@ -256,7 +256,7 @@ class Date_Time_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------- testIsBeforeOrEqual
-	public function testIsBeforeOrEqual()
+	public function testIsBeforeOrEqual() : void
 	{
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
@@ -298,7 +298,7 @@ class Date_Time_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testIsEmpty
-	public function testIsEmpty()
+	public function testIsEmpty() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$empty_date = new Date_Time('0000-00-00 00:00:00');
@@ -313,7 +313,7 @@ class Date_Time_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------- testIsMax
-	public function testIsMax()
+	public function testIsMax() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$empty_date = new Date_Time('0000-00-00 00:00:00');
@@ -328,7 +328,7 @@ class Date_Time_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------- testIsMin
-	public function testIsMin()
+	public function testIsMin() : void
 	{
 		$empty_date = new Date_Time('0000-00-00 00:00:00');
 		$today_date = new Date_Time('2016-07-13 09:47:05');
@@ -341,7 +341,7 @@ class Date_Time_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------ testLatest
-	public function testLatest()
+	public function testLatest() : void
 	{
 		$earlier = new Date_Time('2006-01-01 13:29:18');
 		$now     = new Date_Time('2016-10-24 10:48:12');
@@ -356,7 +356,7 @@ class Date_Time_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------- testToMonth
-	public function testToMonth()
+	public function testToMonth() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$month = (new Date_Time('2016-06-04 12:35:00'))
@@ -365,7 +365,7 @@ class Date_Time_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------------- testTomorrow
-	public function testTomorrow()
+	public function testTomorrow() : void
 	{
 		$today    = Date_Time::today();
 		$tomorrow = Date_Time::tomorrow();
@@ -380,7 +380,7 @@ class Date_Time_Test extends Test
 	/**
 	 * Test method Date_Time::yesterday().
 	 */
-	public function testYesterday()
+	public function testYesterday() : void
 	{
 		$today     = Date_Time::today();
 		$yesterday = Date_Time::yesterday();

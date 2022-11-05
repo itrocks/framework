@@ -40,7 +40,7 @@ abstract class Properties implements Option
 	/**
 	 * @param $properties string|string[] ... Each property can be a property.path
 	 */
-	public function add(array|string... $properties)
+	public function add(array|string... $properties) : void
 	{
 		foreach (func_get_args() as $properties) {
 			if (is_array($properties)) {

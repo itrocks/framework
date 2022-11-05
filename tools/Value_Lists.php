@@ -25,8 +25,10 @@ class Value_Lists
 	//-------------------------------------------------------------------------------------- assembly
 	/**
 	 * Intelligent before/after assembly algorithm
+	 *
+	 * @return array
 	 */
-	public function assembly()
+	public function assembly() : array
 	{
 		$values = reset($this->lists) ?: [];
 		foreach (array_slice($this->lists, 1) as $list) {

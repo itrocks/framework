@@ -289,7 +289,7 @@ class Select
 	/**
 	 * @param $where_array array|object|null
 	 */
-	public function restrict(array|object|null $where_array)
+	public function restrict(array|object|null $where_array) : void
 	{
 		$this->where_builder->restrict($where_array);
 	}

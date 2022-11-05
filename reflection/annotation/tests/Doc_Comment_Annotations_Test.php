@@ -17,7 +17,7 @@ class Doc_Comment_Annotations_Test extends Test
 	 * A class implements an interface and inherits a class that implements the same interface
 	 * Will the annotation coming from the annotation be implemented once or twice ? Should once.
 	 */
-	public function testSameInterfaceTwice()
+	public function testSameInterfaceTwice() : void
 	{
 		$namespace = 'namespace ' . __NAMESPACE__ . ' {' . LF . LF;
 		if (!interface_exists(__NAMESPACE__ . BS . 'Test_Interface', false)) {

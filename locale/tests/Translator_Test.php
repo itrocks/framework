@@ -35,7 +35,7 @@ class Translator_Test extends Test
 	 * @param $translator Translator
 	 * @param $cache      array
 	 */
-	public static function setTranslatorCache(Translator $translator, array $cache)
+	public static function setTranslatorCache(Translator $translator, array $cache) : void
 	{
 		$reflection_translator = new ReflectionObject($translator);
 		$cache_property        = $reflection_translator->getProperty('cache');
@@ -69,8 +69,31 @@ class Translator_Test extends Test
 		Dao::rollback();
 	}
 
+	//---------------------------------------------------------------------------------- testToLocale
+	/**
+	 * @dataProvider toLocalProvider
+	 * @param $expected string
+	 * @param $value    mixed
+	 * @param $type     Type|null
+	 */
+	public function testToLocale(string $expected, mixed $value, Type $type = null) : void
+	{
+		$local = new Locale([
+			Locale::DATE     => 'd/m/Y',
+			Locale::LANGUAGE => 'fr',
+			Locale::NUMBER   => [
+				Number_Format::DECIMAL_MINIMAL_COUNT => 2,
+				Number_Format::DECIMAL_MAXIMAL_COUNT => 2,
+				Number_Format::DECIMAL_SEPARATOR     => ',',
+				Number_Format::THOUSAND_SEPARATOR    => ' ',
+			]
+		]);
+		$locale_value = $local->toLocale($value, $type);
+		$this->assertEquals($expected, $locale_value);
+	}
+
 	//--------------------------------------------------------------------------------- testTranslate
-	public function testTranslate()
+	public function testTranslate() : void
 	{
 		// first test : for a non-existing translation
 		static::assertEquals(self::TEST, $this->translator->translate(self::TEST, static::class));
@@ -87,7 +110,7 @@ class Translator_Test extends Test
 	 * @param $expected string
 	 * @param $context  string
 	 */
-	public function testTranslateWithPlural(string $expected, string $context)
+	public function testTranslateWithPlural(string $expected, string $context) : void
 	{
 		$text = 'the text to translate';
 		static::setTranslatorCache(
@@ -108,6 +131,14 @@ class Translator_Test extends Test
 		static::assertEquals($expected, $this->translator->translate($text, $context));
 	}
 
+	//------------------------------------------------------------------------------- toLocalProvider
+	public function toLocalProvider() : array
+	{
+		return [
+			['91,85', '91.8500', new Type(Type::FLOAT)]
+		];
+	}
+
 	//------------------------------------------------------------------- translateWithPluralProvider
 	/**
 	 * @see testTranslateWithPlural
@@ -126,37 +157,6 @@ class Translator_Test extends Test
 			// when no plural : prefer using the parent plural than getting the current class singular
 			'inherited not set'   => ['the document texts', Quote::class . '*']
 		];
-	}
-
-	//------------------------------------------------------------------------------- toLocalProvider
-	public function toLocalProvider() : array
-	{
-		return [
-			['91,85', '91.8500', new Type(Type::FLOAT)]
-		];
-	}
-
-	//---------------------------------------------------------------------------------- testToLocale
-	/**
-	 * @dataProvider toLocalProvider
-	 * @param $expected string
-	 * @param $value    mixed
-	 * @param $type     Type|null
-	 */
-	public function testToLocale(string $expected, mixed $value, Type $type = null)
-	{
-		$local = new Locale([
-			Locale::DATE     => 'd/m/Y',
-			Locale::LANGUAGE => 'fr',
-			Locale::NUMBER   => [
-				Number_Format::DECIMAL_MINIMAL_COUNT => 2,
-				Number_Format::DECIMAL_MAXIMAL_COUNT => 2,
-				Number_Format::DECIMAL_SEPARATOR     => ',',
-				Number_Format::THOUSAND_SEPARATOR    => ' ',
-			]
-		]);
-		$locale_value = $local->toLocale($value, $type);
-		$this->assertEquals($expected, $locale_value);
 	}
 
 }

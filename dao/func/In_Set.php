@@ -42,7 +42,7 @@ class In_Set implements Negate, Where
 	/**
 	 * Negate the Dao function
 	 */
-	public function negate()
+	public function negate() : void
 	{
 		$this->not = !$this->not;
 	}
@@ -65,8 +65,10 @@ class In_Set implements Negate, Where
 
 			$summary = $translation_delimiter . sprintf(
 				Loc::tr($this->not ? '%s does not contain %s' : '%s contains %s'),
-				$builder->buildColumn($property_path, $prefix, $builder::SUB_TRANSLATE),
-				$builder->buildScalar(join(', ', $this->value), $property_path, $builder::SUB_TRANSLATE)
+				$builder->buildColumn($property_path, $prefix, Summary_Builder::SUB_TRANSLATE),
+				$builder->buildScalar(
+					join(', ', $this->value), $property_path, Summary_Builder::SUB_TRANSLATE
+				)
 			) . $translation_delimiter;
 		}
 		return $summary;

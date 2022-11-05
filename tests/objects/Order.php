@@ -55,7 +55,7 @@ class Order extends Document
 	 *
 	 * @param $lines Order_Line[]
 	 */
-	public function addLines(array $lines)
+	public function addLines(array $lines) : void
 	{
 		$this->lines = array_merge($this->lines, $lines);
 	}
@@ -66,7 +66,7 @@ class Order extends Document
 	 *
 	 * @param $lines Order_Line[]
 	 */
-	public function setLines(array $lines)
+	public function setLines(array $lines) : void
 	{
 		$this->lines = $lines;
 	}

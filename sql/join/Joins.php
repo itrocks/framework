@@ -233,7 +233,7 @@ class Joins
 	 *
 	 * @param $join Join
 	 */
-	public function addJoin(Join $join)
+	public function addJoin(Join $join) : void
 	{
 		if (!$join->foreign_alias) {
 			$join->foreign_alias = $this->alias_prefix . 't' . $this->alias_counter++;
@@ -314,7 +314,8 @@ class Joins
 	private function addLinkedJoin(
 		Join $join, string $master_path, string $foreign_path, string $foreign_class_name,
 		Reflection_Property $property, bool $reverse = false
-	) {
+	) : void
+	{
 		$link_table                  = new Link_Table($property);
 		$linked_join                 = new Join();
 		$linked_join->foreign_column = $reverse
@@ -378,6 +379,7 @@ class Joins
 	 * @param $join_mode  string
 	 */
 	private function addProperties(string $path, string $class_name, string $join_mode = Join::INNER)
+		: void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$class                         = new Link_Class($class_name);

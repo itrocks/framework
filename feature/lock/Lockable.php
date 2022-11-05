@@ -96,7 +96,7 @@ trait Lockable
 	/**
 	 * @noinspection PhpUnused @duplicate
 	 */
-	public function onDuplicateLockable()
+	public function onDuplicateLockable() : void
 	{
 		$this->locked = false;
 	}

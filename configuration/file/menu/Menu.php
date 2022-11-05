@@ -47,7 +47,7 @@ class Menu extends File
 	 *
 	 * @param $blocks array string $item_caption[string $block_title][string $item_link]
 	 */
-	public function addBlocks(array $blocks)
+	public function addBlocks(array $blocks) : void
 	{
 		foreach ($blocks as $block_title => $items) {
 			$block = $this->addBlock($block_title);
@@ -89,7 +89,7 @@ class Menu extends File
 	 * @param $block Block|string
 	 * @param $items string[] string $item_caption[string $item_link]
 	 */
-	public function addItems(Block|string $block, array $items)
+	public function addItems(Block|string $block, array $items) : void
 	{
 		if (is_string($block)) {
 			$block = $this->addBlock($block);
@@ -120,7 +120,7 @@ class Menu extends File
 	/**
 	 * Read from file
 	 */
-	public function read()
+	public function read() : void
 	{
 		(new Menu\Reader($this))->read();
 	}
@@ -129,7 +129,7 @@ class Menu extends File
 	/**
 	 * @param $blocks array string $item_caption[string $block_title][string $item_link]
 	 */
-	public function removeBlocks(array $blocks)
+	public function removeBlocks(array $blocks) : void
 	{
 		// mark menu blocks / items as removed, without removing them
 		foreach ($blocks as $block_title => $block) {
@@ -201,7 +201,7 @@ class Menu extends File
 	/**
 	 * Write to file
 	 */
-	public function write()
+	public function write() : void
 	{
 		(new Menu\Writer($this))->write();
 	}

@@ -20,7 +20,7 @@ class Reader extends File\Reader
 	/**
 	 * Read configuration : the main part of the file
 	 */
-	protected function readConfiguration()
+	protected function readConfiguration() : void
 	{
 		$block = null;
 		$line  = current($this->lines);

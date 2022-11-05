@@ -8,6 +8,6 @@ interface Done_Compiler
 {
 
 	//----------------------------------------------------------------------------------- doneCompile
-	public function doneCompile();
+	public function doneCompile() : void;
 
 }

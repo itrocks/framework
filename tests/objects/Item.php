@@ -62,7 +62,7 @@ class Item
 	/**
 	 * Before write annotation code : increments a counter on a virtual property
 	 */
-	public function beforeWrite()
+	public function beforeWrite() : void
 	{
 		$this->call_before_write = isset($this->call_before_write) ? 1 : ($this->call_before_write + 1);
 	}

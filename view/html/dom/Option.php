@@ -16,7 +16,7 @@ class Option extends Element
 	 */
 	public function __construct(string $value = null, string $caption = null)
 	{
-		parent::__construct('option', true);
+		parent::__construct('option');
 		if (isset($value)) {
 			if (!isset($caption)) {
 				$this->setContent(Names::propertyToDisplay($value));

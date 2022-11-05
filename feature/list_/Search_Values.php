@@ -36,7 +36,7 @@ class Search_Values
 	 * @param $class_name    string
 	 * @param $property_name string
 	 */
-	public function remove(string $class_name, string $property_name = '')
+	public function remove(string $class_name, string $property_name = '') : void
 	{
 		if ($property_name === '') {
 			if (isset($this->search_values[$class_name])) {
@@ -60,7 +60,7 @@ class Search_Values
 	 * @param $property_name string
 	 * @param $value         string
 	 */
-	public function set(string $class_name, string $property_name, string $value)
+	public function set(string $class_name, string $property_name, string $value) : void
 	{
 		$this->search_values[$class_name][$property_name] = $value;
 	}

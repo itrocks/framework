@@ -52,7 +52,7 @@ class Empty_Columns_Remover implements Registerable
 	 * @input $shifts, $widths
 	 * @param $elements Element[]
 	 */
-	protected function applyShiftsWidths(array $elements)
+	protected function applyShiftsWidths(array $elements) : void
 	{
 		foreach ($this->shifts as $column => $shift) {
 			if (isset($elements[$column])) {
@@ -71,7 +71,7 @@ class Empty_Columns_Remover implements Registerable
 	 * @call run
 	 * @output $structure
 	 */
-	public function beforeAutomaticLineFeed()
+	public function beforeAutomaticLineFeed() : void
 	{
 		$generator = (new Call_Stack)->getObject(Generator::class);
 		$generator->sortPageElements(false);
@@ -85,7 +85,7 @@ class Empty_Columns_Remover implements Registerable
 	 * @param $group      Group
 	 * @param $properties Element[]|Property[]
 	 */
-	protected function emptyColumns(Group $group, array $properties)
+	protected function emptyColumns(Group $group, array $properties) : void
 	{
 		if (!$group->iterations) {
 			return;
@@ -185,7 +185,7 @@ class Empty_Columns_Remover implements Registerable
 			}
 		}
 		if (isset($added_elements)) {
-			usort($properties, function(Field $property1, Field $property2) {
+			usort($properties, function(Field $property1, Field $property2) : int {
 				return cmp($property1->hotX(), $property2->hotX());
 			});
 		}
@@ -207,7 +207,7 @@ class Empty_Columns_Remover implements Registerable
 	/**
 	 * @param $elements Element[]
 	 */
-	protected function removeElements(array &$elements)
+	protected function removeElements(array &$elements) : void
 	{
 		foreach (array_keys($this->unset) as $key) {
 			unset($elements[$key]);
@@ -218,7 +218,7 @@ class Empty_Columns_Remover implements Registerable
 	/**
 	 * @call runGroup
 	 */
-	public function run()
+	public function run() : void
 	{
 		foreach ($this->structure->pages as $page) {
 			foreach ($page->groups as $group) {
@@ -231,7 +231,7 @@ class Empty_Columns_Remover implements Registerable
 	/**
 	 * @param $group Group
 	 */
-	protected function runGroup(Group $group)
+	protected function runGroup(Group $group) : void
 	{
 		if (!$group->iterations) {
 			return;
@@ -260,7 +260,7 @@ class Empty_Columns_Remover implements Registerable
 	 * @output $shifts, $widths
 	 * @param $properties Element[]|Property[]
 	 */
-	protected function shiftsWidths(array $properties)
+	protected function shiftsWidths(array $properties) : void
 	{
 		$property = end($this->unset);
 		$column   = key($this->unset);

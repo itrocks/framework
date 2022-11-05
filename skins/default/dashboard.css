@@ -6,8 +6,7 @@ article.dashboard .row {
       border-color: transparent; }
       article.dashboard .row > li.free.ui-droppable-hover {
         background: #ddd; }
-
-.indicator.ui-draggable-dragging:not(.dashboard) {
+article.dashboard label[for="dashboard-property-path"] {
   display: none; }
 
 article.dashboard .free, article.dashboard .indicator,
@@ -54,3 +53,6 @@ article.dashboard .free, article.dashboard .indicator,
 
 #notifications > .drop_on > .dashboard {
   background-image: url("img/dashboard-add-24.svg"); }
+
+.indicator.ui-draggable-dragging:not(.dashboard) {
+  display: none; }

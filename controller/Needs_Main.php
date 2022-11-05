@@ -13,6 +13,6 @@ interface Needs_Main
 	/**
 	 * @param $main_controller Main
 	 */
-	public function setMainController(Main $main_controller);
+	public function setMainController(Main $main_controller) : void;
 
 }

@@ -399,7 +399,7 @@ class Columns implements With_Build_Column
 	 *
 	 * @param $columns Columns
 	 */
-	public function replaceProperties(Columns $columns)
+	public function replaceProperties(Columns $columns) : void
 	{
 		$properties = [];
 		foreach ($this->properties as $key => $property_name) {

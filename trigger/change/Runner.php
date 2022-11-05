@@ -17,7 +17,7 @@ class Runner
 	/**
 	 * Look at logs to know if the 'running' runs are complete. Mark them as 'complete'.
 	 */
-	public function completeRunningRuns()
+	public function completeRunningRuns() : void
 	{
 		foreach (
 			Dao::search(['step' => [Run::PARTIAL, Run::PENDING, Run::RUNNING]], Run::class) as $run
@@ -67,7 +67,7 @@ class Runner
 	 *
 	 * Runs are kept 1 day for debugging purpose. This may change if needed
 	 */
-	public function purgeCompleteRuns()
+	public function purgeCompleteRuns() : void
 	{
 		$search = [
 			'last_update' => Func::less(Date_Time::now()->sub(1)),
@@ -84,7 +84,7 @@ class Runner
 	 *
 	 * If conditions are verified, write actions for execution and mark runs as 'pending'
 	 */
-	public function qualifyAfterRuns()
+	public function qualifyAfterRuns() : void
 	{
 		foreach (Dao::search(['step' => Run::AFTER], Run::class) as $run) {
 			// if after conditions are verified : execute change trigger run actions

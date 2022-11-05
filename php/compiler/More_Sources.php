@@ -44,7 +44,8 @@ class More_Sources
 	public function add(
 		Reflection_Source $source, string $class_name, string $file_name = null,
 		bool $add_to_sources = false
-	) {
+	) : void
+	{
 		$add_key               = ($class_name ?: $file_name);
 		$this->added[$add_key] = $source;
 		if ($add_to_sources) {

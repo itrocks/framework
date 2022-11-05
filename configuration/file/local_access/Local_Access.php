@@ -19,7 +19,7 @@ class Local_Access extends File
 	/**
 	 * @param $local_access string Feature path
 	 */
-	public function add(string $local_access)
+	public function add(string $local_access) : void
 	{
 		$this->lines[] = $local_access;
 		sort($this->lines);
@@ -29,7 +29,7 @@ class Local_Access extends File
 	/**
 	 * Read from file
 	 */
-	public function read()
+	public function read() : void
 	{
 		(new Local_Access\Reader($this))->read();
 	}
@@ -38,7 +38,7 @@ class Local_Access extends File
 	/**
 	 * @param $local_access string Feature path
 	 */
-	public function remove(string $local_access)
+	public function remove(string $local_access) : void
 	{
 		$key = array_search($local_access, $this->lines);
 		if ($key !== false) {
@@ -50,7 +50,7 @@ class Local_Access extends File
 	/**
 	 * Write to file
 	 */
-	public function write()
+	public function write() : void
 	{
 		(new Local_Access\Writer($this))->write();
 	}

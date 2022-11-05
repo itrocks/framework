@@ -540,9 +540,9 @@ abstract class Date
 		}
 		/**
 		 * Notice : We take care to keep computed values as computed even if above limits
-		 * (eg for a month > 12 or < 1) because we'll give result to mktime in order
+		 * (e.g. for a month > 12 or < 1) because we'll give result to mktime in order
 		 * it may change year and/or day accordingly
-		 * eg current month is 12 and formula is m+1 => mktime(0,0,0,20,13,2016) for 20/01/2017
+		 * e.g. current month is 12 and formula is m+1 => mktime(0,0,0,20,13,2016) for 20/01/2017
 		 */
 		$f = [
 			Date_Time::YEAR   => 'Y',
@@ -603,10 +603,10 @@ abstract class Date
 	 * @param $date_part  string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
 	 *                                   Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 */
-	private static function correctDateWildcardExpr(string &$expression, string $date_part)
+	private static function correctDateWildcardExpr(string &$expression, string $date_part) : void
 	{
 		/**
-		 * eg. for a month or day (or hour, minutes, seconds), it's simple since we have 2 chars only
+		 * e.g. for a month or day (or hour, minutes, seconds), it's simple since we have 2 chars only
 		 *
 		 * %% => __
 		 * %  => __
@@ -679,7 +679,7 @@ abstract class Date
 	/**
 	 * @param $date_parts string[]
 	 */
-	private static function fillEmptyPartsWithWildcard(array &$date_parts)
+	private static function fillEmptyPartsWithWildcard(array &$date_parts) : void
 	{
 		foreach ($date_parts as $date_part => $part) {
 			if ($part === '') {
@@ -701,7 +701,8 @@ abstract class Date
 		static $letters;
 		if (!isset($letters)) {
 			$letters = explode('|', Loc::tr('d|m|y') . '|' . Loc::tr('h|m|s'));
-			$ip_up = function($letter) { return isset($letter) ? ($letter . strtoupper($letter)) : ''; };
+			$ip_up = function(?string $letter) { return $letter ? ($letter . strtoupper($letter)) : ''; };
+
 			$letters = [
 				Date_Time::DAY    => 'dD' . $ip_up(($letters[0] !== 'd') ? $letters[0] : null),
 				Date_Time::MONTH  => 'mM' . $ip_up(($letters[1] !== 'm') ? $letters[1] : null),
@@ -725,7 +726,7 @@ abstract class Date
 	 * Note: this is not the complete pattern, you should surround by delimiters
 	 * and add whatever else you want
 	 *
-	 * @param $get_named    boolean true if want named pattern
+	 * @param $get_named    boolean true if you want named pattern
 	 * @param $kind_of_date string|null value of self::KIND_OF_DATE
 	 * @return string
 	 */
@@ -804,7 +805,7 @@ abstract class Date
 				$big_named_pattern_parts[$kind]   = "(?P<" . $kind . ">" . $unnamed_patterns[$kind] . ")";
 				$big_unnamed_pattern_parts[$kind] = "(?:" . $unnamed_patterns[$kind] . ")";
 			}
-			// You wanna debug? copy this regexp : /^ \s* $big_named_pattern \s* $/gmx
+			// You want to debug? copy this regexp : /^ \s* $big_named_pattern \s* $/gmx
 			// into https://regex101.com/ and try your dates
 			$big_named_pattern = "(?: " . LF . TAB . SP . SP
 				. implode(LF . TAB . '| ', $big_named_pattern_parts) . LF . " )";
@@ -948,7 +949,7 @@ abstract class Date
 	 *
 	 * @param $date Date_Time|null
 	 */
-	public static function initDates(Date_Time $date = null)
+	public static function initDates(Date_Time $date = null) : void
 	{
 		if (!isset($date)) {
 			$date = Date_Time::now();
@@ -979,14 +980,14 @@ abstract class Date
 
 	//------------------------------------------------------------------------ isSingleDateExpression
 	/**
-	 * Check if expression if a single date containing a formula
+	 * Check if expression is a single date containing a formula
 	 *
 	 * @param $expression string
 	 * @return boolean
 	 */
 	public static function isSingleDateExpression(string $expression) : bool
 	{
-		// we check if $expr is a single date containing formula
+		// we check if $expr is a single date containing formula,
 		// but it may be a range with 2 dates containing formula, what should return false
 		// so the use of /^ ... $/
 		return self::getKindOfDate($expression);
@@ -1030,7 +1031,7 @@ abstract class Date
 	 *
 	 * @param $date_parts string[]
 	 */
-	private static function padParts(array &$date_parts)
+	private static function padParts(array &$date_parts) : void
 	{
 		foreach ($date_parts as $date_part => &$part) {
 			$length = ($date_part === Date_Time::YEAR) ? 4 : 2;

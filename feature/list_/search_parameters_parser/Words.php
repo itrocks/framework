@@ -53,7 +53,7 @@ abstract class Words
 	 */
 	public static function getCompressedWords(array $words) : array
 	{
-		array_walk($words, function(&$word) {
+		array_walk($words, function(string &$word) {
 			// TODO iconv with //TRANSLIT requires that locale is different than C or Posix. To Do: a better support!!
 			// See: http://php.net/manual/en/function.iconv.php#74101
 			$word = preg_replace('/\s|\'/', '', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $word)));

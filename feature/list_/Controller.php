@@ -24,11 +24,11 @@ use ITRocks\Framework\Dao\Option\Time_Limit;
 use ITRocks\Framework\Error_Handler\Handled_Error;
 use ITRocks\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
 use ITRocks\Framework\Feature\Export;
+use ITRocks\Framework\Feature\History;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Words;
 use ITRocks\Framework\Feature\List_Setting;
 use ITRocks\Framework\Feature\List_Setting\Set;
 use ITRocks\Framework\Feature\Output;
-use ITRocks\Framework\History;
 use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
@@ -141,7 +141,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $data List_Data
 	 */
-	protected function applyGettersToValues(List_Data $data)
+	protected function applyGettersToValues(List_Data $data) : void
 	{
 		$properties             = $data->getProperties();
 		$properties_with_getter = [];
@@ -198,11 +198,12 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $list_settings    Set
 	 * @param $parameters       array
 	 * @param $form             array|null
-	 * @return Set set if parameters did change
+	 * @return ?Set set if parameters did change
 	 */
 	public function applyParametersToListSettings(
 		Set &$list_settings, array $parameters, array $form = null
-	) {
+	) : ?Set
+	{
 		if (isset($form)) {
 			$parameters = array_merge($parameters, $form);
 		}
@@ -365,7 +366,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 
 	//---------------------------------------------------------------------------- forceSetMainObject
 	/**
-	 * Force $parameters' main object to a set of $this->class_names
+	 * Force $parameters main object to a set of $this->class_names
 	 * Replace the already existing Main_Object ($this->mainObject() must be called before this)
 	 *
 	 * @param $parameters Parameters
@@ -705,7 +706,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $properties_path string[]
 	 * @param $group_by        Group_By
 	 */
-	public function groupConcat(array &$properties_path, Group_By $group_by)
+	public function groupConcat(array &$properties_path, Group_By $group_by) : void
 	{
 		foreach ($properties_path as $key => $property_path) {
 			if (!in_array($property_path, $group_by->properties)) {
@@ -722,7 +723,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *
 	 * @param $data List_Data
 	 */
-	private function objectsToString(List_Data $data)
+	private function objectsToString(List_Data $data) : void
 	{
 		$class_properties = [];
 		foreach ($data->getProperties() as $property_path => $property) {
@@ -752,7 +753,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *
 	 * @param $property Reflection_Property
 	 */
-	protected function prepareSearchPropertyComponent(Reflection_Property $property)
+	protected function prepareSearchPropertyComponent(Reflection_Property $property) : void
 	{
 		$type = $property->getType();
 		if ($type->isString() || $type->isMultipleString()) {
@@ -844,6 +845,49 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		return $data;
 	}
 
+	//-------------------------------------------------------------------------------- readDataSelect
+	/**
+	 * @param $class_name      string Class name for the read object
+	 * @param $properties_path string[] the list of the columns names : only those properties
+	 *                         will be read. There are 'column.sub_column' to get values from linked
+	 *                         objects from the same data source
+	 * @param $search          array|object source object for filter, set properties will be used for
+	 *                         search. Can be an array associating properties names to matching
+	 *                         search value too.
+	 * @param $options         Option[] some options for advanced search
+	 * @return List_Data A list of read records. Each record values (it may be objects) are
+	 *         stored in the same order as columns.
+	 */
+	public function readDataSelect(
+		string $class_name, array $properties_path, array|object $search, array $options
+	) : List_Data
+	{
+		return Dao::select($class_name, $properties_path, $search, $options);
+	}
+
+	//-------------------------------------------------------------------------- readDataSelectSearch
+	/**
+	 * @param $class_name      string Class name for the read object
+	 * @param $properties_path string[] the list of the columns names : only those properties
+	 *                         will be read. There are 'column.sub_column' to get values from linked
+	 *                         objects from the same data source
+	 * @param $search          array Search array for filter, associating properties names to
+	 *                         matching search value too.
+	 * @param $options         Option[] some options for advanced search
+	 * @return List_Data A list of read records. Each record values (it may be objects) are
+	 *         stored in the same order as columns.
+	 */
+	public function readDataSelectSearch(
+		string $class_name, array $properties_path, array $search, array $options
+	) : List_Data
+	{
+		$options[] = Dao::translate();
+		if ($filters = Filter_Annotation::apply($class_name, $options, Filter_Annotation::FOR_VIEW)) {
+			$search = $search ? Func::andOp([$filters, $search]) : $filters;
+		}
+		return $this->readDataSelect($class_name, $properties_path, $search, $options);
+	}
+
 	//------------------------------------------------------------------------ readFootPropertyValues
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
@@ -894,49 +938,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			}
 		}
 		return $foot_property_values;
-	}
-
-	//-------------------------------------------------------------------------------- readDataSelect
-	/**
-	 * @param $class_name      string Class name for the read object
-	 * @param $properties_path string[] the list of the columns names : only those properties
-	 *                         will be read. There are 'column.sub_column' to get values from linked
-	 *                         objects from the same data source
-	 * @param $search          array|object source object for filter, set properties will be used for
-	 *                         search. Can be an array associating properties names to matching
-	 *                         search value too.
-	 * @param $options         Option[] some options for advanced search
-	 * @return List_Data A list of read records. Each record values (may be objects) are
-	 *         stored in the same order than columns.
-	 */
-	public function readDataSelect(
-		string $class_name, array $properties_path, array|object $search, array $options)
-	: List_Data
-	{
-		return Dao::select($class_name, $properties_path, $search, $options);
-	}
-
-	//-------------------------------------------------------------------------- readDataSelectSearch
-	/**
-	 * @param $class_name      string Class name for the read object
-	 * @param $properties_path string[] the list of the columns names : only those properties
-	 *                         will be read. There are 'column.sub_column' to get values from linked
-	 *                         objects from the same data source
-	 * @param $search          array Search array for filter, associating properties names to
-	 *                         matching search value too.
-	 * @param $options         Option[] some options for advanced search
-	 * @return List_Data A list of read records. Each record values (may be objects) are
-	 *         stored in the same order than columns.
-	 */
-	public function readDataSelectSearch(
-		string $class_name, array $properties_path, array $search, array $options
-	) : List_Data
-	{
-		$options[] = Dao::translate();
-		if ($filters = Filter_Annotation::apply($class_name, $options, Filter_Annotation::FOR_VIEW)) {
-			$search = $search ? Func::andOp([$filters, $search]) : $filters;
-		}
-		return $this->readDataSelect($class_name, $properties_path, $search, $options);
 	}
 
 	//----------------------------------------------------------------------------------- readObjects
@@ -1028,7 +1029,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *
 	 * @param $exception Exception
 	 */
-	protected function reportError(Exception $exception)
+	protected function reportError(Exception $exception) : void
 	{
 		if (
 			($exception instanceof Mysql_Error_Exception)
@@ -1203,7 +1204,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $print_button  Button
 	 * @param $print_buttons Button[]
 	 */
-	protected function selectPrintButton(Button $print_button, array $print_buttons)
+	protected function selectPrintButton(Button $print_button, array $print_buttons) : void
 	{
 		if (!$print_buttons) {
 			return;

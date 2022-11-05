@@ -35,14 +35,14 @@ class Encoder_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------- testConstructor
-	public function testConstructor()
+	public function testConstructor() : void
 	{
 		$encoder = new Encoder($this->email);
 		static::assertEquals($encoder->email, $this->email);
 	}
 
 	//----------------------------------------------------------------------------- testCreateMessage
-	public function testCreateMessage()
+	public function testCreateMessage() : void
 	{
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toMessage();
@@ -50,7 +50,7 @@ class Encoder_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------- testEmbedImages
-	public function testEmbedImages()
+	public function testEmbedImages() : void
 	{
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toMessage();
@@ -66,7 +66,7 @@ class Encoder_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------- testEmptyHeader
-	public function testEmptyHeader()
+	public function testEmptyHeader() : void
 	{
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toMessage();
@@ -77,7 +77,7 @@ class Encoder_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------- testNoBccHeader
-	public function testNoBccHeader()
+	public function testNoBccHeader() : void
 	{
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toMessage();
@@ -88,7 +88,7 @@ class Encoder_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------- testNoCcHeader
-	public function testNoCcHeader()
+	public function testNoCcHeader() : void
 	{
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toMessage();
@@ -99,7 +99,7 @@ class Encoder_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------- testNoToHeader
-	public function testNoToHeader()
+	public function testNoToHeader() : void
 	{
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toMessage();
@@ -110,7 +110,7 @@ class Encoder_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------- testSingleBccHeader
-	public function testSingleBccHeader()
+	public function testSingleBccHeader() : void
 	{
 		$this->email->blind_copy_to = [new Recipient('foo@example.org', 'Foo Bar')];
 		$encoder = new Encoder($this->email);
@@ -123,7 +123,7 @@ class Encoder_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------- testSingleCcHeader
-	public function testSingleCcHeader()
+	public function testSingleCcHeader() : void
 	{
 		$this->email->copy_to = [new Recipient('foo@example.org', 'Foo Bar')];
 		$encoder = new Encoder($this->email);
@@ -136,7 +136,7 @@ class Encoder_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------- testSingleFromHeader
-	public function testSingleFromHeader()
+	public function testSingleFromHeader() : void
 	{
 		$this->email->from = new Recipient('foo@example.org', 'Foo Bar');
 		$encoder = new Encoder($this->email);
@@ -149,7 +149,7 @@ class Encoder_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------- testSingleToHeader
-	public function testSingleToHeader()
+	public function testSingleToHeader() : void
 	{
 		$this->email->to = [new Recipient('foo@example.org', 'Foo Bar')];
 		$encoder = new Encoder($this->email);

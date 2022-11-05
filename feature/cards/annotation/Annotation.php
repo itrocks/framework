@@ -61,7 +61,7 @@ abstract class Annotation extends List_Annotation implements Class_Context_Annot
 	 * @param $property_name string property name or path
 	 * @param $rules_string  string the rule described into a string
 	 */
-	protected function addRule(string $property_name, string $rules_string)
+	protected function addRule(string $property_name, string $rules_string) : void
 	{
 		$this->rules[$property_name] = $rules_string;
 	}

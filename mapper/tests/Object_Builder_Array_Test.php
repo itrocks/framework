@@ -30,7 +30,7 @@ class Object_Builder_Array_Test extends Test
 	/**
 	 * Flush DAO cache (if the plugin is enabled)
 	 */
-	protected function flushCache()
+	protected function flushCache() : void
 	{
 		/** @var $cache Cache::class */
 		$cache = Session::current()->plugins->get(Cache::class);
@@ -40,12 +40,12 @@ class Object_Builder_Array_Test extends Test
 	}
 
 	//---------------------------------------------------------------- testExistingComponentSubObject
-
 	/**
 	 * What if we build an existing composite with its component sub-object
+	 *
 	 * @throws User_Error_Exception
 	 */
-	public function testExistingComponentSubObject()
+	public function testExistingComponentSubObject() : void
 	{
 		$composite            = new Composite('Composite object');
 		$composite->component = new Component('Component object');
@@ -70,12 +70,12 @@ class Object_Builder_Array_Test extends Test
 	}
 
 	//------------------------------------------------------------------------- testExistingSubObject
-
 	/**
 	 * What if we build an existing object and existing sub-objects
+	 *
 	 * @throws User_Error_Exception
 	 */
-	public function testExistingSubObject()
+	public function testExistingSubObject() : void
 	{
 		$object                   = new Resource('Hello world');
 		$object->mandatory_object = new Salesman('Mandatory object');
@@ -104,12 +104,12 @@ class Object_Builder_Array_Test extends Test
 	}
 
 	//--------------------------------------------------------------------- testExistingSubObjectData
-
 	/**
 	 * What if we build an existing object and data from sub-objects
+	 *
 	 * @throws User_Error_Exception
 	 */
-	public function testExistingSubObjectData()
+	public function testExistingSubObjectData() : void
 	{
 		$object                   = new Resource('Hello world');
 		$object->mandatory_object = new Salesman('Mandatory object');
@@ -141,12 +141,12 @@ class Object_Builder_Array_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------ testNewSubObject
-
 	/**
 	 * The form contains data for a new mandatory or optional sub-object
+	 *
 	 * @throws User_Error_Exception
 	 */
-	public function testNewSubObject()
+	public function testNewSubObject() : void
 	{
 		$object                   = new Resource('Hello world');
 		$object->mandatory_object = new Resource('Mandatory object');
@@ -169,12 +169,12 @@ class Object_Builder_Array_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------- testNewSubObjectData
-
 	/**
 	 * The form contains data for a new mandatory or optional sub-object
+	 *
 	 * @throws User_Error_Exception
 	 */
-	public function testNewSubObjectData()
+	public function testNewSubObjectData() : void
 	{
 		$object                   = new Resource('Hello world');
 		$object->mandatory_object = new Salesman('Mandatory object');
@@ -200,12 +200,12 @@ class Object_Builder_Array_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------ testSimple
-
 	/**
 	 * A simple test : will a form build a salesman ?
+	 *
 	 * @throws User_Error_Exception
 	 */
-	public function testSimple()
+	public function testSimple() : void
 	{
 		$salesman       = new Salesman();
 		$salesman->name = 'Hello World';

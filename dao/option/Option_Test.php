@@ -30,7 +30,7 @@ class Option_Test extends Test
 	 * @dataProvider onlyProvider
 	 * @param $only  Only
 	 */
-	public function testOnly(Only $only)
+	public function testOnly(Only $only) : void
 	{
 		$assume             = Dao::only([]);
 		$assume->properties = ['one', 'two', 'three', 'four'];

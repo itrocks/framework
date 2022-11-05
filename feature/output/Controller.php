@@ -48,7 +48,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	/**
 	 * @param $buttons Button[]
 	 */
-	protected function alignButtons(array &$buttons)
+	protected function alignButtons(array &$buttons) : void
 	{
 		$found = [Align::LEFT => true, Align::CENTER => false, Align::RIGHT => false];
 		$more  = [Align::LEFT => [],   Align::CENTER => [],    Align::RIGHT => []];
@@ -75,7 +75,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $output_settings Output_Setting\Set
 	 */
-	protected function applyOutputSettings(Output_Setting\Set $output_settings)
+	protected function applyOutputSettings(Output_Setting\Set $output_settings) : void
 	{
 		if ($output_settings->properties) {
 			foreach ($output_settings->properties as $property_path => $property) {
@@ -93,7 +93,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 				$property->tooltip
 					? $user_annotation->add(User_Annotation::TOOLTIP)
 					: $user_annotation->remove(User_Annotation::TOOLTIP);
-				if (!is_null($property->tab_name)) {
+				if ($property->tab_name) {
 					$group_annotation = $reflection_property->getAnnotation(Group_Annotation::ANNOTATION);
 					$group_annotation->value = $property->tab_name;
 				}
@@ -442,7 +442,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @param $properties_filter string[]
 	 * @param $only              string[]
 	 */
-	protected function onlyProperties(object $object, array &$properties_filter, array $only)
+	protected function onlyProperties(object $object, array &$properties_filter, array $only) : void
 	{
 		$auto = [];
 		foreach ($only as $key => $property_name) {
@@ -472,6 +472,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @param $properties        Reflection_Property[]
 	 */
 	public function onlyPropertiesAuto(array &$properties_filter, array $auto, array $properties)
+		: void
 	{
 		if (!isset($auto['@modifiable'])) {
 			return;
@@ -561,7 +562,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @param $print_button  Button
 	 * @param $print_buttons Button[]
 	 */
-	protected function selectPrintButton(Button $print_button, array $print_buttons)
+	protected function selectPrintButton(Button $print_button, array $print_buttons) : void
 	{
 		if (!$print_buttons) {
 			return;

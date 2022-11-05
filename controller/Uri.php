@@ -24,7 +24,7 @@ class Uri
 	/**
 	 * The feature name (last text in the URI, ie 'output' for URI = '/Order/3/output')
 	 *
-	 * @var string
+	 * @var ?string
 	 */
 	public ?string $feature_name;
 
@@ -74,11 +74,11 @@ class Uri
 	/**
 	 * @return string current URI string
 	 */
-	public static function current()
+	public static function current() : string
 	{
 		return isset($_SERVER['REQUEST_URI']) ?
 			rParse($_SERVER['REQUEST_URI'], Paths::$uri_base)
-			: null;
+			: '';
 	}
 
 	//----------------------------------------------------------------------------------- isClassName
@@ -99,7 +99,7 @@ class Uri
 	 *
 	 * @param $get string[]
 	 */
-	private function parseGet(array $get)
+	private function parseGet(array $get) : void
 	{
 		foreach ($get as $key => $value) {
 			if (is_numeric($key)) {
@@ -119,7 +119,7 @@ class Uri
 	 * @example $uri = ['order', 148, 'form') will result on controller 'Order_Form' with parameter 'Order' = 148
 	 * @param $uri string[]
 	 */
-	private function parseUri(array $uri)
+	private function parseUri(array $uri) : void
 	{
 		// get main object = controller name
 		$key                = 0;
@@ -220,7 +220,7 @@ class Uri
 	}
 
 	//----------------------------------------------------------------------------------- setDefaults
-	private function setDefaults()
+	private function setDefaults() : void
 	{
 		if (!$this->controller_name && !$this->feature_name) {
 			$this->controller_name = get_class(Application::current());

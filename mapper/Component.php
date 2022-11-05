@@ -33,7 +33,7 @@ trait Component
 	 * @param $class_name    object|string|null The composite class name or object
 	 * @param $property_name string|null The composite property name
 	 */
-	public function dispose(object|string $class_name = null, string $property_name = null)
+	public function dispose(object|string $class_name = null, string $property_name = null) : void
 	{
 		foreach (self::getCompositeProperties($class_name, $property_name) as $property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property from $this must be accessible */
@@ -124,11 +124,11 @@ trait Component
 	 *
 	 * @param $class_name    object|string|null The composite class name or object
 	 * @param $property_name string|null The composite property name
-	 * @return Reflection_Property
+	 * @return ?Reflection_Property
 	 */
 	public static function getCompositeProperty(
 		object|string $class_name = null, string $property_name = null
-	) : Reflection_Property
+	) : ?Reflection_Property
 	{
 		$properties = self::getCompositeProperties($class_name, $property_name);
 		return reset($properties);
@@ -141,7 +141,7 @@ trait Component
 	 * @param $object        object The composite object
 	 * @param $property_name string|null The composite property name (needed if multiple)
 	 */
-	public function setComposite(object $object, string $property_name = null)
+	public function setComposite(object $object, string $property_name = null) : void
 	{
 		foreach (self::getCompositeProperties($object, $property_name) as $property) {
 			$property->setValue($this, $object);

@@ -15,7 +15,7 @@ abstract class AOP
 	 *
 	 * @param $object object
 	 */
-	public static function propertiesOff(object $object)
+	public static function propertiesOff(object $object) : void
 	{
 		if (isset($object->_)) {
 			$object->_AOP_off = $object->_;
@@ -31,7 +31,7 @@ abstract class AOP
 	 *
 	 * @param $object object
 	 */
-	public static function propertiesOn(object $object)
+	public static function propertiesOn(object $object) : void
 	{
 		if (isset($object->_AOP_off)) {
 			$object->_ = $object->_AOP_off;

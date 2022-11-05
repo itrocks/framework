@@ -246,7 +246,8 @@ class Class_Builder
 	 */
 	protected function buildClassSource(
 		/* @noinspection PhpUnusedParameterInspection */ string $class_name, string $source
-	) {
+	) : void
+	{
 		eval($source);
 	}
 
@@ -310,7 +311,7 @@ class Class_Builder
 	 * @return string ie 'ITRocks\Framework\Module\Class_Name'
 	 * @see Class_Builder::builtClassName()
 	 */
-	public static function sourceClassName(string $class_name)
+	public static function sourceClassName(string $class_name) : string
 	{
 		if (!static::isBuilt($class_name)) {
 			return $class_name;

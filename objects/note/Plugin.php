@@ -32,7 +32,7 @@ class Plugin implements Registerable
 	 * @param $object object
 	 * @param $result Button[]
 	 */
-	public function addNotesButton(object $object, array &$result)
+	public function addNotesButton(object $object, array &$result) : void
 	{
 		if (!Dao::getObjectIdentifier($object) || isset($result[static::FEATURE])) {
 			return;

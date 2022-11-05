@@ -43,7 +43,7 @@ class Writer extends File\Writer
 	 * - Use $file's $class_type, $class_name, $class_extends and $class_implements property values
 	 * - Limit to the MAX_LINE_LENGTH characters limit
 	 */
-	protected function writeClassPrototype()
+	protected function writeClassPrototype() : void
 	{
 		$class_prototype = ($this->file->class_abstract ? 'abstract ' : '')
 			. $this->file->class_type . SP
@@ -92,7 +92,7 @@ class Writer extends File\Writer
 	}
 
 	//--------------------------------------------------------------------------------- writeClassUse
-	protected function writeClassUse()
+	protected function writeClassUse() : void
 	{
 		foreach ($this->file->class_use as $class_use) {
 			if (is_object($class_use)) {
@@ -110,7 +110,7 @@ class Writer extends File\Writer
 	/**
 	 * Write builder configuration to lines
 	 */
-	protected function writeConfiguration()
+	protected function writeConfiguration() : void
 	{
 		$this->writeClassPrototype();
 		$this->writeClassUse();

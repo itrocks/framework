@@ -95,7 +95,7 @@ class Cache implements Configurable, Registerable
 	 * @param $object object
 	 * @param $link   Mysql\Link|null
 	 */
-	public function add(object $object, Mysql\Link $link = null)
+	public function add(object $object, Mysql\Link $link = null) : void
 	{
 		if (!$this->enabled) {
 			return;
@@ -118,7 +118,7 @@ class Cache implements Configurable, Registerable
 	 *
 	 * @param $joinpoint After_Method
 	 */
-	public function cacheReadObject(After_Method $joinpoint)
+	public function cacheReadObject(After_Method $joinpoint) : void
 	{
 		if (!$this->enabled) {
 			return;
@@ -139,7 +139,7 @@ class Cache implements Configurable, Registerable
 	 */
 	public function cacheWriteObject(
 		object $object, array|Option $options, After_Method $joinpoint
-	) {
+	) : void {
 		if ($options || !$this->enabled) {
 			return;
 		}
@@ -164,7 +164,7 @@ class Cache implements Configurable, Registerable
 	/**
 	 * Flush cache
 	 */
-	public function flush()
+	public function flush() : void
 	{
 		if (isset($GLOBALS['D'])) echo 'CACHE purge' . BRLF;
 		$this->cache = [];
@@ -195,7 +195,7 @@ class Cache implements Configurable, Registerable
 	/**
 	 * Purge removes ::$purge old objects from the cache
 	 */
-	private function purge()
+	private function purge() : void
 	{
 		$counter = 0;
 		$format  = '%0' . strlen($this->maximum) . 's';
@@ -240,7 +240,7 @@ class Cache implements Configurable, Registerable
 	 * @param $class_name string
 	 * @param $identifier integer
 	 */
-	public function remove(string $class_name, int $identifier)
+	public function remove(string $class_name, int $identifier) : void
 	{
 		$class_name = Builder::className($class_name);
 		if (isset($this->cache[$class_name][$identifier])) {
@@ -258,7 +258,7 @@ class Cache implements Configurable, Registerable
 	 * @param $object    object
 	 * @param $joinpoint After_Method
 	 */
-	public function removeObject(object $object, After_Method $joinpoint)
+	public function removeObject(object $object, After_Method $joinpoint) : void
 	{
 		/** @var $link Mysql\Link */
 		$link = $joinpoint->object;
@@ -273,7 +273,7 @@ class Cache implements Configurable, Registerable
 	 *
 	 * @param $uri Uri
 	 */
-	public function toggleCacheActivation(Uri $uri)
+	public function toggleCacheActivation(Uri $uri) : void
 	{
 		$feature = $uri->feature_name;
 		if (

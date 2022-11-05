@@ -13,7 +13,8 @@ error_reporting(E_ALL);
 
 chdir(__DIR__ . '/../..');
 
-function iniSetErrorLog()
+//---------------------------------------------------------------------------------- iniSetErrorLog
+function iniSetErrorLog() : void
 {
 	if (!file_exists('loc.php')) {
 		return;

@@ -110,7 +110,7 @@ class Console
 	/**
 	 * Called after execution ends : remove running file and process info
 	 */
-	public function end()
+	public function end() : void
 	{
 		/** @noinspection PhpUsageOfSilenceOperatorInspection No warning if removed by someone else */
 		@unlink($this->runningFileName());
@@ -149,7 +149,7 @@ class Console
 	 * Parse arguments and change them to $_COOKIE / $_FILES / $_GET / $_POST / $_REQUEST / $_SERVER
 	 * values
 	 */
-	private function parseArguments()
+	private function parseArguments() : void
 	{
 		/** @noinspection PhpArrayWriteIsNotUsedInspection Of course it is */
 		$_GET = ['as_widget' => true];
@@ -214,7 +214,7 @@ class Console
 	/**
 	 * Prepare execution context
 	 */
-	private function prepareExecutionContext()
+	private function prepareExecutionContext() : void
 	{
 		$_SERVER['HTTPS']       = true;
 		$_SERVER['PATH_INFO']   = $this->uri;
@@ -242,7 +242,7 @@ class Console
 	/**
 	 * Purge proc information about pid that are not running anymore
 	 */
-	private function procInfoPurge()
+	private function procInfoPurge() : void
 	{
 		$path = $this->procPath();
 		exec('ps -aux | awk \'{print $2}\'', $running_processes);
@@ -258,7 +258,7 @@ class Console
 	 * @param $pid  integer|null
 	 * @param $path string|null
 	 */
-	private function procInfoPurgeProc(int $pid = null, string $path = null)
+	private function procInfoPurgeProc(int $pid = null, string $path = null) : void
 	{
 		if (!$path) {
 			$path = $this->procPath();
@@ -282,7 +282,7 @@ class Console
 	}
 
 	//--------------------------------------------------------------------------------- procInfoWrite
-	private function procInfoWrite()
+	private function procInfoWrite() : void
 	{
 		$cwd  = getcwd();
 		$path = $this->procPath();
@@ -343,7 +343,7 @@ class Console
 	}
 
 	//------------------------------------------------------------------------------ storeRunningFile
-	private function storeRunningFile()
+	private function storeRunningFile() : void
 	{
 		$running_filename = $this->runningFileName();
 		touch($running_filename);
@@ -370,7 +370,7 @@ class Console
 	}
 
 	//--------------------------------------------------------------------------------- waitForUnlock
-	private function waitForUnlock()
+	private function waitForUnlock() : void
 	{
 		while (is_file('lock-console')) {
 			usleep(100000);

@@ -44,7 +44,7 @@ class Exhaustive
 	/**
 	 * @param $block Block
 	 */
-	public function addBlock(Block $block)
+	public function addBlock(Block $block) : void
 	{
 		// get menu blocks
 		$blocks     = [];
@@ -88,7 +88,7 @@ class Exhaustive
 	 * @param $block Block
 	 * @param $item  Item
 	 */
-	public function addItem(Block $block, Item $item)
+	public function addItem(Block $block, Item $item) : void
 	{
 		// get menu items
 		$first_items = [];

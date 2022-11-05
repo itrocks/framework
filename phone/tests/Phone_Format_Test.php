@@ -21,7 +21,7 @@ class Phone_Format_Test extends Test
 	}
 
 	//------------------------------------------------------------ testGetCountryCodeWithDefaultClass
-	public function testGetCountryCodeWithDefaultClass()
+	public function testGetCountryCodeWithDefaultClass() : void
 	{
 		$phone_format = new Phone_Format();
 
@@ -33,7 +33,7 @@ class Phone_Format_Test extends Test
 	}
 
 	//-------------------------------------------------------------- testGetCountryCodeWithReturnNull
-	public function testGetCountryCodeWithReturnNull()
+	public function testGetCountryCodeWithReturnNull() : void
 	{
 		$phone_format = new Phone_Format();
 
@@ -52,7 +52,7 @@ class Phone_Format_Test extends Test
 	 * @param $expected     boolean
 	 * @throws Phone_Number_Exception
 	 */
-	public function testIsValid(string $phone_number, string $country_code, bool $expected)
+	public function testIsValid(string $phone_number, string $country_code, bool $expected) : void
 	{
 		$phone_format = new Phone_Format();
 

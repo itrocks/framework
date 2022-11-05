@@ -116,7 +116,7 @@ class IP implements Configurable, Registerable
 	/**
 	 * @param $uri string
 	 */
-	public function checkAccess(string &$uri)
+	public function checkAccess(string &$uri) : void
 	{
 		$ok = true;
 		foreach ($this->uris as $group_name => $uris) {

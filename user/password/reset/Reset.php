@@ -73,7 +73,7 @@ trait Reset
 	/**
 	 * Use the password data to reset password
 	 */
-	public function reset()
+	public function reset() : void
 	{
 		if (!($this->login && $this->password && $this->password2)) {
 			return;
@@ -97,7 +97,7 @@ trait Reset
 	/**
 	 * @param $user User
 	 */
-	public function resetUser(User $user)
+	public function resetUser(User $user) : void
 	{
 		if (!$user->email) {
 			return;
@@ -114,7 +114,7 @@ trait Reset
 	/**
 	 * @param $email Email
 	 */
-	protected function sendEmail(Email $email)
+	protected function sendEmail(Email $email) : void
 	{
 		if ($sender = (Smtp::get(false) ?: File::get(false))) {
 			$sender->send($email);

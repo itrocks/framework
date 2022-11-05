@@ -24,7 +24,7 @@ trait Has_Identifier
 	/**
 	 * Set identifier unique
 	 */
-	public function uniqueIdentifier()
+	public function uniqueIdentifier() : void
 	{
 		if (!isset($this->identifier)) {
 			return;

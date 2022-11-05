@@ -109,7 +109,7 @@ class Type
 	/**
 	 * Init the $extensions_types static property (if not already done)
 	 */
-	private static function initExtensionsTypes()
+	private static function initExtensionsTypes() : void
 	{
 		if (isset(self::$extensions_types)) {
 			return;

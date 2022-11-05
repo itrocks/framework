@@ -21,7 +21,7 @@ abstract class Identifier_Map extends Data_Link
 	/**
 	 * clear() can't be done with current implementation, as each id is stored into the object itself
 	 */
-	protected function clear()
+	protected function clear() : void
 	{}
 
 	//------------------------------------------------------------------------------------ disconnect
@@ -33,7 +33,7 @@ abstract class Identifier_Map extends Data_Link
 	 * @param $load_linked_objects boolean if true, load linked objects before disconnect
 	 * @see Data_Link::disconnect()
 	 */
-	public function disconnect(object $object, bool $load_linked_objects = false)
+	public function disconnect(object $object, bool $load_linked_objects = false) : void
 	{
 		// disconnect component objects, including collection elements
 		/** @noinspection PhpUnhandledExceptionInspection $object is an object */

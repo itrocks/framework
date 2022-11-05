@@ -181,7 +181,7 @@ class Compiler extends Cache
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $serialized array
 	 */
-	public function __unserialize(array $serialized)
+	public function __unserialize(array $serialized) : void
 	{
 		$this->compilers = [];
 		foreach ($serialized as $wave_number => $compilers) {
@@ -199,7 +199,7 @@ class Compiler extends Cache
 	/**
 	 * @param $compiler ICompiler
 	 */
-	public function addCompiler(ICompiler $compiler)
+	public function addCompiler(ICompiler $compiler) : void
 	{
 		$this->compilers[] = $compiler;
 	}
@@ -208,7 +208,7 @@ class Compiler extends Cache
 	/**
 	 * @param $class_name string
 	 */
-	protected function addMoreDependentSources(string $class_name)
+	protected function addMoreDependentSources(string $class_name) : void
 	{
 		$more_sources = new More_Sources($this->more_sources);
 		// add removed class descendants
@@ -229,7 +229,7 @@ class Compiler extends Cache
 	/**
 	 * @param $compilers ICompiler[] ICompiler[string $class_name]
 	 */
-	private function addMoreSources(array $compilers)
+	private function addMoreSources(array $compilers) : void
 	{
 		do {
 			$more_sources = new More_Sources($this->sources);
@@ -269,7 +269,7 @@ class Compiler extends Cache
 	 *
 	 * @param $source Reflection_Source
 	 */
-	public function addSource(Reflection_Source $source)
+	public function addSource(Reflection_Source $source) : void
 	{
 		/** @var Reflection_Source[] $new_sources_to_compile */
 		if (!isset($source->file_name)) {
@@ -347,7 +347,7 @@ class Compiler extends Cache
 	/**
 	 * @param $last_time integer compile only files modified since this time
 	 */
-	public function compile(int $last_time = 0)
+	public function compile(int $last_time = 0) : void
 	{
 		$this->text_output->log('<h1>Starting ' . ($this->full ? 'full' : '') . ' compile</h1>');
 		upgradeTimeLimit(900);
@@ -399,6 +399,7 @@ class Compiler extends Cache
 	 * @param $cache_dir      string
 	 */
 	private function compileSource(Reflection_Source $source, int $compilers_stop, string $cache_dir)
+		: void
 	{
 		$source->refuseCompiledSource();
 		$class_name = $source->getFirstClassName();
@@ -454,7 +455,7 @@ class Compiler extends Cache
 	 * @param $compilers_stop integer
 	 * @param $cache_dir string
 	 */
-	private function compileSources(int $compilers_stop, string $cache_dir)
+	private function compileSources(int $compilers_stop, string $cache_dir) : void
 	{
 		$this->sortSourcesByParentsCount();
 		$counter = 0;
@@ -531,7 +532,7 @@ class Compiler extends Cache
 	 * Remove dependencies for files that where deleted.
 	 * If ?Z, reset the whole dependencies storage
 	 */
-	private function removeOldDependencies()
+	private function removeOldDependencies() : void
 	{
 		$this->text_output->log('removeOldDependencies... ',false);
 		Dao::createStorage(Dependency::class);
@@ -566,7 +567,7 @@ class Compiler extends Cache
 	/**
 	 * @param $source Reflection_Source
 	 */
-	private function replaceDependencies(Reflection_Source $source)
+	private function replaceDependencies(Reflection_Source $source) : void
 	{
 		$dependencies = $source->getDependencies(true);
 		foreach ($dependencies as $dependency) {
@@ -599,7 +600,7 @@ class Compiler extends Cache
 	 *
 	 * @param $sources Reflection_Source[]
 	 */
-	private function replaceDependenciesForSources(array $sources)
+	private function replaceDependenciesForSources(array $sources) : void
 	{
 		$counter = 0;
 		$total   = count($sources);
@@ -613,7 +614,7 @@ class Compiler extends Cache
 	/**
 	 * @param $main_controller Main
 	 */
-	public function setMainController(Main $main_controller)
+	public function setMainController(Main $main_controller) : void
 	{
 		$this->main_controller = $main_controller;
 	}
@@ -625,7 +626,7 @@ class Compiler extends Cache
 	 * - next the classes with 1 parent
 	 * - and so on...
 	 */
-	private function sortSourcesByParentsCount()
+	private function sortSourcesByParentsCount() : void
 	{
 		$by_parents_count = [];
 		foreach ($this->sources as $source_class_name => $source) {
@@ -691,7 +692,7 @@ class Compiler extends Cache
 	/**
 	 * @param $last_time integer
 	 */
-	public function update(int $last_time = 0)
+	public function update(int $last_time = 0) : void
 	{
 		if (isset($_GET['Z']) && isset($_POST['Z'])) {
 			$last_active            = Include_Filter::$active;

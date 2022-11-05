@@ -220,7 +220,7 @@ class Default_List_Row implements List_Row
 	 * @param $property string the path of the property
 	 * @param $value    mixed the new value
 	 */
-	public function setValue(string $property, mixed $value)
+	public function setValue(string $property, mixed $value) : void
 	{
 		$this->values[$property] = $value;
 	}

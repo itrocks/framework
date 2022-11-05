@@ -18,12 +18,12 @@ class File_Export
 	//------------------------------------------------------------------------------ exportLogEntries
 	/**
 	 * This download uses 'echo' instead of returns because big files may be generated, and should
-	 * not entirely loaded into memory.
+	 * not entirely be loaded into memory.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $log_entries Entry[]
 	 */
-	public function exportLogEntries(array $log_entries)
+	public function exportLogEntries(array $log_entries) : void
 	{
 		Files::downloadOutput('log-entries.log', 'text/plain');
 

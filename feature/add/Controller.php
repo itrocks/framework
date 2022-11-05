@@ -86,7 +86,7 @@ class Controller extends Edit\Controller
 	 * @param $object     object
 	 * @param $properties Reflection_Property[]
 	 */
-	protected function initializeSubObjects(object $object, array $properties)
+	protected function initializeSubObjects(object $object, array $properties) : void
 	{
 		foreach ($properties as $property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property->getValue($object) */
@@ -108,13 +108,13 @@ class Controller extends Edit\Controller
 	 * to the add controller.
 	 *
 	 * Your controller may override it to make its own initialization in addition or in replacement of
-	 * those ones.
+	 * those.
 	 *
 	 * @param $object     object The added object (new / empty)
 	 * @param $objects    array  The values that where sent as parameters to the add controller
 	 * @param $properties Reflection_Property[] The properties of $object (all are accessible here)
 	 */
-	protected function initializeValues(object $object, array $objects, array $properties)
+	protected function initializeValues(object $object, array $objects, array $properties) : void
 	{
 		foreach (array_slice($objects, 1) as $property_name => $value) {
 			// the previous object was the name of a property : the value is the matching object

@@ -29,7 +29,7 @@ abstract class Additional_Annotations
 	 *
 	 * Saves a cached default_annotations.php file with standard and additional annotations
 	 */
-	public static function enableAdditionalAnnotations()
+	public static function enableAdditionalAnnotations() : void
 	{
 		$cached_annotations_file = Application::getCacheDir() . SL . 'default_annotations.php';
 		if (self::$additional_annotations) {
@@ -60,7 +60,7 @@ abstract class Additional_Annotations
 	/**
 	 * Register a shutdown function to enable additional annotations save-to-cache
 	 */
-	private static function registerShutdownFunction()
+	private static function registerShutdownFunction() : void
 	{
 		if (!self::$shutdown_function_registered) {
 			register_shutdown_function([self::class, 'enableAdditionalAnnotations']);
@@ -78,7 +78,8 @@ abstract class Additional_Annotations
 	 */
 	public static function setAnnotation(
 		string $context, string $annotation_name, string $annotation_class
-	) {
+	) : void
+	{
 		// register the shutdown function
 		self::registerShutdownFunction();
 		// add annotation
@@ -88,12 +89,12 @@ abstract class Additional_Annotations
 	//-------------------------------------------------------------------------------- setAnnotations
 	/**
 	 * Defines multiple annotations classes
-	 * A very little bit faster than multiple calls to setAnnotation()
+	 * A very bit faster than multiple calls to setAnnotation()
 	 *
 	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_PROPERTY
 	 * @param $annotations_classes string[] key is the annotation name, value is the annotation class
 	 */
-	public static function setAnnotations(string $context, array $annotations_classes)
+	public static function setAnnotations(string $context, array $annotations_classes) : void
 	{
 		// register the shutdown function
 		self::registerShutdownFunction();

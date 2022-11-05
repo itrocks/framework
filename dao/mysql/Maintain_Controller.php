@@ -167,7 +167,7 @@ class Maintain_Controller implements Feature_Controller
 	 * @param $classes    Reflection_Class[]
 	 * @param $simulation boolean
 	 */
-	protected function updateAllTables(array $classes, bool $simulation)
+	protected function updateAllTables(array $classes, bool $simulation) : void
 	{
 		foreach ($classes as $class) {
 			$class_name          = $class->name;

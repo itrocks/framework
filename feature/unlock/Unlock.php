@@ -46,6 +46,7 @@ class Unlock implements Registerable
 	 * @param $joinpoint After_Method
 	 */
 	public function afterOutputControllerGetGeneralButtons(object $object, After_Method $joinpoint)
+		: void
 	{
 		$buttons =& $joinpoint->result;
 		if (

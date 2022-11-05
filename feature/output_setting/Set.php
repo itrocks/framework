@@ -80,6 +80,7 @@ class Set extends Setting\Custom\Set
 	 * @param $where_action string
 	 */
 	public function addAction(Button $button, string $where = self::AFTER, string $where_action = '')
+		: void
 	{
 		$actions   = [];
 		$done      = false;
@@ -213,7 +214,7 @@ class Set extends Setting\Custom\Set
 	/**
 	 * TODO NORMAL in-tabs management
 	 */
-	protected function initTab()
+	protected function initTab() : void
 	{
 		if (isset($this->tab)) {
 			return;
@@ -230,7 +231,7 @@ class Set extends Setting\Custom\Set
 	 * @param $property_path string
 	 * @param $hide_empty    boolean
 	 */
-	public function propertyHideEmpty(string $property_path, bool $hide_empty = false)
+	public function propertyHideEmpty(string $property_path, bool $hide_empty = false) : void
 	{
 		$this->initProperties();
 		if (isset($this->properties[$property_path])) {
@@ -245,7 +246,7 @@ class Set extends Setting\Custom\Set
 	 * @param $property_path string
 	 * @param $read_only     boolean
 	 */
-	public function propertyReadOnly(string $property_path, bool $read_only = false)
+	public function propertyReadOnly(string $property_path, bool $read_only = false) : void
 	{
 		$this->initProperties();
 		if (isset($this->properties[$property_path])) {
@@ -260,7 +261,7 @@ class Set extends Setting\Custom\Set
 	 * @param $property_path string
 	 * @param $tooltip       string
 	 */
-	public function propertyTooltip(string $property_path, string $tooltip = '')
+	public function propertyTooltip(string $property_path, string $tooltip = '') : void
 	{
 		$this->initProperties();
 		if (isset($this->properties[$property_path])) {

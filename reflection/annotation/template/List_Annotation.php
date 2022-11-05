@@ -89,7 +89,7 @@ class List_Annotation extends Annotation
 	 *
 	 * @param $value string
 	 */
-	public function add(string $value)
+	public function add(string $value) : void
 	{
 		if (!$this->has($value)) {
 			$this->value[] = $value;

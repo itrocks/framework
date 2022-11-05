@@ -34,9 +34,8 @@ class Settings extends Set
 	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $code, $value : specialize
 	 * @param $code  integer|Setting|string
 	 * @param $value Setting|string
-	 * @return Setting
 	 */
-	public function add(int|object|string $code, object|string $value = null) : Setting
+	public function add(int|object|string $code, object|string $value = null) : void
 	{
 		if ($code instanceof Setting) {
 			parent::add($code->code, $code);
@@ -55,7 +54,6 @@ class Settings extends Set
 				parent::add($code, $setting = new Setting($code, $value));
 			}
 		}
-		return $setting;
 	}
 
 	//------------------------------------------------------------------------------------------- get

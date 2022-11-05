@@ -139,7 +139,7 @@ class Logical implements Negate, Where
 	/**
 	 * Negate the Dao function
 	 */
-	public function negate()
+	public function negate() : void
 	{
 		if (!key_exists($this->operator, self::REVERSE)) {
 			return;
@@ -157,7 +157,7 @@ class Logical implements Negate, Where
 	/**
 	 * Negate each argument of $this
 	 */
-	private function negateArguments()
+	private function negateArguments() : void
 	{
 		if ($this->arguments instanceof Negate) {
 			$this->arguments->negate();
@@ -180,7 +180,7 @@ class Logical implements Negate, Where
 	 * @param $message string
 	 * @throws Exception
 	 */
-	protected function throwException(string $message)
+	protected function throwException(string $message) : void
 	{
 		throw new Exception($message);
 	}

@@ -27,7 +27,7 @@ trait Has_Civility
 	 *
 	 * @noinspection PhpUnused @feature_install
 	 */
-	public static function initCivilities()
+	public static function initCivilities() : void
 	{
 		if (!Dao::count(Civility::class)) {
 			Dao::begin();

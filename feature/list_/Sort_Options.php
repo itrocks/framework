@@ -26,7 +26,7 @@ class Sort_Options
 	 * @param $class_name    string
 	 * @param $property_path string|string[]
 	 */
-	public function add(string $class_name, array|string $property_path)
+	public function add(string $class_name, array|string $property_path) : void
 	{
 		if (is_array($property_path)) {
 			$this->sort_options[$class_name] = new Sort($property_path);
@@ -75,7 +75,7 @@ class Sort_Options
 	 * @param $class_name    string
 	 * @param $property_path string
 	 */
-	public function remove(string $class_name, string $property_path = '')
+	public function remove(string $class_name, string $property_path = '') : void
 	{
 		if ($property_path === '') {
 			if (isset($this->sort_options[$class_name])) {
@@ -105,7 +105,7 @@ class Sort_Options
 	 * @param $class_name    string
 	 * @param $property_path string
 	 */
-	public function reverse(string $class_name, string $property_path)
+	public function reverse(string $class_name, string $property_path) : void
 	{
 		$options = $this->sort_options[$class_name] ?? null;
 		if (!isset($options)) {

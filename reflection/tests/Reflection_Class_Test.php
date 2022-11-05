@@ -43,6 +43,7 @@ class Reflection_Class_Test extends Test
 	 * @param $test_order Order
 	 */
 	private function shouldBeInaccessible(string $method, Reflection_Class $class, Order $test_order)
+		: void
 	{
 		$check = [];
 		foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
@@ -76,7 +77,7 @@ class Reflection_Class_Test extends Test
 	 * accessProperties() was removed, so it now testes differences between getValue() and ->property
 	 * Disabled as it will not work (look into Properties.php for pending $accessible implementation)
 	 */
-	private function testAccessProperties()
+	private function testAccessProperties() : void
 	{
 		$class                    = new Reflection_Class(Order::class);
 		$today                    = date('Y-m-d');
@@ -132,7 +133,7 @@ class Reflection_Class_Test extends Test
 	 * accessProperties() was removed, so it now testes differences between getValue() and ->property
 	 * Disabled as it will not work (look into Properties.php for pending $accessible implementation)
 	 */
-	private function testAccessPropertiesDone()
+	private function testAccessPropertiesDone() : void
 	{
 		$class                    = new Reflection_Class(Order::class);
 		$test_order               = new Order(date('Y-m-d'), 'CDE001');
@@ -145,7 +146,7 @@ class Reflection_Class_Test extends Test
 	/**
 	 * Test get all properties
 	 */
-	public function testGetAllProperties()
+	public function testGetAllProperties() : void
 	{
 		$date   = new Reflection_Property(Document::class, 'date');
 		$number = new Reflection_Property(Document::class, 'number');
@@ -154,11 +155,11 @@ class Reflection_Class_Test extends Test
 		// use array_map as assertEquals gives private property values for actual, not for expected.
 		static::assertEquals(
 			array_map(
-				function($object) { return get_object_vars($object); },
+				function(object $object) : array { return get_object_vars($object); },
 				$this->properties($date, $number)
 			),
 			array_map(
-				function($object) { return get_object_vars($object); },
+				function(object $object) : array { return get_object_vars($object); },
 				(new Reflection_Class(Order::class))->getProperties()
 			)
 		);

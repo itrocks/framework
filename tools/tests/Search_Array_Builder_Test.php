@@ -12,7 +12,7 @@ class Search_Array_Builder_Test extends Test
 {
 
 	//------------------------------------------------------------------------------------- testBuild
-	public function testBuild()
+	public function testBuild() : void
 	{
 		static::assertEquals(
 			['property' => 'test'], (new Tools\Search_Array_Builder())->build('property', 'test'),
@@ -33,7 +33,7 @@ class Search_Array_Builder_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------- testBuildMultiple
-	public function testBuildMultiple()
+	public function testBuildMultiple() : void
 	{
 		static::assertEquals(
 			Func::orOp(['pro1' => 'test', 'pro2' => 'test']),

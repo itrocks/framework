@@ -38,7 +38,7 @@ class Template_Compiler implements Registerable, Updatable
 	 *
 	 * @param $object Template
 	 */
-	public function getCompiledMainTemplate(Template $object)
+	public function getCompiledMainTemplate(Template $object) : void
 	{
 		if (!isset($this->main_template) && file_exists($this->getCompiledPath())) {
 			$object->main_template = $this->getCompiledPath();
@@ -73,7 +73,7 @@ class Template_Compiler implements Registerable, Updatable
 	 * @see Updatable
 	 * @throws Assets_Exception
 	 */
-	public function update(int $last_time)
+	public function update(int $last_time) : void
 	{
 		unlinkIfExists($this->getCompiledPath());
 		$this->configuration      = Configuration::get();

@@ -99,7 +99,7 @@ abstract class Files
 	 * @param $type string the mime type of the file (ie 'application/xml')
 	 * @param $size integer|null the file size, if known
 	 */
-	public static function downloadOutput(string $name, string $type, int $size = null)
+	public static function downloadOutput(string $name, string $type, int $size = null) : void
 	{
 		header('Content-Disposition: attachment; filename=' . DQ . $name . DQ);
 		if (!str_contains($type, SL)) {

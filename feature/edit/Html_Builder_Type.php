@@ -187,7 +187,7 @@ class Html_Builder_Type
 	 *
 	 * @param $element Element the button / input / select element
 	 */
-	protected function addConditionsToElement(Element $element)
+	protected function addConditionsToElement(Element $element) : void
 	{
 		if (!$this->conditions) {
 			return;
@@ -551,7 +551,7 @@ class Html_Builder_Type
 	 *
 	 * @param $element Element
 	 */
-	protected function commonAttributes(Element $element)
+	protected function commonAttributes(Element $element) : void
 	{
 		$this->addConditionsToElement($element);
 		foreach ($this->attributes as $attribute_name => $attribute_value) {
@@ -666,9 +666,9 @@ class Html_Builder_Type
 
 	//------------------------------------------------------------------------------ patchSearchTypes
 	/**
-	 * Patch search type : eg dates should be typed as string
+	 * Patch search type : e.g. dates should be typed as string
 	 */
-	private function patchSearchTypes()
+	private function patchSearchTypes() : void
 	{
 		if (str_starts_with($this->name, 'search[') && $this->type->isDateTime()) {
 			$this->type = new Type(Type::STRING);
@@ -682,7 +682,7 @@ class Html_Builder_Type
 	/**
 	 * @param $input Element
 	 */
-	public function setInputAsReadOnly(Element $input)
+	public function setInputAsReadOnly(Element $input) : void
 	{
 		if ($this->readonly) {
 			if ($input->getAttribute('name') && !$this->is_new) {
@@ -699,7 +699,7 @@ class Html_Builder_Type
 	 * @param $element         Element
 	 * @param $realtime_change boolean
 	 */
-	private function setOnChangeAttribute(Element $element, bool $realtime_change = true)
+	private function setOnChangeAttribute(Element $element, bool $realtime_change = true) : void
 	{
 		if (!$this->on_change) {
 			return;
@@ -713,7 +713,7 @@ class Html_Builder_Type
 
 	//----------------------------------------------------------------------------------- setTemplate
 	/**
-	 * Set template : will be set only if $template is an Html_Template
+	 * Set template : will be set only if $template is a Html_Template
 	 *
 	 * @param $template Template
 	 * @return $this

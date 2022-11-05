@@ -111,12 +111,6 @@ class Call_Stack
 	 */
 	public function calledMethodArguments(array $method, array $arguments) : ?Line
 	{
-		if (!is_array($method)) {
-			/** @noinspection PhpUnhandledExceptionInspection Programming error */
-			throw new Exception(
-				__CLASS__ . '::calledMethodArguments callable $method must be an array', E_USER_ERROR
-			);
-		}
 		foreach ($arguments as $argument_name => $argument) {
 			if (is_string($argument_name)) {
 				if (!isset($reflection_method)) {

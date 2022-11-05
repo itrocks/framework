@@ -38,7 +38,7 @@ trait Use_Counter
 	 * @param $link Data_Link
 	 * @throws View_Exception
 	 */
-	public function incrementCounterPropertyValue(Data_Link $link)
+	public function incrementCounterPropertyValue(Data_Link $link) : void
 	{
 		static $increments = [];
 		/** @noinspection PhpUnhandledExceptionInspection object */

@@ -93,7 +93,8 @@ class Sql_Link_Restrictor implements Registerable
 	 */
 	private function applyRestriction(
 		Select $builder, string $class_name, callable|string $restriction
-	) {
+	) : void
+	{
 		if ($restriction === self::CURRENT) {
 			$restriction = [$class_name, 'current'];
 		}
@@ -108,7 +109,7 @@ class Sql_Link_Restrictor implements Registerable
 	/**
 	 * @param $object Select
 	 */
-	public function beforeSqlSelectBuilderBuildTables(Select $object)
+	public function beforeSqlSelectBuilderBuildTables(Select $object) : void
 	{
 		$this->restrict($object);
 	}
@@ -117,7 +118,7 @@ class Sql_Link_Restrictor implements Registerable
 	/**
 	 * @param $where string where clause, including ' WHERE ' or empty if no filter on read
 	 */
-	public function beforeSqlSelectBuilderFinalize(string &$where)
+	public function beforeSqlSelectBuilderFinalize(string &$where) : void
 	{
 		$where = $this->applyCurrentRestrictions($where);
 	}
@@ -172,7 +173,7 @@ class Sql_Link_Restrictor implements Registerable
 	 *
 	 * @param $builder Select
 	 */
-	private function restrict(Select $builder)
+	private function restrict(Select $builder) : void
 	{
 		$this->current_restrictions = [];
 		if ($this->restrictions) {

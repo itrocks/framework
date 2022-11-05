@@ -53,7 +53,7 @@ class Reader extends File\Reader
 	/**
 	 * Read configuration : the main part of the file
 	 */
-	protected function readConfiguration()
+	protected function readConfiguration() : void
 	{
 		$class_text = '';
 		/** @var $class_use Class_Use */

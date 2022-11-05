@@ -43,7 +43,7 @@ class In implements Negate, Where
 	/**
 	 * Negate the Dao function
 	 */
-	public function negate()
+	public function negate() : void
 	{
 		$this->in = !$this->in;
 	}
@@ -66,14 +66,14 @@ class In implements Negate, Where
 
 			$values = [];
 			foreach ($this->values as $value) {
-				$values[] = $builder->buildScalar($value, $property_path, $builder::SUB_TRANSLATE);
+				$values[] = $builder->buildScalar($value, $property_path, Summary_Builder::SUB_TRANSLATE);
 			}
 			sort($values);
 			$values = join(', ', $values);
 
 			$summary = $translation_delimiter . str_replace(
 				['$property', '$values'],
-				[$builder->buildColumn($property_path, $prefix, $builder::SUB_TRANSLATE), $values],
+				[$builder->buildColumn($property_path, $prefix, Summary_Builder::SUB_TRANSLATE), $values],
 				Loc::tr($this->in ? '$property is one of ($values)' : '$property is not one of ($values)')
 			) . $translation_delimiter;
 		}

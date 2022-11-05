@@ -102,7 +102,7 @@ class Link extends Identifier_Map
 	/**
 	 * @return string
 	 */
-	public function getPath()
+	public function getPath() : string
 	{
 		return $this->path;
 	}
@@ -258,7 +258,7 @@ class Link extends Identifier_Map
 	 *
 	 * @param $class_name string
 	 */
-	public function truncate(string $class_name)
+	public function truncate(string $class_name) : void
 	{
 		// TODO: Implement truncate() method
 	}
@@ -291,7 +291,7 @@ class Link extends Identifier_Map
 	 * @param $property_name string the name of the property
 	 * @param $value         mixed if set (recommended), the value to be stored. default in $object
 	 */
-	public function writeProperty(object $object, string $property_name, mixed $value = null)
+	public function writeProperty(object $object, string $property_name, mixed $value = null) : void
 	{
 		$file_name = $this->propertyFileName($object, $property_name);
 		$value     = $value ?? $object->$property_name;

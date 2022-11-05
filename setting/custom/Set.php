@@ -128,7 +128,7 @@ abstract class Set
 	 *
 	 * @param $feature string
 	 */
-	public function delete(string $feature = '')
+	public function delete(string $feature = '') : void
 	{
 		if (!$this->name) {
 			return;
@@ -228,7 +228,7 @@ abstract class Set
 	 *
 	 * @param $save_name string
 	 */
-	public function save(string $save_name = '')
+	public function save(string $save_name = '') : void
 	{
 		if (($save_name !== '') && ($this->setting->value instanceof Set)) {
 			$this->setting->value->name = $save_name;
@@ -266,7 +266,7 @@ abstract class Set
 	/**
 	 * @param $class_name string
 	 */
-	public function setClassName(string $class_name)
+	public function setClassName(string $class_name) : void
 	{
 		$this->class_name = Builder::current()->sourceClassName($class_name);
 	}

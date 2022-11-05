@@ -35,7 +35,8 @@ class Cache_Result implements Option
 	 */
 	public function cacheResult(
 		array|object $where, string $class_name, array $options, array $result
-	) {
+	) : void
+	{
 		$options                                    = $this->hash($options);
 		$where                                      = $this->hash($where);
 		$this->cache[$class_name][$where][$options] = $result;
@@ -69,7 +70,7 @@ class Cache_Result implements Option
 	 * @param $class_name string|null
 	 * @param $where      array|object|null
 	 */
-	public function clear(string $class_name = null, array|object $where = null)
+	public function clear(string $class_name = null, array|object $where = null) : void
 	{
 		if (!$class_name) {
 			$this->cache = [];

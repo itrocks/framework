@@ -19,7 +19,7 @@ class Decoder
 	 * @param $email   Email
 	 * @param $content string
 	 */
-	protected function content(Email $email, string $content)
+	protected function content(Email $email, string $content) : void
 	{
 		$email->content = $content;
 	}
@@ -120,7 +120,7 @@ class Decoder
 	 * @param $email   Email
 	 * @param $headers string[]
 	 */
-	protected function headers(Email $email, array $headers)
+	protected function headers(Email $email, array $headers) : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		$email->date    = new Date_Time(lParse($headers['date'], ' ('));

@@ -184,7 +184,7 @@ class Email
 	 * - Reuse those which are already stored into the data storage.
 	 * - Do not enable to alter an already stored attachment or recipient.
 	 */
-	public function beforeWrite()
+	public function beforeWrite() : void
 	{
 		if (!isset($this->date)) {
 			$this->date = new Date_Time();
@@ -326,7 +326,7 @@ class Email
 	 * - they can be common for several emails
 	 * - modification of attachments is not allowed
 	 */
-	private function uniqueAttachments()
+	private function uniqueAttachments() : void
 	{
 		foreach ($this->attachments as $attachment) {
 			if (
@@ -349,7 +349,7 @@ class Email
 	 * - they can be common to several emails
 	 * - modification of recipients is not allowed
 	 */
-	private function uniqueRecipients()
+	private function uniqueRecipients() : void
 	{
 		$search     = Search_Object::create(Recipient::class);
 		$recipients = array_merge(

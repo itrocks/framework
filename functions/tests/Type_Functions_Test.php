@@ -62,7 +62,7 @@ class Type_Functions_Test extends Test
 	/**
 	 * @see testMaxSet
 	 */
-	public function maxSetProvider()
+	public function maxSetProvider() : array
 	{
 		return [
 			'simple' => [13,[13, 4, 2]],
@@ -77,7 +77,7 @@ class Type_Functions_Test extends Test
 	/**
 	 * @see testMinSet
 	 */
-	public function minSetProvider()
+	public function minSetProvider() : array
 	{
 		return [
 			'simple' => [2,[13, 4, 2]],
@@ -94,7 +94,7 @@ class Type_Functions_Test extends Test
 	 * @param $value          mixed
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictInteger(mixed $value, array $array_expected)
+	function testIsStrictInteger(mixed $value, array $array_expected) : void
 	{
 		static::assertEquals($array_expected[0], isStrictInteger($value));
 	}
@@ -105,7 +105,7 @@ class Type_Functions_Test extends Test
 	 * @param $value          mixed
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictNumeric(mixed $value, array $array_expected)
+	function testIsStrictNumeric(mixed $value, array $array_expected) : void
 	{
 		static::assertEquals($array_expected[1], isStrictNumeric($value));
 	}
@@ -116,7 +116,7 @@ class Type_Functions_Test extends Test
 	 * @param $value          mixed
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictUnsignedInteger(mixed $value, array $array_expected)
+	function testIsStrictUnsignedInteger(mixed $value, array $array_expected) : void
 	{
 		static::assertEquals($array_expected[2], isStrictUnsignedInteger($value));
 	}
@@ -127,7 +127,7 @@ class Type_Functions_Test extends Test
 	 * @param $value          mixed
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictUnsignedNumeric(mixed $value, array $array_expected)
+	function testIsStrictUnsignedNumeric(mixed $value, array $array_expected) : void
 	{
 		static::assertEquals($array_expected[3], isStrictNumeric($value, true, false));
 	}
@@ -138,7 +138,7 @@ class Type_Functions_Test extends Test
 	 * @param $expected integer
 	 * @param $args     mixed
 	 */
-	function testMaxSet(int $expected, mixed $args)
+	function testMaxSet(int $expected, mixed $args) : void
 	{
 		static::assertEquals($expected, call_user_func('maxSet', $args));
 	}
@@ -149,7 +149,7 @@ class Type_Functions_Test extends Test
 	 * @param $expected integer
 	 * @param $args     mixed
 	 */
-	function testMinSet(int $expected, mixed $args)
+	function testMinSet(int $expected, mixed $args) : void
 	{
 		static::assertEquals($expected, call_user_func('minSet', $args));
 	}

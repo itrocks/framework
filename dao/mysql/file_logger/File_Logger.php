@@ -78,7 +78,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	/**
 	 * @param $serialized array
 	 */
-	public function __unserialize(array $serialized)
+	public function __unserialize(array $serialized) : void
 	{
 		$this->path = reset($serialized);
 	}
@@ -92,6 +92,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	 * @param $result boolean|mysqli_result
 	 */
 	public function afterQuery(Contextual_Mysqli $object, string $query, bool|mysqli_result $result)
+		: void
 	{
 		$this->counter ++;
 		$log = '#' . $this->counter . SP . rtrim(join(SP, $this->timeDuration())) . LF;
@@ -110,7 +111,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	/**
 	 * Called before each query, to know its duration
 	 */
-	public function beforeQuery()
+	public function beforeQuery() : void
 	{
 		$this->time = microtime(true);
 	}
@@ -122,7 +123,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	 * @param $object Contextual_Mysqli
 	 * @param $query  string
 	 */
-	public function beforeQueryError(Contextual_Mysqli $object, string $query)
+	public function beforeQueryError(Contextual_Mysqli $object, string $query) : void
 	{
 		$mysqli = $object;
 		$log    = str_replace(

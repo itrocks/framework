@@ -135,7 +135,7 @@ class Opened_Document
 	 * Purge old opened documents :
 	 * documents are considered as closed when they did not receive any ping since DELAY seconds
 	 */
-	public static function purge()
+	public static function purge() : void
 	{
 		Dao::begin();
 		$since = Date_Time::now()->sub(static::DELAY, Date_Time::SECOND);

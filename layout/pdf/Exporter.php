@@ -38,7 +38,7 @@ class Exporter implements Output
 	 *
 	 * Values of $pdf and $structure must have been set before calling this
 	 */
-	public function appendToPdf()
+	public function appendToPdf() : void
 	{
 		$pdf          = $this->pdf;
 		$cell_padding = $pdf->getCellPaddings();
@@ -64,7 +64,7 @@ class Exporter implements Output
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $page Page
 	 */
-	protected function background(Page $page)
+	protected function background(Page $page) : void
 	{
 		if ($page->background) {
 			$pdf = $this->pdf;
@@ -82,7 +82,7 @@ class Exporter implements Output
 	 *
 	 * @param $element Element
 	 */
-	protected function element(Element $element)
+	protected function element(Element $element) : void
 	{
 		$pdf = $this->pdf;
 
@@ -128,7 +128,7 @@ class Exporter implements Output
 	 *
 	 * @param $group Group
 	 */
-	protected function group(Group $group)
+	protected function group(Group $group) : void
 	{
 		foreach ($group->iterations as $iteration) {
 			foreach ($iteration->elements as $element) {
@@ -173,7 +173,7 @@ class Exporter implements Output
 	 *
 	 * @param $page Page
 	 */
-	protected function page(Page $page)
+	protected function page(Page $page) : void
 	{
 		$this->pdf->AddPage();
 		$this->background($page);
@@ -189,7 +189,7 @@ class Exporter implements Output
 	/**
 	 * Add and draw structure pages to the current PDF
 	 */
-	protected function pages()
+	protected function pages() : void
 	{
 		foreach ($this->structure->pages as $page) {
 			$this->page($page);
@@ -200,7 +200,7 @@ class Exporter implements Output
 	/**
 	 * @param $element Text
 	 */
-	protected function textElement(Text $element)
+	protected function textElement(Text $element) : void
 	{
 		$pdf      = $this->pdf;
 		$position = $element->top;

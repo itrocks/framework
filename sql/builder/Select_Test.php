@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Sql\Builder;
 
-use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -22,7 +21,7 @@ class Select_Test extends Test
 {
 
 	//----------------------------------------------------------------- testArrayImplicitOrWhereQuery
-	public function testArrayImplicitOrWhereQuery()
+	public function testArrayImplicitOrWhereQuery() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -38,7 +37,7 @@ class Select_Test extends Test
 	}
 
 	//----------------------------------------------------------------------- testArrayWhereDeepQuery
-	public function testArrayWhereDeepQuery()
+	public function testArrayWhereDeepQuery() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -56,7 +55,7 @@ class Select_Test extends Test
 	}
 
 	//----------------------------------------------------------------- testArrayWhereDeepQueryObject
-	public function testArrayWhereDeepQueryObject()
+	public function testArrayWhereDeepQueryObject() : void
 	{
 		$item       = new Item();
 		$item->code = 1;
@@ -76,7 +75,7 @@ class Select_Test extends Test
 	}
 
 	//------------------------------------------------------------------ testArrayWhereDeepQueryShort
-	public function testArrayWhereDeepQueryShort()
+	public function testArrayWhereDeepQueryShort() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -94,7 +93,7 @@ class Select_Test extends Test
 	}
 
 	//---------------------------------------------------------------------- testArrayWhereDeepQuery2
-	public function testArrayWhereDeepQuery2()
+	public function testArrayWhereDeepQuery2() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -117,7 +116,7 @@ class Select_Test extends Test
 	}
 
 	//----------------------------------------------------------------- testArrayWhereDeepQuery2Short
-	public function testArrayWhereDeepQuery2Short()
+	public function testArrayWhereDeepQuery2Short() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -140,7 +139,7 @@ class Select_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------- testArrayWhereQuery
-	public function testArrayWhereQuery()
+	public function testArrayWhereQuery() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -157,7 +156,7 @@ class Select_Test extends Test
 	}
 
 	//------------------------------------------------------------------------ testArrayWhereWithNull
-	public function testArrayWhereWithNull()
+	public function testArrayWhereWithNull() : void
 	{
 		$builder = new Select(
 			Order_Line::class,
@@ -174,7 +173,7 @@ class Select_Test extends Test
 	}
 
 	//----------------------------------------------------------------------- testCollectionJoinQuery
-	public function testCollectionJoinQuery()
+	public function testCollectionJoinQuery() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -190,7 +189,7 @@ class Select_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------- testComplexJoinQuery
-	public function testComplexJoinQuery()
+	public function testComplexJoinQuery() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -207,7 +206,7 @@ class Select_Test extends Test
 	}
 
 	//------------------------------------------------------------------------ testComplexObjectQuery
-	public function testComplexObjectQuery()
+	public function testComplexObjectQuery() : void
 	{
 		$builder = new Select(
 			Client::class,
@@ -229,7 +228,7 @@ class Select_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testJoinQuery
-	public function testJoinQuery()
+	public function testJoinQuery() : void
 	{
 		$builder = new Select(
 			Order_Line::class,
@@ -245,7 +244,7 @@ class Select_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testLinkQuery
-	public function testLinkQuery()
+	public function testLinkQuery() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -261,7 +260,7 @@ class Select_Test extends Test
 	}
 
 	//------------------------------------------------------------------- testLinkedClassObjectSearch
-	public function testLinkedClassObjectSearch()
+	public function testLinkedClassObjectSearch() : void
 	{
 		// search text with internal ids to simulate a light salesman
 		$search              = Search_Object::create(Quote_Salesman::class);
@@ -295,7 +294,7 @@ class Select_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------- testLinkedClassQuery
-	public function testLinkedClassQuery()
+	public function testLinkedClassQuery() : void
 	{
 		$builder = new Select(
 			Quote_Salesman::class,
@@ -312,7 +311,7 @@ class Select_Test extends Test
 	}
 
 	//------------------------------------------------------------- testLinkedClassQueryWithTwoLevels
-	public function testLinkedClassQueryWithTwoLevels()
+	public function testLinkedClassQueryWithTwoLevels() : void
 	{
 		$builder = new Select(
 			Quote_Salesman_Additional::class,
@@ -330,7 +329,7 @@ class Select_Test extends Test
 	}
 
 	//-------------------------------------------------------------------- testLinkedClassSelectQuery
-	public function testLinkedClassSelectQuery()
+	public function testLinkedClassSelectQuery() : void
 	{
 		$builder = new Select(
 			Quote::class,
@@ -347,7 +346,7 @@ class Select_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------- testObjectQuery
-	public function testObjectQuery()
+	public function testObjectQuery() : void
 	{
 		$builder = new Select(
 			Order_Line::class,
@@ -367,35 +366,15 @@ class Select_Test extends Test
 		);
 	}
 
-	//----------------------------------------------------------------------- testObjectWhereWithNull
-	public function testObjectWhereWithNull()
-	{
-		$search           = Search_Object::create(Order_Line::class);
-		$search->client   = Func::isNull();
-		$search->quantity = Func::greater(1);
-		$builder          = new Select(
-			Order_Line::class,
-			['number', 'quantity'],
-			$search
-		);
-		static::assertEquals(
-			'SELECT t0.`number`, t0.`quantity`' . LF
-			. 'FROM `test_order_lines` t0' . LF
-			. 'LEFT JOIN `test_clients` t1 ON t1.id = t0.id_client' . LF
-			. 'WHERE t1.id IS NULL AND t0.`quantity` > 1',
-			$builder->buildQuery()
-		);
-	}
-
 	//-------------------------------------------------------------------- testQuoteSalesmanStoreName
-	public function testQuoteSalesmanStoreName()
+	public function testQuoteSalesmanStoreName() : void
 	{
 		$store_name = Store_Name_Annotation::of(new Reflection_Class(Quote_Salesman::class))->value;
 		static::assertEquals('test_quote_salesmen', $store_name, __METHOD__);
 	}
 
 	//-------------------------------------------------------------------------- testReverseJoinQuery
-	public function testReverseJoinQuery()
+	public function testReverseJoinQuery() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -411,7 +390,7 @@ class Select_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------- testSimpleQuery
-	public function testSimpleQuery()
+	public function testSimpleQuery() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -425,7 +404,7 @@ class Select_Test extends Test
 	}
 
 	//------------------------------------------------------------------------- testWhereComplexQuery
-	public function testWhereComplexQuery()
+	public function testWhereComplexQuery() : void
 	{
 		$client         = Search_Object::create(Client::class);
 		$client->number = 1;
@@ -446,7 +425,7 @@ class Select_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------- testWhereDeepQuery
-	public function testWhereDeepQuery()
+	public function testWhereDeepQuery() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -463,7 +442,7 @@ class Select_Test extends Test
 	}
 
 	//------------------------------------------------------------------ testWhereExistingObjectQuery
-	public function testWhereExistingObjectQuery()
+	public function testWhereExistingObjectQuery() : void
 	{
 		$client = new Client();
 		/** @noinspection PhpUndefinedFieldInspection */
@@ -485,7 +464,7 @@ class Select_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------- testWhereQuery
-	public function testWhereQuery()
+	public function testWhereQuery() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -500,7 +479,7 @@ class Select_Test extends Test
 	}
 
 	//--------------------------------------------------------------------- testWhereReverseJoinQuery
-	public function testWhereReverseJoinQuery()
+	public function testWhereReverseJoinQuery() : void
 	{
 		$builder = new Select(
 			Order::class,
@@ -518,7 +497,7 @@ class Select_Test extends Test
 	}
 
 	//-------------------------------------------------------------------- testWhereSearchObjectQuery
-	public function testWhereSearchObjectQuery()
+	public function testWhereSearchObjectQuery() : void
 	{
 		$client         = Search_Object::create(Client::class);
 		$client->number = 1;
@@ -536,7 +515,7 @@ class Select_Test extends Test
 	}
 
 	//----------------------------------------------------------------- testWhereSubSearchObjectQuery
-	public function testWhereSubSearchObjectQuery()
+	public function testWhereSubSearchObjectQuery() : void
 	{
 		$client         = Search_Object::create(Client::class);
 		$client->number = 1;

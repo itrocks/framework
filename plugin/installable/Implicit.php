@@ -61,7 +61,7 @@ class Implicit implements Installable
 	/**
 	 * @param $installer Installer
 	 */
-	public function install(Installer $installer)
+	public function install(Installer $installer) : void
 	{
 		switch ($this->type) {
 			case T_CLASS: $this->installClass($installer); break;
@@ -73,7 +73,7 @@ class Implicit implements Installable
 	/**
 	 * @param $installer Installer
 	 */
-	protected function installClass(Installer $installer)
+	protected function installClass(Installer $installer) : void
 	{
 		$installer->addPlugin($this->class->name);
 	}
@@ -82,7 +82,7 @@ class Implicit implements Installable
 	/**
 	 * @param $installer Installer
 	 */
-	protected function installTrait(Installer $installer)
+	protected function installTrait(Installer $installer) : void
 	{
 		$extends_annotations = Extends_Annotation::allNotOf($this->class, Extends_Annotation::STRICT);
 		foreach ($extends_annotations as $annotations) {

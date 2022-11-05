@@ -232,7 +232,8 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 */
 	private function searchIntoDeclaringTrait(
 		Reflection $class_property, Type_Annotation $type_annotation, string $value, int $pos
-	) {
+	) : void
+	{
 		if ($class_property instanceof Reflection_Property) {
 			$php_class = Reflection_Class::of($class_property->getDeclaringTraitName());
 			$type_annotation->value = substr($value, 0, $pos);
@@ -253,7 +254,8 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 */
 	private function searchIntoFinalClass(
 		Reflection $class_property, Type_Annotation $type_annotation, string $value, int $pos
-	) {
+	) : void
+	{
 		$class = ($class_property instanceof Reflection_Property)
 			? $class_property->getFinalClass()
 			: $class_property;
@@ -278,7 +280,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $callable callable
 	 */
-	public function setMethod(callable $callable)
+	public function setMethod(callable $callable) : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection callable must be valid */
 		$this->static = (new Reflection_Method($callable[0], $callable[1]))->isStatic();

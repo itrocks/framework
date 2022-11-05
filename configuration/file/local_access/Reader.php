@@ -14,7 +14,7 @@ class Reader extends File\Reader
 {
 
 	//----------------------------------------------------------------------------- readConfiguration
-	protected function readConfiguration()
+	protected function readConfiguration() : void
 	{
 		$this->file->lines = [];
 		$line              = current($this->lines);

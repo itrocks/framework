@@ -56,7 +56,8 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	 */
 	private function addPointcuts(
 		array &$methods, array &$properties, string $class_name, array $handler_filter = null
-	) {
+	) : void
+	{
 		foreach ($this->weaver->getJoinpoints($class_name) as $method_or_property => $pointcuts2) {
 			foreach ($pointcuts2 as $pointcut) {
 				if (empty($handler_filter) || in_array($pointcut[0], $handler_filter)) {
@@ -183,7 +184,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	}
 
 	//----------------------------------------------------------------------------------- doneCompile
-	public function doneCompile()
+	public function doneCompile() : void
 	{
 		$this->weaver->backupFile();
 	}
@@ -192,7 +193,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	/**
 	 * @param $more_sources More_Sources
 	 */
-	public function moreSourcesToCompile(More_Sources $more_sources)
+	public function moreSourcesToCompile(More_Sources $more_sources) : void
 	{
 		// search into dependencies : used classes
 		$search = ['type' => Dependency::T_USE];
@@ -258,7 +259,8 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	 */
 	private function scanForAbstract(
 		array &$methods, Interfaces\Reflection_Class $class, string $only_method = ''
-	) {
+	) : void
+	{
 		if ($class instanceof Reflection_Class && $class->getParentName()) {
 			$parent_class   = $class->getParentClass();
 			$parent_methods = $parent_class->getMethods([T_EXTENDS, T_IMPLEMENTS]);
@@ -281,7 +283,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	 * @param $properties array
 	 * @param $class      Reflection_Class
 	 */
-	private function scanForImplements(array &$properties, Reflection_Class $class)
+	private function scanForImplements(array &$properties, Reflection_Class $class) : void
 	{
 		// properties from the class and its direct traits
 		$implemented_properties = $class->getProperties([T_USE]);
@@ -378,7 +380,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	/**
 	 * @param $main_controller Main
 	 */
-	public function setMainController(Main $main_controller)
+	public function setMainController(Main $main_controller) : void
 	{
 		// AOP compiler needs all plugins to be registered again, in order to build the complete
 		// weaver's advices tree

@@ -14,7 +14,7 @@ class Config extends Configuration
 	/**
 	 * @param $source Reflection_Source
 	 */
-	public function compile(Reflection_Source $source)
+	public function compile(Reflection_Source $source) : void
 	{
 		// TODO NORMAL activate / deactivate plugins immediately when the configuration changes
 	}

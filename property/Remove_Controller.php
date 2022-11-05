@@ -22,7 +22,7 @@ class Remove_Controller extends Remove\Controller
 	 * @param $class_name    string
 	 * @param $property_path string
 	 */
-	public function removePropertyFromList(string $class_name, string $property_path)
+	public function removePropertyFromList(string $class_name, string $property_path) : void
 	{
 		$list_settings = List_Setting\Set::current($class_name);
 		$list_settings->removeProperty($property_path);
@@ -37,7 +37,8 @@ class Remove_Controller extends Remove\Controller
 	 */
 	public function removePropertyFromOutput(
 		string $class_name, string $feature_name, string $property_path
-	) {
+	) : void
+	{
 		$output_settings = Output_Setting\Set::current($class_name, $feature_name);
 		$output_settings->removeProperty($property_path);
 		$output_settings->save();

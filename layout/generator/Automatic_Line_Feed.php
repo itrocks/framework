@@ -79,7 +79,7 @@ class Automatic_Line_Feed
 	/**
 	 * @param $group Group
 	 */
-	protected function group(Group $group)
+	protected function group(Group $group) : void
 	{
 		foreach ($group->elements as $element) {
 			$this->element($element);
@@ -96,7 +96,7 @@ class Automatic_Line_Feed
 	/**
 	 * @param $iteration Iteration
 	 */
-	protected function iteration(Iteration $iteration)
+	protected function iteration(Iteration $iteration) : void
 	{
 		$shift     = 0;
 		$shift_top = 0;
@@ -113,7 +113,7 @@ class Automatic_Line_Feed
 	}
 
 	//------------------------------------------------------------------------------------------- run
-	public function run()
+	public function run() : void
 	{
 		foreach ($this->structure->pages as $page) {
 			foreach ($page->elements as $element) {

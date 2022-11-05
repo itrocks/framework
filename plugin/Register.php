@@ -79,6 +79,7 @@ class Register
 	 * @param $annotation_class string
 	 */
 	public function setAnnotation(string $context, string $annotation_name, string $annotation_class)
+		: void
 	{
 		Additional_Annotations::setAnnotation($context, $annotation_name, $annotation_class);
 	}
@@ -86,12 +87,12 @@ class Register
 	//-------------------------------------------------------------------------------- setAnnotations
 	/**
 	 * Defines multiple annotations classes
-	 * A very little bit faster than multiple calls to setAnnotation()
+	 * A very bit faster than multiple calls to setAnnotation()
 	 *
 	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_PROPERTY
 	 * @param $annotations_classes string[] key is the annotation name, value is the annotation class
 	 */
-	public function setAnnotations(string $context, array $annotations_classes)
+	public function setAnnotations(string $context, array $annotations_classes) : void
 	{
 		Additional_Annotations::setAnnotations($context, $annotations_classes);
 	}
@@ -100,7 +101,7 @@ class Register
 	/**
 	 * @param $configuration array|string
 	 */
-	protected function setConfiguration(array|string $configuration)
+	protected function setConfiguration(array|string $configuration) : void
 	{
 		$this->configuration = $configuration;
 		$this->get           = false;

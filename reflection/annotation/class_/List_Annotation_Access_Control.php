@@ -30,7 +30,8 @@ class List_Annotation_Access_Control implements Registerable
 	 */
 	public function checkListAnnotationLockColumnsAccess(
 		Reflection_Class $class, List_Annotation $object
-	) {
+	) : void
+	{
 		$class_name = Builder::className($class->getName());
 		if ($access_control = Access_Control::get(false)) {
 			if (

@@ -17,7 +17,7 @@ abstract class Document
 	 * Document date
 	 *
 	 * @mandatory
-	 * @var Date_Time
+	 * @var Date_Time|string
 	 */
 	private Date_Time|string $date;
 
@@ -55,7 +55,7 @@ abstract class Document
 	/**
 	 * @param $counter integer
 	 */
-	public function setCounter(int $counter)
+	public function setCounter(int $counter) : void
 	{
 		$this->number = $counter;
 	}

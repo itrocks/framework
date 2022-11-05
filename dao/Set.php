@@ -36,6 +36,7 @@ class Set
 	 * @template T
 	 */
 	public function replace(array $objects, object|string $class_name, array|object $search = null)
+		: void
 	{
 		$dao = $this->data_link;
 		// change $class_name to string, change $search to search object or array

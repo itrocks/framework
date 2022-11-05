@@ -100,7 +100,7 @@ abstract class Sender implements Configurable, Sender_Interface
 	 *
 	 * @param $email Email email account is used, email recipients may be changed by the configuration
 	 */
-	protected function sendConfiguration(Email $email)
+	protected function sendConfiguration(Email $email) : void
 	{
 		// force sender : all mails coming from the application will use this sender (from)
 		if (isset($this->from)) {

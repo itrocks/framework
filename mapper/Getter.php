@@ -441,7 +441,7 @@ abstract class Getter
 	 * @param $object        object
 	 * @param $property_name string
 	 */
-	public static function invalidate(object $object, string $property_name)
+	public static function invalidate(object $object, string $property_name) : void
 	{
 		if (!isset($object->$property_name)) {
 			return;

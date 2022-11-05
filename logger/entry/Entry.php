@@ -201,7 +201,7 @@ class Entry implements Validate\Except
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $data mixed
 	 */
-	public function rawPostData(mixed $data)
+	public function rawPostData(mixed $data) : void
 	{
 		if (!$data) {
 			return;
@@ -216,14 +216,14 @@ class Entry implements Validate\Except
 	}
 
 	//---------------------------------------------------------------------------------------- resume
-	public function resume()
+	public function resume() : void
 	{
 		$this->duration     = microtime(true) - $this->duration_start;
 		$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);
 	}
 
 	//------------------------------------------------------------------------------------------ stop
-	public function stop()
+	public function stop() : void
 	{
 		$this->duration     = microtime(true) - $this->duration_start;
 		$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);

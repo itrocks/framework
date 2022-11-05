@@ -134,7 +134,7 @@ abstract class Model
 	 * @noinspection PhpUnused @setter
 	 * @param $value string
 	 */
-	protected function setClassName(string $value)
+	protected function setClassName(string $value) : void
 	{
 		if ($this->class_name = $value) {
 			$this->document = Dao::searchOne(['class_name' => $this->class_name], Feature_Class::class);
@@ -150,7 +150,7 @@ abstract class Model
 	 * @noinspection PhpUnused @setter
 	 * @param $value Feature_Class|null
 	 */
-	protected function setDocument(Feature_Class $value = null)
+	protected function setDocument(Feature_Class $value = null) : void
 	{
 		if (($this->document = $value) && ($this->class_name !== $value->class_name)) {
 			$this->class_name = $value->class_name;

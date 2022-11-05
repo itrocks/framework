@@ -12,6 +12,6 @@ abstract class Configuration
 	/**
 	 * @param $source Reflection_Source
 	 */
-	abstract public function compile(Reflection_Source $source);
+	abstract public function compile(Reflection_Source $source) : void;
 
 }

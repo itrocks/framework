@@ -33,7 +33,7 @@ abstract class Element
 	/**
 	 * If the element has been associated to an iteration of a group, this iteration will be set here
 	 *
-	 * @var Iteration
+	 * @var ?Iteration
 	 */
 	public ?Iteration $iteration;
 

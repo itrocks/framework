@@ -25,7 +25,7 @@ class Resend_Controller extends Controller implements Registerable
 	/**
 	 * @param $joinpoint After_Method
 	 */
-	public function addButton(After_Method $joinpoint)
+	public function addButton(After_Method $joinpoint) : void
 	{
 		if (!($joinpoint->parameters['object'] instanceof Email)) {
 			return;

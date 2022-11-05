@@ -52,7 +52,7 @@ class Mandatory_Annotation_Test extends Test
 	/**
 	 * Tests Mandatory_Annotation::getAnnotationName().
 	 */
-	public function testGetAnnotationName()
+	public function testGetAnnotationName() : void
 	{
 		/** @var $property_mock Reflection_Property */
 		$property_mock = $this->getMockBuilder(Reflection_Property::class)
@@ -70,7 +70,7 @@ class Mandatory_Annotation_Test extends Test
 	/**
 	 * Tests Mandatory_Annotation::isEmpty() with a none empty property.
 	 */
-	public function testIsEmptyKo()
+	public function testIsEmptyKo() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constant*/
 		$annotation = Mandatory_Annotation::of(
@@ -86,7 +86,7 @@ class Mandatory_Annotation_Test extends Test
 	/**
 	 * Tests Mandatory_Annotation::isEmpty() with an empty property.
 	 */
-	public function testIsEmptyOk()
+	public function testIsEmptyOk() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constant*/
 		$annotation = Mandatory_Annotation::of($this->reflection_object->getProperty('empty_property'));

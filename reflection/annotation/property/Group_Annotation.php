@@ -46,7 +46,7 @@ class Group_Annotation extends Annotation implements Property_Context_Annotation
 	 * @param $class         Reflection_Class
 	 * @param $property_path string
 	 */
-	public function replaceByClass(Reflection_Class $class, string $property_path)
+	public function replaceByClass(Reflection_Class $class, string $property_path) : void
 	{
 		$class_group_annotation = Class_\Group_Annotation::searchProperty(
 			Class_\Group_Annotation::allOf($class), $property_path

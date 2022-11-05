@@ -67,7 +67,7 @@ class Dead_Or_Alive
 	 *
 	 * @param $identifier string
 	 */
-	public static function isAlive(string $identifier)
+	public static function isAlive(string $identifier) : void
 	{
 		$search             = Search_Object::create(static::class);
 		$search->identifier = $identifier;
@@ -87,7 +87,7 @@ class Dead_Or_Alive
 	/**
 	 * @param $property_names string[]|null
 	 */
-	private function matchCallStack(array $property_names = null)
+	private function matchCallStack(array $property_names = null) : void
 	{
 		$call_stack = new Call_Stack();
 		$call_stack->shift();

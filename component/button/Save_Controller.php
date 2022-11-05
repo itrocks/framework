@@ -24,7 +24,7 @@ class Save_Controller implements Feature_Controller
 	 * @param $button Button
 	 * @param $form   string[]
 	 */
-	public function callOutputSettingController(Button $button, array $form)
+	public function callOutputSettingController(Button $button, array $form) : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$parameters = Builder::create(Parameters::class, [

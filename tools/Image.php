@@ -143,7 +143,7 @@ class Image
 	/**
 	 * Display an image
 	 */
-	public function display()
+	public function display() : void
 	{
 		$this->save();
 	}
@@ -172,7 +172,7 @@ class Image
 	 *
 	 * @param $color integer|null If not set, a transparent / white color is created to fill the image
 	 */
-	public function fillImage(int $color = null)
+	public function fillImage(int $color = null) : void
 	{
 		if (!isset($color)) {
 			$color = $this->createBackgroundColor();
@@ -233,7 +233,8 @@ class Image
 	public function paste(
 		Image $source_image, int $left = 0, int $top = 0, int $source_left = 0, int $source_top = 0,
 		int $source_width = 0, int $source_height = 0
-	) {
+	) : void
+	{
 		if (!$source_width) {
 			$source_width = $source_image->width - $source_left;
 		}
@@ -395,7 +396,8 @@ class Image
 	public static function stringToThumbnailFile(
 		string $image, string $thumbnail_file, int $width = null, int $height = null, int $type = null,
 		int $quality = null
-	) : static {
+	) : static
+	{
 		return static::createFromString($image)->resize(
 			$width, $height)->save($thumbnail_file, $type, $quality
 		);

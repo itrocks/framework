@@ -62,6 +62,7 @@ abstract class Write
 	 * @param $after_write_annotation string @values after_create, after_update, after_write
 	 */
 	protected function afterWrite(object $object, array &$options, string $after_write_annotation)
+		: void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		$class = new Reflection_Class($object);
@@ -156,7 +157,7 @@ abstract class Write
 	 * @param $object  object
 	 * @param $options Option[]
 	 */
-	protected function prepareAfterCommit(object $object, array $options)
+	protected function prepareAfterCommit(object $object, array $options) : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		/** @var $after_commits Method_Annotation[] */

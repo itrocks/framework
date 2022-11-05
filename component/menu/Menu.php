@@ -188,7 +188,7 @@ class Menu implements Configurable
 	/**
 	 * @param $items string[]
 	 */
-	protected function constructTitle(array $items)
+	protected function constructTitle(array $items) : void
 	{
 		foreach ($items as $item) {
 			switch (substr($item, 0, 1)) {
@@ -203,7 +203,7 @@ class Menu implements Configurable
 	/**
 	 * Refresh the menu on the front interface, if placed into the standard target (#menu)
 	 */
-	public function refresh()
+	public function refresh() : void
 	{
 		Main::$current->redirect(
 			View::link(

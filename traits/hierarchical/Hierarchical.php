@@ -162,7 +162,7 @@ trait Hierarchical
 	 * @param $sub_property   string sub objects property name
 	 * @param $super_property string super object property name
 	 */
-	protected function writeSub(string $sub_property, string $super_property)
+	protected function writeSub(string $sub_property, string $super_property) : void
 	{
 		$written = [];
 		// update $super_property into new $sub_properties

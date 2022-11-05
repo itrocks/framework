@@ -35,7 +35,7 @@ class Reset implements Registerable
 	 *
 	 * @param $user User|Last_Connection\Has|User_Has
 	 */
-	public function dayReset(User|Last_Connection\Has|User_Has $user)
+	public function dayReset(User|Last_Connection\Has|User_Has $user) : void
 	{
 		if (
 			($user->reset_lists === static::DAILY)
@@ -62,7 +62,7 @@ class Reset implements Registerable
 	 *
 	 * @param $user User|User_Has
 	 */
-	public function reset(User|User_Has $user)
+	public function reset(User|User_Has $user) : void
 	{
 		Dao::begin();
 		/** @var $setting Setting\User */
@@ -86,7 +86,7 @@ class Reset implements Registerable
 	 *
 	 * @param $user User|User_Has
 	 */
-	public function sessionReset(User|User_Has $user)
+	public function sessionReset(User|User_Has $user) : void
 	{
 		if ($user->reset_lists === static::SESSION) {
 			$this->reset($user);

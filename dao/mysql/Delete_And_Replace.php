@@ -38,6 +38,7 @@ class Delete_And_Replace implements Registerable
 	 * @param $joinpoint Before_Method
 	 */
 	public function onQueryError(Contextual_Mysqli $object, string $query, Before_Method $joinpoint)
+		: void
 	{
 		if (
 			in_array(

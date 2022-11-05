@@ -33,7 +33,7 @@ class Writer extends File\Writer
 	/**
 	 * Write builder configuration to lines
 	 */
-	protected function writeConfiguration()
+	protected function writeConfiguration() : void
 	{
 		$last_priority_key = $this->lastObjectKey($this->file->plugins_by_priority);
 		$this->lines[]     = $this->file->start_line;

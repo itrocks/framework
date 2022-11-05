@@ -48,9 +48,9 @@ class Menu extends Installed
 	 * @param $block_title  string
 	 * @param $item_link    string
 	 * @param $item_caption string
-	 * @return static
+	 * @return ?static
 	 */
-	public function remove(string $block_title, string $item_link, string $item_caption) : static
+	public function remove(string $block_title, string $item_link, string $item_caption) : ?static
 	{
 		return $this->removeProperties(
 			['block_title' => $block_title, 'item_link' => $item_link, 'item_caption' => $item_caption]

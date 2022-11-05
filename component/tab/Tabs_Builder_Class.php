@@ -158,7 +158,7 @@ class Tabs_Builder_Class
 	 *
 	 * @param $groups Group_Annotation[]
 	 */
-	protected function mergeGroups(array &$groups)
+	protected function mergeGroups(array &$groups) : void
 	{
 		// merge groups that have the same name
 		$merged = [];
@@ -220,7 +220,7 @@ class Tabs_Builder_Class
 	 *
 	 * @param $groups Group_Annotation[]
 	 */
-	protected function removeDuplicateProperties(array &$groups)
+	protected function removeDuplicateProperties(array &$groups) : void
 	{
 		$already = [];
 		foreach ($groups as $key => $group) {
@@ -247,7 +247,7 @@ class Tabs_Builder_Class
 	 *
 	 * @param $groups array Group_Annotation[] Key is the name of the group
 	 */
-	protected function sortGroups(array &$groups)
+	protected function sortGroups(array &$groups) : void
 	{
 		$sorted_groups = [];
 		$groups_order  = $this->class->getListAnnotation('groups_order')->values();

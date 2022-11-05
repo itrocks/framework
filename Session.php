@@ -23,13 +23,13 @@ class Session
 	/**
 	 * @var string
 	 */
-	public $configuration_file_name;
+	public string $configuration_file_name;
 
 	//-------------------------------------------------------------------------------------- $current
 	/**
 	 * @var object[]|string[]
 	 */
-	private $current;
+	private array $current;
 
 	//--------------------------------------------------------------------------------------- $domain
 	/**
@@ -37,7 +37,7 @@ class Session
 	 *
 	 * @var string
 	 */
-	public $domain;
+	public string $domain;
 
 	//---------------------------------------------------------------------------------- $environment
 	/**
@@ -46,13 +46,13 @@ class Session
 	 * @values development, production, test
 	 * @var string
 	 */
-	public $environment;
+	public string $environment;
 
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
 	 * @var Manager
 	 */
-	public $plugins;
+	public Manager $plugins;
 
 	//-------------------------------------------------------------------------------------- $stopped
 	/**
@@ -65,7 +65,7 @@ class Session
 	 * @see stop()
 	 * @var boolean
 	 */
-	public $stopped = false;
+	public bool $stopped = false;
 
 	//-------------------------------------------------------------------------- $temporary_directory
 	/**
@@ -107,7 +107,7 @@ class Session
 	/**
 	 * @param $serialized array
 	 */
-	public function __unserialize(array $serialized)
+	public function __unserialize(array $serialized) : void
 	{
 		$data = $serialized;
 		$this->configuration_file_name = $data[self::CONFIGURATION_FILE_NAME];
@@ -131,7 +131,7 @@ class Session
 	 *
 	 * @return string the cloned session id
 	 */
-	public static function cloneSessionId()
+	public static function cloneSessionId() : string
 	{
 		$new_id = session_id() . uniqid('-');
 		file_put_contents(session_save_path() . SL . 'sess_' . $new_id, session_encode());
@@ -140,16 +140,16 @@ class Session
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current Session
-	 * @return Session
+	 * @param $set_current static|null
+	 * @return ?static
 	 */
-	public static function current(Session $set_current = null)
+	public static function current(self $set_current = null) : ?static
 	{
 		if ($set_current) {
 			$_SESSION['session'] = $set_current;
 			return $set_current;
 		}
-		return isset($_SESSION['session']) ? $_SESSION['session'] : null;
+		return $_SESSION['session'] ?? null;
 	}
 
 	//------------------------------------------------------------------------------------ domainName
@@ -157,7 +157,7 @@ class Session
 	 * @example itrocks.org
 	 * @return string
 	 */
-	public function domainName()
+	public function domainName() : string
 	{
 		return str_contains($this->domain, '://') ? parse_url($this->domain)['host'] : $this->domain;
 	}
@@ -167,7 +167,7 @@ class Session
 	 * @example application
 	 * @return string
 	 */
-	public function domainPath()
+	public function domainPath() : string
 	{
 		return str_contains($this->domain, '://') ? parse_url($this->domain)['path'] : '';
 	}
@@ -177,9 +177,9 @@ class Session
 	 * @example http, https
 	 * @return string
 	 */
-	public function domainScheme()
+	public function domainScheme() : string
 	{
-		return (str_contains($this->domain, '://') ? parse_url($this->domain)['scheme'] : null)
+		return (str_contains($this->domain, '://') ? parse_url($this->domain)['scheme'] : '')
 			?: 'https';
 	}
 
@@ -189,7 +189,8 @@ class Session
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name     class-string<T>|string
-	 * @param $create_default boolean|callable Create a default object for the class name if does not
+	 * @param $create_default boolean|callable Create a default object for the class name if it does
+	 *                                         not
 	 *        exist. Can be callable that creates the default object
 	 * @return mixed|T
 	 * @template T
@@ -227,7 +228,7 @@ class Session
 	 *
 	 * @return object[] index is class name, value is an object
 	 */
-	public function getAll()
+	public function getAll() : array
 	{
 		return $this->current;
 	}
@@ -239,7 +240,7 @@ class Session
 	 * @param $class_name string
 	 * @return object[] key is the class name of the object
 	 */
-	public function getAny($class_name)
+	public function getAny(string $class_name) : array
 	{
 		$get = [];
 		foreach ($this->getAll() as $key => $value) {
@@ -256,7 +257,7 @@ class Session
 	 *
 	 * @return string
 	 */
-	public function getApplicationName()
+	public function getApplicationName() : string
 	{
 		$current = $this->current[Application::class];
 		// TODO parse current[1] between '"' and replace array with string if R work well
@@ -269,9 +270,9 @@ class Session
 	/**
 	 * Remove an object from session
 	 *
-	 * @param $object_class string | object
+	 * @param $object_class object|string
 	 */
-	public function remove($object_class)
+	public function remove(object|string $object_class) : void
 	{
 		unset($this->current[is_string($object_class) ? $object_class : get_class($object_class)]);
 	}
@@ -280,9 +281,9 @@ class Session
 	/**
 	 * Remove any session variable that has $object_class as class or parent class
 	 *
-	 * @param $object_class string | object
+	 * @param $object_class object|string
 	 */
-	public function removeAny($object_class)
+	public function removeAny(object|string $object_class) : void
 	{
 		$class_name = is_string($object_class) ? $object_class : get_class($object_class);
 		$this->remove($class_name);
@@ -297,15 +298,14 @@ class Session
 	/**
 	 * Set a session's object
 	 *
-	 * @param $object object|mixed can be null (then nothing is set)
-	 * @param $class_name string if not set, object class is be the object identifier. Can be a free string too
+	 * @param $object     object|mixed can be null (then nothing is set)
+	 * @param $class_name string|null if not set, object class is the object identifier.
+	 *                    Can be a free string too
 	 */
-	public function set(mixed $object, $class_name = null)
+	public function set(mixed $object, string $class_name = null) : void
 	{
 		if (isset($object)) {
-			$class_name = Builder::current()->sourceClassName(
-				isset($class_name) ? $class_name : get_class($object)
-			);
+			$class_name = Builder::current()->sourceClassName($class_name ?? get_class($object));
 			$this->current[$class_name] = $object;
 		}
 	}
@@ -315,10 +315,10 @@ class Session
 	 * Returns current SID
 	 *
 	 * @example 'PHPSESSID=6kldcf5gbuk0u34cmihlo9gl22'
-	 * @param $prefix string You can prefix your SID with '?' or '&' to append it to an URI or URL
+	 * @param $prefix string You can prefix your SID with '?' or '&' to append it to a URI or URL
 	 * @return string
 	 */
-	public static function sid($prefix = '')
+	public static function sid(string $prefix = '') : string
 	{
 		return session_id() ? ($prefix . session_name() . '=' . session_id()) : '';
 	}
@@ -330,7 +330,7 @@ class Session
 	 * This will destroy the session data at the end of the script.
 	 * The session cookie will be removed so that a new session is created at next click.
 	 */
-	public function stop()
+	public function stop() : void
 	{
 		$params = session_get_cookie_params();
 		if ($_COOKIE[session_name()] === session_id()) {

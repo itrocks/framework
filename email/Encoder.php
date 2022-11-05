@@ -114,7 +114,7 @@ class Encoder
 	 * @param $message Mime\Email
 	 * @param $headers string[]
 	 */
-	protected function toHeaders(Mime\Email $message, array $headers)
+	protected function toHeaders(Mime\Email $message, array $headers) : void
 	{
 		$message_headers = $message->getHeaders();
 		if (!isset($headers['Message-ID'])) {
@@ -185,7 +185,7 @@ class Encoder
 		$image     = 0;
 		$html_part = $this->parseImages(
 			$this->email->content,
-			function($image_path) use($image, $message) : string {
+			function(string $image_path) use($image, $message) : string {
 				$cid = 'im' . ++$image;
 				$message->embedFromPath($image_path, $cid);
 				return $cid;

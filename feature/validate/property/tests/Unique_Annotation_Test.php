@@ -47,7 +47,7 @@ class Unique_Annotation_Test extends Test
 	}
 
 	//----------------------------------------------------------------- testValidateWithEmptyProperty
-	public function testValidateWithEmptyProperty()
+	public function testValidateWithEmptyProperty() : void
 	{
 		$this->dao_link->expects($this->never())->method('searchOne');
 		$object                  = new Test_Class();
@@ -58,7 +58,7 @@ class Unique_Annotation_Test extends Test
 	}
 
 	//------------------------------------------------------------------------- testWithValidateFalse
-	public function testWithValidateFalse()
+	public function testWithValidateFalse() : void
 	{
 		$this->dao_link->expects($this->once())->method('searchOne')->willReturn(new Test_Class());
 		$object                  = new Test_Class();
@@ -69,7 +69,7 @@ class Unique_Annotation_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------- testWithValidateTrue
-	public function testWithValidateTrue()
+	public function testWithValidateTrue() : void
 	{
 		$this->dao_link->expects($this->once())->method('searchOne')->willReturn(null);
 		$object                  = new Test_Class();

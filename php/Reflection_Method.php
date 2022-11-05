@@ -67,6 +67,12 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 */
 	private string $prototype_string;
 
+	//--------------------------------------------------------------------------- $return_type_string
+	/**
+	 * @var string
+	 */
+	private string $return_type_string;
+
 	//-------------------------------------------------------------------------------------- $returns
 	/**
 	 * @var boolean
@@ -241,6 +247,31 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 			}
 		}
 		return $this->parent ?: null;
+	}
+
+	//--------------------------------------------------------------------------- getReturnTypeString
+	/**
+	 * @return string
+	 */
+	public function getReturnTypeString() : string
+	{
+		if (!isset($this->return_type_string)) {
+			$this->return_type_string = '';
+			$get_type  =  false;
+			$tokens    =& $this->class->source->getTokens();
+			$token_key =  $this->token_key;
+			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
+			while (($tokens[++$token_key]) !== '(');
+			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
+			while (($tokens[++$token_key]) !== ')');
+			while (($token = $tokens[++$token_key]) !== '{') {
+				if ($get_type) {
+					$this->return_type_string .= $token;
+				}
+				if ($token === ':') $get_type = true;
+			}
+		}
+		return $this->return_type_string ?: 'void';
 	}
 
 	//---------------------------------------------------------------------------- getPrototypeString
@@ -476,7 +507,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	}
 
 	//------------------------------------------------------------------------------------ scanBefore
-	private function scanBefore()
+	private function scanBefore() : void
 	{
 		// don't initialise $this->is_abstract here ! this is done by isAbstract()
 		$this->is_final  = false;

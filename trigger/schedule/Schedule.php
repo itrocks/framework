@@ -76,7 +76,7 @@ class Schedule extends Trigger
 	 *
 	 * @noinspection PhpUnused @after_write
 	 */
-	public function calculateActionsNextLaunchDateTime()
+	public function calculateActionsNextLaunchDateTime() : void
 	{
 		Dao::begin();
 		$now = Date_Time::now();

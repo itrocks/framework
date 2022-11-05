@@ -50,7 +50,7 @@ class Application_Class_Tree_Filter
 	 * @param $route Route
 	 * @param $node  Node
 	 */
-	protected function closeRoute(Route $route, Node $node)
+	protected function closeRoute(Route $route, Node $node) : void
 	{
 		$route->parent         = $node;
 		$node->closed_routes[] = $route;
@@ -120,7 +120,7 @@ class Application_Class_Tree_Filter
 	 * @param $route Route
 	 * @param $node  Node
 	 */
-	protected function follow(Route $route, Node $node)
+	protected function follow(Route $route, Node $node) : void
 	{
 		if ($node->closes()) {
 			$this->closeRoute($route, $node);
@@ -140,7 +140,7 @@ class Application_Class_Tree_Filter
 	/**
 	 * @param $node Node
 	 */
-	protected function openRoutes(Node $node)
+	protected function openRoutes(Node $node) : void
 	{
 		foreach ($node->parents as $parent) {
 			$route = new Route($node, $parent);
@@ -164,7 +164,7 @@ class Application_Class_Tree_Filter
 	/**
 	 * Mark all checkpoint nodes
 	 */
-	protected function prepareCheckpoints()
+	protected function prepareCheckpoints() : void
 	{
 		$class_name = $this->class_name;
 		do {
@@ -185,7 +185,7 @@ class Application_Class_Tree_Filter
 	/**
 	 * Prepare the nodes list
 	 */
-	protected function prepareNodes()
+	protected function prepareNodes() : void
 	{
 		$applications = Application::current()->getClassesTree(Application::BOTH);
 
@@ -209,7 +209,7 @@ class Application_Class_Tree_Filter
 	 *
 	 * @param $routes Route[]
 	 */
-	private function removeUncheckedRouteNodes(array $routes)
+	private function removeUncheckedRouteNodes(array $routes) : void
 	{
 		foreach ($routes as $route) {
 			if (!$route->checked) {

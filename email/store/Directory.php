@@ -72,7 +72,7 @@ class Directory
 	/**
 	 * @param $parent Directory|null
 	 */
-	protected function setParent(Directory $parent = null)
+	protected function setParent(Directory $parent = null) : void
 	{
 		unset($this->full_path);
 		$this->parent = $parent;

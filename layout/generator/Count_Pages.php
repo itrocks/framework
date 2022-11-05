@@ -18,7 +18,7 @@ class Count_Pages
 	 *
 	 * @param $group Group
 	 */
-	protected function group(Group $group)
+	protected function group(Group $group) : void
 	{
 		$first_iteration  = true;
 		$structure        = $this->structure;

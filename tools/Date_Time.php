@@ -580,7 +580,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//------------------------------------------------------------------------------------------- now
 	/**
-	 * Returns current date-time
+	 * Returns current datetime
 	 *
 	 * @return static
 	 */

@@ -19,7 +19,7 @@ class Test extends Tests\Test
 	 * @param $schedule Schedule
 	 * @param $values   string[] key is the source value, expected is the next one
 	 */
-	protected function executeTests(Schedule $schedule, array $values)
+	protected function executeTests(Schedule $schedule, array $values) : void
 	{
 		$calculation = new Next_Calculation();
 		foreach ($values as $source => $expected) {
@@ -33,7 +33,7 @@ class Test extends Tests\Test
 	}
 
 	//-------------------------------------------------------------------------------- testDaysOfWeek
-	public function testDaysOfWeek()
+	public function testDaysOfWeek() : void
 	{
 		$schedule = new Schedule();
 
@@ -57,7 +57,7 @@ class Test extends Tests\Test
 	}
 
 	//------------------------------------------------------------------------------- testFiveMinutes
-	public function testFiveMinutes()
+	public function testFiveMinutes() : void
 	{
 		$schedule = new Schedule();
 
@@ -72,7 +72,7 @@ class Test extends Tests\Test
 	}
 
 	//-------------------------------------------------------------------------------- testHourRanges
-	public function testHourRanges()
+	public function testHourRanges() : void
 	{
 		$schedule = new Schedule();
 
@@ -131,7 +131,7 @@ class Test extends Tests\Test
 	/**
 	 * Mixed configuration test
 	 */
-	public function testMixed1()
+	public function testMixed1() : void
 	{
 		$schedule = new Schedule();
 		$schedule->days_of_week = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
@@ -157,7 +157,7 @@ class Test extends Tests\Test
 	/**
 	 * Test years
 	 */
-	public function testYears()
+	public function testYears() : void
 	{
 		$schedule                = new Schedule();
 		$schedule->days_of_month = 1;

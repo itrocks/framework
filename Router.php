@@ -117,7 +117,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $serialized array
 	 * @see Router::__construct()
 	 */
-	public function __unserialize(array $serialized)
+	public function __unserialize(array $serialized) : void
 	{
 		// routes file is read into __construct()
 	}
@@ -253,10 +253,10 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	private function fileToClassName(string $file_name) : string
 	{
 		$buffer = file_get_contents($file_name);
-		$expr = '%\n\s*(?:namespace\s+)([\w\\\\]+)%s';
+		$expr = '%\n\s*namespace\s+([\w\\\\]*)%';
 		preg_match($expr, $buffer, $match);
 		$in_namespace = $match ? $match[1] : '';
-		$expr = '%\n\s*(?:final\s+)?(?:abstract\s+)?(?:class|interface|trait)\s+(\w+)%s';
+		$expr = '%\n\s*(?:final\s+)?(?:abstract\s+)?(?:class|interface|trait)\s+(\w+)%';
 		preg_match($expr, $buffer, $match);
 		return $match
 			? ($in_namespace ? ($in_namespace . BS . $match[1]) : $match[1])
@@ -422,7 +422,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 *
 	 * @param $more_sources More_Sources
 	 */
-	public function moreSourcesToCompile(More_Sources $more_sources)
+	public function moreSourcesToCompile(More_Sources $more_sources) : void
 	{
 	}
 
@@ -472,6 +472,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $method_name string
 	 */
 	public function setPossibleControllerCall(Uri $uri, string $controller, string $method_name)
+		: void
 	{
 		if (isset($this->controller_calls[$uri->controller_name][$uri->feature_name])) {
 			[$check_controller, $check_method_name]
@@ -497,7 +498,8 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 */
 	public function setPossibleHtmlTemplate(
 		string $template_file, array $parameters, string $feature_name
-	) {
+	) : void
+	{
 		if (!$this->class_name) {
 			return;
 		}
@@ -519,7 +521,8 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	public function setPossibleViewCall(
 		string $class_name, string $feature_name, array $parameters, string $view,
 		string $view_method_name
-	) {
+	) : void
+	{
 		$features = isset($parameters[Feature::FEATURE])
 			? ($parameters[Feature::FEATURE] . DOT . $feature_name)
 			: $feature_name;

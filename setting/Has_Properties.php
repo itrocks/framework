@@ -112,7 +112,7 @@ trait Has_Properties
 	 * @param $property_path string
 	 * @param $title         string if empty, the title is removed to get back to default
 	 */
-	public function propertyTitle(string $property_path, string $title = '')
+	public function propertyTitle(string $property_path, string $title = '') : void
 	{
 		$this->initProperties();
 		if (isset($this->properties[$property_path])) {
@@ -124,7 +124,7 @@ trait Has_Properties
 	/**
 	 * @param $property_path string
 	 */
-	public function removeProperty(string $property_path)
+	public function removeProperty(string $property_path) : void
 	{
 		$this->initProperties();
 		if (isset($this->properties[$property_path])) {

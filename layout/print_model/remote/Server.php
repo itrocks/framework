@@ -102,7 +102,7 @@ class Server implements Registerable
 	 * @param $parameters Parameters
 	 * @param $class_name string
 	 */
-	public function storeCallback(Parameters $parameters, string $class_name)
+	public function storeCallback(Parameters $parameters, string $class_name) : void
 	{
 		if (!is_a($class_name, Print_Model::class, true) || !$parameters->has('callback')) {
 			return;

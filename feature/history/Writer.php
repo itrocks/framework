@@ -29,7 +29,7 @@ abstract class Writer
 	 * @param $object Has_History
 	 * @param $link   Data_Link
 	 */
-	public static function afterWrite(Has_History $object, Data_Link $link)
+	public static function afterWrite(Has_History $object, Data_Link $link) : void
 	{
 		$class_name = Builder::className(get_class($object));
 		if (
@@ -54,9 +54,9 @@ abstract class Writer
 	 * @param $object Has_History
 	 * @param $link   Data_Link
 	 */
-	public static function beforeWrite(Has_History $object, Data_Link $link)
+	public static function beforeWrite(Has_History $object, Data_Link $link) : void
 	{
-		// this begin() will be solved into afterWrite()
+		// Dao::begin() will be solved into afterWrite()
 		Dao::begin();
 		if (($link instanceof Identifier_Map) && ($identifier = $link->getObjectIdentifier($object))) {
 			$class_name = Builder::className(get_class($object));

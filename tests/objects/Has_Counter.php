@@ -17,13 +17,13 @@ trait Has_Counter
 	/**
 	 * @param $counter integer
 	 */
-	abstract public function setCounter(int $counter);
+	abstract public function setCounter(int $counter) : void;
 
 	//------------------------------------------------------------------------------------- setNumber
 	/**
 	 * @before ITRocks\Framework\Dao\Data_Link::write($this)
 	 */
-	public function setNumber()
+	public function setNumber() : void
 	{
 		if (!isA($this, Has_Counter::class)) {
 			return;

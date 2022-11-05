@@ -61,7 +61,7 @@ class Paths_Test extends Test
 	 * @param $class_name string The test data
 	 * @param $expected   string Expected result for given data
 	 */
-	public function testClassToPathToClass(string $class_name, string $expected)
+	public function testClassToPathToClass(string $class_name, string $expected) : void
 	{
 		$actual = Compiler::cacheFileNameToClass(
 			basename(Compiler::classToCacheFilePath($class_name))
@@ -78,7 +78,7 @@ class Paths_Test extends Test
 	 * @param $source_file string The given source file
 	 * @param $expected    string The expected result for the given source file
 	 */
-	public function testSourceFileToPathToSourceFile(string $source_file, string $expected)
+	public function testSourceFileToPathToSourceFile(string $source_file, string $expected) : void
 	{
 		$actual = Compiler::cacheFileNameToSourceFile(
 			Compiler::sourceFileToCacheFileName($source_file)

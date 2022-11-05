@@ -241,7 +241,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * Set $all to true if you change anything into the source, to ensure that every source cache
 	 * has been reset.
 	 */
-	public function free()
+	public function free() : void
 	{
 		$property_defaults = get_class_vars(get_class($this));
 		unset($property_defaults['annotations_cache']);
@@ -992,7 +992,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * Replaces the parent by its replacement class, if already built
 	 */
-	protected function parentReplacement()
+	protected function parentReplacement() : void
 	{
 		$parent_class_name = is_string($this->parent) ? $this->parent : $this->parent->name;
 		if (Builder::current()->isReplaced($parent_class_name, true)) {
@@ -1061,7 +1061,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * Scan tokens until the class begins
 	 */
-	private function scanUntilClassBegins()
+	private function scanUntilClassBegins() : void
 	{
 		if (isset($this->interfaces)) {
 			return;
@@ -1105,7 +1105,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * Scan tokens until the class ends
 	 */
-	private function scanUntilClassEnds()
+	private function scanUntilClassEnds() : void
 	{
 		if (isset($this->methods)) {
 			return;
@@ -1195,7 +1195,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 				case T_FUNCTION:
 					if ($depth === 1) {
-						$line = $token[2];
+						$line      = $token[2];
 						$token_key = $this->token_key;
 						/** @noinspection PhpStatementHasEmptyBodyInspection ++ inside */
 						while ($this->tokens[++$this->token_key][0] !== T_STRING);
@@ -1243,7 +1243,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * Scan tokens until class name
 	 * This resets the tokens scan to start from the namespace declaration
 	 */
-	private function scanUntilClassName()
+	private function scanUntilClassName() : void
 	{
 		if (isset($this->use)) {
 			if (!isset($this->name)) {
@@ -1332,7 +1332,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $class_name       string
 	 * @param $wrong_class_name string
 	 */
-	private function wrongCaseError(string $class_name, string $wrong_class_name)
+	private function wrongCaseError(string $class_name, string $wrong_class_name) : void
 	{
 		// look for the source class where the class name is wrong
 		foreach ((new Call_Stack())->lines() as $line) {

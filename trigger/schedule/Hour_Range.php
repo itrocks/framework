@@ -64,7 +64,7 @@ class Hour_Range
 	 *
 	 * @param $until string
 	 */
-	public function normalize(string $until = '23:59:59')
+	public function normalize(string $until = '23:59:59') : void
 	{
 		if (!$this->from) {
 			$this->from = '00:00:00';

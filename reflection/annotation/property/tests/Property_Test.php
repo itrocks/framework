@@ -73,7 +73,7 @@ class Property_Test extends Test
 	/**
 	 * Test default annotation
 	 */
-	public function testDefaultAnnotation()
+	public function testDefaultAnnotation() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constants */
 		$property = new Reflection_Property(Test_Object::class, 'property');
@@ -84,7 +84,7 @@ class Property_Test extends Test
 	/**
 	 * Test @default annotation into the simplest context : no AOP
 	 */
-	public function testDefaultSimple()
+	public function testDefaultSimple() : void
 	{
 		$robert = new Default_Simple();
 		static::assertEquals(18, $robert->age, '@default.override');
@@ -132,9 +132,9 @@ class Property_Test extends Test
 
 	//--------------------------------------------------------------------- testGetterAnnotationCases
 	/**
-	 * Test property @getter : cases of uses
+	 * Test property @getter cases of uses
 	 */
-	public function testGetterAnnotationCases()
+	public function testGetterAnnotationCases() : void
 	{
 		$this->subject->getter_simple = 'a value for simple';
 		static::assertEquals('a value for simple with getter simple', $this->subject->getter_simple);
@@ -147,7 +147,7 @@ class Property_Test extends Test
 	/**
 	 * Test property @getter : setting annotation value
 	 */
-	public function testGetterAnnotationSet()
+	public function testGetterAnnotationSet() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid object and constant */
 		$property = new Reflection_Property($this->subject, 'property');
@@ -194,7 +194,8 @@ class Property_Test extends Test
 	 */
 	public function testIntegratedAnnotationConstruct(
 		string $init, array $expected_value, array $expected_properties
-	) {
+	) : void
+	{
 		$integrated = new Integrated_Annotation($init);
 		static::assertEquals($expected_value, $integrated->value);
 		static::assertEquals($expected_properties, $integrated->properties);
@@ -202,9 +203,9 @@ class Property_Test extends Test
 
 	//--------------------------------------------------------------------- testSetterAnnotationCases
 	/**
-	 * Test property @setter : cases of uses
+	 * Test property @setter cases of uses
 	 */
-	public function testSetterAnnotationCases()
+	public function testSetterAnnotationCases() : void
 	{
 		$this->subject->setter_simple = 'a value for simple';
 		static::assertEquals('a value for simple with setter simple', $this->subject->setter_simple);
@@ -217,7 +218,7 @@ class Property_Test extends Test
 	/**
 	 * Test annotation with multi-lines values
 	 */
-	public function testWithValues()
+	public function testWithValues() : void
 	{
 		$this->subject->with_values = 'a_value';
 		/** @noinspection PhpUnhandledExceptionInspection valid object and constant property */

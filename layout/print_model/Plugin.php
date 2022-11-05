@@ -26,7 +26,7 @@ class Plugin implements Installable
 	/**
 	 * @param $installer Installer
 	 */
-	public function install(Installer $installer)
+	public function install(Installer $installer) : void
 	{
 		$installer->addMenu(
 			['Administration' => [View::link(Print_Model::class, Feature::F_LIST) => 'Print models']]

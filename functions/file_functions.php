@@ -81,7 +81,7 @@ function findInDirectory(
  * @param $filename string
  */
 if (!function_exists('opcache_invalidate')) {
-	function opcache_invalidate($filename)
+	function opcache_invalidate(string $filename) : void
 	{
 		// if there is no opcache, there is nothing to do
 	}
@@ -95,7 +95,7 @@ if (!function_exists('opcache_invalidate')) {
  * @param $filename string
  * @param $data     string
  */
-function script_put_contents(string $filename, string $data)
+function script_put_contents(string $filename, string $data) : void
 {
 	file_put_contents($filename, $data);
 	clearstatcache(true, $filename);

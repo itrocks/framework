@@ -15,7 +15,7 @@ class Menu extends Configuration
 	/**
 	 * @param $source Reflection_Source
 	 */
-	public function compile(Reflection_Source $source)
+	public function compile(Reflection_Source $source) : void
 	{
 		Component\Menu::get()->refresh();
 	}

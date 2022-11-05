@@ -97,6 +97,7 @@ class Counter
 	 * @param $property_name string The name of the property containing the counter value
 	 */
 	public static function autoDecrement(object|string $object, string $property_name = 'number')
+		: void
 	{
 		$class_name = is_object($object) ? get_class($object) : $object;
 		$class_name = Builder::current()->sourceClassName($class_name);
@@ -112,7 +113,7 @@ class Counter
 	 * @param $class_name    string
 	 * @param $property_name string
 	 */
-	protected function decrement(string $class_name, string $property_name)
+	protected function decrement(string $class_name, string $property_name) : void
 	{
 		$old_value = $this->last_value;
 		while (
@@ -322,7 +323,7 @@ class Counter
 	/**
 	 * @param $mutex Mutex
 	 */
-	protected static function unlock(Mutex $mutex)
+	protected static function unlock(Mutex $mutex) : void
 	{
 		$mutex->unlock();
 	}

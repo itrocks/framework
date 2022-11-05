@@ -48,7 +48,7 @@ abstract class File
 	 * @param $class_name string
 	 * @param $force integer
 	 */
-	public function addUseFor(string $class_name, int $force = 0)
+	public function addUseFor(string $class_name, int $force = 0) : void
 	{
 		if ($force) {
 			$use = lParse($class_name, BS, $force);
@@ -66,7 +66,7 @@ abstract class File
 	 *
 	 * @param $use string
 	 */
-	protected function addUseForClassName(string $use)
+	protected function addUseForClassName(string $use) : void
 	{
 		while (str_contains($use, BS) && !in_array($use, $this->use) && $this->useConflict($use)) {
 			$use = lParse($use, BS);
@@ -114,7 +114,7 @@ abstract class File
 	/**
 	 * Read from file
 	 */
-	abstract public function read();
+	abstract public function read() : void;
 
 	//------------------------------------------------------------------------------ shortClassNameOf
 	/**
@@ -172,6 +172,6 @@ abstract class File
 	/**
 	 * Write to file
 	 */
-	abstract public function write();
+	abstract public function write() : void;
 
 }

@@ -86,7 +86,7 @@ class Element
 	 * @noinspection PhpUnused @setter
 	 * @param $path string
 	 */
-	public function setPath(string $path)
+	public function setPath(string $path) : void
 	{
 		$this->element->setAttribute($this->path_attribute, $path);
 	}
@@ -97,7 +97,7 @@ class Element
 	 *
 	 * @see Template_Compiler::getCompiledPath
 	 */
-	public function toRelativePath()
+	public function toRelativePath() : void
 	{
 		$this->path = DD . SL . DD . SL . Paths::getRelativeFileName($this->path);
 	}

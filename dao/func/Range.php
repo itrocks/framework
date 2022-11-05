@@ -52,7 +52,7 @@ class Range implements Negate, Where
 	/**
 	 * Negate the Dao function
 	 */
-	public function negate()
+	public function negate() : void
 	{
 		$this->between = !$this->between;
 	}

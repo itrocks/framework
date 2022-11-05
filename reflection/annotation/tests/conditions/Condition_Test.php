@@ -40,7 +40,7 @@ class Condition_Test extends Test
 	/**
 	 * Tests the Conditions
 	 */
-	public function testConditionsForm()
+	public function testConditionsForm() : void
 	{
 		$object = new Conditions();
 		$line1  = new Conditions_Collection();

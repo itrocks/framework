@@ -13,7 +13,7 @@ class Main_Error_Handler implements Error_Handler
 	 *
 	 * @param $error Handled_Error
 	 */
-	public function handle(Handled_Error $error)
+	public function handle(Handled_Error $error) : void
 	{
 		echo '<div class="fatal error handler">'
 		. '<span class="number">' . $error->getErrorNumber() . '</span>'

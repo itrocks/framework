@@ -53,7 +53,7 @@ class Text extends Field implements Has_Init
 	}
 
 	//------------------------------------------------------------------------------------------ init
-	public function init()
+	public function init() : void
 	{
 		if ($this->font_size && !$this->height) {
 			$this->calculateHeight();

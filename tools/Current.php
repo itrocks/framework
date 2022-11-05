@@ -15,7 +15,7 @@ use ITRocks\Framework\Session;
  * {
  *   use Current { current as private pCurrent; }
  *   // doc-comment here with param $set_current A_Class and return A_Class annotations
- *   public static function current($set_current = null)
+ *   public static function current(self $set_current = null) : ?static
  *   {
  *     return self::pCurrent($set_current);
  *   }
@@ -25,7 +25,7 @@ use ITRocks\Framework\Session;
  * class Another_Class extends A_Class
  * {
  *   // doc-comment here with param $set_current Another_Class and return Another_Class annotations
- *   public static function current($set_current = null)
+ *   public static function current(self $set_current = null) : ?static
  *   {
  *     return parent::current($set_current);
  *   }

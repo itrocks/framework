@@ -131,7 +131,7 @@ class Selection
 	 * return $selection->readDataSelect();
 	 * @param $list_settings List_Setting\Set
 	 */
-	public function allFromListSettings(List_Setting\Set $list_settings)
+	public function allFromListSettings(List_Setting\Set $list_settings) : void
 	{
 		$this->setFormData(['select_all' => true]);
 		$this->list_settings = $list_settings;
@@ -144,7 +144,7 @@ class Selection
 	 *
 	 * @see setFormData, setObject
 	 */
-	protected function flush()
+	protected function flush() : void
 	{
 		$this->list_controller = null;
 		$this->list_settings   = null;
@@ -255,8 +255,8 @@ class Selection
 	 * @param $search          array|object|null Search array for filter, associating properties names
 	 *                         to matching search value too
 	 * @param $options         Option|Option[]|string|string[] some options for advanced search
-	 * @return List_Data A list of read records. Each record values (may be objects) are
-	 *         stored in the same order than columns.
+	 * @return List_Data A list of read records. Each record values (it may be objects) are
+	 *         stored in the same order as columns.
 	 * @return List_Data[]
 	 */
 	public function readDataSelect(
@@ -303,9 +303,9 @@ class Selection
 
 	//--------------------------------------------------------------------------- removeSearchOptions
 	/**
-	 * @param $options Option[]|string[] remove OptionClass options when there is an '!Option_Class'
+	 * @param $options Option[]|string[] remove OptionClass options when there is an !Option_Class
 	 */
-	protected function removeSearchOptions(array &$options)
+	protected function removeSearchOptions(array &$options) : void
 	{
 		foreach ($options as $key1 => $option) {
 			if (is_string($option) && str_starts_with($option, '!')) {
@@ -343,7 +343,7 @@ class Selection
 	 *
 	 * @param $form string[]
 	 */
-	public function setFormData(array $form)
+	public function setFormData(array $form) : void
 	{
 		$this->excluded_selection = empty($form['excluded_selection'])
 			? []
@@ -362,7 +362,7 @@ class Selection
 	 *
 	 * @param $object object|string object or class name
 	 */
-	public function setObject(object|string $object)
+	public function setObject(object|string $object) : void
 	{
 		if ($object instanceof Parameters) {
 			$object = $object->getMainObject();

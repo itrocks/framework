@@ -38,7 +38,7 @@ class Uninstall_Controller implements Feature_Controller
 			foreach ($dependents as $dependent) {
 				$dependent->title = Loc::tr($dependent->title);
 			}
-			uasort($dependents, function(Feature $f1, Feature $f2) {
+			uasort($dependents, function(Feature $f1, Feature $f2) : int {
 				return strcmp($f1->title, $f2->title);
 			});
 			$parameters->set(

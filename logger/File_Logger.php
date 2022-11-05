@@ -72,7 +72,7 @@ class File_Logger implements Configurable
 	/**
 	 * Close the file and clean
 	 */
-	protected function close()
+	protected function close() : void
 	{
 		if (!empty($this->file)) {
 			fclose($this->file);

@@ -30,7 +30,7 @@ class By_Token implements Registerable
 	 * @param $get  string[]
 	 * @param $post string[]
 	 */
-	public function apply(array &$get, array &$post)
+	public function apply(array &$get, array &$post) : void
 	{
 		if ($get[static::TOKEN] ?? false) {
 			$token = $get[static::TOKEN];
@@ -90,7 +90,7 @@ class By_Token implements Registerable
 	/**
 	 * purge all old tokens
 	 */
-	public function purge()
+	public function purge() : void
 	{
 		$search = ['validity_end_date' => Func::lessOrEqual(Date_Time::now())];
 		foreach (Dao::search($search, Token::class) as $token) {

@@ -75,7 +75,7 @@ abstract class Paths
 	 * @example https://itrocks.org/wiki
 	 * @return string
 	 */
-	public static function absoluteBase()
+	public static function absoluteBase() : string
 	{
 		return static::protocolServer() . static::$uri_base;
 	}
@@ -122,7 +122,7 @@ abstract class Paths
 	 * @param $server_name string        Environment to use.
 	 * @return string
 	 */
-	public static function getUrl(object|string $object = '', string $server_name = '')
+	public static function getUrl(object|string $object = '', string $server_name = '') : string
 	{
 		return static::protocol() . '://'
 			. ($server_name ?: static::server())
@@ -155,7 +155,7 @@ abstract class Paths
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	public static function register()
+	public static function register() : void
 	{
 		$slash   = strrpos($_SERVER['SCRIPT_NAME'], SL) + 1;
 		$dot_php = strrpos($_SERVER['SCRIPT_NAME'], '.php') ?: 1;

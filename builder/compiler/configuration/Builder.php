@@ -14,7 +14,7 @@ class Builder extends Configuration
 	/**
 	 * @param $source Reflection_Source
 	 */
-	public function compile(Reflection_Source $source)
+	public function compile(Reflection_Source $source) : void
 	{
 		// adding /removing built classes is already done by Compiler::moreSourcesToCompile
 	}

@@ -43,7 +43,7 @@ class Cached
 	/**
 	 * Call this each time the object is accessed : its access date-time will be updated
 	 */
-	public function access()
+	public function access() : void
 	{
 		$this->date = new Date_Time();
 	}

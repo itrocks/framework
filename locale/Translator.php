@@ -157,7 +157,7 @@ class Translator
 	/**
 	 * Delete empty translations from storage
 	 */
-	public function deleteEmpty()
+	public function deleteEmpty() : void
 	{
 		$dao = Dao::current();
 		Dao::begin();
@@ -344,7 +344,7 @@ class Translator
 	 * @param $translation string
 	 * @param $context     string
 	 */
-	public function setTranslation(string $text, string $translation, string $context = '')
+	public function setTranslation(string $text, string $translation, string $context = '') : void
 	{
 		$this->cache[strtolower($text)][$context] = $translation;
 	}

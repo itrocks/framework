@@ -35,7 +35,7 @@ class Foreign_Keys_Tools
 	 * @param $table  string
 	 * @param $column string
 	 */
-	public function toColumn(string $table, string $column)
+	public function toColumn(string $table, string $column) : void
 	{
 		// TODO Some things, I assume
 		/*

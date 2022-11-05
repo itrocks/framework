@@ -20,8 +20,9 @@ interface Column extends Field
 	 * Returns true if the column is an equivalent of the other column
 	 *
 	 * @param $column Column
+	 * @return bool
 	 */
-	public function equiv(Column $column);
+	public function equiv(Column $column) : bool;
 
 	//------------------------------------------------------------------------------- getDefaultValue
 	/**

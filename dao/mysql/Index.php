@@ -33,7 +33,7 @@ class Index implements Sql\Index
 	 *
 	 * @param $column_name string
 	 */
-	public function addKey(string $column_name)
+	public function addKey(string $column_name) : void
 	{
 		$this->keys[] = new Key($column_name);
 	}
@@ -90,7 +90,7 @@ class Index implements Sql\Index
 	/**
 	 * @param $type string self::KEY, self::PRIMARY, self::UNIQUE
 	 */
-	public function setType(string $type)
+	public function setType(string $type) : void
 	{
 		$this->type = $type;
 	}

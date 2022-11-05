@@ -25,7 +25,8 @@ class Reconnect implements Registerable
 	 */
 	public function onMysqliQueryError(
 		Contextual_Mysqli &$object, string $query, Before_Method $joinpoint
-	) {
+	) : void
+	{
 		$mysqli =& $object;
 		if (
 			in_array($mysqli->last_errno, [Errors::CR_SERVER_GONE_ERROR, Errors::CR_SERVER_LOST], true)
@@ -61,8 +62,10 @@ class Reconnect implements Registerable
 	 * A functional test for reconnect :
 	 * Executes a query once per seconds during one minute.
 	 * Try to kill the running mysql thread during the test : the connexion should come back.
+	 *
+	 * @return string
 	 */
-	public function test()
+	public function test() : string
 	{
 		$time = time();
 		for ($i = 1; $i <= 15; $i ++) {

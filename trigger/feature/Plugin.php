@@ -30,7 +30,7 @@ class Plugin extends Trigger\Plugin
 	/**
 	 * @param $uri Uri
 	 */
-	public function afterExecuteController(Uri $uri)
+	public function afterExecuteController(Uri $uri) : void
 	{
 		$object = $uri->parameters->getMainObject();
 		if (!($identifier = Dao::getObjectIdentifier($object))) {
@@ -62,7 +62,7 @@ class Plugin extends Trigger\Plugin
 	/**
 	 * @param $uri Uri
 	 */
-	public function beforeExecuteController(Uri $uri)
+	public function beforeExecuteController(Uri $uri) : void
 	{
 		$parameters = clone $uri->parameters;
 		$object     = $parameters->getMainObject();

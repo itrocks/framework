@@ -66,7 +66,8 @@ abstract class Range
 	 */
 	protected static function applyRangeValue(
 		string $expression, ?Reflection_Property $property, int $range_side
-	) {
+	) : Func\Comparison|Func\Logical|Func\Range|string
+	{
 		$type_string = $property?->getType()->asString();
 		return ($type_string === Date_Time::class)
 			? Date::applyDateRangeValue($expression, $property, $range_side)

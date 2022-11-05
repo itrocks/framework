@@ -30,7 +30,7 @@ class Callback_Error_Handler implements Error_Handler
 	 *
 	 * @param $error Handled_Error
 	 */
-	public function handle(Handled_Error $error)
+	public function handle(Handled_Error $error) : void
 	{
 		call_user_func($this->callback_function, $error);
 	}

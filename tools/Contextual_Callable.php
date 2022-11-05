@@ -37,10 +37,10 @@ class Contextual_Callable
 
 	//------------------------------------------------------------------------------------------ call
 	/**
-	 * @param $args mixed,...
+	 * @param $args mixed ...
 	 * @return mixed
 	 */
-	public function call($args = null)
+	public function call(mixed ...$args) : mixed
 	{
 		return func_num_args()
 			? call_user_func_array($this->getCallable(), func_get_args())
@@ -52,7 +52,7 @@ class Contextual_Callable
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return callable
 	 */
-	public function getCallable()
+	public function getCallable() : callable
 	{
 		if ($i = strpos($this->callable_string, '::')) {
 			$class_name = substr($this->callable_string, 0, $i);

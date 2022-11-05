@@ -76,7 +76,7 @@ class Alter_Table
 	 *
 	 * @param $column Column
 	 */
-	public function addColumn(Column $column)
+	public function addColumn(Column $column) : void
 	{
 		$this->add_columns[$column->getName()] = $column;
 	}
@@ -87,7 +87,7 @@ class Alter_Table
 	 *
 	 * @param $foreign_key Foreign_Key
 	 */
-	public function addForeignKey(Foreign_Key $foreign_key)
+	public function addForeignKey(Foreign_Key $foreign_key) : void
 	{
 		$this->add_foreign_keys[$foreign_key->getFields()[0]] = $foreign_key;
 	}
@@ -99,7 +99,7 @@ class Alter_Table
 	 * @param $old_column_name string
 	 * @param $column          Column
 	 */
-	public function alterColumn(string $old_column_name, Column $column)
+	public function alterColumn(string $old_column_name, Column $column) : void
 	{
 		$this->alter_columns[$old_column_name] = $column;
 	}
@@ -108,7 +108,7 @@ class Alter_Table
 	/**
 	 * @param $foreign_key Foreign_Key
 	 */
-	public function alterForeignKey(Foreign_Key $foreign_key)
+	public function alterForeignKey(Foreign_Key $foreign_key) : void
 	{
 		$this->dropForeignKey($foreign_key);
 		$this->addForeignKey($foreign_key);
@@ -339,7 +339,7 @@ class Alter_Table
 	 *
 	 * @param $foreign_key Foreign_Key
 	 */
-	public function dropForeignKey(Foreign_Key $foreign_key)
+	public function dropForeignKey(Foreign_Key $foreign_key) : void
 	{
 		$this->drop_foreign_keys[$foreign_key->getFields()[0]] = $foreign_key;
 	}
@@ -366,7 +366,7 @@ class Alter_Table
 	 * @param $character_set string
 	 * @param $collate       string
 	 */
-	public function setCharacterSet(string $character_set, string $collate)
+	public function setCharacterSet(string $character_set, string $collate) : void
 	{
 		$this->set_character_set = "DEFAULT CHARSET=$character_set COLLATE=$collate";
 	}
@@ -376,7 +376,7 @@ class Alter_Table
 	 * @param $lock_tables string a list of table names, back-quoted and separated by ', '
 	 * @param $table       string a table name
 	 */
-	protected function sqlAddLockTable(string &$lock_tables, string $table)
+	protected function sqlAddLockTable(string &$lock_tables, string $table) : void
 	{
 		if (!str_contains($lock_tables, BQ . $table . BQ)) {
 			$lock_tables .= ', ' . BQ . $table . BQ . ' WRITE';

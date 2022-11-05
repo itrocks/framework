@@ -49,7 +49,7 @@ class Error_Handlers implements Activable, Configurable
 	}
 
 	//-------------------------------------------------------------------------------------- activate
-	public function activate()
+	public function activate() : void
 	{
 		$this->setAsErrorHandler();
 	}
@@ -61,7 +61,7 @@ class Error_Handlers implements Activable, Configurable
 	 * @param $error_types   integer
 	 * @param $error_handler Error_Handler
 	 */
-	public static function add(int $error_types, Error_Handler $error_handler)
+	public static function add(int $error_types, Error_Handler $error_handler) : void
 	{
 		Error_Handlers::getInstance()->addHandler($error_types, $error_handler);
 	}
@@ -185,7 +185,7 @@ class Error_Handlers implements Activable, Configurable
 	/**
 	 * Activate error handler instance as the main error handler
 	 */
-	public static function on()
+	public static function on() : void
 	{
 		Error_Handlers::getInstance()->setAsErrorHandler();
 	}
@@ -194,7 +194,7 @@ class Error_Handlers implements Activable, Configurable
 	/**
 	 * Define Error_Handlers::handle() as default PHP error handler for all registered error types
 	 */
-	public function setAsErrorHandler()
+	public function setAsErrorHandler() : void
 	{
 		register_shutdown_function([$this, 'shutdown']);
 		set_error_handler([$this, 'handle'], $this->getHandledErrorTypesAsInt());
@@ -204,7 +204,7 @@ class Error_Handlers implements Activable, Configurable
 	/**
 	 * Deal with special case of errors that are not catch 'naturally' by the error handler
 	 */
-	public function shutdown()
+	public function shutdown() : void
 	{
 		if (
 			($error = error_get_last())

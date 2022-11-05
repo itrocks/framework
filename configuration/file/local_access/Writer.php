@@ -14,7 +14,7 @@ class Writer extends File\Writer
 {
 
 	//---------------------------------------------------------------------------- writeConfiguration
-	protected function writeConfiguration()
+	protected function writeConfiguration() : void
 	{
 		$this->lines[] = 'return [';
 		$counter       = count($this->file->lines);

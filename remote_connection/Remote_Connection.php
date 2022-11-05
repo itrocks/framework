@@ -14,35 +14,35 @@ interface Remote_Connection
 	/**
 	 * @param $file string
 	 */
-	public function delete(string $file);
+	public function delete(string $file) : void;
 
 	//------------------------------------------------------------------------------------------- dir
 	/**
 	 * @param $path string
 	 */
-	public function dir(string $path);
+	public function dir(string $path) : void;
 
 	//------------------------------------------------------------------------------------ disconnect
-	public function disconnect();
+	public function disconnect() : void;
 
 	//----------------------------------------------------------------------------------------- mkdir
 	/**
 	 * @param $path string
 	 */
-	public function mkdir(string $path);
+	public function mkdir(string $path) : void;
 
 	//--------------------------------------------------------------------------------------- receive
 	/**
 	 * @param $distant string
 	 * @param $local   string
 	 */
-	public function receive(string $distant, string $local);
+	public function receive(string $distant, string $local) : void;
 
 	//------------------------------------------------------------------------------------------ send
 	/**
 	 * @param $local   string
 	 * @param $distant string
 	 */
-	public function send(string $local, string $distant);
+	public function send(string $local, string $distant) : void;
 
 }

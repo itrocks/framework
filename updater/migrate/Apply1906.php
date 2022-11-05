@@ -15,8 +15,10 @@ class Apply1906
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * Controller function
+	 *
+	 * @return string
 	 */
-	public function run()
+	public function run() : string
 	{
 		$this->migrateSettings([
 			// older changes (in order to remove some compatibility code)

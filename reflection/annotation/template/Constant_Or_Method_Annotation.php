@@ -104,7 +104,7 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 	 *
 	 * @param $callable callable
 	 */
-	public function setMethod(callable $callable)
+	public function setMethod(callable $callable) : void
 	{
 		parent::setMethod($callable);
 		$this->is_method = true;
@@ -116,7 +116,7 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 	 *
 	 * @param $text string
 	 */
-	public function setText(string $text)
+	public function setText(string $text) : void
 	{
 		$this->is_method = false;
 		$this->value     = $text;

@@ -76,13 +76,13 @@ class Validator implements Registerable
 	public bool $warning_on = false;
 
 	//------------------------------------------------------------------------ afterMainControllerRun
-	public function afterMainControllerRun()
+	public function afterMainControllerRun() : void
 	{
 		$this->validator_on = false;
 	}
 
 	//------------------------------------------------------------------------ afterSaveControllerRun
-	public function afterSaveControllerRun()
+	public function afterSaveControllerRun() : void
 	{
 		$this->warning_on = false;
 	}
@@ -92,7 +92,7 @@ class Validator implements Registerable
 	 * @param $write_objects array
 	 * @throws Exception
 	 */
-	public function afterSaveControllerWrite(array $write_objects)
+	public function afterSaveControllerWrite(array $write_objects) : void
 	{
 		if ($this->warningEnabled() && $this->getWarnings()) {
 			throw new Exception($this->notValidated(reset($write_objects)->object));
@@ -100,7 +100,7 @@ class Validator implements Registerable
 	}
 
 	//----------------------------------------------------------------------- beforeMainControllerRun
-	public function beforeMainControllerRun()
+	public function beforeMainControllerRun() : void
 	{
 		$this->validator_on = true;
 	}
@@ -114,7 +114,7 @@ class Validator implements Registerable
 	 * @param $joinpoint Before_Method
 	 * @throws Exception
 	 */
-	public function beforePropertyStoreString(Before_Method $joinpoint)
+	public function beforePropertyStoreString(Before_Method $joinpoint) : void
 	{
 		$object = $joinpoint->parameters['value'];
 		if (is_object($object) && $this->validator_on) {
@@ -132,7 +132,7 @@ class Validator implements Registerable
 	/**
 	 * @param $parameters Parameters
 	 */
-	public function beforeSaveControllerRun(Parameters $parameters)
+	public function beforeSaveControllerRun(Parameters $parameters) : void
 	{
 		if (!$parameters->getRawParameter('confirm')) {
 			$this->warning_on = true;
@@ -150,6 +150,7 @@ class Validator implements Registerable
 	 * @throws Exception
 	 */
 	public function beforeWrite(object $object, array $options, ?string $before_write_annotation)
+		: void
 	{
 		if (($before_write_annotation === 'before_writes') || ($object instanceof Except)) {
 			return;

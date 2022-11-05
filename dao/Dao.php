@@ -150,7 +150,7 @@ class Dao implements Configurable
 	 * If the storage space already exists, it is updated without losing data
 	 *
 	 * @param $class_name string
-	 * @return boolean true if storage was created or updated, false if it was already up to date
+	 * @return boolean true if storage was created or updated, false if it was already up-to-date
 	 */
 	public static function createStorage(string $class_name) : bool
 	{
@@ -193,7 +193,7 @@ class Dao implements Configurable
 	 * @param $load_linked_objects boolean if true, load linked objects before disconnect
 	 * @see Data_Link::disconnect()
 	 */
-	public static function disconnect(object $object, bool $load_linked_objects = false)
+	public static function disconnect(object $object, bool $load_linked_objects = false) : void
 	{
 		self::current()->disconnect($object, $load_linked_objects);
 	}
@@ -322,7 +322,7 @@ class Dao implements Configurable
 	 * A null value will be returned for an object that is not linked to current data link.
 	 *
 	 * If property name is set, the object property value identifier will be read instead of the
-	 * object's identifier. This enable you to get the property value id without reading the object
+	 * object's identifier. This enables you to get the property value id without reading the object
 	 * from the database.
 	 *
 	 * @param $object        ?object
@@ -363,7 +363,7 @@ class Dao implements Configurable
 	 *
 	 * @param $object1 ?object
 	 * @param $object2 ?object
-	 * @param $strict  boolean if true, will consider @link object and non-@link object as different
+	 * @param $strict  boolean if true, will consider @link object and no-@link object as different
 	 * @return boolean
 	 */
 	public static function is(?object $object1, ?object $object2, bool $strict = false) : bool
@@ -427,13 +427,13 @@ class Dao implements Configurable
 	/**
 	 * Tells that an object has been modified since it was read from the DAO and should be written.
 	 *
-	 * This disable the Link_Class_Only Dao option automatically set by Write::writeCollection
+	 * This disables the Link_Class_Only Dao option automatically set by Write::writeCollection
 	 *
 	 * @param $object object
 	 * @param $modified boolean true to enable 'modified, force write' ; false to disable it
 	 * @see Write::writeCollection
 	 */
-	public static function modifyLinkedObject(object $object, bool $modified = true)
+	public static function modifyLinkedObject(object $object, bool $modified = true) : void
 	{
 		if ($modified) {
 			$object->_dao_modified_linked_object = true;
@@ -453,21 +453,21 @@ class Dao implements Configurable
 	 * @param $properties string[]|string ...
 	 * @return Option\Only
 	 */
-	public static function only(array|string... $properties)
+	public static function only(array|string... $properties) : Option\Only
 	{
 		return new Option\Only(func_get_args());
 	}
 
 	//--------------------------------------------------------------------------------------- preLoad
 	/**
-	 * Pre-load objects from the data storage during the query
+	 * Preload objects from the data storage during the query
 	 *
 	 * For optimization purpose : this allows to get multiple linked objects in only one query.
 	 *
 	 * @param $properties string[]|string ...
 	 * @return Option\Pre_Load
 	 */
-	public static function preLoad(array|string... $properties)
+	public static function preLoad(array|string... $properties) : Option\Pre_Load
 	{
 		return new Option\Pre_Load(func_get_args());
 	}
@@ -477,7 +477,8 @@ class Dao implements Configurable
 	 * Read an object from current data link
 	 *
 	 * @param $identifier mixed|T identifier for the object, or an object to re-read
-	 * @param $class_name class-string<T>|null class for read object. Useless if $identifier is object
+	 * @param $class_name class-string<T>|null class for read object. Useless if $identifier is an
+	 *                    object
 	 * @return ?T an object of class objectClass, read from data source, or null if nothing found
 	 * @see Data_Link::read()
 	 * @template T
@@ -508,7 +509,7 @@ class Dao implements Configurable
 	 *
 	 * @param $dao_identifier string
 	 */
-	public static function remove(string $dao_identifier)
+	public static function remove(string $dao_identifier) : void
 	{
 		if (isset(self::$list[$dao_identifier])) {
 			unset(self::$list[$dao_identifier]);
@@ -525,8 +526,8 @@ class Dao implements Configurable
 	 * same data source identifier. You will still be able to write() either source or destination
 	 * after call to replace().
 	 *
-	 * @param $destination T destination object
-	 * @param $source      T source object
+	 * @param $destination T Destination object
+	 * @param $source      T Source object
 	 * @param $write       boolean true if the destination object must be immediately written
 	 * @return T the resulting $destination object
 	 * @see Data_Link::replace()
@@ -593,7 +594,7 @@ class Dao implements Configurable
 	 *
 	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate() in
 	 * order to initialize all properties as unset and build a correct search object.
-	 * If some properties are an not-loaded objects, the search will be done on the object identifier,
+	 * If some properties are a not-loaded objects, the search will be done on the object identifier,
 	 * without joins to the linked object.
 	 * If some properties are loaded objects : if the object comes from a read, the search will be
 	 * done on the object identifier, without join. If object is not linked to data-link, the search
@@ -621,7 +622,7 @@ class Dao implements Configurable
 	 *
 	 * Same as search(), but expected result is one object only.
 	 * It is highly recommended to use this search with primary keys properties values searches.
-	 * If several result exist, only one will be taken, the first on the list (may be random).
+	 * If several result exist, only one will be taken, the first on the list (it may be random).
 	 *
 	 * @param $what       array|T source object for filter, only set properties will be used for
 	 *                    search
@@ -649,8 +650,8 @@ class Dao implements Configurable
 	 *                       for search. Can be an array associating properties names to matching
 	 *                       search value too.
 	 * @param $options       Option|Option[] some options for advanced search
-	 * @return List_Data a list of read records. Each record values (may be objects) are
-	 *                       stored in the same order than columns.
+	 * @return List_Data a list of read records. Each record values (it may be objects) are
+	 *                       stored in the same order as columns.
 	 * @template T
 	 */
 	public static function select(
@@ -669,6 +670,7 @@ class Dao implements Configurable
 	 * @param $data_link_or_configuration Data_Link|string[]
 	 */
 	public static function set(string $dao_identifier, array|Data_Link $data_link_or_configuration)
+		: void
 	{
 		self::$list[$dao_identifier] = $data_link_or_configuration;
 	}
@@ -707,7 +709,7 @@ class Dao implements Configurable
 	//------------------------------------------------------------------------------- storedAsForeign
 	/**
 	 * Returns true if a property will be stored into a foreign table record,
-	 * or false if it's is stored as a simple value
+	 * or false if it is stored as a simple value
 	 *
 	 * @param $property Reflection_Property
 	 * @return boolean
@@ -749,7 +751,7 @@ class Dao implements Configurable
 	 *
 	 * @param $class_name string
 	 */
-	public static function truncate(string $class_name)
+	public static function truncate(string $class_name) : void
 	{
 		self::current()->truncate($class_name);
 	}

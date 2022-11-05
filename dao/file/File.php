@@ -82,7 +82,7 @@ class File
 	/**
 	 * Calculate hash code
 	 */
-	protected function calcHash()
+	protected function calcHash() : void
 	{
 		/** @noinspection PhpExpressionResultUnusedInspection force @getter call */
 		$this->content;
@@ -108,7 +108,7 @@ class File
 	//--------------------------------------------------------------------------------- getCsvContent
 	/**
 	 * @param $errors string[]
-	 * @return array Two dimensional array (keys are row, column)
+	 * @return array Two-dimensional array (keys are row, column)
 	 */
 	public function getCsvContent(array &$errors = []) : array
 	{
@@ -230,7 +230,7 @@ class File
 	/**
 	 * @param $content ?string
 	 */
-	protected function setContent(?string $content)
+	protected function setContent(?string $content) : void
 	{
 		$old_hash      = $this->hash;
 		$this->content = $content;
@@ -246,7 +246,7 @@ class File
 	 * @noinspection PhpUnused @getter
 	 * @param $temporary_file_name string
 	 */
-	protected function setTemporaryFileName(string $temporary_file_name)
+	protected function setTemporaryFileName(string $temporary_file_name) : void
 	{
 		if ($temporary_file_name && file_exists($temporary_file_name)) {
 			$this->content = null;

@@ -13,7 +13,7 @@ class Manager
 {
 
 	//-------------------------------------------------------------------------------------- activate
-	public function activate()
+	public function activate() : void
 	{
 		exec($this->command(), $output);
 		if (join('', $output) !== 'OK') {
@@ -33,7 +33,7 @@ class Manager
 	}
 
 	//------------------------------------------------------------------------------------ deactivate
-	public function deactivate()
+	public function deactivate() : void
 	{
 		(new Asynchronous_Task($this->command()))->remove();
 		exec($this->command('stop'), $output);

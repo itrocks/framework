@@ -30,7 +30,7 @@ class Dispatch_Iterations_On_Pages
 	/**
 	 * @param $group Group
 	 */
-	protected function group(Group $group)
+	protected function group(Group $group) : void
 	{
 		$first_iteration   = true;
 		$page_number       = 0;

@@ -47,6 +47,7 @@ class Identical_Columns_Remover implements Configurable, Registerable
 	 * @param $properties Element[]|Property[]
 	 */
 	public function identicalColumns(Empty_Columns_Remover $object, Group $group, array $properties)
+		: void
 	{
 		if (!$group->iterations || !$object->unset) {
 			return;
@@ -115,7 +116,7 @@ class Identical_Columns_Remover implements Configurable, Registerable
 	 * @param $alter  boolean
 	 * @param $result array Text[][]
 	 */
-	public function renameHeaders(bool $alter, array $result)
+	public function renameHeaders(bool $alter, array $result) : void
 	{
 		if (!$alter) {
 			return;

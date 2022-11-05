@@ -28,7 +28,7 @@ class Text_To_Lines implements Registerable
 	/**
 	 * @param $elements Element[]
 	 */
-	protected function textElementsToLine(array &$elements)
+	protected function textElementsToLine(array &$elements) : void
 	{
 		foreach ($elements as $key => $element) {
 			if (!($element instanceof Text)) {
@@ -56,7 +56,7 @@ class Text_To_Lines implements Registerable
 	/**
 	 * @param $joinpoint After_Method
 	 */
-	public function textToLines(After_Method $joinpoint)
+	public function textToLines(After_Method $joinpoint) : void
 	{
 		/** @var $generator Generator */
 		$generator = $joinpoint->object;

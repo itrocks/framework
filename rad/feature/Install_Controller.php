@@ -43,7 +43,7 @@ class Install_Controller implements Feature_Controller
 					$dependency->title = Loc::tr($dependency->title);
 				}
 			}
-			uasort($dependencies, function(Feature $f1, Feature $f2) {
+			uasort($dependencies, function(Feature $f1, Feature $f2) : int {
 				return strcmp($f1->title, $f2->title);
 			});
 			$parameters->set(

@@ -333,7 +333,7 @@ class Object_To_Write_Array
 	 * @param $property Reflection_Property
 	 * @param $value    object
 	 */
-	protected function propertyObject(Reflection_Property $property, object $value)
+	protected function propertyObject(Reflection_Property $property, object $value) : void
 	{
 		$class_name     = get_class($value);
 		$element_type   = $property->getType()->getElementType();

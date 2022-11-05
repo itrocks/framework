@@ -129,7 +129,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @param $result string
 	 */
-	public function afterTemplateReplaceLink(string &$result)
+	public function afterTemplateReplaceLink(string &$result) : void
 	{
 		if (!str_starts_with($result, Paths::$uri_base)) {
 			return;
@@ -169,6 +169,7 @@ class Access_Control implements Configurable, Registerable
 	 * @param $files array[]
 	 */
 	public function checkAccess(string &$uri, array &$get = [], array &$post = [], array &$files = [])
+		: void
 	{
 		$origin_uri = $uri;
 		$this->checkUser($uri, $get, $post, $files);
@@ -182,7 +183,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @param $result string The link (result of View::link())
 	 */
-	public function checkAccessToLink(string &$result)
+	public function checkAccessToLink(string &$result) : void
 	{
 		if (self::$protect) {
 			return;
@@ -207,7 +208,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @param $result Item
 	 */
-	public function checkAccessToMenuItem(Item &$result)
+	public function checkAccessToMenuItem(Item &$result) : void
 	{
 		if (!isset($result)) {
 			return;
@@ -279,7 +280,7 @@ class Access_Control implements Configurable, Registerable
 	 * @param $files array[]
 	 * @todo HIGHEST private (@ next deployment) + return false if no user is logged in
 	 */
-	public function checkUser(string &$uri, array &$get, array &$post, array &$files)
+	public function checkUser(string &$uri, array &$get, array &$post, array &$files) : void
 	{
 		if (User::current()) {
 			return;
@@ -325,7 +326,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @param $joinpoint Before_Method
 	 */
-	public function disableIPCheckAccess(Before_Method $joinpoint)
+	public function disableIPCheckAccess(Before_Method $joinpoint) : void
 	{
 		if (User::current()) {
 			$joinpoint->result = true;
@@ -368,7 +369,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @param $result ?Block
 	 */
-	public function menuCheckAccess(?Block &$result = null)
+	public function menuCheckAccess(?Block &$result = null) : void
 	{
 		if (!User::current()) {
 			$result = null;
@@ -438,7 +439,7 @@ class Access_Control implements Configurable, Registerable
 	 *
 	 * @param $parameters Button[]
 	 */
-	public function removeButtonsWithNoLink(array &$parameters)
+	public function removeButtonsWithNoLink(array &$parameters) : void
 	{
 		foreach (
 			[Has_General_Buttons::GENERAL_BUTTONS, Has_Selection_Buttons::SELECTION_BUTTONS] as $buttons
@@ -472,6 +473,7 @@ class Access_Control implements Configurable, Registerable
 	 * @param $files   array[]
 	 */
 	public function setUri(string $new_uri, string &$uri, array &$get, array &$post, array &$files)
+		: void
 	{
 		$uri  = $new_uri;
 		$_get = [];

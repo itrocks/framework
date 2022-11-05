@@ -30,7 +30,7 @@ class Next_Calculation
 	 * @param $date     Date_Time|null @default Date_Time::now()
 	 * @return Date_Time
 	 */
-	public function next(Schedule $schedule, Date_Time $date = null)
+	public function next(Schedule $schedule, Date_Time $date = null) : Date_Time
 	{
 		$this->date     = ($date ?: Date_Time::now())->add(1, Date_Time::SECOND);
 		$this->schedule = $schedule;

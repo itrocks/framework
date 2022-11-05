@@ -398,7 +398,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	/**
 	 * Load conditions with annotation and stock in attribute
 	 */
-	private function loadConditions()
+	private function loadConditions() : void
 	{
 		if (!isset($this->conditions)) {
 			$this->conditions = Conditions_Annotation::of($this->property)->values();

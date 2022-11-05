@@ -94,7 +94,8 @@ class Set extends Setting\Custom\Set
 	 */
 	public function addProperty(
 		string $add_property_path, string $where = self::AFTER, string $where_property_path = ''
-	) {
+	) : void
+	{
 		$this->initProperties();
 		$this->commonAddProperty($add_property_path, $where, $where_property_path);
 	}
@@ -199,7 +200,7 @@ class Set extends Setting\Custom\Set
 	 * @param $property_path string
 	 * @param $group_by      boolean
 	 */
-	public function propertyGroupBy(string $property_path, bool $group_by = false)
+	public function propertyGroupBy(string $property_path, bool $group_by = false) : void
 	{
 		$this->initProperties();
 		if (isset($this->properties[$property_path])) {
@@ -211,7 +212,7 @@ class Set extends Setting\Custom\Set
 	/**
 	 * Reset search criterion
 	 */
-	public function resetSearch()
+	public function resetSearch() : void
 	{
 		$this->search = [];
 	}
@@ -220,7 +221,7 @@ class Set extends Setting\Custom\Set
 	/**
 	 * @param $property_path string
 	 */
-	public function reverse(string $property_path)
+	public function reverse(string $property_path) : void
 	{
 		$this->sort($property_path);
 		if (!in_array($property_path, $this->sort->reverse)) {
@@ -235,7 +236,7 @@ class Set extends Setting\Custom\Set
 	 *
 	 * @param $save_name string
 	 */
-	public function save(string $save_name = '')
+	public function save(string $save_name = '') : void
 	{
 		$this->sort->class_name = Builder::current()->sourceClassName($this->sort->class_name);
 		parent::save($save_name);
@@ -250,7 +251,7 @@ class Set extends Setting\Custom\Set
 	 *
 	 * @param $search array key is the property path
 	 */
-	public function search(array $search)
+	public function search(array $search) : void
 	{
 		foreach ($search as $property_path => $value) {
 			if (strval($value) === '') {
@@ -268,7 +269,7 @@ class Set extends Setting\Custom\Set
 	/**
 	 * @param $property_path string
 	 */
-	public function sort(string $property_path)
+	public function sort(string $property_path) : void
 	{
 		$this->sort->addSortColumn($property_path);
 		if (in_array($property_path, $this->sort->reverse, true)) {

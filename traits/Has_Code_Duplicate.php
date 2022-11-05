@@ -12,7 +12,7 @@ trait Has_Code_Duplicate
 {
 
 	//--------------------------------------------------------------------------------- duplicateCode
-	public function duplicateCode()
+	public function duplicateCode() : void
 	{
 		/** @var $this Duplicate_Discriminate_By_Counter|self */
 		$this->duplicateDiscriminateByCounter('code');

@@ -83,7 +83,8 @@ class Loc implements Registerable
 	 */
 	public function beforeObjectBuilderArrayBuildBasicValue(
 		Reflection_Property $property, array|bool|int|float|string|null &$value
-	) {
+	) : void
+	{
 		if (!isset($value)) {
 			return;
 		}
@@ -195,7 +196,7 @@ class Loc implements Registerable
 	 *
 	 * @param $context string
 	 */
-	public static function enterContext(string $context)
+	public static function enterContext(string $context) : void
 	{
 		self::$contexts_stack[] = $context;
 	}
@@ -204,7 +205,7 @@ class Loc implements Registerable
 	/**
 	 * Exit current context for translations
 	 */
-	public static function exitContext()
+	public static function exitContext() : void
 	{
 		array_pop(self::$contexts_stack);
 	}
@@ -334,7 +335,7 @@ class Loc implements Registerable
 	 * @return Date_Time|float|integer|string
 	 */
 	public static function propertyToIso(Reflection_Property $property, string $value = null)
-	: Date_Time|float|int|string
+		: Date_Time|float|int|string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection caught at high-level, not programmatically */
 		return Locale::current()->propertyToIso($property, $value);

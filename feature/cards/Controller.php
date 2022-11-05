@@ -73,7 +73,7 @@ class Controller extends List_\Controller implements Has_Selection_Buttons
 	/**
 	 * Get properties rules for cards
 	 */
-	protected function getCardProperties()
+	protected function getCardProperties() : void
 	{
 		$this->card_properties   = Card_Display_Annotation::of($this->class)->properties();
 		$this->column_properties = Card_Columns_Annotation::of($this->class)->properties();

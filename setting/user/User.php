@@ -57,7 +57,7 @@ class User extends Setting
 	/**
 	 * @noinspection PhpUnused @before_write
 	 */
-	public function invalidateObjects()
+	public function invalidateObjects() : void
 	{
 		Getter::invalidate($this, 'setting');
 		Getter::invalidate($this, 'user');

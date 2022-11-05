@@ -13,7 +13,7 @@ class Annotated_Test extends Test
 {
 
 	//----------------------------------------------------------------------------- testSetAnnotation
-	public function testSetAnnotation()
+	public function testSetAnnotation() : void
 	{
 		$property1       = new Reflection_Property(User::class, 'login');
 		$user_annotation = new User_Annotation(User_Annotation::INVISIBLE);
@@ -34,7 +34,7 @@ class Annotated_Test extends Test
 	}
 
 	//------------------------------------------------------------------------ testSetAnnotationLocal
-	public function testSetAnnotationLocal()
+	public function testSetAnnotationLocal() : void
 	{
 		$property1       = new Reflection_Property(User::class, 'login');
 		$user_annotation = User_Annotation::local($property1);

@@ -58,7 +58,7 @@ class Length_Annotation_Test extends Test
 	/**
 	 * Tests method Length_Annotation::getAnnotationName()
 	 */
-	public function testGetAnnotationName()
+	public function testGetAnnotationName() : void
 	{
 		/** @var Reflection_Property $property_mock */
 		$property_mock = $this->getMockBuilder(Reflection_Property::class)
@@ -76,7 +76,7 @@ class Length_Annotation_Test extends Test
 	/**
 	 * Tests Length_Annotation::validate() in a fail test case.
 	 */
-	public function testValidateFail()
+	public function testValidateFail() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$annotation = Length_Annotation::of($this->reflection_object->getProperty('fail_property'));
@@ -89,7 +89,7 @@ class Length_Annotation_Test extends Test
 	/**
 	 * Tests Length_Annotation::validate() in a success test case.
 	 */
-	public function testValidateSuccess()
+	public function testValidateSuccess() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$annotation = Length_Annotation::of($this->reflection_object->getProperty('success_property'));

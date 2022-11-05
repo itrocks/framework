@@ -1,23 +1,26 @@
 @import 'sizes.scss';
 
-article.dashboard .row {
-	font-size: 0;
+article.dashboard {
 
-	> li {
-		font-size: $font-size;
+	.row {
+		font-size: 0;
 
-		&.free {
-			border-color: transparent;
+		> li {
+			font-size: $font-size;
 
-			&.ui-droppable-hover {
-				background: #ddd;
+			&.free {
+				border-color: transparent;
+
+				&.ui-droppable-hover {
+					background: #ddd;
+				}
 			}
 		}
 	}
-}
 
-.indicator.ui-draggable-dragging:not(.dashboard) {
-	display: none;
+	label[for="dashboard-property-path"] {
+		display: none;
+	}
 }
 
 article.dashboard .free, article.dashboard .indicator,
@@ -72,4 +75,8 @@ article.dashboard .free, article.dashboard .indicator,
 
 #notifications > .drop_on > .dashboard {
 	background-image: url('img/dashboard-add-24.svg');
+}
+
+.indicator.ui-draggable-dragging:not(.dashboard) {
+	display: none;
 }

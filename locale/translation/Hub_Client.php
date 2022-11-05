@@ -19,7 +19,7 @@ class Hub_Client implements Registerable
 	 * @param $object Translator
 	 * @param $result string[]
 	 */
-	public function getTranslationsFromHub(string $text, Translator $object, array &$result)
+	public function getTranslationsFromHub(string $text, Translator $object, array &$result) : void
 	{
 		if (!$result) {
 

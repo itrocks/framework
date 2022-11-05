@@ -19,7 +19,7 @@ class Writer extends File\Writer
 	/**
 	 * Write builder configuration to lines
 	 */
-	protected function writeConfiguration()
+	protected function writeConfiguration() : void
 	{
 		$this->initWhiteLine();
 		$last_line_key = null;

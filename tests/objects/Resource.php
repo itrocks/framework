@@ -16,9 +16,9 @@ class Resource
 	/**
 	 * @link Object
 	 * @mandatory
-	 * @var Salesman
+	 * @var Resource|Salesman
 	 */
-	public Salesman $mandatory_object;
+	public Resource|Salesman $mandatory_object;
 
 	//------------------------------------------------------------------------------------------ $map
 	/**
@@ -30,9 +30,9 @@ class Resource
 	//------------------------------------------------------------------------------ $optional_object
 	/**
 	 * @link Object
-	 * @var ?Salesman
+	 * @var Resource|Salesman|null
 	 */
-	public ?Salesman $optional_object;
+	public Resource|Salesman|null $optional_object;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

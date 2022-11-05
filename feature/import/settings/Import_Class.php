@@ -131,7 +131,7 @@ class Import_Class
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $serialized array
 	 */
-	public function __unserialize(array $serialized)
+	public function __unserialize(array $serialized) : void
 	{
 		foreach ($serialized as $key => $value) {
 			if ($key === 'constants') {
@@ -153,10 +153,9 @@ class Import_Class
 
 	//----------------------------------------------------------------------------------- addConstant
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * Adds a new constant to the list : default value is empty and default name is random
 	 */
-	public function addConstant()
+	public function addConstant() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $this->class_name must be valid */
 		foreach (
@@ -280,7 +279,7 @@ class Import_Class
 	 *
 	 * @param $property_name string
 	 */
-	public function removeConstant(string $property_name)
+	public function removeConstant(string $property_name) : void
 	{
 		if (isset($this->constants[$property_name])) {
 			unset($this->constants[$property_name]);

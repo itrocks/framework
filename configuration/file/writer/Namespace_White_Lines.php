@@ -25,7 +25,7 @@ trait Namespace_White_Lines
 	/**
 	 * @param $short_class_name string
 	 */
-	protected function autoWhiteLine(string $short_class_name)
+	protected function autoWhiteLine(string $short_class_name) : void
 	{
 		$namespace = lParse($short_class_name, BS);
 		if ($this->last_namespace !== $namespace) {
@@ -39,14 +39,14 @@ trait Namespace_White_Lines
 	}
 
 	//--------------------------------------------------------------------------------- initWhiteLine
-	protected function initWhiteLine()
+	protected function initWhiteLine() : void
 	{
 		$this->insert_lines   = [];
 		$this->last_namespace = '';
 	}
 
 	//------------------------------------------------------------------------------ writeInsertLines
-	protected function writeInsertLines()
+	protected function writeInsertLines() : void
 	{
 		foreach ($this->insert_lines as $line) {
 			$this->lines[] = $line;

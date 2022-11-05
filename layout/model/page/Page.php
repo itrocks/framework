@@ -165,7 +165,7 @@ abstract class Page
 	 */
 	public static function sort(array $objects_having_ordering) : array
 	{
-		uasort($objects_having_ordering, function (Page $object1, Page $object2) {
+		uasort($objects_having_ordering, function (Page $object1, Page $object2) : int {
 			return cmp($object1->orderingToSortable(), $object2->orderingToSortable());
 		});
 		return $objects_having_ordering;

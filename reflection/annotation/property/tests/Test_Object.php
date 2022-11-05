@@ -108,7 +108,7 @@ class Test_Object
 	 * @noinspection PhpUnused @setter
 	 * @param $setter_simple string
 	 */
-	public function setSimple(string $setter_simple)
+	public function setSimple(string $setter_simple) : void
 	{
 		$this->setter_simple = $setter_simple . ' with setter simple';
 	}

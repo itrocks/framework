@@ -32,12 +32,11 @@ class Text_Output
 	/**
 	 * End prints
 	 */
-	public function end()
+	public function end() : void
 	{
 		if ($this->quiet) {
 			return;
 		}
-
 		if ($_SERVER['REMOTE_ADDR'] !== 'console') {
 			echo '</body></html>';
 			ob_flush();
@@ -52,7 +51,7 @@ class Text_Output
 	 * @param $message  string
 	 * @param $new_line boolean
 	 */
-	public function log(string $message, bool $new_line = true)
+	public function log(string $message, bool $new_line = true) : void
 	{
 		if ($this->quiet) return;
 
@@ -71,10 +70,10 @@ class Text_Output
 	//-------------------------------------------------------------------------------------- progress
 	/**
 	 * @param $message string
-	 * @param $step    int
-	 * @param $total   int
+	 * @param $step    integer
+	 * @param $total   integer
 	 */
-	public function progress(string $message, int $step, int $total)
+	public function progress(string $message, int $step, int $total) : void
 	{
 		if ($_SERVER['REMOTE_ADDR'] === 'console') {
 			$this->log(sprintf("\r%s%d%%", $message, $step * 100 / $total), $step === $total);
@@ -94,12 +93,11 @@ class Text_Output
 	/**
 	 * Prints html head
 	 */
-	protected function start()
+	protected function start() : void
 	{
 		if ($this->quiet) {
 			return;
 		}
-
 		$this->started = true;
 		if ($_SERVER['REMOTE_ADDR'] !== 'console') {
 			echo <<<EOT

@@ -71,7 +71,7 @@ class Sort implements Option
 	 * @param $property_path      string
 	 * @param $sort_columns_count integer number of sort columns to keep after adding
 	 */
-	public function addSortColumn(string $property_path, int $sort_columns_count = 3)
+	public function addSortColumn(string $property_path, int $sort_columns_count = 3) : void
 	{
 		if (in_array($property_path, $this->columns, true)) {
 			unset($this->columns[array_search($property_path, $this->columns)]);
@@ -97,7 +97,7 @@ class Sort implements Option
 	 * @noinspection PhpDocMissingThrowsInspection $class_name must be valid
 	 * @param $class_name string
 	 */
-	private function applyClassName(string $class_name)
+	private function applyClassName(string $class_name) : void
 	{
 		if (
 			($class_name !== $this->class_name)
@@ -117,7 +117,7 @@ class Sort implements Option
 	/**
 	 * Calculate reverse on columns that are not already reverse
 	 */
-	private function calculateReverse()
+	private function calculateReverse() : void
 	{
 		if (isset($this->columns) && !isset($this->reverse)) {
 			$this->reverse = [];

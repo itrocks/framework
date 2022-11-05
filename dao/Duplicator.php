@@ -40,7 +40,7 @@ class Duplicator
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 */
-	public function createDuplicate(object $object)
+	public function createDuplicate(object $object) : void
 	{
 		if (!$this->dao->getObjectIdentifier($object)) {
 			return;
@@ -90,7 +90,7 @@ class Duplicator
 	 * @param $object object
 	 * @param $class  Reflection_Class
 	 */
-	private function onDuplicate(object $object, Reflection_Class $class)
+	private function onDuplicate(object $object, Reflection_Class $class) : void
 	{
 		foreach (array_reverse($class->getAnnotations('duplicate')) as $on_duplicate) {
 			$callback = explode('::', $on_duplicate->value);
@@ -125,6 +125,7 @@ class Duplicator
 	 * @param $composite_class_name string the composite class name
 	 */
 	private function removeCompositeFromComponents(array $elements, string $composite_class_name)
+		: void
 	{
 		if (!isA($element = reset($elements), Component::class)) {
 			return;

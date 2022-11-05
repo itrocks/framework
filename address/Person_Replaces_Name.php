@@ -24,7 +24,7 @@ trait Person_Replaces_Name
 	 * @param $property_name string @values civility, first_name, last_name
 	 * @param $value         Civility|string|null Only $civility may be null
 	 */
-	protected function setNameComponent(string $property_name, Civility|string|null $value)
+	protected function setNameComponent(string $property_name, Civility|string|null $value) : void
 	{
 		$this->$property_name = $value;
 		$this->setDefaultName();

@@ -204,7 +204,7 @@ class Action
 	 * @param $last       Date_Time|null the last execution time @default Date_Time::now
 	 * @param $write_last boolean update last execution time using $last / now
 	 */
-	public function next(Date_Time $last = null, bool $write_last = false)
+	public function next(Date_Time $last = null, bool $write_last = false) : void
 	{
 		if ($write_last && $last && $last->isAfter($this->last)) {
 			$this->last = $last;
@@ -232,7 +232,7 @@ class Action
 	 * This does not change the value of $next
 	 *
 	 * @param $last Date_Time|null the reference date time for calculation @default Date_Time::now
-	 * @return ?Date_Time null if its not a scheduled action : then it will never execute again
+	 * @return ?Date_Time null if it's not a scheduled action : then it will never execute again
 	 */
 	protected function nextExecutionTime(Date_Time $last = null) : ?Date_Time
 	{

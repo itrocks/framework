@@ -45,7 +45,7 @@ class Html_Multiple_Limiter implements Registerable
 	/**
 	 * @param $result Table
 	 */
-	public function afterHtmlBuilderMultipleBuild(Table $result)
+	public function afterHtmlBuilderMultipleBuild(Table $result) : void
 	{
 		if ($this->in_multiple !== 'build') {
 			return;
@@ -85,7 +85,7 @@ class Html_Multiple_Limiter implements Registerable
 	 * @param $object        object
 	 * @param $property_name string
 	 */
-	public function beforeHtmlEditTemplateParseMethod(object $object, string $property_name)
+	public function beforeHtmlEditTemplateParseMethod(object $object, string $property_name) : void
 	{
 		if (
 			($object instanceof Reflection_Property_Value)
@@ -109,7 +109,7 @@ class Html_Multiple_Limiter implements Registerable
 	 *
 	 * @param $options Option[]|Option some options for advanced search
 	 */
-	public function beforeMysqlLinkSearch(array|Option &$options)
+	public function beforeMysqlLinkSearch(array|Option &$options) : void
 	{
 		if ($this->in_multiple !== 'search') {
 			return;

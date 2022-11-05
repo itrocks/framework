@@ -64,7 +64,7 @@ class Priority
 			$this->plugins      = objectInsertSorted(
 				$this->plugins,
 				$plugin,
-				function(Plugin $plugin1, Plugin $plugin2) use($builder) {
+				function(Plugin $plugin1, Plugin $plugin2) use($builder) : int {
 					$class1 = $builder->shortClassNameOf($plugin1->class_name, 2);
 					$class2 = $builder->shortClassNameOf($plugin2->class_name, 2);
 					return strcmp($class1, $class2);

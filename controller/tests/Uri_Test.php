@@ -18,7 +18,7 @@ class Uri_Test extends Test
 {
 
 	//------------------------------------------------------------------------- testDeleteControllers
-	public function testDeleteControllers()
+	public function testDeleteControllers() : void
 	{
 		$controller_uri = new Uri(
 			'/ITRocks/Framework/Component/Tab/remove/'
@@ -41,7 +41,7 @@ class Uri_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------- testExplicitOutput
-	public function testExplicitOutput()
+	public function testExplicitOutput() : void
 	{
 		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Order/1/' . Feature::F_OUTPUT, []);
 		static::assertEquals(
@@ -58,7 +58,7 @@ class Uri_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------ testImplicitList
-	public function testImplicitList()
+	public function testImplicitList() : void
 	{
 		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Orders', []);
 		static::assertEquals(
@@ -75,7 +75,7 @@ class Uri_Test extends Test
 	}
 
 	//---------------------------------------------------------------------------- testImplicitOutput
-	public function testImplicitOutput()
+	public function testImplicitOutput() : void
 	{
 		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Order/1', []);
 		static::assertEquals(
@@ -92,7 +92,7 @@ class Uri_Test extends Test
 	}
 
 	//----------------------------------------------------------------------- testListRemoveParameter
-	public function testListRemoveParameter()
+	public function testListRemoveParameter() : void
 	{
 		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Orders/listRemove/date');
 		static::assertEquals(
@@ -109,7 +109,7 @@ class Uri_Test extends Test
 	}
 
 	//---------------------------------------------------------------------- testListRemoveParameters
-	public function testListRemoveParameters()
+	public function testListRemoveParameters() : void
 	{
 		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Orders/listRemove/date/number');
 		static::assertEquals(
@@ -148,7 +148,7 @@ class Uri_Test extends Test
 	}
 
 	//------------------------------------------------------------------------ testTrashcanDropOutput
-	public function testTrashcanDropOutput()
+	public function testTrashcanDropOutput() : void
 	{
 		$controller_uri = new Uri(
 			'/ITRocks/Framework/Component/Trashcan/drop/Order/1/' . Feature::F_OUTPUT . '/date/number',
@@ -170,7 +170,7 @@ class Uri_Test extends Test
 	}
 
 	//-------------------------------------------------------------------- testTrashcanDropParameters
-	public function testTrashcanDropParameters()
+	public function testTrashcanDropParameters() : void
 	{
 		$controller_uri = new Uri(
 			'/ITRocks/Framework/Component/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number'
@@ -190,7 +190,7 @@ class Uri_Test extends Test
 	}
 
 	//----------------------------------------------------------------- testTrashcanDropWithArguments
-	public function testTrashcanDropWithArguments()
+	public function testTrashcanDropWithArguments() : void
 	{
 		$controller_uri = new Uri(
 			'/ITRocks/Framework/Component/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number',

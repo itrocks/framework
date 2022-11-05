@@ -72,6 +72,7 @@ class Textile extends Parser
 	/**
 	 * When parsing into code, do not encode HTML
 	 *
+	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $string instead of $str
 	 * @param $string string The string to encode
 	 * @param $quotes boolean Encode quotes
 	 * @return string Encoded string

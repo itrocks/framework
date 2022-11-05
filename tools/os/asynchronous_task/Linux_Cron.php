@@ -28,7 +28,7 @@ class Linux_Cron
 	}
 
 	//------------------------------------------------------------------------------------------- add
-	public function add()
+	public function add() : void
 	{
 		$this->remove();
 		$lines   = explode(LF, $this->readFromFile());
@@ -57,7 +57,7 @@ class Linux_Cron
 	}
 
 	//---------------------------------------------------------------------------------------- remove
-	public function remove()
+	public function remove() : void
 	{
 		$buffer   = $this->readFromFile();
 		$position = strpos($buffer, $this->task->command);

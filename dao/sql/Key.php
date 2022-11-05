@@ -12,8 +12,9 @@ interface Key
 	 * Returns true if the key is an equivalent of the other key
 	 *
 	 * @param $key Key
+	 * @return bool
 	 */
-	public function equiv(Key $key);
+	public function equiv(Key $key) : bool;
 
 	//--------------------------------------------------------------------------------------- getName
 	/**

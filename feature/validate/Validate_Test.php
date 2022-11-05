@@ -86,7 +86,7 @@ class Validate_Test extends Test
 	/**
 	 * Launches 3 class validators that returns different results.
 	 */
-	public function testValidateAnnotations()
+	public function testValidateAnnotations() : void
 	{
 		// Expected information about annotations & AOP.
 		$expected = [

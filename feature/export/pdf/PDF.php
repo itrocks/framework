@@ -43,16 +43,38 @@ class PDF extends Fpdi
 	 */
 	public float $last_cell_max_y = .0;
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * The constructor prepare the document the same way if coming from FPDF or TCPDF : no header line
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		/** @var $this PDF|TCPDF */
+		$this->setPrintHeader(false);
+		$this->setPrintFooter(false);
+	}
+
 	//-------------------------------------------------------------------------------------------- Ln
 	/**
 	 * @inheritdoc
 	 */
-	public function Ln($h = '', $cell = false)
+	public function Ln($h = '', $cell = false) : void
 	{
 		parent::Ln($h, $cell);
 		if ($this->y > $this->last_cell_max_y) {
 			$this->last_cell_max_y = $this->y;
 		}
+	}
+
+	//--------------------------------------------------------------------------- millimetersToPoints
+	/**
+	 * @param $millimeters float
+	 * @return float
+	 */
+	public function millimetersToPoints(float $millimeters) : float
+	{
+		return static::MILLIMETERS_TO_POINTS_RATIO * $millimeters;
 	}
 
 	//------------------------------------------------------------------------------------- MultiCell
@@ -228,28 +250,6 @@ class PDF extends Fpdi
 				$this->Error('Incorrect output destination: '.$dest);
 		}
 		return '';
-	}
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * The constructor prepare the document the same way if coming from FPDF or TCPDF : no header line
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		/** @var $this PDF|TCPDF */
-		$this->setPrintHeader(false);
-		$this->setPrintFooter(false);
-	}
-
-	//--------------------------------------------------------------------------- millimetersToPoints
-	/**
-	 * @param $millimeters float
-	 * @return float
-	 */
-	public function millimetersToPoints(float $millimeters) : float
-	{
-		return static::MILLIMETERS_TO_POINTS_RATIO * $millimeters;
 	}
 
 	//----------------------------------------------------------------------------- downloadPDFAsFile

@@ -45,7 +45,7 @@ trait Types_Annotation
 	 * @param $namespace string
 	 * @param $use       string[]
 	 */
-	public function applyNamespace(string $namespace, array $use = [])
+	public function applyNamespace(string $namespace, array $use = []) : void
 	{
 		/** @var $this Annotation|Types_Annotation */
 

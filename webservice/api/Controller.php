@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
+use ITRocks\Framework\View\User_Error_Exception;
 
 /**
  * A common API to access / alter any business object
@@ -26,8 +27,9 @@ class Controller implements Default_Feature_Controller
 	 * @param $object object
 	 * @param $form   array
 	 * @return integer
+	 * @throws User_Error_Exception
 	 */
-	private function create($object, array $form)
+	private function create(object $object, array $form) : int
 	{
 		Dao::begin();
 		$builder = new Object_Builder_Array();
@@ -49,6 +51,7 @@ class Controller implements Default_Feature_Controller
 	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return ?string
+	 * @throws User_Error_Exception
 	 */
 	public function run(Parameters $parameters, array $form, array $files, string $class_name)
 		: ?string
@@ -59,10 +62,11 @@ class Controller implements Default_Feature_Controller
 			unset($form[Parameter::AS_WIDGET]);
 		}
 		$object = $parameters->getMainObject($class_name);
-		switch ($feature) {
-			case self::CREATE: return $this->create($object, $form);
+		if ($feature === self::CREATE) {
+			return $this->create($object, $form);
 		}
 		trigger_error('Not a valid API action ' . $feature, E_USER_ERROR);
+		/** @noinspection PhpUnreachableStatementInspection May be if the error resumes */
 		return null;
 	}
 

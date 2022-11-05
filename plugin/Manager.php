@@ -68,7 +68,7 @@ class Manager implements IManager
 	/**
 	 * @param $serialized array
 	 */
-	public function __unserialize(array $serialized)
+	public function __unserialize(array $serialized) : void
 	{
 		$this->plugins      = [];
 		$this->plugins_tree = $serialized;
@@ -94,7 +94,7 @@ class Manager implements IManager
 	/**
 	 * @param $level string|null
 	 */
-	public function activatePlugins(string $level = null)
+	public function activatePlugins(string $level = null) : void
 	{
 		foreach ($this->plugins_tree as $tree_level => $plugins) {
 			foreach (array_keys($plugins) as $class_name) {
@@ -115,7 +115,7 @@ class Manager implements IManager
 	 * @param $level   string
 	 * @param $plugins Plugin[]
 	 */
-	public function addPlugins(string $level, array $plugins)
+	public function addPlugins(string $level, array $plugins) : void
 	{
 		if (!isset($this->plugins_tree[$level])) {
 			$this->plugins_tree[$level] = [];

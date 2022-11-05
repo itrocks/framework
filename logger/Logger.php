@@ -33,7 +33,7 @@ class Logger implements Registerable
 	 *
 	 * @return mixed
 	 */
-	public function getIdentifier()
+	public function getIdentifier() : mixed
 	{
 		return isset($this->log_entry) ? Dao::getObjectIdentifier($this->log_entry) : null;
 	}
@@ -54,12 +54,13 @@ class Logger implements Registerable
 	 * Write stop date, but this is not the final write.
 	 * Call this sometimes when you execute a daemon script without time limit.
 	 */
-	public function resume()
+	public function resume() : void
 	{
-		if ($this->anti_loop) {
-			$this->log_entry->resume();
-			Dao::write($this->log_entry, Dao::only('duration', 'error_code', 'stop'));
+		if (!$this->anti_loop) {
+			return;
 		}
+		$this->log_entry->resume();
+		Dao::write($this->log_entry, Dao::only('duration', 'error_code', 'stop'));
 	}
 
 	//----------------------------------------------------------------------------------------- start
@@ -85,7 +86,7 @@ class Logger implements Registerable
 	/**
 	 * Stop logging : write end date-time and duration
 	 */
-	public function stop()
+	public function stop() : void
 	{
 		$this->anti_loop --;
 		if ($this->anti_loop) {

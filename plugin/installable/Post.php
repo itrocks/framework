@@ -35,7 +35,7 @@ class Post
 	 *
 	 * @param $reset_when_done boolean
 	 */
-	public function install(bool $reset_when_done = true)
+	public function install(bool $reset_when_done = true) : void
 	{
 		$this->installProperties($reset_when_done);
 
@@ -50,7 +50,7 @@ class Post
 	 *
 	 * @param $reset_when_done boolean
 	 */
-	public function installProperties(bool $reset_when_done = true)
+	public function installProperties(bool $reset_when_done = true) : void
 	{
 		foreach ($this->install_properties as $class_name => $properties) {
 			Dao::begin();
@@ -81,14 +81,14 @@ class Post
 
 	//------------------------------------------------------------------------- willInstallProperties
 	/**
-	 * Scan trait for properties, store those that have an install annotation for post-installation
+	 * Scan trait for properties, store those that have an @install annotation for post-installation
 	 * process.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $trait_name string
 	 */
-	public function willInstallProperties(string $class_name, string $trait_name)
+	public function willInstallProperties(string $class_name, string $trait_name) : void
 	{
 		$properties = [];
 		/** @noinspection PhpUnhandledExceptionInspection trait must be valid */

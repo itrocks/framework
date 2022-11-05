@@ -12,6 +12,6 @@ interface Has_Init
 {
 
 	//------------------------------------------------------------------------------------------ init
-	public function init();
+	public function init() : void;
 
 }

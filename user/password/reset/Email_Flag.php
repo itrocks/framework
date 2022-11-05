@@ -52,7 +52,7 @@ class Email_Flag implements Configurable, Registerable
 	}
 
 	//------------------------------------------------------------------------------------- touchFlag
-	public function touchFlag()
+	public function touchFlag() : void
 	{
 		if ($this->file_path) {
 			touch($this->file_path);

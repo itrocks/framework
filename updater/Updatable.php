@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Updater;
 
 /**
- * An interface for all updatable classes (in most of cases they should be plugins too)
+ * An interface for all updatable classes (in most cases they should be plugins too)
  */
 interface Updatable
 {
@@ -11,6 +11,6 @@ interface Updatable
 	/**
 	 * @param $last_time integer
 	 */
-	public function update(int $last_time);
+	public function update(int $last_time) : void;
 
 }

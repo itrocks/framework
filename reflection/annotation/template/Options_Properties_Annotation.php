@@ -88,7 +88,7 @@ class Options_Properties_Annotation extends List_Annotation
 	 *
 	 * @param $property string
 	 */
-	public function addProperty(string $property)
+	public function addProperty(string $property) : void
 	{
 		if (!$this->hasProperty($property)) {
 			$this->properties[] = $property;

@@ -58,7 +58,7 @@ class Controller implements Default_Class_Controller
 	 * @param $files array
 	 * @throws View_Exception
 	 */
-	protected function checkFormIntegrity(array $form, array $files)
+	protected function checkFormIntegrity(array $form, array $files) : void
 	{
 		if ($form || $files) {
 			return;
@@ -159,7 +159,7 @@ class Controller implements Default_Class_Controller
 	 * @param $exception Exception
 	 * @throws Exception
 	 */
-	protected function throwException(Exception $exception)
+	protected function throwException(Exception $exception) : void
 	{
 		throw $exception;
 	}

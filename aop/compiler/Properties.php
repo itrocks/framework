@@ -476,7 +476,7 @@ class Properties
 				if (!isset($prototype)) {
 					$prototype = '
 	/** AOP */
-	private function & _' . $property_name . '_read()
+	private function & _' . $property_name . '_read() : mixed
 	{
 		unset($this->_[' . Q . $property_name . Q . ']);
 		if (property_exists($this, ' . Q . $property_name . '_' . Q . ')) {
@@ -585,7 +585,7 @@ class Properties
 				return '';
 			}
 			return $code . '
-		return parent::__set($property_name, $value);
+		parent::__set($property_name, $value);
 	}
 ';
 		}
@@ -679,7 +679,7 @@ class Properties
 				if (!isset($prototype)) {
 					$prototype = '
 	/** AOP ' . $property_name . ' writer : implementation for @setter called by __set */
-	private function _' . $property_name . '_write($value)
+	private function _' . $property_name . '_write(mixed $value) : void
 	{
 		if (isset($this->_[' . Q . $property_name . Q . '])) {
 			unset($this->_[' . Q . $property_name . Q . ']);
@@ -801,6 +801,7 @@ class Properties
 					$over['call']   = 'parent::';
 				}
 				else {
+					$method = null;
 					// the method does not exist and the parent has no AOP properties
 					$over['action'] = false;
 					$over['call']   = false;
@@ -837,7 +838,7 @@ class Properties
 			$over['action'] = false;
 			$over['method'] = false;
 			if (!$over['call']) {
-				$parameters = '$property_name';
+				$parameters = 'string $property_name';
 				// Prepending $accessible to $over['call'] is not properly implemented for now :
 				// - with property_exists(), all properties unset for AOP are not tested for accessibility
 				// - without property_exists(), all accesses to dynamic properties like id will crash
@@ -863,7 +864,7 @@ class Properties
 						break;
 					case '__set':
 						$over['call'] = '$this->$property_name = $value; return;';
-						$parameters .= ', $value';
+						$parameters  .= ', mixed $value';
 						break;
 					case '__unset':
 						$over['call'] = 'unset($this->$property_name); return;';
@@ -872,9 +873,18 @@ class Properties
 						$parameters = '';
 				}
 			}
+			$return_type = match($method_name) {
+				'__construct', '__destruct' => '',
+				'__get'   => 'mixed',
+				'__isset' => 'bool',
+				default   => 'void'
+			};
+			if ($return_type) {
+				$return_type = ' : ' . $return_type;
+			}
 			$over['prototype'] = '
 	/** AOP */
-	public function ' . $method_name . '(' . $parameters . ')
+	public function ' . $method_name . '(' . $parameters . ')' . $return_type . '
 	{';
 		}
 		if ($over['action']) {

@@ -38,7 +38,7 @@ class Bridge
 	 *
 	 * @param $feature_class string The already installed feature class
 	 */
-	public function automaticInstallFor(string $feature_class)
+	public function automaticInstallFor(string $feature_class) : void
 	{
 		foreach ($this->bridgeFeatures($feature_class) as $bridge_feature) {
 			if (!$this->isInstalled($bridge_feature)) {
@@ -58,7 +58,7 @@ class Bridge
 	 *
 	 * @param $feature_class string The already uninstalled feature class
 	 */
-	public function automaticUninstallFor(string $feature_class)
+	public function automaticUninstallFor(string $feature_class) : void
 	{
 		foreach ($this->bridgeFeatures($feature_class) as $bridge_feature) {
 			if ($this->isInstalled($bridge_feature)) {
@@ -115,7 +115,7 @@ class Bridge
 	/**
 	 * @param $feature_name string
 	 */
-	protected function install(string $feature_name)
+	protected function install(string $feature_name) : void
 	{
 		$this->installer->install($feature_name);
 	}
@@ -152,7 +152,7 @@ class Bridge
 	/**
 	 * @param $feature_name string
 	 */
-	protected function uninstall(string $feature_name)
+	protected function uninstall(string $feature_name) : void
 	{
 		$this->installer->uninstall($feature_name);
 	}

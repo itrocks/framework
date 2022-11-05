@@ -51,7 +51,7 @@ abstract class Reader
 	}
 
 	//------------------------------------------------------------------------------------------ read
-	public function read()
+	public function read() : void
 	{
 		$this->readLines();
 		$this->readNamespaceUse();
@@ -64,7 +64,7 @@ abstract class Reader
 	/**
 	 * Read begin lines
 	 */
-	protected function readBeginLines()
+	protected function readBeginLines() : void
 	{
 		$line = current($this->lines);
 		if (!$this->file->begin_lines) {
@@ -84,13 +84,13 @@ abstract class Reader
 	/**
 	 * Read configuration : the main part of the file
 	 */
-	abstract protected function readConfiguration();
+	abstract protected function readConfiguration() : void;
 
 	//---------------------------------------------------------------------------------- readEndLines
 	/**
 	 * Read end lines
 	 */
-	protected function readEndLines()
+	protected function readEndLines() : void
 	{
 		$blank_line = false;
 		if (!$this->file->end_lines) {
@@ -117,7 +117,7 @@ abstract class Reader
 	/**
 	 * Read raw lines from file
 	 */
-	protected function readLines()
+	protected function readLines() : void
 	{
 		$this->lines = explode(LF, str_replace(CR, '', file_get_contents($this->file->file_name)));
 	}
@@ -126,7 +126,7 @@ abstract class Reader
 	/**
 	 * Read namespace and use clauses
 	 */
-	protected function readNamespaceUse()
+	protected function readNamespaceUse() : void
 	{
 		$php                   = false;
 		$this->file->namespace = null;
@@ -147,7 +147,7 @@ abstract class Reader
 				}
 			}
 		}
-		usort($this->file->use, function($use1, $use2) {
+		usort($this->file->use, function(string $use1, string $use2) : int {
 			return strcmp(strtolower($use1), strtolower($use2));
 		});
 	}

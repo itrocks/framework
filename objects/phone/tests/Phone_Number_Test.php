@@ -44,7 +44,7 @@ class Phone_Number_Test extends Test
 	/**
 	 * @throws ReflectionException
 	 */
-	public function testEmptyPhoneNumberIsValid()
+	public function testEmptyPhoneNumberIsValid() : void
 	{
 		$phone_number = '';
 		$phone        = new Phone_Dummy($phone_number);
@@ -60,7 +60,7 @@ class Phone_Number_Test extends Test
 	/**
 	 * @throws ReflectionException
 	 */
-	public function testPhoneNumberIsNotValid()
+	public function testPhoneNumberIsNotValid() : void
 	{
 		$phone_number = '15345A';
 		$phone        = new Phone_Dummy($phone_number);
@@ -79,7 +79,7 @@ class Phone_Number_Test extends Test
 	/**
 	 * @throws ReflectionException
 	 */
-	public function testWithPhoneNumberIsValid()
+	public function testWithPhoneNumberIsValid() : void
 	{
 		$phone_number = '0622355629';
 		$phone = new Phone_Dummy($phone_number);

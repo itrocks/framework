@@ -127,7 +127,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 *
 	 * @param $class Reflection_Class
 	 */
-	protected function setLinkPropertiesByClass(Reflection_Class $class)
+	protected function setLinkPropertiesByClass(Reflection_Class $class) : void
 	{
 		if ($this->link_properties) {
 			return;
@@ -155,7 +155,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 *
 	 * @param $link_properties string[]
 	 */
-	protected function setLinkPropertiesByNames(array $link_properties)
+	protected function setLinkPropertiesByNames(array $link_properties) : void
 	{
 		$properties = $this->class->getProperties([T_EXTENDS, T_USE]);
 		foreach ($link_properties as $property_name) {

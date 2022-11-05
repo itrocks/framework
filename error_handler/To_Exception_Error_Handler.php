@@ -18,6 +18,7 @@ class To_Exception_Error_Handler implements Error_Handler
 	 * @throws $exception_class
 	 */
 	public function handle(Handled_Error $error, string $exception_class = ErrorException::class)
+		: void
 	{
 		throw new $exception_class(
 			$error->getErrorMessage(),

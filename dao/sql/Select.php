@@ -188,7 +188,7 @@ class Select
 	 * @param $data_store array[]|List_Data|object[]
 	 * @return boolean if the call returns false for any stored object, this will stop & return false
 	 */
-	private function doCallback(array|List_Data &$data_store)
+	private function doCallback(array|List_Data &$data_store) : bool
 	{
 		if (isset($this->callback)) {
 			foreach ($data_store as $object) {
@@ -233,7 +233,7 @@ class Select
 	/**
 	 * You must always call this after having called prepareQuery and executed the query
 	 */
-	public function doneQuery()
+	public function doneQuery() : void
 	{
 		$this->link->popContext();
 	}
@@ -360,7 +360,7 @@ class Select
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $data_store array[]|List_Data|object[]|null
 	 */
-	private function prepareFetch(array|List_Data|null $data_store)
+	private function prepareFetch(array|List_Data|null $data_store) : void
 	{
 		$this->classes      = [];
 		$this->column_count = $this->link->getColumnsCount($this->result_set);
@@ -416,7 +416,7 @@ class Select
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property_name string
 	 */
-	private function preparePathClass(string $property_name)
+	private function preparePathClass(string $property_name) : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class and property name must be valid */
 		$property   = new Reflection_Property($this->class_name, $property_name);

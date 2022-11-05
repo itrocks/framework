@@ -31,9 +31,9 @@ class Reflection_Property_View
 	//----------------------------------------------------------------------------------- formatValue
 	/**
 	 * @param $value mixed
-	 * @return string
+	 * @return mixed
 	 */
-	public function formatValue(mixed $value) : string
+	public function formatValue(mixed $value) : mixed
 	{
 		$type = $this->property->getType();
 		if (is_string($value) && $type->isString()) {
@@ -60,7 +60,7 @@ class Reflection_Property_View
 		}
 		return $type->isBasic()
 			? Loc::propertyToLocale($this->property, $value)
-			: strval($value);
+			: $value;
 	}
 
 	//----------------------------------------------------------------------------- getFormattedValue
@@ -70,9 +70,9 @@ class Reflection_Property_View
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object      object|mixed
 	 * @param $final_value boolean
-	 * @return string
+	 * @return mixed
 	 */
-	public function getFormattedValue(mixed $object, bool $final_value = false) : string
+	public function getFormattedValue(mixed $object, bool $final_value = false) : mixed
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $property belongs to $object class */
 		return $this->formatValue($final_value ? $object : $this->property->getValue($object));

@@ -54,7 +54,7 @@ class Generate_Groups
 	 *
 	 * @param $group Group
 	 */
-	protected function enlargeGroup(Group $group)
+	protected function enlargeGroup(Group $group) : void
 	{
 		$minimal_bottom = $group->page->height - $this->page_margin;
 		foreach ($group->page->allElements() as $element) {
@@ -83,7 +83,7 @@ class Generate_Groups
 	/**
 	 * @param $page Page
 	 */
-	protected function page(Page $page)
+	protected function page(Page $page) : void
 	{
 		$this->groups = [];
 		foreach ($page->elements as $element_key => $element) {
@@ -177,7 +177,7 @@ class Generate_Groups
 	}
 
 	//------------------------------------------------------------------------------------------- run
-	public function run()
+	public function run() : void
 	{
 		foreach ($this->structure->pages as $page) {
 			$this->page($page);

@@ -61,7 +61,7 @@ class Installer
 	/**
 	 * @param $local_access string
 	 */
-	public function addLocalAccess(string $local_access)
+	public function addLocalAccess(string $local_access) : void
 	{
 		$file = $this->openFile(Local_Access::class);
 		$file->add($local_access);
@@ -73,7 +73,7 @@ class Installer
 	 *
 	 * @param $blocks array string $item_caption[string $block_title][string $item_link]
 	 */
-	public function addMenu(array $blocks)
+	public function addMenu(array $blocks) : void
 	{
 		$file = $this->openFile(Menu::class);
 		$file->addBlocks($blocks);
@@ -81,7 +81,7 @@ class Installer
 
 	//------------------------------------------------------------------------------------- addPlugin
 	/**
-	 * Add the a Activable / Configurable / Registrable plugin into the config.php configuration file
+	 * Add an Activable / Configurable / Registrable plugin into the config.php configuration file
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $plugin_class_name Plugin|string
@@ -90,7 +90,8 @@ class Installer
 	 */
 	public function addPlugin(
 		Plugin|string $plugin_class_name, mixed $configuration = null, string $priority_value = ''
-	) {
+	) : void
+	{
 		if (!is_string($plugin_class_name)) {
 			$plugin_class_name = get_class($plugin_class_name);
 		}
@@ -113,7 +114,7 @@ class Installer
 	 * @param $base_class_name         string          Class name (real class) to be 'improved'
 	 * @param $added_interfaces_traits string|string[] Interface, trait, or class annotation
 	 */
-	public function addToClass(string $base_class_name, array|string $added_interfaces_traits)
+	public function addToClass(string $base_class_name, array|string $added_interfaces_traits) : void
 	{
 		$this->modified_built_classes[$base_class_name] = $base_class_name;
 		$file  = $this->openFile(File\Builder::class);
@@ -150,7 +151,7 @@ class Installer
 	/**
 	 * Build dynamic annotations
 	 */
-	public function buildAnnotations()
+	public function buildAnnotations() : void
 	{
 		$exhaustive_class       = new Exhaustive_Class($this->files);
 		$modified_built_classes = $this->modified_built_classes;
@@ -187,7 +188,7 @@ class Installer
 	 * @param $plugin   Installable|string plugin to install
 	 * @param $features Feature[]
 	 */
-	public function install(Installable|string $plugin, array $features = [])
+	public function install(Installable|string $plugin, array $features = []) : void
 	{
 		$plugin_class_name         = is_string($plugin) ? $plugin : get_class($plugin);
 		$stacked_plugin_class_name = $this->plugin_class_name;
@@ -330,7 +331,7 @@ class Installer
 	 * @param $feature  Feature
 	 * @param $features Feature[]
 	 */
-	protected function removeDependent(Feature $feature, array $features)
+	protected function removeDependent(Feature $feature, array $features) : void
 	{
 		$this->uninstall($feature->plugin_class_name, $features);
 		(new Installed\Dependency($feature->plugin_class_name))->remove($this->plugin_class_name);
@@ -343,7 +344,7 @@ class Installer
 	 * @param $base_class_name           string
 	 * @param $removed_interfaces_traits string[]
 	 */
-	public function removeFromClass(string $base_class_name, array $removed_interfaces_traits)
+	public function removeFromClass(string $base_class_name, array $removed_interfaces_traits) : void
 	{
 		$this->modified_built_classes[$base_class_name] = $base_class_name;
 		// mark interfaces / traits as removed, without removing them
@@ -380,7 +381,7 @@ class Installer
 	/**
 	 * @param $local_access string
 	 */
-	public function removeLocalAccess(string $local_access)
+	public function removeLocalAccess(string $local_access) : void
 	{
 		$file = $this->openFile(Local_Access::class);
 		$file->remove($local_access);
@@ -392,7 +393,7 @@ class Installer
 	 *
 	 * @param $blocks array string $item_caption[string $block_title][string $item_link]
 	 */
-	public function removeMenu(array $blocks)
+	public function removeMenu(array $blocks) : void
 	{
 		$file = $this->openFile(Menu::class);
 		$file->removeBlocks($blocks);
@@ -402,7 +403,7 @@ class Installer
 	/**
 	 * Remove the installed plugin from the config.php configuration file
 	 *
-	 * - If the plugin is Installable and is not $this : launch the uninstall procedure for it
+	 * - If the plugin is Installable and is not $this : launch uninstall procedure for it
 	 * - If the plugin is not Installable or is $this : only remove it from the config.php
 	 *
 	 * @param $plugin_class_name string
@@ -429,7 +430,7 @@ class Installer
 	 * @param $old_menu string
 	 * @param $new_menu string
 	 */
-	public function renameMenu(string $old_menu, string $new_menu)
+	public function renameMenu(string $old_menu, string $new_menu) : void
 	{
 		// TODO rename menu, and update installed menus structure too
 	}
@@ -438,7 +439,7 @@ class Installer
 	/**
 	 * Save opened files
 	 */
-	public function saveFiles()
+	public function saveFiles() : void
 	{
 		if (!$this->files) {
 			return;
@@ -456,13 +457,13 @@ class Installer
 	 * Uninstall a plugin, and all plugins that depend on it
 	 *
 	 * Notice : Developers should beware that the user has well been informed of the full list of
-	 * dependency features he will lost on uninstalling this feature.
+	 * dependency features he will lose on uninstalling this feature.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $plugin_class_name Installable|string plugin object or class name
 	 * @param $features          Feature[]
 	 */
-	public function uninstall(Installable|string $plugin_class_name, array $features = [])
+	public function uninstall(Installable|string $plugin_class_name, array $features = []) : void
 	{
 		if (isset($features[$plugin_class_name])) {
 			return;

@@ -30,7 +30,7 @@ class Read implements Configurable, Registerable
 	 *
 	 * @var ?Configuration
 	 */
-	public ?Configuration $configuration;
+	public ?Configuration $configuration = null;
 
 	//--------------------------------------------------------------------------- $configuration_file
 	/**

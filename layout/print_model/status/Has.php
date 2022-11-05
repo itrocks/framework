@@ -25,7 +25,7 @@ trait Has
 	 *
 	 * @noinspection PhpUnused @before_update
 	 */
-	public function setStatusToCustom()
+	public function setStatusToCustom() : void
 	{
 		if ($this->status === Status::CUSTOM) {
 			return;

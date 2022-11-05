@@ -103,7 +103,7 @@ class Data implements Validate\Except
 	/**
 	 * @param $data mixed
 	 */
-	public function rawFormData(mixed $data)
+	public function rawFormData(mixed $data) : void
 	{
 		$this->form = $this->serialize(['RAW' => $data]);
 	}

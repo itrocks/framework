@@ -13,7 +13,7 @@ trait Duplicate_Discriminate_By_Counter
 	/**
 	 * @param $property_name string
 	 */
-	protected function duplicateDiscriminateByCounter(string $property_name)
+	protected function duplicateDiscriminateByCounter(string $property_name) : void
 	{
 		// remove '-COPY-X' from the value
 		$copy = Loc::tr('COPY');

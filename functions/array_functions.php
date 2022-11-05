@@ -183,7 +183,7 @@ function arrayFormRevert(mixed $array, bool $case_3 = true) : array
  */
 function arrayInsert(
 	array &$array, array $array_insert, array|string $after_keys = [], array|string $before_keys = []
-) {
+) : void {
 	if (!is_array($after_keys))  $after_keys  = [$after_keys];
 	if (!is_array($before_keys)) $before_keys = [$before_keys];
 	foreach ($after_keys as $key) {
@@ -210,7 +210,7 @@ function arrayInsert(
  * @param $array_insert array
  * @param $key          boolean|string
  */
-function arrayInsertAfter(array &$array, array $array_insert, bool|string $key = false)
+function arrayInsertAfter(array &$array, array $array_insert, bool|string $key = false) : void
 {
 	$second_array = [];
 	if ($key !== false) {
@@ -231,7 +231,7 @@ function arrayInsertAfter(array &$array, array $array_insert, bool|string $key =
  * @param $array_insert array
  * @param $key          boolean|string
  */
-function arrayInsertBefore(array &$array, array $array_insert, bool|string $key = false)
+function arrayInsertBefore(array &$array, array $array_insert, bool|string $key = false) : void
 {
 	$second_array = [];
 	if ($key !== false) {
@@ -383,7 +383,7 @@ function arrayNamedValues(array $array) : array
  * @param $keys  integer[]|string[]|null[] multidimensional array keys
  * @param $init  mixed initial / default value
  */
-function arraySet(mixed &$array, array $keys, mixed $init)
+function arraySet(mixed &$array, array $keys, mixed $init) : void
 {
 	$has_element = true;
 	$where       =& $array;
@@ -659,6 +659,7 @@ function treeToArray(array $array, string $ignore_key = '') : array
  * @param $replacement_value mixed The value of the element is replaced by this one instead of unset
  */
 function unsetKeyRecursive(array &$array, array|int|string $keys, mixed $replacement_value = null)
+	: void
 {
 	if (!is_array($keys)) {
 		$keys = [$keys];

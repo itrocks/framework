@@ -84,7 +84,7 @@ class Import_Array
 	 * @param $this_constants string[] $value = string[$property_path]
 	 * @param $array          array    $value = string[integer $row_number][integer $column_number]
 	 */
-	protected static function addConstantsToArray(array $this_constants, array &$array)
+	protected static function addConstantsToArray(array $this_constants, array &$array) : void
 	{
 		if (!$this_constants) {
 			return;
@@ -340,7 +340,7 @@ class Import_Array
 	 * @param $array array $value = string[$row_number][$column_number]
 	 * @throws Import_Exception
 	 */
-	public function importArray(array &$array)
+	public function importArray(array &$array) : void
 	{
 		Dao::begin();
 		$class_name = self::getClassNameFromArray($array) ?: $this->class_name;
@@ -377,7 +377,7 @@ class Import_Array
 	 * @param $array array $value = string[integer $row_number][integer $column_number]
 	 * @throws Import_Exception
 	 */
-	protected function importArrayClass(Import_Class $class, array &$array)
+	protected function importArrayClass(Import_Class $class, array &$array) : void
 	{
 		$property_path = join(DOT, $class->property_path);
 		/** @var $class_properties_column integer[] key is the property name of the current class */
@@ -569,7 +569,7 @@ class Import_Array
 	 */
 	protected function simulateNew(
 		/** @noinspection PhpUnusedParameterInspection */ Import_Class $class, object $object
-	) {
+	) : void {
 		echo '- write new ' . print_r($object, true);
 	}
 
@@ -583,7 +583,8 @@ class Import_Array
 		/** @noinspection PhpUnusedParameterInspection */ Import_Class $class,
 		array $search,
 		string $class_name
-	) {
+	) : void
+	{
 		echo '- search ' . $class_name . ' = ' . print_r($search, true) . BR;
 	}
 
@@ -594,7 +595,8 @@ class Import_Array
 	 */
 	protected function simulateUpdate(
 		/** @noinspection PhpUnusedParameterInspection */ Import_Class $class, object $object
-	) {
+	) : void
+	{
 		echo '- update ' . print_r($object, true) . BR;
 	}
 

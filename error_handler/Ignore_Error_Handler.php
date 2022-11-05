@@ -13,7 +13,7 @@ class Ignore_Error_Handler implements Error_Handler
 	 *
 	 * @param $error Handled_Error
 	 */
-	public function handle(Handled_Error $error)
+	public function handle(Handled_Error $error) : void
 	{
 	}
 

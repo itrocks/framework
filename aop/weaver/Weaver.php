@@ -120,7 +120,7 @@ class Weaver implements IWeaver, Plugin
 	/**
 	 * Copy weaver.php to weaver.php.old for compiler changes detection
 	 */
-	public function backupFile()
+	public function backupFile() : void
 	{
 		if (!$this->file_name) {
 			$this->file_name = $this->defaultFileName();
@@ -250,7 +250,7 @@ class Weaver implements IWeaver, Plugin
 	 * @param mixed  $joinpoint
 	 * @param string $lf
 	 */
-	protected function dumpArrayDetail(string &$dump, mixed $joinpoint, string $lf)
+	protected function dumpArrayDetail(string &$dump, mixed $joinpoint, string $lf) : void
 	{
 		$dump .= $lf . '[' . Q . $joinpoint[0] . Q . ', ';
 		if (is_array($advice = $joinpoint[1])) {
@@ -330,7 +330,7 @@ class Weaver implements IWeaver, Plugin
 	/**
 	 * @param $file_name string
 	 */
-	public function loadJoinpoints(string $file_name)
+	public function loadJoinpoints(string $file_name) : void
 	{
 		$this->file_name  = $file_name;
 		$this->joinpoints = file_exists($file_name) ? (include $file_name) : [];
@@ -358,7 +358,7 @@ class Weaver implements IWeaver, Plugin
 	 *
 	 * @param $handler IHandler
 	 */
-	public function remove(IHandler $handler)
+	public function remove(IHandler $handler) : void
 	{
 		/** @var $handler Handler */
 		if (is_string($handler->joinpoint)) {
@@ -373,7 +373,7 @@ class Weaver implements IWeaver, Plugin
 	/**
 	 * @param $file_name string
 	 */
-	public function saveJoinpoints(string $file_name)
+	public function saveJoinpoints(string $file_name) : void
 	{
 		$this->file_name = $file_name;
 		// write new weaver.php file content

@@ -420,7 +420,7 @@ class Search_Parameters_Parser
 	 * @param $search_values array An array of search values
 	 * @param $to_unset      string[] property paths for which values must be unset
 	 */
-	public function parseArray(array &$search_values, array &$to_unset)
+	public function parseArray(array &$search_values, array &$to_unset) : void
 	{
 		foreach ($search_values as $property_path => &$search_value) {
 			if ($search_value instanceof Logical) {
@@ -450,7 +450,7 @@ class Search_Parameters_Parser
 	 * @param $search_value string
 	 * @param $property ?Reflection_Property
 	 */
-	protected function parseField(string &$search_value, ?Reflection_Property $property)
+	protected function parseField(string &$search_value, ?Reflection_Property $property) : void
 	{
 		try {
 			$search_value = $this->applyOr($search_value, $property);

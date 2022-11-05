@@ -24,7 +24,7 @@ class Change extends Trigger
 	/**
 	 * @noinspection PhpUnused @after_write, @before_delete
 	 */
-	public function resetPluginCache()
+	public function resetPluginCache() : void
 	{
 		if (!$this->class_name || !Plugin::registered()) {
 			return;

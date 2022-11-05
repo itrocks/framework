@@ -160,7 +160,7 @@ class Exhaustive_Class
 			}
 			elseif ($assembly instanceof Source) {
 				$components = array_map(
-					function(Class_Use $class_use) { return $class_use->trait_name; },
+					function(Class_Use $class_use) : string { return $class_use->trait_name; },
 					$assembly->class_use
 				);
 				if ($parent_class_name = $this->parentClassName($assembly->class_extends)) {

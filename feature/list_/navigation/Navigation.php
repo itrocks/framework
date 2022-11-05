@@ -27,7 +27,7 @@ class Navigation
 	}
 
 	//--------------------------------------------------------------------------------- __unserialize
-	public function __unserialize(array $data)
+	public function __unserialize(array $data) : void
 	{
 		$this->classes = $data['classes'];
 	}
@@ -38,7 +38,7 @@ class Navigation
 	 * @param $class_name string
 	 * @param $object     object
 	 */
-	protected function addClass(string $class_name, object $object)
+	protected function addClass(string $class_name, object $object) : void
 	{
 		$list_settings = List_Setting\Set::current($class_name);
 		$search        = (new List_\Controller)->applySearchParameters($list_settings);

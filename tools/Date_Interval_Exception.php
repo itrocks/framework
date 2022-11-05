@@ -12,7 +12,7 @@ class Date_Interval_Exception extends Exception
 	//--------------------------------------------------------------------------------------- MESSAGE
 	const MESSAGE
 		= 'Impossible to know the real number of days for an interval not created with DateTime::diff 
-		@see Notes at http://php.net/manual/fr/dateinterval.format.php ';
+		@see Notes at https://php.net/manual/fr/dateinterval.format.php ';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

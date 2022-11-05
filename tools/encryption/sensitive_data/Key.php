@@ -73,7 +73,7 @@ class Key
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $secret string
 	 */
-	public function setSecret(string $secret)
+	public function setSecret(string $secret) : void
 	{
 		if (!isset($_POST['password'])) {
 			return;

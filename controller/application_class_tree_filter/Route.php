@@ -68,7 +68,7 @@ class Route
 	/**
 	 * @param $node Node
 	 */
-	public function addNode(Node $node)
+	public function addNode(Node $node) : void
 	{
 		$this->nodes[$node->class] = $node;
 		$node->route               = $this;
@@ -81,7 +81,7 @@ class Route
 	/**
 	 * @param $route Route
 	 */
-	public function addRoute(Route $route)
+	public function addRoute(Route $route) : void
 	{
 		$this->nodes[$route->identifier()] = $route;
 		if ($route->checked) {

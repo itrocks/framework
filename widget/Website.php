@@ -26,7 +26,7 @@ class Website extends Property
 		}
 		$link = $this->value;
 		if (!str_contains($link, '://')) {
-			$link = 'http://' . $link;
+			$link = 'https://' . $link;
 		}
 		$value  = rParse($this->value, '://', 1, true);
 		$anchor = new Anchor($link, $value);

@@ -23,7 +23,7 @@ interface IManager
 	/**
 	 * @param $level string|null
 	 */
-	public function activatePlugins(string $level = null);
+	public function activatePlugins(string $level = null) : void;
 
 	//------------------------------------------------------------------------------------ addPlugins
 	/**
@@ -32,7 +32,7 @@ interface IManager
 	 * @param $level   string
 	 * @param $plugins Plugin[]
 	 */
-	public function addPlugins(string $level, array $plugins);
+	public function addPlugins(string $level, array $plugins) : void;
 
 	//------------------------------------------------------------------------------------------- get
 	/**

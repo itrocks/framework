@@ -27,6 +27,6 @@ interface Installable
 	 *
 	 * @param $installer Installer
 	 */
-	public function install(Installer $installer);
+	public function install(Installer $installer) : void;
 
 }

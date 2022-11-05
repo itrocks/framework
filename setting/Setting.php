@@ -114,7 +114,7 @@ class Setting implements Validate\Except
 	/**
 	 * @noinspection PhpUnused @before_write
 	 */
-	public function invalidateValueSetting()
+	public function invalidateValueSetting() : void
 	{
 		if (
 			is_object($this->value)
@@ -129,7 +129,7 @@ class Setting implements Validate\Except
 	/**
 	 * @noinspection PhpUnused @before_delete
 	 */
-	public function unlinkUserSettings()
+	public function unlinkUserSettings() : void
 	{
 		foreach (Dao::search(['setting' => $this], Setting\User::class) as $user_setting) {
 			$user_setting->setting = null;

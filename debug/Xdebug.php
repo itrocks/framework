@@ -72,7 +72,7 @@ class Xdebug implements Registerable
 	/**
 	 * @param $get string[]
 	 */
-	public function cleanup(array &$get)
+	public function cleanup(array &$get) : void
 	{
 		if (isset($get[self::PROFILE])) {
 			$this->profile = $get[self::PROFILE];

@@ -99,6 +99,7 @@ class Annotation_Test extends Test
 	 * @throws ReflectionException
 	 */
 	public function testBeforeWrite(string $class_name, mixed $assumed_value, string $annotation_name)
+		: void
 	{
 		$class      = new Reflection_Class($class_name);
 		$annotation = $class->getAnnotation($annotation_name);
@@ -122,7 +123,8 @@ class Annotation_Test extends Test
 	public function testForeign(
 		string $class_name, string $property_name, mixed $assumed_value, string $annotation_name = '',
 		string $assumed_class = ''
-	) {
+	) : void
+	{
 		if (!$assumed_class) {
 			$assumed_class = Foreign_Annotation::class;
 		}
@@ -152,7 +154,8 @@ class Annotation_Test extends Test
 	public function testForeignlink(
 		string $class_name, string $property_name, mixed $assumed_value, string $annotation_name = '',
 		string $assumed_class = ''
-	) {
+	) : void
+	{
 		if (!$assumed_class) {
 			$assumed_class = Foreignlink_Annotation::class;
 		}

@@ -27,7 +27,7 @@ function backSet(mixed &$variable, mixed $value) : mixed
  * @param $variable1 mixed
  * @param $variable2 mixed
  */
-function swap(mixed &$variable1, mixed &$variable2)
+function swap(mixed &$variable1, mixed &$variable2) : void
 {
 	$temporary = $variable1;
 	$variable1 = $variable2;

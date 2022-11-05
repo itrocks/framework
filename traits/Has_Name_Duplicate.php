@@ -15,7 +15,7 @@ trait Has_Name_Duplicate
 	/**
 	 * @noinspection PhpUnused @duplicate
 	 */
-	public function duplicateName()
+	public function duplicateName() : void
 	{
 		/** @var $this Duplicate_Discriminate_By_Counter|self */
 		$this->duplicateDiscriminateByCounter('name');

@@ -31,7 +31,7 @@ class Model extends PDF\Output
 	 * @param $objects     object[]         Objects to print, all must be of the same class
 	 * @param $print_model Print_Model|null If not set, the first available print model will be taken
 	 */
-	public function append(PDF|TCPDF $pdf, array $objects, Print_Model $print_model = null)
+	public function append(PDF|TCPDF $pdf, array $objects, Print_Model $print_model = null) : void
 	{
 		if (!$print_model) {
 			$class_name  = Builder::current()->sourceClassName(get_class(reset($objects)));
@@ -52,7 +52,7 @@ class Model extends PDF\Output
 	 * @param $object      object      Object to print
 	 * @param $print_model Print_Model If not set, the first available print model will be taken
 	 */
-	protected function appendObject(TCPDF|PDF $pdf, object $object, Print_Model $print_model)
+	protected function appendObject(TCPDF|PDF $pdf, object $object, Print_Model $print_model) : void
 	{
 		$exporter            = new Exporter();
 		$exporter->pdf       = $pdf;

@@ -14,14 +14,14 @@ abstract class Test extends Testable
 
 	//---------------------------------------------------------------------------------------- assume
 	/**
-	 * Assumes a checked value is the same than an assumed value
+	 * Assumes a checked value is the same as an assumed value
 	 *
 	 * @deprecated use assertEquals
 	 * @param $assume      mixed the assumed value
 	 * @param $check       mixed the checked value
 	 * @param $test        string the name of the test (ie 'Method_Name[.test_name]')
 	 */
-	protected function assume(mixed $test, mixed $check, string $assume)
+	protected function assume(mixed $test, mixed $check, string $assume) : void
 	{
 		$check  = $this->toArray($check);
 		$assume = $this->toArray($assume);

@@ -23,6 +23,6 @@ interface ICompiler
 	 *
 	 * @param $more_sources More_Sources
 	 */
-	public function moreSourcesToCompile(More_Sources $more_sources);
+	public function moreSourcesToCompile(More_Sources $more_sources) : void;
 
 }

@@ -39,7 +39,7 @@ class Class_Test extends Test
 	 * Test read of @extends (annotation that does not inherit)
 	 * class has no @extends, parent has a @extends : must result in empty
 	 */
-	public function testExtendsEmptyParentExtends()
+	public function testExtendsEmptyParentExtends() : void
 	{
 		$extends = Extends_Annotation::allOf(new Reflection_Class(Quote::class));
 		$values  = [];
@@ -54,7 +54,7 @@ class Class_Test extends Test
 	 * Test read of @extends (annotation that does not inherit)
 	 * class has @extends, parent has an @extends : must return the class @extends alone
 	 */
-	public function testExtendsExtendsParentExtends()
+	public function testExtendsExtendsParentExtends() : void
 	{
 		$extends = Extends_Annotation::allOf(new Reflection_Class(A_Trait::class));
 		$values  = [];
@@ -69,7 +69,7 @@ class Class_Test extends Test
 	 * Test read of @extends (annotation that does not inherit)
 	 * class has @extends, no parent : must return the @extends
 	 */
-	public function testExtendsExtendsWithoutParent()
+	public function testExtendsExtendsWithoutParent() : void
 	{
 		$extends = Extends_Annotation::allOf(new Reflection_Class(Has_Counter::class));
 		$values  = [];
@@ -83,7 +83,7 @@ class Class_Test extends Test
 	/**
 	 * Gets the @store_name from a parent and a trait : the trait must override the parent
 	 */
-	public function testStoreNameWithParentAndTrait()
+	public function testStoreNameWithParentAndTrait() : void
 	{
 		$store_name = Store_Name_Annotation::of(new Reflection_Class(
 			Class_With_Trait_And_Parent::class
@@ -95,7 +95,7 @@ class Class_Test extends Test
 	/**
 	 * Tests Dao AOP in a transaction commit context.
 	 */
-	public function testWriteAnnotationsCommit()
+	public function testWriteAnnotationsCommit() : void
 	{
 		$this->subject->data = 'test';
 		Dao::begin();
@@ -116,7 +116,7 @@ class Class_Test extends Test
 	/**
 	 * Tests Dao AOP in a transaction rollback context.
 	 */
-	public function testWriteAnnotationsRollBack()
+	public function testWriteAnnotationsRollBack() : void
 	{
 		$this->subject->data = 'test';
 		Dao::begin();

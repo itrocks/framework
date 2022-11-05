@@ -21,7 +21,7 @@ class View_Exception_Test extends Test
 	 *
 	 * @see Controller::runMultiple
 	 */
-	public function testCall()
+	public function testCall() : void
 	{
 		if (Access_Control::registered()) {
 			$exception = SL . Names::classToUri(Tests::class) . SL . '.*';

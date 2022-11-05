@@ -107,13 +107,13 @@ interface IWeaver
 	/**
 	 * @return string
 	 */
-	public function defaultFileName();
+	public function defaultFileName() : string;
 
 	//-------------------------------------------------------------------------------- loadJoinpoints
 	/**
 	 * @param $file_name string
 	 */
-	public function loadJoinpoints(string $file_name);
+	public function loadJoinpoints(string $file_name) : void;
 
 	//---------------------------------------------------------------------------------- readProperty
 	/**
@@ -131,13 +131,13 @@ interface IWeaver
 	 *
 	 * @param $handler IHandler
 	 */
-	public function remove(IHandler $handler);
+	public function remove(IHandler $handler) : void;
 
 	//-------------------------------------------------------------------------------- saveJoinpoints
 	/**
 	 * @param $file_name string
 	 */
-	public function saveJoinpoints(string $file_name);
+	public function saveJoinpoints(string $file_name) : void;
 
 	//--------------------------------------------------------------------------------- writeProperty
 	/**

@@ -14,7 +14,7 @@ class Replaces_Test extends Test
 	 * @param $method string
 	 * @param $object object
 	 */
-	private function allTests(string $method, object $object)
+	private function allTests(string $method, object $object) : void
 	{
 		$append              = ['', ''];
 		$object->replaced    = 'to_replaced';
@@ -32,7 +32,7 @@ class Replaces_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------- testChildMethod
-	public function testChildMethod()
+	public function testChildMethod() : void
 	{
 		$object = new Child_Method();
 		$object->replaced_string = 'value';
@@ -55,7 +55,7 @@ class Replaces_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------ testSimple
-	public function testSimple()
+	public function testSimple() : void
 	{
 		$this->allTests('testSimple', new Simple());
 		$this->allTests('testSon',    new Son());

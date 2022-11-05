@@ -77,7 +77,7 @@ trait Category
 	/**
 	 * Write sub categories : updates super_category for all sub category
 	 */
-	public function writeSubCategories()
+	public function writeSubCategories() : void
 	{
 		$this->writeSub('sub_categories', 'super_category');
 	}

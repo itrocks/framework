@@ -132,7 +132,6 @@ abstract class Names
 	 * TODO check usages and see if replacement by classToFilePath will work
 	 * TODO Does not work in Engine::getTemplateFile() can't find Application_home.html
 	 *
-	 * @deprecated : now will use classToFilePath()
 	 * @param $class_name string
 	 * @return string
 	 */
@@ -327,7 +326,9 @@ abstract class Names
 	public static function pathToClass(string $class_name) : string
 	{
 		return str_replace(SL, BS, ucfirst(preg_replace_callback(
-			'%[_/][a-z]%', function($matches) { return strtoupper($matches[0]); }, $class_name
+			'%[_/][a-z]%',
+			function(array $matches) : string { return strtoupper($matches[0]); },
+			$class_name
 		)));
 	}
 

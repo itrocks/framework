@@ -61,8 +61,7 @@ class Stepper
 	public function getSortedSteps() : array
 	{
 		usort(
-
-			$this->steps, function (Step $step_a, Step $step_b) {
+			$this->steps, function (Step $step_a, Step $step_b) : int {
 				return $step_a->sort_order - $step_b->sort_order;
 			}
 		);
@@ -71,7 +70,7 @@ class Stepper
 	}
 
 	//--------------------------------------------------------------------------------- markDoneSteps
-	protected function markDoneSteps()
+	protected function markDoneSteps() : void
 	{
 		$current_step = reset($this->steps);
 		foreach ($this->steps as $step) {

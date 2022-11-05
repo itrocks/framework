@@ -68,7 +68,7 @@ trait Has_Default
 	 *
 	 * @noinspection PhpUnused @after_write
 	 */
-	public function onlyOneDefault()
+	public function onlyOneDefault() : void
 	{
 		if (!$this->default) {
 			return;

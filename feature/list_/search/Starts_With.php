@@ -28,7 +28,7 @@ class Starts_With implements Registerable
 	 * @param $search_value string The value around which you add jokers (modified)
 	 * @param $property     ?Reflection_Property
 	 */
-	public function appendJoker(string &$search_value, ?Reflection_Property $property)
+	public function appendJoker(string &$search_value, ?Reflection_Property $property) : void
 	{
 		if (!$this->enabled || Words::meansEmpty($search_value)) {
 			return;

@@ -55,7 +55,7 @@ class Builder extends File
 				$this->classes = objectInsertSorted(
 					$this->classes,
 					$class,
-					function(Built $object1, Built $object2) use ($builder) {
+					function(Built $object1, Built $object2) use ($builder) : int {
 						$class1 = $builder->shortClassNameOf($object1->class_name);
 						$class2 = $builder->shortClassNameOf($object2->class_name);
 						return strcmp($class1, $class2);
@@ -93,7 +93,7 @@ class Builder extends File
 	/**
 	 * Read from file
 	 */
-	public function read()
+	public function read() : void
 	{
 		(new Builder\Reader($this))->read();
 	}
@@ -137,7 +137,7 @@ class Builder extends File
 	/**
 	 * Write to file
 	 */
-	public function write()
+	public function write() : void
 	{
 		(new Builder\Writer($this))->write();
 	}

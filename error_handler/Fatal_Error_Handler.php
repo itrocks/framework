@@ -13,7 +13,7 @@ class Fatal_Error_Handler extends Main_Error_Handler
 	 *
 	 * @param $error Handled_Error
 	 */
-	public function handle(Handled_Error $error)
+	public function handle(Handled_Error $error) : void
 	{
 		die(
 			'<div class="fatal error handler">'

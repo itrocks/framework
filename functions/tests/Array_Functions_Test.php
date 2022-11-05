@@ -62,7 +62,8 @@ class Array_Functions_Test extends Test
 	public function testArrayCut(
 		array $expected, array $lengths, bool|string $ignore_characters = '',
 		bool $get_trailing_characters_element = false
-	) {
+	) : void
+	{
 		$string = 'Word123456Last wordsTrailing things';
 		static::assertEquals(
 			$expected, arrayCut($string, $lengths, $ignore_characters, $get_trailing_characters_element)
@@ -73,7 +74,7 @@ class Array_Functions_Test extends Test
 	/**
 	 * Simple test of arrayFormRevert()
 	 */
-	public function testArrayFormRevert()
+	public function testArrayFormRevert() : void
 	{
 		$form = [
 			'id'      => [1, 2, 3],
@@ -91,7 +92,7 @@ class Array_Functions_Test extends Test
 	/**
 	 * Complex well formatted form test of arrayFormRevert()
 	 */
-	public function testArrayFormRevertComplex()
+	public function testArrayFormRevertComplex() : void
 	{
 		$form = [
 			'address' => ['address 1', ''],
@@ -118,7 +119,7 @@ class Array_Functions_Test extends Test
 	/**
 	 * Complex badly formatted form test of arrayFormRevert()
 	 */
-	public function testArrayFormRevertComplexBad()
+	public function testArrayFormRevertComplexBad() : void
 	{
 		$form = [
 			'address' => ['address 1', ''],
@@ -146,7 +147,7 @@ class Array_Functions_Test extends Test
 	 * Unit test for arrayFormRevert() call on preg_match_all() call resulting $matches
 	 * with one result
 	 */
-	public function testArrayFormRevertOfOneMatch()
+	public function testArrayFormRevertOfOneMatch() : void
 	{
 		$matches = [['match 1 found'], ['match 1 elem 1'], ['match 1 elem 2']];
 		$result  = [['match 1 found', 'match 1 elem 1', 'match 1 elem 2']];
@@ -158,7 +159,7 @@ class Array_Functions_Test extends Test
 	 * Unit test for arrayFormRevert() call on preg_match_all() call resulting $matches
 	 * with three results
 	 */
-	public function testArrayFormRevertOfThreeMatches()
+	public function testArrayFormRevertOfThreeMatches() : void
 	{
 		$matches = [
 			['match 1 found', 'match 2 found', 'match 3 found'],
@@ -177,7 +178,7 @@ class Array_Functions_Test extends Test
 	/**
 	 * Test of arrayFormRevert() with a string[] field (string set)
 	 */
-	public function testArrayFormRevertWithSet()
+	public function testArrayFormRevertWithSet() : void
 	{
 		$form = [
 			'id'      => [1, 2, 3],
@@ -196,7 +197,7 @@ class Array_Functions_Test extends Test
 	/**
 	 * Test of arrayFormRevert() with a string[] field with string keys (string set)
 	 */
-	public function testArrayFormRevertWithStringSet()
+	public function testArrayFormRevertWithStringSet() : void
 	{
 		$form = [
 			'id'      => [1, 2, 3],

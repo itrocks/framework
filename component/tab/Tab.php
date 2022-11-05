@@ -100,7 +100,7 @@ class Tab
 	/**
 	 * @param $key string
 	 */
-	public function __unset(string $key)
+	public function __unset(string $key) : void
 	{
 		unset($this->includes[$key]);
 	}
@@ -127,7 +127,7 @@ class Tab
 	/**
 	 * @param $hide_empty_test boolean If false, will be shown even if HIDE_EMPTY is set
 	 */
-	public function filterVisibleProperties(bool $hide_empty_test = true)
+	public function filterVisibleProperties(bool $hide_empty_test = true) : void
 	{
 		if (isset($this->id)) {
 			// patch for output/object.html view

@@ -17,7 +17,7 @@ final class Senders_Test extends Test
 	}
 
 	//-------------------------------------------------------------- testConstructorWithConfiguration
-	public function testConstructorWithConfiguration()
+	public function testConstructorWithConfiguration() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid */
 		$senders = new Senders($this->foo_configuration);
@@ -26,14 +26,14 @@ final class Senders_Test extends Test
 	}
 
 	//--------------------------------------------------------- testConstructorWithEmptyConfiguration
-	public function testConstructorWithEmptyConfiguration()
+	public function testConstructorWithEmptyConfiguration() : void
 	{
 		$senders = new Senders();
 		$this->assertEmpty($senders->senders);
 	}
 
 	//-------------------------------------------------------------------- testRetrieveExistingSender
-	public function testRetrieveExistingSender()
+	public function testRetrieveExistingSender() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid */
 		$senders = new Senders($this->foo_configuration);
@@ -42,7 +42,7 @@ final class Senders_Test extends Test
 	}
 
 	//----------------------------------------------------------------- testRetrieveNonExistingSender
-	public function testRetrieveNonExistingSender()
+	public function testRetrieveNonExistingSender() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid */
 		$senders = new Senders($this->foo_configuration);

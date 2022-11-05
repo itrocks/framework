@@ -34,7 +34,7 @@ class Add_Controller extends Add\Controller
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 */
-	protected function tuneProperties(string $class_name)
+	protected function tuneProperties(string $class_name) : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection */
 		$class      = new Reflection_Class($class_name);

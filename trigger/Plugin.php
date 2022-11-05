@@ -21,7 +21,7 @@ abstract class Plugin implements Registerable
 	 *
 	 * @param $action_link string
 	 */
-	protected function launchNextStep(string $action_link)
+	protected function launchNextStep(string $action_link) : void
 	{
 		$now  = Date_Time::now();
 		$user = User::current();

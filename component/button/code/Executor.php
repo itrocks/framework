@@ -28,7 +28,7 @@ class Executor implements Registerable
 	 *
 	 * @param $uri Uri
 	 */
-	public function executeNotWrite(Uri $uri)
+	public function executeNotWrite(Uri $uri) : void
 	{
 		if ($uri->parameters->has(Code::class) && ($uri->feature_name !== Feature::F_SAVE)) {
 			$code = $uri->parameters->getObject(Code::class);
@@ -48,7 +48,7 @@ class Executor implements Registerable
 	 * Called during default Save_Controller, between the time when object has been modified by the
 	 * form content and the time it is written using Dao.
 	 */
-	public function executeWrite()
+	public function executeWrite() : void
 	{
 		if (isset($this->uri) && ($this->uri->feature_name === Feature::F_SAVE)) {
 			$code = $this->uri->parameters->getObject(Code::class);
