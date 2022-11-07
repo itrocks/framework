@@ -260,7 +260,7 @@ Parser::$default_annotations = [
 	/**
 	 * @test_condition testCondition
 	 * This is a Multiple_Annotation
-	 * Declare one or several methods to call in order to decide if massive tests (eg testEverything)
+	 * Declare one or several methods to call in order to decide if massive tests (e.g. testEverything)
 	 * should be run for this class
 	 */
 	Parser::T_CLASS . '@test_condition' => Method_Annotation::class,
@@ -301,7 +301,7 @@ Parser::$default_annotations = [
 
 	/**
 	 * @return_constant [false]
-	 * The result of this function is constant (false to override a parent' true value)
+	 * The result of this function is constant (false to override a parent true value)
 	 */
 	Parser::T_METHOD . '@return_constant' => Boolean_Annotation::class,
 
@@ -368,14 +368,14 @@ Parser::$default_annotations = [
 
 	/**
 	 * @constraint initial|set_null
-	 * set_null : Force foreign key constraint to 'ON DELETE SET NULL ON UPDATE UPDATE'
+	 * set_null : Force foreign key constraint to 'ON DELETE : SET NULL, ON UPDATE : UPDATE'
 	 * initial : cancels any parent forced constraint using this annotation
 	 */
 	Parser::T_PROPERTY . '@constraint' => Annotation::class,
 
 	/**
 	 * @dao ITRocks\Framework\Dao\Mysql\Link
-	 * This annotation stores the name of the Dao that should always used for a linked object,
+	 * This annotation stores the name of the Dao that should always be used for a linked object,
 	 * map or collection property. Use it in conjunction with @link and @var annotations.
 	 */
 	Parser::T_PROPERTY . '@dao' => Annotation::class,
@@ -450,7 +450,7 @@ Parser::$default_annotations = [
 	/**
 	 * @link_composite
 	 * Identifies a property to link to the composite object for a @link Class
-	 * This is useful to declare it explicitely only if the @link Class links two identical classes
+	 * This is useful to declare it explicitly only if the @link Class links two identical classes
 	 */
 	Parser::T_PROPERTY . '@link_composite' => Boolean_Annotation::class,
 
@@ -550,8 +550,8 @@ Parser::$default_annotations = [
 
 	/**
 	 * @search_range false
-	 * Search range using "from-to" with - as separator is accepted by default. Set this to false to
-	 * disable ie for properties which values often contain the - character.
+	 * Search range using "from-to" with - as separator is accepted by default. Set this to false
+	 * in order to disable ie for properties which values often contain the - character.
 	 */
 	Parser::T_PROPERTY . '@search_range' => Annotation::class,
 
@@ -618,7 +618,7 @@ Parser::$default_annotations = [
 
 	/**
 	 * @unlocked
-	 * This allow you to write objects with Dao::only('this_property'), even if the object is locked
+	 * This allows you to write objects with Dao::only('this_property'), even if the object is locked
 	 */
 	Parser::T_PROPERTY . '@unlocked' => Boolean_Annotation::class,
 
