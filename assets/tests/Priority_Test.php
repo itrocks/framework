@@ -22,7 +22,6 @@ class Priority_Test extends Test
 			[true, Priority::FIRST],
 			[true, Priority::LAST],
 			[true, Priority::EXCLUDED],
-			'Null is not valid'     => [false, null],
 			'Empty is not valid'    => [false, ''],
 			'notValid is not valid' => [false, 'notValid'],
 		];

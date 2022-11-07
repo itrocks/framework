@@ -47,8 +47,7 @@ abstract class Search_Object extends Null_Object
 					}
 				}
 				else {
-					/** @noinspection PhpRedundantOptionalArgumentInspection Must set value */
-					$property->setValue($object, null);
+					unset($object->{$property->name});
 				}
 			}
 		}

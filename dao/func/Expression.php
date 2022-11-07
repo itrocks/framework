@@ -21,7 +21,7 @@ class Expression
 	 *
 	 * @var string
 	 */
-	public string $prefix;
+	public string $prefix = '';
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**

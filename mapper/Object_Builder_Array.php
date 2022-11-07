@@ -17,6 +17,7 @@ use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\View\Html\Builder\Property;
 use ITRocks\Framework\View\User_Error_Exception;
+use TypeError;
 
 /**
  * Build an object and it's property values from data stored into a recursive array
@@ -69,7 +70,7 @@ class Object_Builder_Array
 	/**
 	 * If false, build() will generate an error if the array contains data for properties that do not
 	 * exist in object's class.
-	 * With true, you do not generate this error but we ignore unknown properties
+	 * With true, you do not generate this error, but we ignore unknown properties
 	 * With null, we store unknown properties into the object
 	 *
 	 * @var boolean|null
@@ -101,7 +102,7 @@ class Object_Builder_Array
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name string|null
-	 * @param $from_form  boolean Set this to false to disable interpretation of arrays coming from
+	 * @param $from_form  boolean Set this false to disable interpretation of arrays coming from
 	 *                    forms : arrayFormRevert, widgets. You should always set this to false if
 	 *                    your array does not come from an input form.
 	 * @param $composite  object|null Reference to the composite object if we build a Component
@@ -193,7 +194,8 @@ class Object_Builder_Array
 				$value = trim($value);
 			}
 			$value = match($property->getType()->asString()) {
-				Type::BOOLEAN => !(empty($value) || in_array($value, [_FALSE, .0, 0, '0'], true)),
+				Type::BOOLEAN, Type::FALSE, Type::TRUE
+					=> !(empty($value) || in_array($value, [_FALSE, .0, 0, '0'], true)),
 				Type::INTEGER => Loc::integerToIso($value),
 				Type::FLOAT   => Loc::floatToIso($value),
 				default       => $value
@@ -405,7 +407,7 @@ class Object_Builder_Array
 	//------------------------------------------------------------------------------ buildObjectValue
 	/**
 	 * @param $class_name    string the class name of the object to build
-	 * @param $object        ?object the value of the object before build (may be null if no object)
+	 * @param $object        ?object the value of the object before build (it may be null if no object)
 	 * @param $array         array  the values of the properties to be replaced into the object
 	 * @param $null_if_empty boolean
 	 * @param $composite     ?object The composite object (set it only if property is a @component)
@@ -502,9 +504,16 @@ class Object_Builder_Array
 				if ($link->isObject()) {
 					$class_name       = $type->asString();
 					$composite_object = $property->getAnnotation('component')->value ? $object : null;
+					try {
+						/** @noinspection PhpUnhandledExceptionInspection $property of $object */
+						$sub_object = $property->getValue($object);
+					}
+					catch (TypeError) {
+						$sub_object = null;
+					}
 					/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 					$value = $this->buildObjectValue(
-						$class_name, $property->getValue($object), $value, $null_if_empty, $composite_object
+						$class_name, $sub_object, $value, $null_if_empty, $composite_object
 					);
 				}
 				// collection

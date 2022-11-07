@@ -21,6 +21,16 @@ class Test_Object
 	 */
 	const KEEP_THIS_USE = Annoted::class;
 
+	//-------------------------------------------------------------------------- $collection_property
+	/**
+	 * A fictive local property, for unit tests use only
+	 * Annotations set here are used only for the test that uses @link
+	 *
+	 * @link Collection
+	 * @var Property_Test[]
+	 */
+	public array $collection_property;
+
 	//-------------------------------------------------------------------------------- $getter_simple
 	/**
 	 * @getter getSimple
@@ -38,13 +48,12 @@ class Test_Object
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * A fictive local property, for unit tests use only
-	 * Annotations set here are used only for the test that uses @link
+	 * Annotations set here are used only for the test that uses @default
 	 *
 	 * @default getDefaultPropertyValue
-	 * @link Collection
-	 * @var Property_Test[]
+	 * @var string
 	 */
-	public array $property;
+	public string $property;
 
 	//-------------------------------------------------------------------------------- $setter_simple
 	/**

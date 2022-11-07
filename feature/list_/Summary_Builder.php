@@ -322,8 +322,7 @@ class Summary_Builder
 			return $date;
 		}
 		elseif ($property && is_numeric($value)) {
-			$type_string = $property->getType()->asString();
-			if ($type_string === Type::BOOLEAN) {
+			if ($property->getType()->isBoolean()) {
 				return ($value ? Loc::tr(YES) : Loc::tr(NO));
 			}
 			return $value;

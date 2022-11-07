@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature\List_;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Date;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Range;
@@ -120,10 +121,11 @@ class Search_Parameters_Parser
 	/**
 	 * @param $search_value string
 	 * @param $property     ?Reflection_Property
-	 * @return Logical|string
+	 * @return Comparison|Logical|string
 	 * @throws Exception
 	 */
-	protected function applyAnd(string $search_value, ?Reflection_Property $property) : Logical|string
+	protected function applyAnd(string $search_value, ?Reflection_Property $property)
+		: Comparison|Logical|string
 	{
 		if (!str_contains($search_value, '&')) {
 			return $this->applyNot($search_value, $property);
@@ -245,10 +247,11 @@ class Search_Parameters_Parser
 	/**
 	 * @param $search_value string
 	 * @param $property     ?Reflection_Property
-	 * @return Logical|string
+	 * @return Comparison|Logical|string
 	 * @throws Exception
 	 */
-	protected function applyOr(string $search_value, ?Reflection_Property $property) : Logical|string
+	protected function applyOr(string $search_value, ?Reflection_Property $property)
+		: Comparison|Logical|string
 	{
 		if (!str_contains($search_value, ',')) {
 			return $this->applyAnd($search_value, $property);
@@ -294,6 +297,8 @@ class Search_Parameters_Parser
 		switch ($type_string) {
 			// boolean type
 			case Type::BOOLEAN:
+			case Type::FALSE:
+			case Type::TRUE:
 				$search = Words::applyWordMeaningEmpty($search_value, $property)
 					?: Type_Boolean::applyBooleanValue($search_value);
 				break;

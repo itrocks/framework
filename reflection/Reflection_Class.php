@@ -6,7 +6,6 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Display_Order_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Stringable;
@@ -200,7 +199,7 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $flags          integer[] T_EXTENDS. T_USE is implicit
-	 * @param $use_annotation boolean|string Set this to false to disable interpretation of @default
+	 * @param $use_annotation boolean|string Set this false to disable interpretation of @default
 	 *                        Set this to 'constant' to accept @default if @return_constant is set
 	 * @param $property_name  string for optimization purpose : only get defaults for this property
 	 * @return array
@@ -231,10 +230,7 @@ class Reflection_Class extends ReflectionClass
 		}
 		// scan for @default and use them
 		if ($use_annotation) {
-			foreach ($defaults as $default_property_name => $value) {
-				/** @noinspection PhpUnhandledExceptionInspection all using getDefaultProperties */
-				$property = $this->getProperty($default_property_name);
-				/** @var $default_annotation Method_Annotation */
+			foreach ($this->getProperties($flags) as $property) {
 				if (
 					($default_annotation = Default_Annotation::of($property))->value
 					&& (
@@ -242,9 +238,7 @@ class Reflection_Class extends ReflectionClass
 						|| $default_annotation->getReflectionMethod()->getAnnotation('return_constant')->value
 					)
 				) {
-					$defaults[$default_property_name] = $property->getDefaultValue(
-						$use_annotation, $default_object
-					);
+					$defaults[$property->name] = $property->getDefaultValue($use_annotation, $default_object);
 				}
 			}
 		}
@@ -505,7 +499,6 @@ class Reflection_Class extends ReflectionClass
 	}
 
 	//----------------------------------------------------------------------------------- getProperty
-
 	/**
 	 * Retrieves reflected properties
 	 *

@@ -24,7 +24,7 @@ class Table_Builder_Class
 	 *
 	 * @var string[]
 	 */
-	public array $dependencies_context;
+	public array $dependencies_context = [];
 
 	//-------------------------------------------------------------------------- $exclude_class_names
 	/**
@@ -106,7 +106,7 @@ class Table_Builder_Class
 	/**
 	 * The internal build method builds Table objects using a Php class definition
 	 *
-	 * It is the same than build(), but enables to add an additional field
+	 * It is the same as build(), but enables to add one more field
 	 * (link field for @link classes)
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection

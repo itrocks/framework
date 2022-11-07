@@ -26,6 +26,9 @@ class Type extends ReflectionType
 	//------------------------------------------------------------------------------------- DATE_TIME
 	const DATE_TIME = 'date_time';
 
+	//----------------------------------------------------------------------------------------- FALSE
+	const FALSE = 'false';
+
 	//----------------------------------------------------------------------------------------- FLOAT
 	const FLOAT = 'float';
 
@@ -58,6 +61,9 @@ class Type extends ReflectionType
 
 	//---------------------------------------------------------------------------------- STRING_ARRAY
 	const STRING_ARRAY = 'string[]';
+
+	//------------------------------------------------------------------------------------------ TRUE
+	const TRUE = 'true';
 
 	//------------------------------------------------------------------------------------------ null
 	const null = 'null';
@@ -110,8 +116,8 @@ class Type extends ReflectionType
 	 * @var string[]
 	 */
 	private static array $strictly_basic_types = [
-		self::_ARRAY, self::BOOLEAN, self::_CALLABLE, self::FLOAT, self::INTEGER,
-		self::NULL, self::null, self::RESOURCE, self::STRING
+		self::_ARRAY, self::BOOLEAN, self::_CALLABLE, self::FALSE, self::FLOAT, self::INTEGER,
+		self::NULL, self::null, self::RESOURCE, self::STRING, self::TRUE
 	];
 
 	//----------------------------------------------------------------------------------------- $type
@@ -310,10 +316,12 @@ class Type extends ReflectionType
 			return [];
 		}
 		else switch ($this->asString()) {
-			case self::BOOLEAN: return false;
+			case self::BOOLEAN:
+			case self::FALSE:   return false;
 			case self::INTEGER: return 0;
-			case self::FLOAT:   return 0.0;
+			case self::FLOAT:   return .0;
 			case self::STRING:  return '';
+			case self::TRUE:    return true;
 		}
 		return null;
 	}
@@ -407,7 +415,7 @@ class Type extends ReflectionType
 	 */
 	public function isBoolean() : bool
 	{
-		return $this->type === self::BOOLEAN;
+		return in_array($this->type, [self::BOOLEAN, self::FALSE, self::TRUE]);
 	}
 
 	//--------------------------------------------------------------------------------------- isClass

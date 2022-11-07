@@ -5,6 +5,7 @@ use Html2Text\Html2Text;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Tools\Date_Time;
 use Symfony\Component\Mime;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Header\DateHeader;
 use Symfony\Component\Mime\Header\IdentificationHeader;
 
@@ -37,6 +38,17 @@ class Encoder
 	{
 		$this->email             = $email;
 		$this->working_directory = $working_directory;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * Render an email as a string
+	 *
+	 * @return string
+	 */
+	public function __toString() : string
+	{
+		return $this->toMessage()->toString();
 	}
 
 	//------------------------------------------------------------------------------------ fileExists
@@ -90,22 +102,13 @@ class Encoder
 					: $file_name;
 				if (!str_contains($file_name, 'cid:') && $this->fileExists($file_path)) {
 					$cid     = call_user_func($callback, $file_path);
-					$content = str_replace($open . $file_name . $close, $open . $cid . $close, $content);
+					$content = str_replace(
+						$open . $file_name . $close, $open . 'cid:' . $cid . $close, $content
+					);
 				}
 			}
 		}
 		return $content;
-	}
-
-	//-------------------------------------------------------------------------------------- toString
-	/**
-	 * Render an email as a string
-	 *
-	 * @return string
-	 */
-	public function toString() : string
-	{
-		return $this->toMessage()->toString();
 	}
 
 	//------------------------------------------------------------------------------------- toHeaders
@@ -163,18 +166,18 @@ class Encoder
 
 		// Headers
 		$message->subject($this->email->subject);
-		$message->from($this->email->from->email, $this->email->from->name);
+		$message->from(new Address($this->email->from->email, $this->email->from->name));
 		foreach ($this->email->to as $recipient) {
-			$message->addTo($recipient->email, $recipient->name);
+			$message->addTo(new Address($recipient->email, $recipient->name));
 		}
 		foreach ($this->email->copy_to as $recipient) {
-			$message->addCc($recipient->email, $recipient->name);
+			$message->addCc(new Address($recipient->email, $recipient->name));
 		}
 		foreach ($this->email->blind_copy_to as $recipient) {
-			$message->addBcc($recipient->email, $recipient->name);
+			$message->addBcc(new Address($recipient->email, $recipient->name));
 		}
 		if ($this->email->reply_to) {
-			$message->replyTo($this->email->reply_to->email, $this->email->reply_to->name);
+			$message->replyTo(new Address($this->email->reply_to->email, $this->email->reply_to->name));
 		}
 		if ($this->email->return_path) {
 			$message->returnPath($this->email->return_path->email);
@@ -182,11 +185,10 @@ class Encoder
 		$this->toHeaders($message, $this->email->headers);
 
 		// Body
-		$image     = 0;
 		$html_part = $this->parseImages(
 			$this->email->content,
-			function(string $image_path) use($image, $message) : string {
-				$cid = 'im' . ++$image;
+			function(string $image_path) use($message) : string {
+				$cid = rLastParse($image_path, SL);
 				$message->embedFromPath($image_path, $cid);
 				return $cid;
 			}

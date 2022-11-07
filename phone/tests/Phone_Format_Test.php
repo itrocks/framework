@@ -39,7 +39,6 @@ class Phone_Format_Test extends Test
 
 		$phone = new Dummy();
 		$phone->country = new Country();
-		$phone->country->code = null;
 
 		$this->assertEquals(null, $phone_format->getCountryCode($phone));
 	}

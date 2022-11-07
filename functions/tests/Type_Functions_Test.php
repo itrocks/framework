@@ -91,10 +91,12 @@ class Type_Functions_Test extends Test
 	//--------------------------------------------------------------------------- testIsStrictInteger
 	/**
 	 * @dataProvider isStrictIntegerProvider
-	 * @param $value          mixed
+	 * @param $value          array|bool|float|int|string|null
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictInteger(mixed $value, array $array_expected) : void
+	function testIsStrictInteger(
+		array|bool|float|int|string|null $value, array $array_expected
+	) : void
 	{
 		static::assertEquals($array_expected[0], isStrictInteger($value));
 	}
@@ -102,10 +104,12 @@ class Type_Functions_Test extends Test
 	//--------------------------------------------------------------------------- testIsStrictNumeric
 	/**
 	 * @dataProvider isStrictIntegerProvider
-	 * @param $value          mixed
+	 * @param $value          array|bool|float|int|string|null
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictNumeric(mixed $value, array $array_expected) : void
+	function testIsStrictNumeric(
+		array|bool|float|int|string|null $value, array $array_expected
+	) : void
 	{
 		static::assertEquals($array_expected[1], isStrictNumeric($value));
 	}
@@ -113,10 +117,12 @@ class Type_Functions_Test extends Test
 	//------------------------------------------------------------------- testIsStrictUnsignedInteger
 	/**
 	 * @dataProvider isStrictIntegerProvider
-	 * @param $value          mixed
+	 * @param $value          array|bool|float|int|string|null
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictUnsignedInteger(mixed $value, array $array_expected) : void
+	function testIsStrictUnsignedInteger(
+		array|bool|float|int|string|null $value, array $array_expected
+	) : void
 	{
 		static::assertEquals($array_expected[2], isStrictUnsignedInteger($value));
 	}
@@ -124,10 +130,12 @@ class Type_Functions_Test extends Test
 	//------------------------------------------------------------------- testIsStrictUnsignedNumeric
 	/**
 	 * @dataProvider isStrictIntegerProvider
-	 * @param $value          mixed
+	 * @param $value          array|bool|float|int|string|null
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictUnsignedNumeric(mixed $value, array $array_expected) : void
+	function testIsStrictUnsignedNumeric(
+		array|bool|float|int|string|null $value, array $array_expected
+	) : void
 	{
 		static::assertEquals($array_expected[3], isStrictNumeric($value, true, false));
 	}

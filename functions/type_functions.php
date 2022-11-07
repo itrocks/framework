@@ -214,10 +214,10 @@ function isStrictNumeric(mixed $value, bool $decimal_allowed = true, bool $signe
  * Same as isStrictNumeric, but :
  * - must not have decimal char
  *
- * @param $value string
+ * @param $value mixed
  * @return boolean
  */
-function isStrictUnsignedInteger(string $value) : bool
+function isStrictUnsignedInteger(mixed $value) : bool
 {
 	return isStrictNumeric($value, false, false);
 }
@@ -226,10 +226,10 @@ function isStrictUnsignedInteger(string $value) : bool
 /**
  * Returns the maximal value of $arguments
  *
- * @param $arguments float|float[]|integer|integer[]
+ * @param $arguments float|float[]|integer|integer[]|null|null[]
  * @return float|integer|null null if there is not any real value into arguments
  */
-function maxSet(array|float|int $arguments) : float|int|null
+function maxSet(array|float|int|null $arguments) : float|int|null
 {
 	$maximum = null;
 	foreach (func_get_args() as $argument) {
@@ -247,10 +247,10 @@ function maxSet(array|float|int $arguments) : float|int|null
 /**
  * Returns the minimal value of $arguments
  *
- * @param $arguments float|float[]|integer|integer[]
+ * @param $arguments bool|float|float[]|integer|integer[]|null|null[]
  * @return float|integer|null null if there is not any real value into arguments
  */
-function minSet(array|float|int $arguments) : float|int|null
+function minSet(array|bool|float|int|null $arguments) : float|int|null
 {
 	$minimum = null;
 	foreach (func_get_args() as $argument) {

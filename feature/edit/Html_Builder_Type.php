@@ -163,7 +163,7 @@ class Html_Builder_Type
 	/**
 	 * @var boolean
 	 */
-	protected bool $with_id;
+	protected bool $with_id = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -216,8 +216,8 @@ class Html_Builder_Type
 			return $this->buildId();
 		}
 		$result = match($type->asString()) {
-			Type::BOOLEAN => $this->buildBoolean(),
-			Type::FLOAT   => $this->buildFloat(),
+			Type::BOOLEAN, Type::FALSE, Type::TRUE => $this->buildBoolean(),
+			Type::FLOAT => $this->buildFloat(),
 			Type::INTEGER => $this->buildInteger(),
 			Type::STRING, Type::STRING_ARRAY => $this->buildString(),
 			default => null

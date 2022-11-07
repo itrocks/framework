@@ -511,8 +511,11 @@ class Joins
 					$property_path = '';
 					foreach (explode(DOT, $master_path . DOT . $master_property_name) as $property_name) {
 						$property_path .= ($property_path ? DOT : '') . $property_name;
-						/** @noinspection PhpUnhandledExceptionInspection Must be valid */
-						if (!$root_class->getProperty($property_path)->getAnnotation('mandatory')->value) {
+						/** @noinspection PhpUnhandledExceptionInspection property_exists (reverse = virtual) */
+						$property = property_exists($root_class, $property_path)
+								? $root_class->getProperty($property_path)
+								: null;
+						if (!$property?->getAnnotation('mandatory')->value) {
 							$join->mode = Join::LEFT;
 							break;
 						}
@@ -590,7 +593,7 @@ class Joins
 	 */
 	public function getClass(string $column_name = '') : string
 	{
-		return $this->classes[$column_name];
+		return $this->classes[$column_name] ?? '';
 	}
 
 	//--------------------------------------------------------------------------------- getClassNames

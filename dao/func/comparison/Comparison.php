@@ -43,14 +43,14 @@ class Comparison implements Negate, Where
 	 * @values =, >, >=, <, <=, LIKE, <>, NOT LIKE
 	 * @var string
 	 */
-	public string $sign;
+	public string $sign = self::EQUAL;
 
 	//----------------------------------------------------------------------------------- $than_value
 	/**
 	 * @null
 	 * @var mixed
 	 */
-	public mixed $than_value;
+	public mixed $than_value = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -131,7 +131,7 @@ class Comparison implements Negate, Where
 		// for a LIKE for property with @values, we do not translate the expression
 		if (in_array($this->sign, [self::LIKE, self::NOT_LIKE], true)) {
 			$property = $builder->getProperty($property_path);
-			// check if we are on a enum field with @values list of values
+			// check if we are on an enum field with @values list of values
 			$values = ($property ? Values_Annotation::of($property)->values() : []);
 			if ($values) {
 				$translate_flag = Summary_Builder::NO_TRANSLATE;

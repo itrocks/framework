@@ -37,7 +37,7 @@ class Translator
 	/**
 	 * @var string
 	 */
-	public string $language;
+	public string $language = '';
 
 	//--------------------------------------------------------------------------------- $last_context
 	/**
@@ -45,7 +45,7 @@ class Translator
 	 *
 	 * @var string
 	 */
-	public string $last_context;
+	public string $last_context = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

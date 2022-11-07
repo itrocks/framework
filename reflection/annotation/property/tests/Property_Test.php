@@ -150,7 +150,7 @@ class Property_Test extends Test
 	public function testGetterAnnotationSet() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid object and constant */
-		$property = new Reflection_Property($this->subject, 'property');
+		$property = new Reflection_Property($this->subject, 'collection_property');
 
 		// @getter methodName
 		static::assertEquals(

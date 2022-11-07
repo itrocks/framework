@@ -197,12 +197,12 @@ class Template
 	/**
 	 * Constructs a template object, initializing the source data object and the template access path
 	 *
-	 * @param $object        object|null
+	 * @param $object        mixed|null
 	 * @param $template_file string|null full path to template file
 	 * @param $feature_name  string|null feature name
 	 */
 	public function __construct(
-		object $object = null, string $template_file = null, string $feature_name = null
+		mixed $object = null, string $template_file = null, string $feature_name = null
 	) {
 		if (isset($feature_name)) {
 			$this->feature = $feature_name;

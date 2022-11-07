@@ -89,7 +89,7 @@ class Link extends Dao\Sql\Link
 	//------------------------------------------------------------------------------- $prepared_fetch
 	/**
 	 * @example ['content' => [self::GZINFLATE]]
-	 * @var array key is the name of the property, value is an array of actions (eg GZINFLATE)
+	 * @var array key is the name of the property, value is an array of actions (e.g. GZINFLATE)
 	 */
 	private array $prepared_fetch;
 
@@ -312,7 +312,7 @@ class Link extends Dao\Sql\Link
 	 * If the storage space already exists, it is updated without losing data
 	 *
 	 * @param $class_name string
-	 * @return boolean true if storage was created or updated, false if it was already up to date
+	 * @return boolean true if storage was created or updated, false if it was already up-to-date
 	 */
 	public function createStorage(string $class_name) : bool
 	{
@@ -421,8 +421,8 @@ class Link extends Dao\Sql\Link
 	private function deleteCollection(object $parent, Reflection_Property $property, mixed $value)
 		: void
 	{
-		$property_name          = $property->name;
-		$parent->$property_name = null;
+		$property_name = $property->name;
+		unset($parent->$property_name);
 		$old_collection         = $parent->$property_name;
 		$parent->$property_name = $value;
 		if (isset($old_collection)) {
@@ -790,16 +790,16 @@ class Link extends Dao\Sql\Link
 
 	//------------------------------------------------------------------------------------ lockRecord
 	/**
-	 * Create an exclusive access to some code based on a table name and a record is
+	 * Create exclusive access to some code based on a table name and a record is
 	 *
 	 * The lock is linked to the current mysql thread : if a thread is not active anymore, the
 	 * matching stored locks are considered as done and unlocked
 	 *
 	 * @deprecated UNLOCK cause transactions to COMMIT : this is a problem
 	 * @param $table_name        string
-	 * @param $record_identifier int
+	 * @param $record_identifier integer
 	 * @param $options           string[] @values Lock::const
-	 * @return ?Lock Lock if has been locked, null if could not lock (always Lock if Lock::WAIT)
+	 * @return ?Lock Lock if it has been locked, null if it could not lock (always Lock if Lock::WAIT)
 	 */
 	public function lockRecord(
 		string $table_name, int $record_identifier, array $options = [Lock::WAIT, Lock::WRITE]
@@ -896,10 +896,10 @@ class Link extends Dao\Sql\Link
 	 * - if $class_name is set and $query is a 'SELECT', returned value will be an object[]
 	 * - if $query is a 'SELECT' without $class_name, then returned value will be a mysqli_result
 	 * - if $query is an 'INSERT' returned value will be the last insert id
-	 * - other cases : returned value make no sense : do not use it ! (may be null or last insert id)
+	 * - other cases : returned value make no sense : do not use it ! (it may be null or last insert id)
 	 *
 	 * @param $query      string
-	 * @param $class_name class-string<T>|null if set, the result will be object[] with read data
+	 * @param $class_name class-string<T>|null if set, the result will be an object[] with read data
 	 * @param $result     mixed The result set associated to the data link, if $class_name is constant
 	 *        Call $query with $result = true to store the result set into $result
 	 * @return mixed|mysqli_result|T[] depends on $class_name specific constants used
@@ -1163,7 +1163,7 @@ class Link extends Dao\Sql\Link
 	 *
 	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate() in
 	 * order to initialize all properties as unset and build a correct search object.
-	 * If some properties are an not-loaded objects, the search will be done on the object identifier,
+	 * If some properties are a not-loaded objects, the search will be done on the object identifier,
 	 * without joins to the linked object.
 	 * If some properties are loaded objects : if the object comes from a read, the search will be
 	 * done on the object identifier, without join. If object is not linked to data-link, the search

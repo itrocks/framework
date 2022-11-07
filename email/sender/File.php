@@ -47,8 +47,7 @@ class File extends Sender
 	public function send(Email $email) : bool
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class */
-		$encoder = Builder::create(Encoder::class, [$email]);
-		$message = $encoder->toString();
+		$message = strval(Builder::create(Encoder::class, [$email]));
 
 		if (!is_dir($this->path)) {
 			mkdir($this->path, 0700);

@@ -8,8 +8,8 @@ class Performance_Analyzer
 {
 
 	//--------------------------------------------------------------------- Long queries measurements
-	const LONG      = 0.01;
-	const VERY_LONG = 0.1;
+	const LONG      = .01;
+	const VERY_LONG = .1;
 
 	//-------------------------------------------------------------------------------------- $sql_log
 	/**

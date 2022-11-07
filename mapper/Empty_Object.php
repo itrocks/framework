@@ -6,6 +6,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Can_Be_Empty;
 use ReflectionException;
+use TypeError;
 
 /**
  * An empty object is an object which all properties have an empty or default value
@@ -17,6 +18,8 @@ abstract class Empty_Object
 	const CAST = [
 		Type::_ARRAY  => [],
 		Type::BOOLEAN => false,
+		Type::FALSE   => false,
+		Type::TRUE    => true,
 		Type::FLOAT   => 0,
 		Type::INTEGER => 0,
 		Type::STRING  => ''
@@ -75,7 +78,13 @@ abstract class Empty_Object
 					&& $property->getAnnotation('empty_check')->value
 				) {
 					/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
-					$value = $property->getValue($object);
+					try {
+						/** @noinspection PhpUnhandledExceptionInspection $property of $object */
+						$value = $property->getValue($object);
+					}
+					catch (TypeError) {
+						$value = null;
+					}
 					if (
 						!empty($value)
 						&& (

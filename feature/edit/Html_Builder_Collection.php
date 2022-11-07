@@ -25,7 +25,7 @@ use ITRocks\Framework\View\Html\Dom\List_\Ordered;
 use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 
 /**
- * Takes a collection of objects and build a HTML edit sub-form containing their data
+ * Takes a collection of objects and build an HTML edit sub-form containing their data
  *
  * @override template @var Html_Template
  * @property Html_Template template
@@ -132,7 +132,7 @@ class Html_Builder_Collection extends Collection
 	protected function buildBody() : array
 	{
 		$body = parent::buildBody();
-		if ($this->no_add || $this->read_only) {
+		if ($this->noAdd() || $this->readOnly()) {
 			return $body;
 		}
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
@@ -287,7 +287,7 @@ class Html_Builder_Collection extends Collection
 		if ($this->readOnly()) {
 			foreach ($properties as $property) {
 				$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
-				if ($this->read_only) {
+				if ($this->readOnly()) {
 					$user_annotation->add(User_Annotation::READONLY);
 					$user_annotation->add(User_Annotation::TOOLTIP);
 				}

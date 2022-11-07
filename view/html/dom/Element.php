@@ -323,10 +323,10 @@ abstract class Element
 	//--------------------------------------------------------------------------------------- setData
 	/**
 	 * @param $name  string
-	 * @param $value boolean|integer|string
+	 * @param $value boolean|integer|string|null
 	 * @return Attribute
 	 */
-	public function setData(string $name, bool|int|string $value = true) : Attribute
+	public function setData(string $name, bool|int|string|null $value = true) : Attribute
 	{
 		return $this->setAttributeNode(new Attribute('data-' . $name, $value));
 	}

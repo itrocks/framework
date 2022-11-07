@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 use DateTime;
 use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Decimal;
 use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Integer;
+use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
@@ -121,7 +122,7 @@ trait Column_Builder_Property
 	 */
 	private static function propertyNullToMysql(Reflection_Property $property) : string
 	{
-		return $property->getAnnotation('null')->value ? 'YES' : 'NO';
+		return Null_Annotation::of($property)->value ? 'YES' : 'NO';
 	}
 
 	//--------------------------------------------------------------------------- propertyTypeToMysql
@@ -187,6 +188,8 @@ trait Column_Builder_Property
 				case Type::RESOURCE:
 					return '';
 				case Type::BOOLEAN:
+				case Type::FALSE:
+				case Type::TRUE:
 					return 'tinyint(1)';
 				case DateTime::class: case Date_Time::class:
 					return 'datetime';
@@ -204,7 +207,7 @@ trait Column_Builder_Property
 	 * @param $property Reflection_Property
 	 * @return string[]
 	 */
-	private static function propertyValues(Reflection_Property $property)
+	private static function propertyValues(Reflection_Property $property) : array
 	{
 		$values = $property->getListAnnotation('values')->values();
 		if ($values) {
@@ -220,7 +223,7 @@ trait Column_Builder_Property
 
 	//--------------------------------------------------------------------------------- sqlBlobColumn
 	/**
-	 * @param $max_length int
+	 * @param $max_length integer
 	 * @return string
 	 */
 	private static function sqlBlobColumn(int $max_length) : string
@@ -234,7 +237,7 @@ trait Column_Builder_Property
 
 	//--------------------------------------------------------------------------------- sqlTextColumn
 	/**
-	 * @param $max_length int
+	 * @param $max_length integer
 	 * @return string
 	 */
 	private static function sqlTextColumn(int $max_length) : string

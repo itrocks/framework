@@ -15,12 +15,6 @@ class Key implements Sql\Key
 	 */
 	private int $Cardinality;
 
-	//-------------------------------------------------------------------------------------- $Comment
-	/**
-	 * @var string
-	 */
-	private string $Comment;
-
 	//------------------------------------------------------------------------------------ $Collation
 	/**
 	 * @var string
@@ -33,18 +27,24 @@ class Key implements Sql\Key
 	 */
 	private string $Column_name;
 
+	//-------------------------------------------------------------------------------------- $Comment
+	/**
+	 * @var string
+	 */
+	private string $Comment;
+
 	//-------------------------------------------------------------------------------- $Index_comment
 	/**
 	 * @var string
 	 */
-	private string $Index_comment;
+	private string $Index_comment = '';
 
 	//----------------------------------------------------------------------------------- $Index_type
 	/**
 	 * @values BTREE, FULLTEXT, SPATIAL, UNIQUE,
 	 * @var string
 	 */
-	private string $Index_type;
+	private string $Index_type = '';
 
 	//------------------------------------------------------------------------------------- $Key_name
 	/**

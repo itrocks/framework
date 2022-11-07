@@ -41,13 +41,13 @@ class Group_Concat extends Column
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $separator Column|string|null Separator for the concat @default ,
+	 * @param $separator Column|string Separator for the concat @default ,
 	 * @param $column    Column|null
 	 */
-	public function __construct(Column|string $separator = null, Column $column = null)
+	public function __construct(Column|string $separator = '', Column $column = null)
 	{
 		$this->column    = ($separator instanceof Column) ? $separator : $column;
-		$this->separator = ($separator instanceof Column) ? null : $separator;
+		$this->separator = ($separator instanceof Column) ? '' : $separator;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql

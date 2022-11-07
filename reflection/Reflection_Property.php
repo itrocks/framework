@@ -384,7 +384,7 @@ class Reflection_Property extends ReflectionProperty
 	{
 		return match($this->getType()->asString()) {
 			Type::_ARRAY  => [],
-			Type::BOOLEAN => false,
+			Type::BOOLEAN, Type::FALSE, Type::TRUE => false,
 			Type::FLOAT   => .0,
 			Type::INTEGER => 0,
 			Type::STRING  => '',

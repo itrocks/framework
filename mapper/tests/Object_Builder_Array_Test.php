@@ -53,13 +53,11 @@ class Object_Builder_Array_Test extends Test
 		$this->flushCache();
 
 		$builder = new Object_Builder_Array(Composite::class);
-		$builder->build(
-			[
-				'id'        => Dao::getObjectIdentifier($composite),
-				'name'      => $composite->name,
-				'component' => ['name' => 'Component object']
-			]
-		);
+		$builder->build([
+			'id'        => Dao::getObjectIdentifier($composite),
+			'name'      => $composite->name,
+			'component' => ['name' => 'Component object']
+		]);
 
 		// only the main object : Dao::write() will always write the @composite property
 		$assume = [new Built_Object($composite)];
@@ -149,8 +147,8 @@ class Object_Builder_Array_Test extends Test
 	public function testNewSubObject() : void
 	{
 		$object                   = new Resource('Hello world');
-		$object->mandatory_object = new Resource('Mandatory object');
-		$object->optional_object  = new Resource('Optional object');
+		$object->mandatory_object = new Salesman('Mandatory object');
+		$object->optional_object  = new Salesman('Optional object');
 
 		$builder = new Object_Builder_Array(Resource::class);
 		$builder->build(

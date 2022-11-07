@@ -21,7 +21,9 @@ class Post_Files_Test extends Test
 	{
 		if (is_array($element)) {
 			foreach ($element as &$sub_element) {
-				$this->filesToArray($sub_element);
+				if (is_array($sub_element) || ($element instanceof File)) {
+					$this->filesToArray($sub_element);
+				}
 			}
 		}
 		elseif ($element instanceof File) {

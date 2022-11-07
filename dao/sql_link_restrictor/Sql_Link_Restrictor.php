@@ -178,7 +178,7 @@ class Sql_Link_Restrictor implements Registerable
 		$this->current_restrictions = [];
 		if ($this->restrictions) {
 			foreach ($builder->getJoins()->getJoins() as $join) {
-				if (isset($join->foreign_class)) {
+				if ($join->foreign_class) {
 					$restrictions = $this->getRestrictions($join->foreign_class);
 					foreach ($restrictions as $restriction) {
 						$this->applyRestriction($builder, $join->foreign_class, $restriction);

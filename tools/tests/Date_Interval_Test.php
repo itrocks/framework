@@ -90,9 +90,10 @@ class Date_Interval_Test extends Test
 	 */
 	public function testToDays(int $duration, int $expected, ?string $round) : void
 	{
-		static::assertEquals(
-			$expected, Date_Interval::toDays(Date_Interval::fromDuration($duration), $round)
-		);
+		$actual = $round
+			? Date_Interval::toDays(Date_Interval::fromDuration($duration), $round)
+			: Date_Interval::toDays(Date_Interval::fromDuration($duration));
+		static::assertEquals($expected, $actual);
 	}
 
 	//----------------------------------------------------------------------------- testToDaysIllegal
@@ -172,12 +173,12 @@ class Date_Interval_Test extends Test
 			[ -86400, -1, null     ],
 			[  86401,  2, PHP_CEIL ],
 			[  86401,  1, PHP_FLOOR],
-			[  86401,  1, null     ],
+			[  86401,  2, null     ],
 			[ 129601,  2, null     ],
 			[ -86401, -1, PHP_CEIL ],
 			[ -86401, -2, PHP_FLOOR],
 			[ -86401, -1, null     ],
-			[-129601, -2, null     ]
+			[-129601, -1, null     ]
 		];
 	}
 

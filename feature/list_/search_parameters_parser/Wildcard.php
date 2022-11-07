@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\List_\Search_Parameters_Parser;
 
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Comparison;
 
 /**
  * Wildcard search parameters parser
@@ -13,9 +14,10 @@ abstract class Wildcard
 	/**
 	 * @param $search_value   string
 	 * @param $is_range_value boolean  true if we parse a range value
-	 * @return string
+	 * @return Comparison|string
 	 */
-	public static function applyWildcards(string $search_value, bool $is_range_value = false) : string
+	public static function applyWildcards(string $search_value, bool $is_range_value = false)
+		: Comparison|string
 	{
 		// $search = str_replace(['*', '?'], ['%', '_'], $search_value);
 		$search = preg_replace(['/[*%]/', '/[?_]/'], ['%', '_'], $search_value, -1, $count);
@@ -30,8 +32,8 @@ abstract class Wildcard
 	 * Returns true if as string contains wildcards
 	 *
 	 * Mixed wildcards are accepted :
-	 * - % or * : multiple characters
-	 * - _ or ? : one character
+	 * - '%' or '*' : multiple characters
+	 * - '_' or '?' : one character
 	 *
 	 * @param $string string
 	 * @return boolean

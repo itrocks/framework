@@ -27,7 +27,7 @@ class Join
 	 *
 	 * @var string
 	 */
-	public string $foreign_alias;
+	public string $foreign_alias = '';
 
 	//-------------------------------------------------------------------------------- $foreign_class
 	/**
@@ -35,7 +35,7 @@ class Join
 	 *
 	 * @var string
 	 */
-	public string $foreign_class;
+	public string $foreign_class = '';
 
 	//------------------------------------------------------------------------------- $foreign_column
 	/**
@@ -43,7 +43,7 @@ class Join
 	 *
 	 * @var string
 	 */
-	public string $foreign_column;
+	public string $foreign_column = '';
 
 	//----------------------------------------------------------------------------- $foreign_property
 	/**
@@ -165,20 +165,18 @@ class Join
 	 * @param $foreign_alias  string
 	 * @param $foreign_column string
 	 * @param $type           string
-	 * @param $foreign_class  string|null
+	 * @param $foreign_class  string
 	 * @return static
 	 */
 	public static function newInstance(
 		string $mode, string $master_alias, string $master_column, string $foreign_alias,
 		string $foreign_table, string $foreign_column, string $type = self::SIMPLE,
-		string $foreign_class = null
+		string $foreign_class = ''
 	) : static
 	{
 		$sql_join = new Join();
 		$sql_join->foreign_alias  = $foreign_alias;
-		$sql_join->foreign_class  = isset($foreign_class)
-			? Framework\Builder::className($foreign_class)
-			: null;
+		$sql_join->foreign_class  = $foreign_class ? Framework\Builder::className($foreign_class) : '';
 		$sql_join->foreign_column = $foreign_column;
 		$sql_join->foreign_table  = $foreign_table;
 		$sql_join->master_alias   = $master_alias;

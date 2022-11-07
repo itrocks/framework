@@ -81,7 +81,7 @@ class Write extends Data_Link\Write
 
 	//------------------------------------------------------------------------- addImpactedProperties
 	/**
-	 * For each property in only : if there are impacted properties using @impact : add them
+	 * For each property in only : if there are impacted properties with @impact annotation : add them
 	 */
 	protected function addImpactedProperties() : void
 	{
@@ -581,7 +581,7 @@ class Write extends Data_Link\Write
 		// create / update
 		else {
 			$component_object->setComposite($this->object);
-			// for creation if a only option is given, we should always write foreign property
+			// for creation if an only option is given, we should always write foreign property
 			if (!Dao::getObjectIdentifier($component_object)) {
 				foreach ($this->spread_options as $option) {
 					if ($option instanceof Option\Only) {
@@ -594,6 +594,7 @@ class Write extends Data_Link\Write
 				}
 			}
 			$this->link->write($component_object, $this->spread_options);
+			$this->object->{'id_' . $property->name} = Dao::getObjectIdentifier($component_object);
 		}
 	}
 

@@ -140,9 +140,9 @@ class Wiki implements Registerable
 	 * Add wiki to strings
 	 *
 	 * @param $object Reflection_Property_View
-	 * @param $result ?string
+	 * @param $result mixed Could be ?string, but it is registered for formatValue() : mixed
 	 */
-	public function stringWiki(Reflection_Property_View $object, ?string &$result) : void
+	public function stringWiki(Reflection_Property_View $object, mixed &$result) : void
 	{
 		if ($this->dont_parse_wiki) {
 			return;
