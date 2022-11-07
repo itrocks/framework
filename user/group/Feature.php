@@ -141,7 +141,7 @@ class Feature
 	 * @store false
 	 * @var false|Yaml|null false if the feature is not applicable (no file, not implicit)
 	 */
-	public bool|Yaml|null $yaml;
+	public bool|Yaml|null $yaml = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -423,9 +423,9 @@ class Feature
 	 * Gets the yaml object of the feature : matches the file that contains the end-user feature data,
 	 * or false if there is no file and the feature is not implicit (bad feature).
 	 *
-	 * @return false|Yaml
+	 * @return false|Yaml|null
 	 */
-	protected function getYaml() : bool|Yaml
+	protected function getYaml() : bool|Yaml|null
 	{
 		if (isset($this->yaml)) {
 			return $this->yaml;

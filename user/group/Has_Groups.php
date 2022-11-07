@@ -63,7 +63,7 @@ trait Has_Groups
 	public function getLowLevelFeatures() : array
 	{
 		$features = [];
-		if ($this->groups) foreach ($this->groups as $group) {
+		foreach ($this->groups as $group) {
 			$features = array_merge($features, $group->getLowLevelFeatures());
 		}
 		return $features;
@@ -71,8 +71,8 @@ trait Has_Groups
 
 	//----------------------------------------------------------------------------------- hasAccessTo
 	/**
-	 * Returns true if the user has access to the $uri
-	 * $uri is checked into path
+	 * Returns true if the user has access to the $uri.
+	 * $uri is checked into path.
 	 *
 	 * @param $uri ?string
 	 * @return boolean Returns true if the user has access to this uri

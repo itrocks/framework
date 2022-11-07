@@ -139,6 +139,8 @@ abstract class Getter
 						if ($link_properties_names) {
 							$options[] = Dao::key($link_properties_names);
 						}
+						// some mappers (e.g. User\Has_Groups::groups) may loop : initialize the property value
+						$property->setValue($object, []);
 						$stored = $dao->search($search_element, null, $options);
 					}
 					// when element class is not a component and a property name was found
@@ -302,7 +304,9 @@ abstract class Getter
 			$element_type = $property->getType()->getElementType();
 			$is_abstract  = $element_type->isAbstractClass();
 			$sort         = $is_abstract ? Dao::sort(['id']) : Dao::sort();
-			$stored       = $dao->search(
+			// some mappers (e.g. User\Has_Groups::groups) may loop : initialize the property value
+			$property->setValue($object, []);
+			$stored = $dao->search(
 				[$class_name . '->' . $property->name => $object], $element_type->asString(), [$sort]
 			);
 			if ($is_abstract) {

@@ -670,7 +670,7 @@ class Maintainer implements Configurable, Registerable
 			$dropped = 0;
 			foreach ($mysqli->getTables() as $table_name) {
 				/** @noinspection SqlResolve dynamic */
-				if ($mysqli->query("SELECT COUNT(*) FROM `$table_name`")->fetch_row()[0]) {
+				if ($mysqli->query('SELECT COUNT(*)' . " FROM `$table_name`")->fetch_row()[0]) {
 					continue;
 				}
 				try {
