@@ -25,7 +25,7 @@ use ReflectionException;
 /**
  * Search parameters parser
  *
- * - Search grammar (and so algorithm):
+ * - Search grammar (and so algorithm) :
  *
  * spaces are optionals
  * search       = orexpr

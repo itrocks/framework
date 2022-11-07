@@ -39,7 +39,7 @@ class Phone_Number_Exception extends Exception
 	/**
 	 * @return ?string
 	 */
-	public function getErrorType(): ?string
+	public function getErrorType() : ?string
 	{
 		return self::ERROR_TYPES[$this->error_type] ?? null;
 	}

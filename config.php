@@ -13,7 +13,7 @@ use ITRocks\Framework\Locale\Number_Format;
 use ITRocks\Framework\PHP\Compiler;
 use ITRocks\Framework\Plugin\Priority;
 use ITRocks\Framework\Tests\Tests_Configurator;
-use ITRocks\Framework\Tests\Tests_Html_ResultPrinter;
+use ITRocks\Framework\Tests\Tests_Html_Result_Printer;
 use ITRocks\Framework\Tools\Feature_Class\Menu_Update;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\View\Html\Cleaner;
@@ -101,7 +101,7 @@ $config['ITRocks/Framework'] = [
 			Tests_Configurator::PHPUNIT_OPTIONS => [
 				__DIR__ . '/../../vendor/bin/phpunit',
 				'configuration' => __DIR__ . '/../../phpunit.xml.dist',
-				'printer'       => Tests_Html_ResultPrinter::class
+				'printer'       => Tests_Html_Result_Printer::class
 			]
 		],
 		View::class => [

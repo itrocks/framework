@@ -78,7 +78,7 @@ class Tests_Command extends Command
 			if (
 				strlen($option)
 				&& ctype_upper($option[0])
-				&& ($option !== Tests_Html_ResultPrinter::class)
+				&& ($option !== Tests_Html_Result_Printer::class)
 				&& class_exists($option)
 				&& (new ReflectionClass($option))->getFileName()
 			) {
