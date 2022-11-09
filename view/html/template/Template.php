@@ -1975,7 +1975,7 @@ class Template
 	 * @param $i             integer
 	 * @param $j             integer
 	 * @param $html_entities boolean
-	 * @return int
+	 * @return integer
 	 */
 	protected function parseVar(string &$content, int $i, int $j, bool $html_entities = false) : int
 	{
@@ -2100,11 +2100,11 @@ class Template
 	 */
 	protected function prepareW3Links(string $content) : string
 	{
-		foreach (['abs', 'app', 'dyn', 'rel'] as $protocol) {
+		foreach (['abs://', 'app://', 'dyn://', 'rel://', 'id="'] as $protocol) {
 			$i = 0;
-			while ($i = strpos($content, $protocol . '://', $i)) {
-				$delimiter = $content[$i - 1];
-				$i        += 5;
+			while ($i = strpos($content, $protocol, $i)) {
+				$delimiter = str_starts_with($protocol, 'id=') ? $content[$i + 3] : $content[$i - 1];
+				$i        += 4;
 				$j         = strpos($content, $delimiter, $i);
 				$i2        = $i;
 				while (($i2 = strpos($content, '(', $i2)) && ($i2 < $j)) {

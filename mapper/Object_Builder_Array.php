@@ -23,6 +23,8 @@ use TypeError;
  * Build an object and it's property values from data stored into a recursive array
  *
  * TODO LOW Do we need to do if (!isset($object->$property_name)) into all builders ? Please check.
+ *
+ * @template T
  */
 class Object_Builder_Array
 {
@@ -101,7 +103,7 @@ class Object_Builder_Array
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string|null
+	 * @param $class_name class-string<T>|null
 	 * @param $from_form  boolean Set this false to disable interpretation of arrays coming from
 	 *                    forms : arrayFormRevert, widgets. You should always set this to false if
 	 *                    your array does not come from an input form.
@@ -128,10 +130,10 @@ class Object_Builder_Array
 	//----------------------------------------------------------------------------------------- build
 	/**
 	 * @param $array                array
-	 * @param $object               object|null
+	 * @param $object               T|null
 	 * @param $null_if_empty        boolean
 	 * @param $ignore_property_name string|null
-	 * @return ?object
+	 * @return ?T
 	 * @throws User_Error_Exception
 	 */
 	public function build(

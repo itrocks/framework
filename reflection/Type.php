@@ -66,7 +66,9 @@ class Type extends ReflectionType
 	const TRUE = 'true';
 
 	//------------------------------------------------------------------------------------------ null
+	// @codingStandardsIgnoreStart Exceptional lowercase constant
 	const null = 'null';
+	// @codingStandardsIgnoreEnd
 
 	//------------------------------------------------------------------------------------- $absolute
 	/**
@@ -274,22 +276,24 @@ class Type extends ReflectionType
 
 	//------------------------------------------------------------------------------------ floatEqual
 	/**
-	 * @param $float1 float
-	 * @param $float2 float
+	 * @param $float1 ?float
+	 * @param $float2 ?float
 	 * @return boolean
 	 */
-	public static function floatEqual(float $float1, float $float2) : bool
+	public static function floatEqual(?float $float1, ?float $float2) : bool
 	{
-		return abs($float1 - $float2) < static::FLOAT_EPSILON;
+		return (isset($float1) && isset($float2))
+			? (abs($float1 - $float2) < static::FLOAT_EPSILON)
+			: !(isset($float1) || isset($float2));
 	}
 
 	//--------------------------------------------------------------------------------------- floatIn
 	/**
-	 * @param $float  float
-	 * @param $floats float[]
+	 * @param $float  ?float
+	 * @param $floats float[]|null[]
 	 * @return boolean
 	 */
-	public static function floatIn(float $float, array $floats) : bool
+	public static function floatIn(?float $float, array $floats) : bool
 	{
 		foreach ($floats as $float_test) {
 			if (static::floatEqual($float, $float_test)) {

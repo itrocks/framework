@@ -774,27 +774,27 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//---------------------------------------------------------------------------------------- toNext
 	/**
-	 * @param $what      int|string
-	 * @param $what_else string|null
+	 * @param $what int|string
+	 * @param $unit string|null
 	 * @return static
 	 */
-	public function toNext(int|string $what, string $what_else = null) : static
+	public function toNext(int|string $what, string $unit = null) : static
 	{
-		return $what_else
-			? (clone $this)->add($what, $what_else)
+		return $unit
+			? (clone $this)->add($what, $unit)
 			: (is_numeric($what) ? (clone $this)->add($what) : (clone $this)->add(1, $what));
 	}
 
 	//------------------------------------------------------------------------------------ toPrevious
 	/**
-	 * @param $what      int|string
-	 * @param $what_else string|null
+	 * @param $what int|string
+	 * @param $unit string|null
 	 * @return static
 	 */
-	public function toPrevious(int|string $what, string $what_else = null) : static
+	public function toPrevious(int|string $what, string $unit = null) : static
 	{
-		return $what_else
-			? (clone $this)->sub($what, $what_else)
+		return $unit
+			? (clone $this)->sub($what, $unit)
 			: (is_numeric($what) ? (clone $this)->sub($what) : (clone $this)->sub(1, $what));
 	}
 
