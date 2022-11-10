@@ -654,11 +654,11 @@ class Link extends Dao\Sql\Link
 	 * also known as link properties values.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object object
+	 * @param $object ?object
 	 * @param $link   Class_\Link_Annotation|null send it for optimization, but this is not mandatory
 	 * @return string identifiers in a single string, separated with '.'
 	 */
-	public function getLinkObjectIdentifier(object $object, Class_\Link_Annotation $link = null)
+	public function getLinkObjectIdentifier(?object $object, Class_\Link_Annotation $link = null)
 		: string
 	{
 		if (!$object) {
@@ -668,36 +668,36 @@ class Link extends Dao\Sql\Link
 			/** @noinspection PhpUnhandledExceptionInspection object */
 			$link = Class_\Link_Annotation::of(new Reflection_Class($object));
 		}
-		if ($link->value) {
-			$ids        = [];
-			$link_class = $link->getLinkClass();
-			foreach ($link_class->getUniqueProperties() as $link_property) {
-				$property_name = $link_property->getName();
-				if (Dao::storedAsForeign($link_property)) {
-					$id = parent::getObjectIdentifier($object, $property_name);
-					if (!isset($id)) {
-						$link_property = $link_class->getCompositeProperty(null, false);
-						if ($link_property->name === $property_name) {
-							$id = $object->id ?? null;
-							if (!isset($id)) {
-								return '';
-							}
-						}
-						else {
+		if (!$link->value) {
+			return '';
+		}
+		$ids        = [];
+		$link_class = $link->getLinkClass();
+		foreach ($link_class->getUniqueProperties() as $link_property) {
+			$property_name = $link_property->getName();
+			if (Dao::storedAsForeign($link_property)) {
+				$id = parent::getObjectIdentifier($object, $property_name);
+				if (!isset($id)) {
+					$link_property = $link_class->getCompositeProperty(null, false);
+					if ($link_property->name === $property_name) {
+						$id = $object->id ?? null;
+						if (!isset($id)) {
 							return '';
 						}
 					}
+					else {
+						return '';
+					}
 				}
-				else {
-					/** @noinspection PhpUnhandledExceptionInspection valid $link_property from $object */
-					$id = $link_property->getValue($object);
-				}
-				$ids[] = $property_name . '=' . $id;
 			}
-			sort($ids);
-			return join(Link_Class::ID_SEPARATOR, $ids);
+			else {
+				/** @noinspection PhpUnhandledExceptionInspection valid $link_property from $object */
+				$id = $link_property->getValue($object);
+			}
+			$ids[] = $property_name . '=' . $id;
 		}
-		return '';
+		sort($ids);
+		return join(Link_Class::ID_SEPARATOR, $ids);
 	}
 
 	//--------------------------------------------------------------------------- getObjectIdentifier
