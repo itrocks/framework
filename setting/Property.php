@@ -28,12 +28,6 @@ abstract class Property implements Can_Be_Empty
 	 */
 	public string $path;
 
-	//------------------------------------------------------------------------------------- $property
-	/**
-	 * @var Reflection_Property_Value 
-	 */
-	protected Reflection_Property_Value $property;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name    string|null
@@ -45,9 +39,8 @@ abstract class Property implements Can_Be_Empty
 		if (!isset($class_name) || !isset($property_path)) {
 			return;
 		}
-		$this->property = new Reflection_Property_Value($class_name, $property_path);
-		$this->display  = $this->property->display();
-		$this->path     = $property_path;
+		$this->display = (new Reflection_Property_Value($class_name, $property_path))->display();
+		$this->path    = $property_path;
 	}
 
 	//------------------------------------------------------------------------------------ __toString

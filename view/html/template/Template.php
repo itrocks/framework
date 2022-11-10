@@ -1480,14 +1480,10 @@ class Template
 
 	//-------------------------------------------------------------------------------- parseParameter
 	/**
-	 * @param $object         object
 	 * @param $parameter_name string
 	 * @return array|string
 	 */
-	protected function parseParameter(
-		/** @noinspection PhpUnusedParameterInspection */
-		object $object, string $parameter_name
-	) : array|string
+	protected function parseParameter(string $parameter_name) : array|string
 	{
 		return $this->parameters[$parameter_name] ?? '';
 	}
@@ -1681,7 +1677,7 @@ class Template
 			$object = $this->parseFunc(substr($property_name, 1));
 		}
 		elseif (substr($property_name, 0, 2) === '§') {
-			$object = $this->parseParameter($object, substr($property_name, 2));
+			$object = $this->parseParameter(substr($property_name, 2));
 		}
 		elseif ($i = strpos($property_name, '(')) {
 			if (
@@ -1758,7 +1754,7 @@ class Template
 			$object = $this->parseProperty($object, $property_name, $ignore_undefined_property);
 		}
 		elseif (array_key_exists($property_name, $this->parameters)) {
-			$object = $this->parseParameter($object, $property_name);
+			$object = $this->parseParameter($property_name);
 		}
 		else {
 			$object = $this->parseProperty($object, $property_name, $ignore_undefined_property);

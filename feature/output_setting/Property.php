@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature\Output_Setting;
 
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting;
 use ReflectionException;
 
@@ -58,10 +59,7 @@ class Property extends Setting\Property
 	public function __construct(string $class_name = null, string $property_path = null)
 	{
 		parent::__construct($class_name, $property_path);
-		if (!isset($this->property)) {
-			return;
-		}
-		$user_annotation  = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
+		$user_annotation  = User_Annotation::of(new Reflection_Property($class_name, $property_path));
 		$this->hide_empty = $user_annotation->has(User_Annotation::HIDE_EMPTY);
 		$this->read_only  = $user_annotation->has(User_Annotation::READONLY);
 		$this->tooltip    = $user_annotation->has(Tooltip_Annotation::ANNOTATION);

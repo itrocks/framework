@@ -25,7 +25,7 @@ trait Has_Build_Column
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $path            string The path of the property
 	 * @param $as              boolean If false, prevent 'AS' clause to be added
-	 * @param $resolve_objects boolean If true, a property path for an object will be replace with a
+	 * @param $resolve_objects boolean If true, a property path for an object will be replaced with a
 	 *                         CONCAT of its representative values
 	 * @param $join            Join|null For optimisation purpose, if join is already known
 	 * @return string
@@ -59,8 +59,7 @@ trait Has_Build_Column
 			$concat = new Concat($concat_properties);
 			/** @var $this With_Build_Column|self */
 			$sql = $concat->toSql(
-				$this,
-				($as && ($this instanceof Columns) && $this->resolve_aliases) ? $path : null
+				$this, ($as && ($this instanceof Columns) && $this->resolve_aliases) ? $path : ''
 			);
 		}
 		else {
