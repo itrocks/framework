@@ -107,6 +107,7 @@ class Translate_Controller implements Feature_Controller
 
 	//---------------------------------------------------------------------------------------- toJson
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $translation string
 	 * @return string
 	 */
@@ -116,7 +117,8 @@ class Translate_Controller implements Feature_Controller
 			'context'     => Locale::current()->translations->last_context,
 			'translation' => $translation
 		];
-		return json_encode($json);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		return jsonEncode($json);
 	}
 
 	//------------------------------------------------------------------------------------- translate

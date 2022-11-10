@@ -1,6 +1,6 @@
 <?php
 
-//----------------------------------------------------------------------------------------- backSet
+//--------------------------------------------------------------------------------------- backSet
 /**
  * Sets a new temporary value into a variable, and returns the old value
  *
@@ -20,7 +20,22 @@ function backSet(mixed &$variable, mixed $value) : mixed
 	return $old_value;
 }
 
-//-------------------------------------------------------------------------------------------- swap
+//------------------------------------------------------------------------------------ jsonEncode
+/**
+ * @param $value mixed
+ * @param $flags integer
+ * @param $depth ?integer
+ * @return bool|string
+ * @throws JsonException
+ */
+function jsonEncode(mixed $value, int $flags = 0, int $depth = null) : bool|string
+{
+	return $depth
+		? json_encode($value, $flags | JSON_THROW_ON_ERROR, $depth)
+		: json_encode($value, $flags | JSON_THROW_ON_ERROR);
+}
+
+//------------------------------------------------------------------------------------------ swap
 /**
  * Swaps the values of two variables
  *

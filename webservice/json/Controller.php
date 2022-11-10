@@ -136,7 +136,8 @@ class Controller implements Default_Feature_Controller
 		else {
 			$entries = $this->buildJsonEntry($objects, $is_abstract);
 		}
-		return json_encode($entries);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		return jsonEncode($entries);
 	}
 
 	//-------------------------------------------------------------------------------- buildJsonEntry
@@ -181,6 +182,7 @@ class Controller implements Default_Feature_Controller
 	/**
 	 * Run the default json controller
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
@@ -200,12 +202,14 @@ class Controller implements Default_Feature_Controller
 		}
 		// read all objects corresponding to class name
 		if (!$parameters) {
-			return json_encode(Dao::readAll($class_name, Dao::sort()));
+			/** @noinspection PhpUnhandledExceptionInspection */
+			return jsonEncode(Dao::readAll($class_name, Dao::sort()));
 		}
 		// read object
 		$first_parameter = reset($parameters);
 		if (is_object($first_parameter)) {
-			return json_encode($first_parameter);
+			/** @noinspection PhpUnhandledExceptionInspection */
+			return jsonEncode($first_parameter);
 		}
 		// single object for autocomplete pull-down list value
 		if (isset($parameters['id']) && $parameters['id']) {
@@ -215,7 +219,8 @@ class Controller implements Default_Feature_Controller
 		// advanced search returns a json collection
 		elseif (isset($parameters['search']) && $parameters['search']) {
 			$objects = $this->searchObjects($class_name, $parameters);
-			return json_encode($objects);
+			/** @noinspection PhpUnhandledExceptionInspection */
+			return jsonEncode($objects);
 		}
 		// search objects for autocomplete combo pull-down list
 		elseif (isset($parameters['term'])) {

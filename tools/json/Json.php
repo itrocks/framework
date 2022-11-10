@@ -54,12 +54,14 @@ class Json
 
 	//---------------------------------------------------------------------------------- encodeObject
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object array|object
 	 * @return string
 	 */
 	public function encodeObject(array|object $object) : string
 	{
-		return json_encode($object);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		return jsonEncode($object);
 	}
 
 	//------------------------------------------------------------------ getUnduplicateNameFromObject
@@ -238,13 +240,15 @@ class Json
 
 	//---------------------------------------------------------------------------------------- toJson
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $standard_object array|object
 	 * @param $options         integer options for json_encode
 	 * @return string json encoded representation of object
 	 */
 	public function toJson(array|object $standard_object, int $options = 0) : string
 	{
-		return json_encode($standard_object, $options);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		return jsonEncode($standard_object, $options);
 	}
 
 	//----------------------------------------------------------------------------------- toStdObject

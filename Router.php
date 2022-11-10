@@ -336,6 +336,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 
 	//-------------------------------------------------------------------- getPossibleControllerCalls
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object    Uri
 	 * @param $joinpoint Around_Method
 	 * @return callable[]
@@ -355,8 +356,9 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 			isset($GLOBALS['F'])
 			&& isset($this->controller_calls[$object->controller_name][$object->feature_name])
 		) {
+			/** @noinspection PhpUnhandledExceptionInspection */
 			echo 'Router controller call = '
-				. json_encode($this->controller_calls[$object->controller_name][$object->feature_name])
+				. jsonEncode($this->controller_calls[$object->controller_name][$object->feature_name])
 				. BR;
 		}
 		$possible_controller_calls = $joinpoint->process();

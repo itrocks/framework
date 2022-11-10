@@ -59,17 +59,21 @@ class Page extends Model\Page
 
 	//------------------------------------------------------------------------------------- getLayout
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
 	protected function getLayout() : string
 	{
 		if (($this->layout === '[]') || !$this->layout) {
-			$this->layout = json_encode([
-				['class' => 'horizontal snap line', 'top'  => 10 ],
-				['class' => 'horizontal snap line', 'top'  => 287],
-				['class' => 'vertical snap line',   'left' => 10 ],
-				['class' => 'vertical snap line',   'left' => 200]
-			]);
+			/** @noinspection PhpUnhandledExceptionInspection */
+			$this->layout = jsonEncode(
+				[
+					['class' => 'horizontal snap line', 'top'  => 10 ],
+					['class' => 'horizontal snap line', 'top'  => 287],
+					['class' => 'vertical snap line',   'left' => 10 ],
+					['class' => 'vertical snap line',   'left' => 200]
+				]
+			);
 		}
 		return $this->layout;
 	}

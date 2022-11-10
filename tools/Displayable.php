@@ -72,13 +72,15 @@ class Displayable extends String_Class
 	/**
 	 * Return value encoded with json
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
 	public function json() : string
 	{
+		/** @noinspection PhpUnhandledExceptionInspection */
 		return is_object($this->value)
 			? (new Json)->encodeObject($this->value)
-			: json_encode($this->value);
+			: jsonEncode($this->value);
 	}
 
 	//----------------------------------------------------------------------------------------- lower

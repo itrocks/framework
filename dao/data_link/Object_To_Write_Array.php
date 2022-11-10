@@ -375,6 +375,7 @@ class Object_To_Write_Array
 	/**
 	 * Value to be stored as string : change an array / object to string when it has a @store option
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
 	 * @param $value    mixed
 	 * @return string
@@ -389,7 +390,8 @@ class Object_To_Write_Array
 			}
 			$value = $this->valueToWriteArray($value, $this->options);
 			if (isset($value) && !is_string($value)) {
-				$value = json_encode($value);
+				/** @noinspection PhpUnhandledExceptionInspection */
+				$value = jsonEncode($value);
 			}
 		}
 		else {

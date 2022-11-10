@@ -861,12 +861,14 @@ class Functions
 	/**
 	 * Encode using json
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $template Template
 	 * @return string
 	 */
 	public function getJson(Template $template) : string
 	{
-		return json_encode(reset($template->objects));
+		/** @noinspection PhpUnhandledExceptionInspection */
+		return jsonEncode(reset($template->objects));
 	}
 
 	//---------------------------------------------------------------------------------------- getKey

@@ -16,6 +16,7 @@ class Export
 
 	//---------------------------------------------------------------------------------------- export
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $models Model[]
 	 * @return string a json structure
 	 */
@@ -31,7 +32,8 @@ class Export
 				}
 			}
 		}
-		$output = json_encode($models);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		$output = jsonEncode($models);
 		if (json_last_error()) {
 			trigger_error('JSON ' . json_last_error_msg(), E_USER_ERROR);
 		}

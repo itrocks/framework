@@ -116,6 +116,7 @@ class Json_Error_Response
 	/**
 	 * Return json encode error response
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
 	public function getResponse() : string
@@ -124,11 +125,14 @@ class Json_Error_Response
 		if (Engine::acceptJson()) {
 			header('Content-Type: application/json; charset=utf-8');
 		}
-		return json_encode([
-			'error'             => $this->error,
-			'error_description' => $this->description,
-			'status_code'       => $this->code
-		]);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		return jsonEncode(
+			[
+				'error'             => $this->error,
+				'error_description' => $this->description,
+				'status_code'       => $this->code
+			]
+		);
 	}
 
 	//-------------------------------------------------------------------------------- setDescription

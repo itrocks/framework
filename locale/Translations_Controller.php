@@ -62,13 +62,15 @@ class Translations_Controller implements Feature_Controller
 	//---------------------------------------------------------------------------------- translations
 	/**
 	 * @input $this->context, $this->text
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
 	protected function translations() : string
 	{
 		$translator   = new Translator($this->language);
 		$translations = $translator->translations($this->text, true);
-		return json_encode($translations);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		return jsonEncode($translations);
 	}
 
 }

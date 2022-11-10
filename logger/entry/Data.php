@@ -92,11 +92,13 @@ class Data implements Validate\Except
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
 	public function __toString() : string
 	{
-		return json_encode($this, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		return jsonEncode($this, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 	}
 
 	//----------------------------------------------------------------------------------- rawFormData
@@ -110,12 +112,14 @@ class Data implements Validate\Except
 
 	//------------------------------------------------------------------------------------- serialize
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $value array
 	 * @return string
 	 */
 	private function serialize(array $value) : string
 	{
-		$json = json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		$json = jsonEncode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 		return ($json === '[]') ? '' : $json;
 	}
 

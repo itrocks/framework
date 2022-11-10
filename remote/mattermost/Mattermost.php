@@ -68,6 +68,7 @@ class Mattermost implements Configurable
 	/**
 	 * Posts a text message to a mattermost channel
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $message  string
 	 * @param $channel  string|null
 	 * @param $username string|null
@@ -80,7 +81,8 @@ class Mattermost implements Configurable
 		$content->channel  = $channel ?? $this->channel;
 		$content->text     = $message;
 
-		$content = json_encode($content);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		$content = jsonEncode($content);
 		$ch      = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $this->hook);
 		curl_setopt($ch, CURLOPT_POST, 1);

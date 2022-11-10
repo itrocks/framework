@@ -19,6 +19,7 @@ class Check_Controller implements Feature_Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
@@ -62,7 +63,8 @@ class Check_Controller implements Feature_Controller
 			header($_SERVER['SERVER_PROTOCOL'] . SP . '403 Forbidden', true, 403);
 			$object->response = 'Forbidden';
 		}
-		return json_encode($object);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		return jsonEncode($object);
 	}
 
 }
