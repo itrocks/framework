@@ -145,7 +145,7 @@ class Template
 
 	//----------------------------------------------------------------------------------- $parameters
 	/**
-	 * @var array[]|string[]
+	 * @var array
 	 */
 	protected array $parameters;
 
@@ -1481,9 +1481,9 @@ class Template
 	//-------------------------------------------------------------------------------- parseParameter
 	/**
 	 * @param $parameter_name string
-	 * @return array|string
+	 * @return mixed
 	 */
-	protected function parseParameter(string $parameter_name) : array|string
+	protected function parseParameter(string $parameter_name) : mixed
 	{
 		return $this->parameters[$parameter_name] ?? '';
 	}
