@@ -68,7 +68,6 @@ class Server
 			$uri  .= (str_contains($uri, '?') ? '&' : '?') . By_Token::TOKEN . '=' . $token->code;
 		}
 		/** @see afterAction */
-		/** @var $callback callable */
 		$callback       = [$this, 'afterAction'];
 		$callback[]     = Dao::getObjectIdentifier($action) ? $action : null;
 		$process        = $this->asynchronous->call($uri, $callback, false, true);

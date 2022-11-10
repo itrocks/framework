@@ -21,10 +21,9 @@ class Process
 	 * The first two elements are the callable
 	 * Next optional elements are parameters that will be transmitted to the callable
 	 *
-	 * @noinspection PhpDocFieldTypeMismatchInspection callable type not allowed
-	 * @var callable
+	 * @var array
 	 */
-	public array|string $callback = '';
+	public array $callback = [];
 
 	//-------------------------------------------------------------------------------------- $command
 	/**
@@ -93,7 +92,7 @@ class Process
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $command  string|null
-	 * @param $callback array|null
+	 * @param $callback array|null Class + method + arguments
 	 */
 	public function __construct(string $command = null, array $callback = null)
 	{

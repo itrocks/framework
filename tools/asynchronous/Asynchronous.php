@@ -65,13 +65,13 @@ class Asynchronous
 	 * the caller
 	 *
 	 * @param $uri              string Call this URI : link to a controller, including parameters
-	 * @param $then             callable|null A callback called when the job is done
+	 * @param $then             array A callback for when the job is done (class + method + arguments)
 	 * @param $needs_session    boolean true automatically clones current session (authenticated call)
 	 * @param $needs_identifier boolean true generates an unique identifier for X-Request-ID
 	 * @return Process
 	 */
 	public function call(
-		string $uri, callable $then = null, bool $needs_session = true, bool $needs_identifier = false
+		string $uri, array $then = [], bool $needs_session = true, bool $needs_identifier = false
 	) : Process
 	{
 		if ($position = strpos($uri, '?')) {
@@ -138,11 +138,11 @@ class Asynchronous
 	 * Calls a command line asynchronously
 	 *
 	 * @param $command       string The command line to run
-	 * @param $then          callable|null A callback called when the job is done
+	 * @param $then          array A callback called when the job is done (class + method + arguments)
 	 * @param $needs_session boolean true to automatically clone current session (authenticated call)
 	 * @return Process
 	 */
-	public function run(string $command, callable $then = null, bool $needs_session = false) : Process
+	public function run(string $command, array $then = [], bool $needs_session = false) : Process
 	{
 		$process = new Process($command, $then);
 		if ($needs_session) {
