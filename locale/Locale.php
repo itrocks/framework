@@ -149,9 +149,9 @@ class Locale implements Configurable, Registerable, Updatable
 	 *
 	 * @param $property Reflection_Property
 	 * @param $value    string|null
-	 * @return mixed
+	 * @return string
 	 */
-	public function propertyToLocale(Reflection_Property $property, string $value = null) : mixed
+	public function propertyToLocale(Reflection_Property $property, string $value = null) : string
 	{
 		$called_user_getter = false;
 		if ($property instanceof Reflection_Property_Value) {
@@ -164,7 +164,7 @@ class Locale implements Configurable, Registerable, Updatable
 		}
 		$type = $property->getUserType();
 		if (is_null($value) && Null_Annotation::of($property)->value) {
-			return null;
+			return '';
 		}
 		if (is_null($value) && $type->isNumeric() && Mandatory_Annotation::of($property)->value) {
 			$value = 0;
@@ -198,7 +198,7 @@ class Locale implements Configurable, Registerable, Updatable
 			}
 		}
 		if (is_null($value) && Null_Annotation::of($property)->value) {
-			$result = $value;
+			$result = '';
 		}
 		elseif (
 			$this->format_translate
@@ -313,19 +313,19 @@ class Locale implements Configurable, Registerable, Updatable
 	 *
 	 * @param $type  Type|null
 	 * @param $value mixed
-	 * @return ?string
+	 * @return string
 	 * @todo When hard typing will be enabled on all properties, simplify numeric tests (no string)
 	 */
-	public function toLocale(mixed $value, Type $type = null) : ?string
+	public function toLocale(mixed $value, Type $type = null) : string
 	{
 		if (isset($type)) {
 			if ($type->isBoolean()) {
 				if (!isset($value)) {
-					return $value;
+					return '';
 				}
 				return $value ? $this->translations->translate(YES) : $this->translations->translate(NO);
 			}
-			if ($type->isDateTime()) {
+			elseif ($type->isDateTime()) {
 				return $this->date_format->toLocale($value);
 			}
 			elseif ($type->isFloat()) {
@@ -352,7 +352,7 @@ class Locale implements Configurable, Registerable, Updatable
 				return $this->number_format->integerToLocale(intval($value));
 			}
 		}
-		return $value;
+		return strval($value);
 	}
 
 	//---------------------------------------------------------------------------------------- update
