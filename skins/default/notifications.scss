@@ -12,7 +12,7 @@
 		overflow: hidden auto;
 		padding: 0 10px 0 52px;
 
-		> li {
+		> li:not(.hidden) {
 			border-radius: 2px;
 			display: block;
 			line-height: 1.5em;

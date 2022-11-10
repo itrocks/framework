@@ -6,17 +6,17 @@
     margin: 10px 0;
     overflow: hidden auto;
     padding: 0 10px 0 52px; }
-    #notifications > #query > li,
-    #notifications > #responses > li {
+    #notifications > #query > li:not(.hidden),
+    #notifications > #responses > li:not(.hidden) {
       border-radius: 2px;
       display: block;
       line-height: 1.5em;
       padding: 3px 8px; }
-      #notifications > #query > li h3,
-      #notifications > #responses > li h3 {
+      #notifications > #query > li:not(.hidden) h3,
+      #notifications > #responses > li:not(.hidden) h3 {
         font-weight: 500; }
-      #notifications > #query > li li,
-      #notifications > #responses > li li {
+      #notifications > #query > li:not(.hidden) li,
+      #notifications > #responses > li:not(.hidden) li {
         list-style: disc;
         margin-left: 1em; }
     #notifications > #query:empty:after,
