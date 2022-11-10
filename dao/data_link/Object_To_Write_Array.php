@@ -186,6 +186,7 @@ class Object_To_Write_Array
 				$property_name = $property->name;
 				if (Getter_Annotation::of($property)->value) {
 					// call @getter (not really : only isset is called. Real @getter call may cause problems)
+					// TODO isset now calls getter in order to get a real data isset result. Problems ?
 					$is_property_set = isset($this->object->$property_name);
 				}
 				else {

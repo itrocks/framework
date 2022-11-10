@@ -34,8 +34,6 @@ class Set_Save_Controller extends Save\Controller
 
 		$data_set->object        = Dao::read(reset($form), Names::pathToClass(key($form)));
 		$data_set->property_name = $form['property_name'];
-		/** @noinspection PhpExpressionResultUnusedInspection for calling @getter */
-		$data_set->elements;
 
 		foreach ($form['translation'] as $language_code => $translation) {
 			if (isset($data_set->elements[$language_code])) {

@@ -84,8 +84,6 @@ class File
 	 */
 	protected function calcHash() : void
 	{
-		/** @noinspection PhpExpressionResultUnusedInspection force @getter call */
-		$this->content;
 		$this->hash = isset($this->content) ? md5($this->content) : '';
 	}
 

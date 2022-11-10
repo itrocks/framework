@@ -50,7 +50,7 @@ class Entry implements Validate\Except
 	/**
 	 * Until stop() is not called, $duration contains the start microtime.
 	 * After stop() is called, it contains the number of seconds between start and stop, with a
-	 * precision near from the microsecond.
+	 * precision near to the microsecond.
 	 *
 	 * @var float
 	 */
@@ -136,7 +136,8 @@ class Entry implements Validate\Except
 		string $uri = null, array $arguments = null, array $form = null, array $files = null
 	) {
 		if (isset($uri)) {
-			if (!isset($this->start)) {
+			/** @noinspection PhpTypedPropertyMightBeUninitializedInspection @link DateTime */
+			if ($this->start->isEmpty()) {
 				$this->duration_start = microtime(true);
 				$this->start = new Date_Time();
 			}
@@ -175,7 +176,7 @@ class Entry implements Validate\Except
 				$this->user = null;
 			}
 			if (!$this->user && ($_SERVER['REMOTE_ADDR'] === 'console')) {
-				// check grand-parent process is CRON (parent is a shell process)
+				// check grandparent process is CRON (parent is a shell process)
 				$process = explode(
 					SP, exec('ps -p $(ps -o ppid= -p ' . posix_getppid() . ') -o command | tail -1')
 				)[0];

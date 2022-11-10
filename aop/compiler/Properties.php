@@ -447,6 +447,18 @@ class Properties
 		}';
 		}
 		return $code . '
+		try {
+			$ref = $this->__get($property_name);
+		}
+		catch (Error $error) {
+			if (str_ends_with(
+				$error->getMessage(),
+				\'::$\' . $property_name . \' must not be accessed before initialization\'
+			)) {
+				return false;
+			}
+			throw $error;
+		}
 		$property_name .= \'_\';
 		return isset($this->$property_name);
 	}
@@ -480,7 +492,7 @@ class Properties
 	{
 		unset($this->_[' . Q . $property_name . Q . ']);
 		if (property_exists($this, ' . Q . $property_name . '_' . Q . ')) {
-			' . $last . '$value = $this->' . $property_name . ' =& $this->' . $property_name . '_;
+			' . $last . '$value = $this->' . $property_name . ' = $this->' . $property_name . '_;
 		}
 		else {
 			unset($this->' . $property_name . ');
@@ -498,10 +510,17 @@ class Properties
 				}
 			}
 		}
+		$code .= '
+
+		if (isInitialized($this, ' . Q . $property_name . Q . ')) {
+			$this->' . $property_name . '_ = $this->' . $property_name . ';
+		}
+		else {
+			unset($this->' . $property_name . '_);
+		}';
 		if (isset($prototype)) {
 			if (isset($init[self::INIT_JOINPOINT])) {
 				$reset_aop = '
-
 		if ($joinpoint->disable) {
 			unset($this->' . $property_name . '_);
 		}
@@ -509,14 +528,13 @@ class Properties
 			unset($this->' . $property_name . ');
 			$this->_[' . Q . $property_name . Q . '] = true;
 		}
-				';
+';
 			}
 			else {
 				$reset_aop = '
-
 		unset($this->' . $property_name . ');
 		$this->_[' . Q . $property_name . Q . '] = true;
-				';
+';
 			}
 			// todo missing call of setters if value has been changed
 			return $prototype . $this->initCode($init) . $code . $reset_aop . '
