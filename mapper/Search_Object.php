@@ -33,21 +33,16 @@ abstract class Search_Object extends Null_Object
 		$object = Builder::create($class_name);
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($object))->getProperties() as $property) {
-			if (!$property->isStatic()) {
-				if ($property->isPublic()) {
-					$name = $property->name;
-					if (!isset($object->$name) || ($object->$name !== $object)) {
-						unset($object->$name);
-						// Here SM also unset the property with id_ prefix
-						// TODO SM thinks we would better update the AOP compiler to add this unset in __unset()
-						$id_name = 'id_' . $name;
-						if (isset($object->$id_name)) {
-							unset($object->$id_name);
-						}
+			if ($property->isPublic() && !$property->isStatic()) {
+				$name = $property->name;
+				if (!isset($object->$name) || ($object->$name !== $object)) {
+					unset($object->$name);
+					// Here SM also unset the property with id_ prefix
+					// TODO SM thinks we would better update the AOP compiler to add this unset in __unset()
+					$id_name = 'id_' . $name;
+					if (isset($object->$id_name)) {
+						unset($object->$id_name);
 					}
-				}
-				else {
-					unset($object->{$property->name});
 				}
 			}
 		}

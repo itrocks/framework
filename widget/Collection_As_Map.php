@@ -37,7 +37,7 @@ class Collection_As_Map extends Property
 			// build
 			return $map->build();
 		}
-		return $this->value;
+		return strval($this->value);
 	}
 
 	//------------------------------------------------------------------------------------ buildValue
