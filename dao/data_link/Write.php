@@ -93,21 +93,22 @@ abstract class Write
 		if (in_array($before_write_annotation, [self::BEFORE_CREATE, self::BEFORE_UPDATE], true)) {
 			$before_writes = array_merge($before_writes, $class->getAnnotations(self::BEFORE_WRITE));
 		}
-		if ($before_writes) {
-			foreach ($options as $option) {
-				if ($option instanceof Option\Only) {
-					$only = $option;
-					break;
-				}
+		if (!$before_writes) {
+			return true;
+		}
+		foreach ($options as $option) {
+			if ($option instanceof Option\Only) {
+				$only = $option;
+				break;
 			}
-			foreach ($before_writes as $before_write) {
-				$response = $before_write->call($object, [$this->link, &$options]);
-				if ($response === false) {
-					return false;
-				}
-				elseif (is_array($response) && isset($only)) {
-					$only->add($response);
-				}
+		}
+		foreach ($before_writes as $before_write) {
+			$response = $before_write->call($object, [$this->link, &$options]);
+			if ($response === false) {
+				return false;
+			}
+			elseif (is_array($response) && isset($only)) {
+				$only->add($response);
 			}
 		}
 		return true;
@@ -123,7 +124,8 @@ abstract class Write
 	 */
 	public function beforeWriteComponents(
 		object $object, array $options, string $before_write_annotation
-	) {
+	) : void
+	{
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($object))->getProperties() as $property) {
 			if (

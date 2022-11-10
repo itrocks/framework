@@ -152,31 +152,33 @@ class Validator implements Registerable
 	public function beforeWrite(object $object, array $options, ?string $before_write_annotation)
 		: void
 	{
-		if (($before_write_annotation === 'before_writes') || ($object instanceof Except)) {
+		if (
+			!$this->validator_on
+			|| ($before_write_annotation === 'before_writes')
+			|| ($object instanceof Except)
+		) {
 			return;
 		}
-		if ($this->validator_on) {
-			$exclude = [];
-			$only    = [];
-			foreach ($options as $option) {
-				if ($option instanceof Exclude) {
-					$exclude = array_merge($exclude, $option->properties);
-				}
-				elseif ($option instanceof Only) {
-					$only = array_merge($only, $option->properties);
-				}
-				elseif ($option instanceof Skip) {
-					$skip = true;
-				}
-				elseif ($option instanceof Link_Class_Only) {
-					if (!$only) {
-						$only = array_keys(Link_Class_Only::propertiesOf($object));
-					}
+		$exclude = [];
+		$only    = [];
+		foreach ($options as $option) {
+			if ($option instanceof Exclude) {
+				$exclude = array_merge($exclude, $option->properties);
+			}
+			elseif ($option instanceof Only) {
+				$only = array_merge($only, $option->properties);
+			}
+			elseif ($option instanceof Skip) {
+				$skip = true;
+			}
+			elseif ($option instanceof Link_Class_Only) {
+				if (!$only) {
+					$only = array_keys(Link_Class_Only::propertiesOf($object));
 				}
 			}
-			if (!isset($skip) && !Result::isValid($this->validate($object, $only, $exclude), true)) {
-				throw new Exception($this->notValidated($object, $only, $exclude));
-			}
+		}
+		if (!isset($skip) && !Result::isValid($this->validate($object, $only, $exclude), true)) {
+			throw new Exception($this->notValidated($object, $only, $exclude));
 		}
 	}
 
