@@ -113,8 +113,8 @@ abstract class Getter
 					$stored = self::getAbstractCollection($class_name, $object, $property);
 				}
 				else {
-					$search_element = Search_Object::create($class_name);
-					$is_component   = isA($search_element, Component::class);
+					$search_element = [];
+					$is_component   = isA($class_name, Component::class);
 					if ($property) {
 						if (!($property instanceof Reflection_Property)) {
 							/** @noinspection PhpUnhandledExceptionInspection Need valid $property of $object */
@@ -128,8 +128,13 @@ abstract class Getter
 						$property_name = null;
 					}
 					if ($is_component) {
-						/** @var $search_element Component */
-						$search_element->setComposite($object, $property_name);
+						/** @noinspection PhpUnhandledExceptionInspection Must be valid */
+						/** @noinspection PhpUndefinedMethodInspection $is_component */
+						/** @see Component::getCompositeProperties */
+						$composite_properties = $class_name::getCompositeProperties($object, $property_name);
+						foreach ($composite_properties as $composite_property) {
+							$search_element[$composite_property->name] = $object;
+						}
 						/** @noinspection PhpUnhandledExceptionInspection already verified */
 						$link_properties_names = (new Link_Class($class_name))->getUniquePropertiesNames();
 						$options               = [Dao::sort()];
@@ -141,14 +146,12 @@ abstract class Getter
 						}
 						// some mappers (e.g. User\Has_Groups::groups) may loop : initialize the property value
 						$property->setValue($object, []);
-						$stored = $dao->search($search_element, null, $options);
+						$stored = $dao->search($search_element, $class_name, $options);
 					}
 					// when element class is not a component and a property name was found
 					elseif ($property_name) {
-						/** @noinspection PhpUnhandledExceptionInspection get_class(...), $property_name */
-						$property = new Reflection_Property($search_element, $property_name);
-						$property->setValue($search_element, $object);
-						$stored = $dao->search($search_element, null, Dao::sort());
+						$search_element[$property_name] = $object;
+						$stored = $dao->search($search_element, $class_name, Dao::sort());
 					}
 					else {
 						trigger_error(
