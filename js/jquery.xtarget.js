@@ -1,43 +1,43 @@
 
-(function($)
+//---------------------------------------------------------------------------- more_request_headers
+let more_request_headers = {}
+
+//---------------------------------------------------------------------------------- requestHeaders
+/**
+ * Add 'beforeSend: requestHeaders' to your ajax calls to add information about the client
+ *
+ * @param request
+ */
+const requestHeaders = function(request)
 {
-
-	//-------------------------------------------------------------------------- more_request_headers
-	let more_request_headers = {}
-
-	//-------------------------------------------------------------------------------- requestHeaders
-	/**
-	 * Add 'beforeSend: requestHeaders' to your ajax calls to add information about the client
-	 *
-	 * @param request
-	 */
-	const requestHeaders = function(request)
-	{
-		request.setRequestHeader('screen-height', screen.height)
-		request.setRequestHeader('screen-width',  screen.width)
-		request.setRequestHeader('window-height', $(window).height())
-		request.setRequestHeader('window-width',  $(window).width())
-		for (const header in more_request_headers) if (more_request_headers.hasOwnProperty(header)) {
-			request.setRequestHeader(header, more_request_headers[header])
-		}
-		more_request_headers = {}
+	request.setRequestHeader('screen-height', screen.height)
+	request.setRequestHeader('screen-width',  screen.width)
+	request.setRequestHeader('window-height', $(window).height())
+	request.setRequestHeader('window-width',  $(window).width())
+	for (const header in more_request_headers) if (more_request_headers.hasOwnProperty(header)) {
+		request.setRequestHeader(header, more_request_headers[header])
 	}
+	more_request_headers = {}
+}
 
 //---------------------------------------------------------------------------- requestTargetHeaders
-	const requestTargetHeaders = function($element)
-	{
-		let target = $element.attr('target')
-		if (target.startsWith('#')) {
-			let $target = $(target)
-			if ((target === '#main') && !$target.length) {
-				$target = $('main')
-			}
-			if ($target.length) {
-				more_request_headers['target-height'] = $target.height()
-				more_request_headers['target-width']  = $target.width()
-			}
+const requestTargetHeaders = function($element)
+{
+	let target = $element.attr('target')
+	if (target.startsWith('#')) {
+		let $target = $(target)
+		if ((target === '#main') && !$target.length) {
+			$target = $('main')
+		}
+		if ($target.length) {
+			more_request_headers['target-height'] = $target.height()
+			more_request_headers['target-width']  = $target.width()
 		}
 	}
+};
+
+(function($)
+{
 
 	//--------------------------------------------------------------------------------------- xtarget
 	/**
@@ -150,7 +150,7 @@
 					title = xhr.from.href
 				}
 				document.title = title
-				// no history when the history entry is the same than the previous one was
+				// no history when the history entry is the same as the previous one was
 				if ((history_entry === undefined) || (history_entry === last_history_entry)) {
 					return
 				}
@@ -417,7 +417,8 @@
 		/**
 		 * <a> with target '#*' are ajax calls
 		 *
-		 * If the a element is inside a form and the a class 'submit' is set, the link submits the form with the a href attribute as action
+		 * If the anchor is inside a form and the anchor class 'submit' is set, the link submits the
+		 * form with the anchor href attribute as action
 		 */
 		this.find('a[target^="#"]').add(this.filter('a[target^="#"]')).click(function(event)
 		{
