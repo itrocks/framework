@@ -72,6 +72,7 @@ class Collection_Test extends Test
 	protected function getAssumedNames() : array
 	{
 		return [
+			'name',
 			'doors[id][0]',
 			'doors[code][0]',
 			'doors[pieces][0][id][0]',
@@ -93,8 +94,7 @@ class Collection_Test extends Test
 			'doors[id][2]',
 			'doors[code][2]',
 			'doors[pieces][2][id][0]',
-			'doors[pieces][2][name][0]',
-			'name'
+			'doors[pieces][2][name][0]'
 		];
 	}
 
@@ -136,8 +136,8 @@ class Collection_Test extends Test
 		$loc_state = Loc::enable(false);
 		$object    = $this->buildObject();
 		$html      = $this->callEditController($object);
-		$this->assertStringNotContainsString('title="&#124;remove line&#124;"', $html);
-		$this->assertStringContainsString('title="remove line"', $html);
+		static::assertStringNotContainsString('title="&#124;remove line&#124;"', $html);
+		static::assertStringContainsString('title="remove line"', $html);
 		Loc::enable($loc_state);
 	}
 
