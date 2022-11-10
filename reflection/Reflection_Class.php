@@ -230,7 +230,11 @@ class Reflection_Class extends ReflectionClass
 		}
 		// scan for @default and use them
 		if ($use_annotation) {
-			foreach ($this->getProperties($flags) as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection Must be valid (exist and visible) */
+			$properties = $property_name
+				? [$this->getProperty($property_name)]
+				: $this->getProperties($flags);
+			foreach ($properties as $property) {
 				if (
 					($default_annotation = Default_Annotation::of($property))->value
 					&& (
