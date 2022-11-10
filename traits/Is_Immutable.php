@@ -41,7 +41,7 @@ trait Is_Immutable
 			return;
 		}
 
-		$search = Search_Object::create(get_class($this), true);
+		$search = [];
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($this))->getProperties() as $property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property from $this and accessible */
@@ -51,7 +51,7 @@ trait Is_Immutable
 				&& $property->getAnnotation('immutable')->value
 				&& !is_null($value = $property->getValue($this))
 			) {
-				$property->setValue($search, Func::equal($value));
+				$search[$property->name] = Func::equal($value);
 			}
 		}
 
@@ -65,7 +65,7 @@ trait Is_Immutable
 			/** @noinspection PhpRedundantOptionalArgumentInspection Must set value */
 			$composite_property->setValue($this, null);
 		}
-		if ($existing = $link->searchOne($search)) {
+		if ($existing = $link->searchOne($search, get_class($this))) {
 			$link->replace($this, $existing, false);
 		}
 		if (isset($composite_property)) {

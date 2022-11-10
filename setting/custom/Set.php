@@ -209,10 +209,8 @@ abstract class Set
 	 */
 	public static function load(string $class_name, string $feature, string $name = '') : static
 	{
-		$setting       = Search_Object::create(Setting::class);
-		$setting->code = $class_name . DOT . static::customId($feature)
-			. ($name ? (DOT . $name) : '');
-		$setting = Dao::searchOne($setting);
+		$code    = $class_name . DOT . static::customId($feature) . ($name ? (DOT . $name) : '');
+		$setting = Dao::searchOne(['code' => $code], Setting::class);
 		/** @noinspection PhpUnhandledExceptionInspection static */
 		$custom_settings = $setting->value ?? Builder::create(static::class, [$class_name]);
 		$custom_settings->setting          = self::currentUserSetting($class_name, $feature);

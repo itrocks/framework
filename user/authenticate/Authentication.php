@@ -20,7 +20,8 @@ use ITRocks\Framework\User\Group\Has_Groups;
 use ITRocks\Framework\User\Group\Low_Level_Features_Cache;
 
 /**
- * The user authentication class gives direct access to login, register and disconnect user features
+ * The user authentication class gives direct access to log in, register and disconnect user
+ * features.
  */
 abstract class Authentication
 {
@@ -69,9 +70,7 @@ abstract class Authentication
 	 */
 	public static function controlNameNotUsed(string $login) : bool
 	{
-		$search        = Search_Object::create(User::class);
-		$search->login = $login;
-		return !Dao::search($search);
+		return !Dao::search(['login' => $login], User::class);
 	}
 
 	//----------------------------------------------------------------- controlRegisterFormParameters

@@ -29,9 +29,7 @@ trait Has_Identifier
 		if (!isset($this->identifier)) {
 			return;
 		}
-		$search       = Search_Object::create(Identifier::class);
-		$search->name = $this->identifier->name;
-		if ($find = Dao::searchOne($search)) {
+		if ($find = Dao::searchOne(['name' => $this->identifier->name], Identifier::class)) {
 			Dao::replace($this->identifier, $find, false);
 		}
 		else {
