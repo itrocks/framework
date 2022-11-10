@@ -25,11 +25,10 @@ class Setting implements Validate\Except
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
-	 * @getter getValue
+	 * @getter
 	 * @max_length 1000000000
-	 * @notice type must be string first, or it will crash !
-	 * @var string|Custom\Set|null string if serialized (for storage)
 	 * @notice string must come first, because it is stored as this
+	 * @var string|Custom\Set|null string if serialized (for storage)
 	 */
 	public string|Custom\Set|null $value = null;
 
@@ -75,9 +74,9 @@ class Setting implements Validate\Except
 	//-------------------------------------------------------------------------------------- getValue
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return object|string
+	 * @return object|string|null
 	 */
-	protected function getValue() : object|string
+	protected function getValue() : object|string|null
 	{
 		$value = $this->value;
 		if (
