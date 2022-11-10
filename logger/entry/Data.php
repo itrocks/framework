@@ -20,7 +20,7 @@ class Data implements Validate\Except
 	 * @max_length 65000
 	 * @var string
 	 */
-	public string $arguments;
+	public string $arguments = '';
 
 	//---------------------------------------------------------------------------------------- $entry
 	/**
@@ -35,14 +35,14 @@ class Data implements Validate\Except
 	 * @max_length 65000
 	 * @var string
 	 */
-	public string $files;
+	public string $files = '';
 
 	//----------------------------------------------------------------------------------------- $form
 	/**
 	 * @max_length 1000000
 	 * @var string
 	 */
-	public string $form;
+	public string $form = '';
 
 	//--------------------------------------------------------------------------- $request_identifier
 	/**
@@ -61,7 +61,7 @@ class Data implements Validate\Except
 		array $arguments = null, array $form = null, array $files = null,
 		string $request_identifier = null
 	) {
-		if (isset($arguments) && !isset($this->arguments)) {
+		if (isset($arguments) && ($this->arguments === '')) {
 			if (isset($arguments['as_widget'])) {
 				unset($arguments['as_widget']);
 			}
@@ -70,10 +70,10 @@ class Data implements Validate\Except
 			}
 			$this->arguments = $this->serialize($arguments);
 		}
-		if (isset($files) && !isset($this->files)) {
+		if (isset($files) && ($this->files === '')) {
 			$this->files = $this->serialize($files);
 		}
-		if (isset($form) && !isset($this->form)) {
+		if (isset($form) && ($this->form === '')) {
 			if (isset($form['password'])) {
 				$form['password'] = 'XXXX';
 			}
