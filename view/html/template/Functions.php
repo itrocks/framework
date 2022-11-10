@@ -589,8 +589,10 @@ class Functions
 		);
 		if ($expanded_properties) {
 			/** @var $first_property Reflection_Property_Value PhpStorm should see this, but no */
-			$first_property      = reset($expanded_properties);
-			$object              = $first_property->getObject(true);
+			$first_property = reset($expanded_properties);
+			$object         = $first_property->getObject(
+				!User_Annotation::of($property)->has(User_Annotation::HIDE_EMPTY)
+			);
 			$expanded_properties = $this->filterProperties($object, $expanded_properties);
 		}
 		else {
@@ -656,9 +658,9 @@ class Functions
 	 * The top object of the template must be a Reflection_Property[], or it will return as null
 	 *
 	 * @param $template Template
-	 * @return Reflection_Property[]|Reflection_Property
+	 * @return Reflection_Property[]|Reflection_Property|null
 	 */
-	public function getFilterProperties(Template $template) : array|Reflection_Property
+	public function getFilterProperties(Template $template) : array|Reflection_Property|null
 	{
 		$properties        = reset($template->objects);
 		$properties_filter = $template->getParameter(Parameter::PROPERTIES_FILTER);
@@ -672,19 +674,18 @@ class Functions
 					}
 				}
 			}
-			$object     = $this->getObject($template);
-			$properties = $this->filterProperties($object, $properties);
+			return $this->filterProperties($this->getObject($template), $properties);
 		}
 		// property
-		elseif ($properties instanceof Reflection_Property) {
-			$property =& $properties;
+		if ($properties instanceof Reflection_Property) {
+			$property = $properties;
 			if ($properties_filter && !in_array($property->name, $properties_filter)) {
-				$property = null;
+				return null;
 			}
-			elseif ($property instanceof Reflection_Property_Value) {
+			if ($property instanceof Reflection_Property_Value) {
 				$object = $property->getObject();
 				if (!$this->filterProperties($object, [$property])) {
-					$property = null;
+					return null;
 				}
 			}
 		}

@@ -10,6 +10,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Constant_Or_Method_Annotati
 use ITRocks\Framework\Tools\Contextual_Callable;
 use ITRocks\Framework\Tools\Names;
 use ReflectionException;
+use TypeError;
 
 /**
  * A reflection property value is a reflection property enriched with its display label and a value
@@ -153,28 +154,28 @@ class Reflection_Property_Value extends Reflection_Property
 		if ($this->final_value) {
 			return null;
 		}
+		if (!str_contains($this->path, DOT)) {
+			return $this->object;
+		}
 		$object = $this->object;
-		if (str_contains($this->path, DOT)) {
-			foreach (array_slice(explode(DOT, $this->path), 0, -1) as $property_name) {
-				if (!$object) {
-					if ($with_default && isset($previous_object) && isset($previous_property_name)) {
-						/** @noinspection PhpUnhandledExceptionInspection the property path must be valid */
-						$previous_property = new Reflection_Property(
-							get_class($previous_object), $previous_property_name
-						);
-						/** @noinspection PhpUnhandledExceptionInspection the property type must be valid */
-						$object = Builder::create($previous_property->getType()->getElementTypeAsString());
-					}
-					else {
-						break;
-					}
-				}
-				if (!empty($property_name)) {
-					$previous_object        = $object;
-					$previous_property_name = $property_name;
-					$object                 = $object->$property_name;
-				}
+		foreach (array_slice(explode(DOT, $this->path), 0, -1) as $property_name) {
+			$previous_object = $object;
+			try {
+				$object = $object->$property_name;
 			}
+			catch (TypeError) {
+				$object = null;
+			}
+			if ($object) {
+				continue;
+			}
+			if (!$with_default) {
+				break;
+			}
+			/** @noinspection PhpUnhandledExceptionInspection the property path must be valid */
+			$property = new Reflection_Property(get_class($previous_object), $property_name);
+			/** @noinspection PhpUnhandledExceptionInspection the property type must be valid */
+			$object = Builder::create($property->getType()->getElementTypeAsString());
 		}
 		return $object;
 	}
