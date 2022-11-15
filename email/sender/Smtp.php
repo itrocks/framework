@@ -75,7 +75,7 @@ class Smtp extends Sender
 			$dsn .= ':' . $account->port;
 		}
 		if ($account->login) {
-			$dsn = $account->login . ':' . $account->password . '@' . $dsn;
+			$dsn = 'smtp://' . $account->login . ':' . $account->password . '@' . $dsn;
 		}
 		if (!$account->encryption) {
 			$dsn .= '?verify_peer=0';
@@ -94,7 +94,7 @@ class Smtp extends Sender
 		}
 
 		/** @noinspection PhpUnhandledExceptionInspection valid */
-		$email->send_date    = new Date_Time($message->getDate()->getTimestamp());
+		$email->send_date    = new Date_Time();
 		$email->send_message = '';
 		if ($uidl = $sent->getMessageId()) {
 			$email->uidl = $uidl;
