@@ -19,7 +19,6 @@ class Controller implements Feature_Controller
 	const FEATURE = 'reset';
 
 	//------------------------------------------------------------------------------------------- run
-
 	/**
 	 * @param $parameters Parameters
 	 * @param $form       array
@@ -29,6 +28,14 @@ class Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
+		if (isset($form['email']) && !isset($form['login'])) {
+			$form['login'] = $form['email'];
+			unset($form['email']);
+		}
+		if (isset($form['confirm-password']) && !isset($form['password2'])) {
+			$form['password2'] = $form['confirm-password'];
+			unset($form['confirm-password']);
+		}
 		$password = $parameters->getMainObject(Password::class);
 		if ($token = $parameters->getRawParameter('token')) {
 			$template = $password->apply($token) ? 'done' : 'already';
@@ -42,7 +49,7 @@ class Controller implements Feature_Controller
 				$parameters->set(Template::TEMPLATE, 'sent');
 			}
 		}
-		$login = $form['login'] ?? '';
+		$login = $form['login'];
 		$parameters->set('login', $login);
 		$parameters->set('focus', boolval(strlen(trim($login))));
 		return View::run($parameters->getObjects(), $form, $files, Password::class, static::FEATURE);
