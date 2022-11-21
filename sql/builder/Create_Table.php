@@ -53,7 +53,7 @@ class Create_Table
 		$queries[] = 'CREATE TABLE' . ' IF NOT EXISTS ' . BQ . $this->table->getName() . BQ . ' ('
 			. ($columns ? (LF . TAB) : '') . join(',' . LF . TAB, $columns)
 			. ($indexes ? (',' . LF . TAB) : '') . join(',' . LF . TAB, $indexes)
-			. LF . ') DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
+			. LF . ') DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci';
 		foreach ($foreign_keys as $foreign_key) {
 			$queries[] = 'ALTER TABLE' . SP . BQ . $this->table->getName() . BQ . ' ADD ' . $foreign_key;
 		}

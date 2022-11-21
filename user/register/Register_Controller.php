@@ -71,7 +71,10 @@ class Register_Controller implements Feature_Controller
 					}
 				}
 				else {
-					$error_messages[] = ['name' => 'Login already used', 'message' => 'Please choose another nickname for login'];
+					$error_messages[] = [
+						'name'    => 'Login already used',
+						'message' => 'Please choose another nickname for login'
+					];
 				}
 			}
 			if ($user) {
