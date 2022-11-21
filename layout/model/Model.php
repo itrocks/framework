@@ -110,7 +110,7 @@ abstract class Model
 		$property   = new Reflection_Property($this, 'pages');
 		$page_class = $property->getType()->getElementTypeAsString();
 		/** @noinspection PhpParamsInspection valid params given to Page::sort() */
-		$this->pages = Page::sort(Getter::getCollection($this->pages, $page_class, $this));
+		$this->pages = Page::sort(Getter::getCollection($pages, $page_class, $this, 'pages'));
 		return $this->pages;
 	}
 

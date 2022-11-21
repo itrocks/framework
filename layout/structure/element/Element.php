@@ -19,7 +19,7 @@ abstract class Element
 	 *
 	 * @var ?Group
 	 */
-	public ?Group $group;
+	public ?Group $group = null;
 
 	//--------------------------------------------------------------------------------------- $height
 	/**
@@ -27,7 +27,7 @@ abstract class Element
 	 *
 	 * @var float
 	 */
-	public float $height;
+	public float $height = .0;
 
 	//------------------------------------------------------------------------------------ $iteration
 	/**
@@ -68,7 +68,7 @@ abstract class Element
 	 *
 	 * @var float
 	 */
-	public float $width;
+	public float $width = .0;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

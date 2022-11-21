@@ -30,13 +30,13 @@ class Snap_Line extends Element implements Has_Init
 	 */
 	public function init() : void
 	{
-		if (!$this->left) {
+		if (!isset($this->left)) {
 			$this->direction = self::HORIZONTAL;
 			$this->height    = 0;
 			$this->left      = 0;
 			$this->width     = $this->page->width;
 		}
-		if (!$this->top) {
+		if (!isset($this->top)) {
 			$this->direction = self::VERTICAL;
 			$this->height    = $this->page->height;
 			$this->top       = 0;

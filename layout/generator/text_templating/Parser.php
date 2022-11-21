@@ -62,7 +62,7 @@ class Parser
 			$end_position        = strpos($text, '}', $position);
 			$property_expression = substr($text, $position, $end_position - $position);
 			$value = $this->propertyExpression($property_expression, $iteration_number);
-			if (!$value && str_contains($property_expression, '?')) {
+			if (($value === '') && str_contains($property_expression, '?')) {
 				return '';
 			}
 			$text      = substr($text, 0, $position - 1) . $value . substr($text, $end_position + 1);
@@ -75,10 +75,10 @@ class Parser
 	/**
 	 * @param $property_expression string
 	 * @param $iteration_number    integer
-	 * @return ?string
+	 * @return string
 	 */
 	public function propertyExpression(string $property_expression, int $iteration_number = 0)
-		: ?string
+		: string
 	{
 		$value = '';
 		foreach (explode('?:', $property_expression) as $property_path) {
@@ -136,7 +136,7 @@ class Parser
 				break;
 			}
 		}
-		return $value;
+		return strval($value);
 	}
 
 }
