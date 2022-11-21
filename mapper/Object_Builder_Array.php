@@ -563,7 +563,12 @@ class Object_Builder_Array
 			if (
 				!isset($object->$property_name) || ($value !== $object->$property_name) || $build->fast_add
 			) {
-				$object->$property_name = $value;
+				if ($type->allowsNull()) {
+					$object->$property_name = $value;
+				}
+				else {
+					unset($object->$property_name);
+				}
 			}
 		}
 		if (
