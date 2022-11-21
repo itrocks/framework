@@ -450,14 +450,14 @@ abstract class Getter
 	 */
 	public static function invalidate(object $object, string $property_name) : void
 	{
-		if (!isset($object->$property_name)) {
+		if (!isInitialized($object, $property_name)) {
 			return;
 		}
 		$id_property_name = 'id_' . $property_name;
 		if (isset($object->$id_property_name)) {
 			$id = $object->$id_property_name;
 		}
-		$object->$property_name = null;
+		unset($object->$property_name);
 		if (isset($id)) {
 			$object->$id_property_name = $id;
 		}
