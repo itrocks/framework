@@ -654,6 +654,7 @@ class Properties
 		}';
 		}
 		return $code . '
+		unset($this->{"id_$property_name"});
 		$property_name .= \'_\';
 		unset($this->$property_name);
 	}
