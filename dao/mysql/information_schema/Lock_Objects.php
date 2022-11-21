@@ -26,16 +26,16 @@ class Lock_Objects
 
 	//------------------------------------------------------------------------------------ $composite
 	/**
-	 * The composite object of the first of $objects, if there are elements and they are components
+	 * The composite object of the first of $objects, if there are elements, and they are components
 	 * Set by composite()
 	 *
-	 * @var object
+	 * @var ?object
 	 */
-	protected object $composite;
+	protected ?object $composite = null;
 
 	//--------------------------------------------------------------------------- $composite_property
 	/**
-	 * The composite property, if there are elements and they are components
+	 * The composite property, if there are elements, and they are components
 	 * Set by composite()
 	 *
 	 * @var Reflection_Property
@@ -104,9 +104,9 @@ class Lock_Objects
 
 	//------------------------------------------------------------------------------------- composite
 	/**
-	 * @return object
+	 * @return ?object
 	 */
-	public function composite() : object
+	public function composite() : ?object
 	{
 		$object     = reset($this->objects);
 		$class_name = $this->class_name;
