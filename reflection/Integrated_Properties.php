@@ -10,7 +10,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ReflectionException;
 
 /**
- * Integrated properties toolbox, used to expand properties list when @integrated annotation is used
+ * Integrated property toolbox, used to expand properties list when @integrated annotation is used
  */
 class Integrated_Properties
 {
@@ -19,9 +19,9 @@ class Integrated_Properties
 	/**
 	 * Referent root object
 	 *
-	 * @var object
+	 * @var ?object
 	 */
-	protected object $object;
+	protected ?object $object = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -109,8 +109,8 @@ class Integrated_Properties
 	 * @param $property        Reflection_Property
 	 * @param $display_prefix  string
 	 * @param $blocks          string[]
-	 * @return Reflection_Property[]|Reflection_Property_Value[] added properties list
-	 *         empty if none applies) keys are 'property.sub_property'
+	 * @return Reflection_Property[]|Reflection_Property_Value[] added properties list ;
+	 *         empty if none apply ; keys are 'property.sub_property'
 	 */
 	protected function expandUsingPropertyInternal(
 		array &$properties_list, Reflection_Property $property, string $display_prefix = '',
@@ -312,7 +312,7 @@ class Integrated_Properties
 	 * @param $properties Reflection_Property[]
 	 * @param $property   Reflection_Property
 	 */
-	protected function startFromRootClass(array $properties, Reflection_Property $property)
+	protected function startFromRootClass(array $properties, Reflection_Property $property) : void
 	{
 		foreach ($properties as $expand_property_path => $expand_property) {
 			$expand_property->aliased_path = ($property->aliased_path ?: $property->alias)

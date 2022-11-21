@@ -330,7 +330,7 @@ class Collection
 		foreach ($properties as $property_path => $property) {
 			if (Integrated_Annotation::of($property)->value) {
 				if (!isset($expand)) {
-					$expand = (new Integrated_Properties())->expandUsingClassName($property->class);
+					$expand = (new Integrated_Properties)->expandUsingClassName($property->class);
 				}
 				foreach ($expand as $expand_property_path => $expand_property) {
 					if (

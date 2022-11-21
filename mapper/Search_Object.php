@@ -35,15 +35,8 @@ abstract class Search_Object extends Null_Object
 		foreach ((new Reflection_Class($object))->getProperties() as $property) {
 			if ($property->isPublic() && !$property->isStatic()) {
 				$name = $property->name;
-				if (!isset($object->$name) || ($object->$name !== $object)) {
-					unset($object->$name);
-					// Here SM also unset the property with id_ prefix
-					// TODO SM thinks we would better update the AOP compiler to add this unset in __unset()
-					$id_name = 'id_' . $name;
-					if (isset($object->$id_name)) {
-						unset($object->$id_name);
-					}
-				}
+				unset($object->$name);
+				unset($object->{"id_$name"});
 			}
 		}
 		if ($deactivate_aop) {

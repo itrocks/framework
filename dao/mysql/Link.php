@@ -42,23 +42,17 @@ class Link extends Dao\Sql\Link
 	 */
 	const GZINFLATE = 'gzinflate';
 
-	//---------------------------------------------------------------------------------------- LATIN1
+	//--------------------------------------------------------------------------------------- UTF8MB4
 	/**
-	 * LATIN1 collation value
+	 * UTF8MB4 collation value is the default
 	 */
-	const LATIN1 = 'LATIN1';
-
-	//------------------------------------------------------------------------------------------ UTF8
-	/**
-	 * UTF8 collation value
-	 */
-	const UTF8 = 'UTF8';
+	const UTF8MB4 = 'utf8mb4';
 
 	//------------------------------------------------------------------------------------ $collation
 	/**
 	 * @var string
 	 */
-	private string $collation = self::UTF8;
+	private string $collation = self::UTF8MB4;
 
 	//--------------------------------------------------------------------------------- $commit_stack
 	/**
@@ -678,7 +672,7 @@ class Link extends Dao\Sql\Link
 			if (Dao::storedAsForeign($link_property)) {
 				$id = parent::getObjectIdentifier($object, $property_name);
 				if (!isset($id)) {
-					$link_property = $link_class->getCompositeProperty(null, false);
+					$link_property = $link_class->getCompositeProperty('', false);
 					if ($link_property->name === $property_name) {
 						$id = $object->id ?? null;
 						if (!isset($id)) {
