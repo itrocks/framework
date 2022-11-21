@@ -762,12 +762,12 @@ class Template
 
 	//-------------------------------------------------------------------------------- parseConstSpec
 	/**
-	 * @param $object     object
+	 * @param $object     mixed
 	 * @param $const_name string
 	 * @return ?string
 	 */
 	protected function parseConstSpec(
-		/** @noinspection PhpUnusedParameterInspection */ object $object, string $const_name
+		/** @noinspection PhpUnusedParameterInspection */ mixed $object, string $const_name
 	) : ?string
 	{
 		return ($const_name === 'PHPSESSID') ? session_id() : null;
