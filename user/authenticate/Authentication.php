@@ -83,13 +83,13 @@ abstract class Authentication
 	public static function controlRegisterFormParameters(array $form) : array
 	{
 		$errors_messages = [];
-		if (!(($form['login'] !== '') && (str_replace(SP, '', $form['login']) !== ''))) {
+		if (trim($form['login']) === '') {
 			$errors_messages[] = [
 				'name'    => 'Incorrect login',
 				'message' => 'The login is incorrect, a login must be not void.'
 			];
 		}
-		if (!(($form['password'] !== '') && (str_replace(SP, '', $form['password']) !== ''))) {
+		if (trim($form['password']) === '') {
 			$errors_messages[] = [
 				'name'    => 'Incorrect password',
 				'message' => 'The password is incorrect, must be not void.'
@@ -216,8 +216,8 @@ abstract class Authentication
 	protected static function userMatch(User $user, User $match) : bool
 	{
 		return
-			(($user->email === $match->email) || ($user->login === $match->login))
-			&& ($user->password === $match->password);
+			(!strcasecmp($match->email, $user->email) || !strcasecmp($match->login, $user->login))
+			&& ($match->password === $user->password);
 	}
 
 }
