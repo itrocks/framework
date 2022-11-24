@@ -113,7 +113,7 @@ class Link extends Dao\Sql\Link
 			return;
 		}
 		trigger_error("Commit stack not closed", E_USER_WARNING);
-		if (isset($GLOBALS['D'])) {
+		if (isset($GLOBALS['DSQL'])) {
 			$counter = 0;
 			foreach ($this->commit_stack_trace as $call_stack) {
 				echo 'Commit #' . (++$counter) . BRLF;
@@ -137,7 +137,7 @@ class Link extends Dao\Sql\Link
 			$this->query('START TRANSACTION');
 		}
 		$this->commit_stack ++;
-		if (isset($GLOBALS['D'])) {
+		if (isset($GLOBALS['DSQL'])) {
 			echo "BEGIN #$this->commit_stack" . BRLF;
 			echo PRE . (new Call_Stack)->asHtml() . _PRE;
 			$this->commit_stack_trace[$this->commit_stack] = new Call_Stack();
@@ -154,20 +154,20 @@ class Link extends Dao\Sql\Link
 	{
 		if ($flush) {
 			$this->commit_stack = 0;
-			if (isset($GLOBALS['D'])) {
+			if (isset($GLOBALS['DSQL'])) {
 				$this->commit_stack_trace = [];
 			}
 			$this->query('COMMIT');
 		}
 		elseif ($this->commit_stack > 0) {
-			if (isset($GLOBALS['D'])) {
+			if (isset($GLOBALS['DSQL'])) {
 				echo "COMMIT #$this->commit_stack" . BRLF;
 				echo PRE . (new Call_Stack)->asHtml() . _PRE;
 			}
 			$this->commit_stack --;
 			if (!$this->commit_stack) {
 				$this->query('COMMIT');
-				if (isset($GLOBALS['D'])) {
+				if (isset($GLOBALS['DSQL'])) {
 					$this->commit_stack_trace = [];
 				}
 			}
@@ -1143,7 +1143,7 @@ class Link extends Dao\Sql\Link
 	public function rollback() : ?bool
 	{
 		$this->commit_stack = 0;
-		if (isset($GLOBALS['D'])) {
+		if (isset($GLOBALS['DSQL'])) {
 			trigger_error('Rollback');
 			$this->commit_stack_trace = [];
 		}
