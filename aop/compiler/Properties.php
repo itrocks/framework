@@ -20,7 +20,7 @@ class Properties
 	//-------------------------------------------------------------------------------- INIT_JOINPOINT
 	const INIT_JOINPOINT = '2.joinpoint';
 
-	//------------------------------------------------------------------------------ $SETTER_RESERVED
+	//------------------------------------------------------------------------------- SETTER_RESERVED
 	/**
 	 * @var string[]
 	 */
@@ -130,14 +130,14 @@ class Properties
 				$advice_parameters_string = str_replace('$object', '$this', $advice_parameters_string);
 			}
 			if (isset($advice_parameters['stored']) || isset($advice_parameters['joinpoint'])) {
-				$init['1.stored'] =
-		'if (isset($this->' . $property_name . ')) {
+				$init['1.stored'] = 'if ((new \ReflectionProperty($this, ' . Q . $property_name . Q . '))->isInitialized($this)) {
 			$stored =& $this->' . $property_name . ';
 		}
 		else {
 			$get_stored_value_back = true;
 			$stored = null;
 		}';
+				// TODO : $stored = null will work for nullable advice parameters only : hard typing will make other types crash. Use a constant which types would be accepted by all advices using it.
 			}
 			if (isset($advice_parameters['joinpoint'])) {
 				$pointcut_string = '[$this, ' . Q . $property_name . Q . ']';
@@ -185,9 +185,14 @@ class Properties
 
 		if (isset($advice_parameters['stored']) || isset($advice_parameters['joinpoint'])) {
 			$advice_code .= '
-		if (isset($get_stored_value_back) && isset($stored)) {
+		if (isset($get_stored_value_back)) {
 			unset($get_stored_value_back);
-			$this->' . $property_name . ' = $stored; 
+			if (isset($stored)) {
+				if (!(new \ReflectionProperty($this, ' . Q . $property_name . Q . '))->isInitialized($this)) {
+					$this->' . $property_name . ' = $stored;
+				}
+				$this->' . $property_name . ' =& $stored;
+			} 
 		}';
 		}
 
@@ -218,7 +223,7 @@ class Properties
 		if (!isset($this->_[' . Q . $property_name . Q . '])) {';
 				if (!isset($property_advices['replaced'])) {
 					$code .= '
-			if (isInitialized($this, ' . Q . $property_name . Q . ')) {
+			if ((new \ReflectionProperty($this, ' . Q . $property_name . Q . '))->isInitialized($this)) {
 				$this->' . $property_name . '_ = $this->' . $property_name . ';
 			}';
 				}
@@ -323,18 +328,13 @@ class Properties
 				$reflection_methods = $reflection_class->getMethods([T_EXTENDS, T_IMPLEMENTS, T_USE]);
 				$reflection_method  = $reflection_methods[$method] ?? null;
 				$parameter_names    = $reflection_method?->getParametersNames(false) ?: [];
+				$code .= "if (!(new \ReflectionProperty(\$this, '$property_name'))->isInitialized(\$this)) {"
+					. LF . TAB . TAB . TAB . "\$this->$property_name = $object$operator$method(";
 				if (($parameter_names[0] ?? null) === 'property') {
-					$code .= "if (!isset(\$this->$property_name)) {
-			\$this->$property_name = $object$operator$method(
-				new \\ITRocks\\Framework\\Reflection\\Reflection_Property(__CLASS__, '$property_name')
-			);
-		}" . LF . TAB . TAB;
+					$code .= 'new \ITRocks\Framework\Reflection\Reflection_Property'
+						. "(__CLASS__, '$property_name')";
 				}
-				else {
-					$code .= "if (!isset(\$this->$property_name)) {
-			\$this->$property_name = $object$operator$method();
-		}" . LF . TAB . TAB;
-				}
+				$code .= ');' . LF . TAB . TAB . '}' . LF . TAB . TAB;
 			}
 		}
 		if (!isset($operator) && str_starts_with($over['call'], 'parent::')) {
@@ -492,18 +492,20 @@ class Properties
 	{
 		unset($this->_[' . Q . $property_name . Q . ']);
 		if (property_exists($this, ' . Q . $property_name . '_' . Q . ')) {
-			' . $last . '$value = $this->' . $property_name . ' = $this->' . $property_name . '_;
+			$this->' . $property_name . ' = $this->' . $property_name . '_;
+			' . $last . '$value = $this->' . $property_name . ' =& $this->' . $property_name . '_;
+			unset($this->' . $property_name . '_);
 		}
 		else {
-			unset($this->' . $property_name . ');
-			$last = $value = \'-AOP-UNINITIALIZED-\';
+			' . $last . '$value = ' . Q . '-AOP-UNINITIALIZED-' . Q . ';
 		}
 ';
+					// TODO : AOP_UNINITIALIZED will work for string advice parameters only : hard typing will make other types crash. Use a constant which types would be accepted by all advices using it.
 				}
 				$code .= $this->compileAdvice($property_name, Handler::READ, $advice, $init);
 				if ($last) {
 					$code .= '
-		if (isInitialized($this, ' . Q . $property_name . Q . ') && ($this->' . $property_name . ' !== $last)) {
+		if ((new \ReflectionProperty($this, ' . Q . $property_name . Q . '))->isInitialized($this) && ($this->' . $property_name . ' !== $last)) {
 			$this->_' . $property_name . '_write($this->' . $property_name . ');
 			$last = $this->' . $property_name . ';
 		}';
@@ -512,19 +514,14 @@ class Properties
 		}
 		$code .= '
 
-		if (isInitialized($this, ' . Q . $property_name . Q . ')) {
-			$this->' . $property_name . '_ = $this->' . $property_name . ';
-		}
-		else {
-			unset($this->' . $property_name . '_);
+		if ((new \ReflectionProperty($this, ' . Q . $property_name . Q . '))->isInitialized($this)) {
+			$this->' . $property_name . '_ =  $this->' . $property_name . ';
+			$this->' . $property_name . '_ =& $this->' . $property_name . ';
 		}';
 		if (isset($prototype)) {
 			if (isset($init[self::INIT_JOINPOINT])) {
 				$reset_aop = '
-		if ($joinpoint->disable) {
-			unset($this->' . $property_name . '_);
-		}
-		else {
+		if (!$joinpoint->disable) {
 			unset($this->' . $property_name . ');
 			$this->_[' . Q . $property_name . Q . '] = true;
 		}
@@ -646,12 +643,12 @@ class Properties
 				}
 			}
 		}
-		if (!isset($switch) && str_starts_with($over['call'], 'parent::')) {
-			return '';
-		}
 		if (isset($switch)) {
 			$code .= '
 		}';
+		}
+		elseif (str_starts_with($over['call'], 'parent::')) {
+			return '';
 		}
 		return $code . '
 		unset($this->{"id_$property_name"});
@@ -703,10 +700,9 @@ class Properties
 		if (isset($this->_[' . Q . $property_name . Q . '])) {
 			unset($this->_[' . Q . $property_name . Q . ']);
 			if (property_exists($this, ' . Q . $property_name . '_' . Q . ')) {
-				$this->' . $property_name . ' = $this->' . $property_name . '_;
-			}
-			else {
-				unset($this->' . $property_name . ');
+				$this->' . $property_name . ' =  $this->' . $property_name . '_;
+				$this->' . $property_name . ' =& $this->' . $property_name . '_;
+				unset($this->' . $property_name . '_);
 			}
 			$writer = true;
 		}
@@ -723,13 +719,11 @@ class Properties
 			return $prototype . $this->initCode($init) . $code . '
 
 		if (isset($writer)) {
-			if (isInitialized($this, ' . Q . $property_name . Q . ')) {
-				$this->' . $property_name . '_ = $this->' . $property_name . ';
+			if ((new \ReflectionProperty($this, ' . Q . $property_name . Q . '))->isInitialized($this)) {
+				$this->' . $property_name . '_ =  $this->' . $property_name . ';
+				$this->' . $property_name . '_ =& $this->' . $property_name . ';
+				unset($this->' . $property_name . ');
 			}
-			else {
-				unset($this->' . $property_name . '_);
-			}
-			unset($this->' . $property_name . ');
 			$this->_[' . Q . $property_name . Q . '] = true;
 		}
 	}
