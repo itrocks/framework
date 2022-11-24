@@ -61,9 +61,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//----------------------------------------------------------------------------------------- $line
 	/**
-	 * @var integer the line where the class declaration starts into source
+	 * @var ?integer the line where the class declaration starts into source
 	 */
-	public int $line;
+	public ?int $line = null;
 
 	//-------------------------------------------------------------------------------------- $methods
 	/**
@@ -140,9 +140,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//----------------------------------------------------------------------------------------- $stop
 	/**
-	 * @var integer the line where the class declaration stops into source
+	 * @var ?integer the line where the class declaration stops into source
 	 */
-	public int $stop;
+	public ?int $stop = null;
 
 	//------------------------------------------------------------------------------ $trait_constants
 	/**
@@ -187,9 +187,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	{
 		$this->source = $source;
 
-		unset($this->line);
-		unset($this->stop);
+		$this->line = null;
 		$this->name = null;
+		$this->stop = null;
 
 		if (!$name && $this->name) {
 			$this->scanUntilClassName();
@@ -1117,9 +1117,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		$this->properties        = [];
 		$this->short_trait_names = [];
 		$this->traits            = [];
-		unset($this->stop);
 
-		$depth = 0;
+		$depth            = 0;
+		$this->stop       = null;
 		$visibility_token = null;
 
 		$this->getTokens();
@@ -1232,6 +1232,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 			if (!isset($this->stop)) {
 				$token = $this->tokens[++$this->token_key];
+				if (!isset($token)) {
+					$this->stop = null;
+					trigger_error('Tokens scan error into ' . $this->name, E_USER_ERROR);
+				}
 			}
 
 		} while (!isset($this->stop));
