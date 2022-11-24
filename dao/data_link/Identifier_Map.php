@@ -94,7 +94,7 @@ abstract class Identifier_Map extends Data_Link
 				}
 				return null;
 			}
-			return $object->id ?? null;
+			return property_exists($object, 'id') ? $object->id : null;
 		}
 		return $object;
 	}

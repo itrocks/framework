@@ -26,7 +26,7 @@ class Cache implements Configurable, Registerable
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
-	 * @var object[][] keys are [$class_name string][$identifier integer], value is a Cached
+	 * @var object[][] keys are [$class_name string][$identifier integer|string], value is a Cached
 	 */
 	protected array $cache = [];
 
@@ -139,7 +139,8 @@ class Cache implements Configurable, Registerable
 	 */
 	public function cacheWriteObject(
 		object $object, array|Option $options, After_Method $joinpoint
-	) : void {
+	) : void
+	{
 		if ($options || !$this->enabled) {
 			return;
 		}
@@ -175,11 +176,11 @@ class Cache implements Configurable, Registerable
 	 * Get cached object
 	 *
 	 * @param $class_name class-string<T>
-	 * @param $identifier integer|T identifier for the object, or an object to re-read
+	 * @param $identifier int|string|T identifier for the object, or an object to re-read
 	 * @return ?T the cached object, null if none
 	 * @template T
 	 */
-	public function getCachedObject(string $class_name, int|object $identifier) : ?object
+	public function getCachedObject(string $class_name, int|object|string $identifier) : ?object
 	{
 		if (!$this->enabled) {
 			return null;
@@ -238,9 +239,9 @@ class Cache implements Configurable, Registerable
 	 * Remove an object from the cache, knowing its class name and identifier
 	 *
 	 * @param $class_name string
-	 * @param $identifier integer
+	 * @param $identifier integer|string
 	 */
-	public function remove(string $class_name, int $identifier) : void
+	public function remove(string $class_name, int|string $identifier) : void
 	{
 		$class_name = Builder::className($class_name);
 		if (isset($this->cache[$class_name][$identifier])) {
