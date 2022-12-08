@@ -23,7 +23,8 @@ class Archive implements Registerable
 	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
-		$aop->afterMethod([Sender::class, 'send'], [$this, 'save']);
+		$aop->afterMethod([Sender\File::class, 'send'], [$this, 'save']);
+		$aop->afterMethod([Sender\Smtp::class, 'send'], [$this, 'save']);
 	}
 
 	//------------------------------------------------------------------------------------------ save
