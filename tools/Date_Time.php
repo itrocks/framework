@@ -202,6 +202,15 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			: new static($date_time->format('Y-m-d H:i:s'));
 	}
 
+	//----------------------------------------------------------------------------------- currentYear
+	/**
+	 * @return integer
+	 */
+	public static function currentYear() : int
+	{
+		return date('Y');
+	}
+
 	//------------------------------------------------------------------------------------------- day
 	/**
 	 * Returns a new date with only the day of the current date (with an empty time)
