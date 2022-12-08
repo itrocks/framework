@@ -84,7 +84,6 @@ trait Reset
 			?: new Recipient($no_reply, $name);
 		$email->subject = Loc::tr('Password reset', $user ?: []);
 		$email->to      = [new Recipient($user ? $user->email : $this->login)];
-		Dao::write($email);
 		return $email;
 	}
 
