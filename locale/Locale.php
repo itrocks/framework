@@ -260,6 +260,9 @@ class Locale implements Configurable, Registerable, Updatable
 	 */
 	public function setLanguage(string $language) : void
 	{
+		if ($language === 'auto') {
+			$language = trim(strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?: 'en', 0, 2))) ?: 'en';
+		}
 		$this->language     = $language;
 		$this->translations = new Translator($this->language);
 	}
@@ -278,7 +281,6 @@ class Locale implements Configurable, Registerable, Updatable
 	}
 
 	//----------------------------------------------------------------------------------------- toIso
-
 	/**
 	 * Change a locale value into an ISO formatted value, knowing its data type
 	 *

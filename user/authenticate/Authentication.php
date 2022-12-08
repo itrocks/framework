@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Input;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Has_Language;
 use ITRocks\Framework\Locale\Language;
 use ITRocks\Framework\Mapper\Search_Object;
@@ -159,6 +160,10 @@ abstract class Authentication
 		$users = Dao::search(Func::orOp(['email' => $login, 'login' => $login]), User::class);
 		foreach ($users as $user) {
 			if (static::userMatch($user, $match)) {
+				if (isA($user, Has_Language::class)) {
+					/** @var $user User|Has_Language */
+					Locale::current()->setLanguage($user->language->code);
+				}
 				return $user;
 			}
 		}
