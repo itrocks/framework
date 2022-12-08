@@ -23,7 +23,7 @@ class Translator
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
-	 * @var array[] string[][] string $translation[string $text][string $context]
+	 * @var array[] string[][] string $translation[string $language][string $text][string $context]
 	 */
 	protected array $cache = [];
 
@@ -346,7 +346,7 @@ class Translator
 	 */
 	public function setTranslation(string $text, string $translation, string $context = '') : void
 	{
-		$this->cache[strtolower($text)][$context] = $translation;
+		$this->cache[$this->language][strtolower($text)][$context] = $translation;
 	}
 
 	//----------------------------------------------------------------------- storeDefaultTranslation
@@ -399,15 +399,15 @@ class Translator
 			else {
 				$lower_text = strtolower($text);
 				// return cached contextual translation
-				if (isset($this->cache[$lower_text][$context])) {
-					$translation = $this->cache[$lower_text][$context];
+				if (isset($this->cache[$this->language][$lower_text][$context])) {
+					$translation = $this->cache[$this->language][$lower_text][$context];
 				}
 				else {
 					// $translations string[] $translation[$context]
-					if (!isset($this->cache[$lower_text])) {
-						$this->cache[$lower_text] = $this->translations($text);
+					if (!isset($this->cache[$this->language][$lower_text])) {
+						$this->cache[$this->language][$lower_text] = $this->translations($text);
 					}
-					$translations = $this->cache[$lower_text];
+					$translations = $this->cache[$this->language][$lower_text];
 					// no translation found and separated by commas : translate each part between commas
 					if (!$translations && str_contains($text, ', ')) {
 						return $this->separatedTranslations($text, ', ', $context);
@@ -415,13 +415,13 @@ class Translator
 					// no translation found : store original text to cache and database, then return it
 					if (!$translations) {
 						$translations['']
-							= $this->cache[$lower_text]['']
+							= $this->cache[$this->language][$lower_text]['']
 							= $this->storeDefaultTranslation($text);
 					}
 					$translation = $this->chooseTranslation($translations, $context)
 						?: $this->defaultTranslation($text);
 					// store text for context to cache
-					$this->cache[$lower_text][$context] = $translation;
+					$this->cache[$this->language][$lower_text][$context] = $translation;
 				}
 			}
 			$translation = strIsCapitals(substr($text, 0, 1))

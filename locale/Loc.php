@@ -157,7 +157,7 @@ class Loc implements Registerable
 	 *
 	 * @param $date  string ie '12/25/2001' '12/25/2001 12:20' '12/25/2001 12:20:16'
 	 * @param $max   boolean if true, the incomplete date will be completed to the max range
-	 * eg '25/12/2001' will result in '2001-12-25 00:00:00' if false, '2001-12-25 23:59:59' if true
+	 * e.g.: '25/12/2001' will result in '2001-12-25 00:00:00' if false, '2001-12-25 23:59:59' if true
 	 * @param $joker string if set, the character that replaces missing values, instead of current
 	 * @return string ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
 	 */
@@ -428,7 +428,7 @@ class Loc implements Registerable
 	 * @param $options  Option[]|Has_Language[]|string[]|Option|Has_Language|string Options for
 	 *        translation : see options in namespace ITRocks\Framework\Locale\Option
 	 *        If options is a string or contain a string, this string is used as a context
-	 *        If options contain a object who implements Has_Language, use object's language for
+	 *        If options contain an object who implements Has_Language, use object's language for
 	 *        translation
 	 * @return string The translated text
 	 */
@@ -454,7 +454,7 @@ class Loc implements Registerable
 				}
 				elseif (isA($option, Has_Language::class)) {
 					/** @var $option Has_Language */
-					$language = $option->language->name;
+					$language = $option->language->code;
 				}
 			}
 			$old_language = '';

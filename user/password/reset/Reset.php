@@ -8,6 +8,7 @@ use ITRocks\Framework\Email;
 use ITRocks\Framework\Email\Recipient;
 use ITRocks\Framework\Email\Sender\File;
 use ITRocks\Framework\Email\Sender\Smtp;
+use ITRocks\Framework\Locale\Has_Language;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Date_Time;
@@ -48,22 +49,25 @@ trait Reset
 	 * Send the token identifier to the user
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $user       User
+	 * @param $user       User|Has_Language
 	 * @param $identifier string
 	 * @return Email
 	 */
-	protected function prepareEmail(User $user, string $identifier) : Email
+	protected function prepareEmail(User|Has_Language $user, string $identifier) : Email
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class */
-		$email     = Builder::create(Email::class);
-		$name      = 'No-reply';
-		$no_reply  = 'noreply@' . Session::current()->domainName();
-		$template  = new Template($this, __DIR__ . '/email.html');
+		$email    = Builder::create(Email::class);
+		$name     = 'No-reply';
+		$no_reply = 'noreply@' . Session::current()->domainName();
+		$language = isA($user, Has_Language::class) ? strtolower($user->language->code) : 'en';
+		$path     = stream_resolve_include_path('user/password/reset/email-' . $language . '.html')
+			?: stream_resolve_include_path('user/password/reset/email-en.html');
+		$template = new Template($this, $path);
 		$template->setParameters(['identifier' => $identifier]);
 		$email->content = $template->parse();
 		$email->from    = Dao::searchOne(['name' => $name, 'email' => $no_reply], Recipient::class)
 			?: new Recipient($no_reply, $name);
-		$email->subject = Loc::tr('Password reset');
+		$email->subject = Loc::tr('Password reset', $user);
 		$email->to      = [new Recipient($user->email)];
 		Dao::write($email);
 		return $email;
