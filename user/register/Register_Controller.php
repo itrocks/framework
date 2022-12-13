@@ -67,7 +67,13 @@ class Register_Controller implements Feature_Controller
 					if ($form['newToken'] ?? false) {
 						/** @noinspection PhpUnhandledExceptionInspection class */
 						$token = Builder::create(By_Token::class)->newToken($user, 'rt', true);
-						return 'OK:TOKEN:[' . $token->code . ']';
+						if (($_SERVER['HTTP_ACCEPT'] ?? '') === 'application/json') {
+							/** @noinspection PhpUnhandledExceptionInspection valid */
+							return jsonEncode(['sid' => session_id(), 'status' => 'ok', 'token' => $token->code]);
+						}
+						else {
+							return 'OK:TOKEN:[' . $token->code . ']';
+						}
 					}
 				}
 				else {
