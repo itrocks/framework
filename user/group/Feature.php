@@ -114,7 +114,7 @@ class Feature
 	 * @mandatory
 	 * @var string
 	 */
-	public string $name;
+	public string $name = '';
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -126,7 +126,7 @@ class Feature
 	 * @see getFileNames() for possible storage files for the example path
 	 * @var string
 	 */
-	public string $path;
+	public string $path = '';
 
 	//----------------------------------------------------------------------------------------- $yaml
 	/**
@@ -201,7 +201,7 @@ class Feature
 	public function emptyName() : void
 	{
 		$old_name   = $this->name;
-		$this->name = null;
+		$this->name = '';
 		$new_name   = $this->name;
 		if (($new_name !== $old_name) && Dao::getObjectIdentifier($this)) {
 			Dao::write($this, Dao::only('name'));
@@ -368,7 +368,7 @@ class Feature
 				$this->name = $this->resolveName($name);
 			}
 			// default name
-			elseif (isset($this->path)) {
+			elseif ($this->path !== '') {
 				$this->name = Loc::tr(
 					HOLE_PIPE . Names::classToDisplays($this->getClassName()) . HOLE_PIPE
 					. SP . HOLE_PIPE . Names::methodToDisplay($this->getFeatureName()) . HOLE_PIPE,

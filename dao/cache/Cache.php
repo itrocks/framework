@@ -175,17 +175,17 @@ class Cache implements Configurable, Registerable
 	/**
 	 * Get cached object
 	 *
-	 * @param $class_name class-string<T>
+	 * @param $class_name ?class-string<T>
 	 * @param $identifier int|string|T identifier for the object, or an object to re-read
 	 * @return ?T the cached object, null if none
 	 * @template T
 	 */
-	public function getCachedObject(string $class_name, int|object|string $identifier) : ?object
+	public function getCachedObject(?string $class_name, int|object|string $identifier) : ?object
 	{
 		if (!$this->enabled) {
 			return null;
 		}
-		$class_name = Builder::className($class_name);
+		$class_name = Builder::className($class_name ?: '');
 		if (is_object($identifier)) {
 			$identifier = Dao::getObjectIdentifier($identifier);
 		}
