@@ -27,6 +27,7 @@ class By_Token implements Registerable
 	/**
 	 * Apply a token sent to the main controller to authenticate the matching user
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $get  string[]
 	 * @param $post string[]
 	 */
@@ -58,17 +59,23 @@ class By_Token implements Registerable
 		}
 		if ($post['checkToken'] ?? false) {
 			$get['as_widget'] = true;
-			echo 'OK:TOKEN:[' . $token->code . ']';
+			if (($_SERVER['HTTP_ACCEPT'] ?? '') === 'application/json') {
+				/** @noinspection PhpUnhandledExceptionInspection valid structure */
+				echo jsonEncode(['status' => 'ok', 'token' => $token->code, 'sid' => session_id()]);
+			}
+			else {
+				echo 'OK:TOKEN:[' . $token->code . ']';
+			}
 		}
 	}
 
 	//-------------------------------------------------------------------------------------- newToken
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $user      User|null
 	 * @param $prefix    string
 	 * @param $long_term boolean 1 minute single use or infinite duration multiple uses token
 	 * @return Token
-	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function newToken(User $user = null, string $prefix = '', bool $long_term = false) : Token
 	{
