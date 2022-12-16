@@ -49,7 +49,7 @@ class Controller implements Feature_Controller
 				$parameters->set(Template::TEMPLATE, 'sent');
 			}
 		}
-		$login = $form['login'];
+		$login = $form['login'] ?? '';
 		$parameters->set('login', $login);
 		$parameters->set('focus', boolval(strlen(trim($login))));
 		return View::run($parameters->getObjects(), $form, $files, Password::class, static::FEATURE);
