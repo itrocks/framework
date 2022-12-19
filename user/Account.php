@@ -25,7 +25,8 @@ trait Account
 	//------------------------------------------------------------------------------------- $password
 	/**
 	 * @mandatory
-	 * @password sha1
+	 * @old_password sha1
+	 * @password sha512
 	 * @var string
 	 */
 	public string $password = '';

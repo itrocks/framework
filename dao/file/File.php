@@ -84,7 +84,7 @@ class File
 	 */
 	protected function calcHash() : void
 	{
-		$this->hash = isset($this->content) ? md5($this->content) : '';
+		$this->hash = isset($this->content) ? hash('512', $this->content) : '';
 	}
 
 	//------------------------------------------------------------------------------------ getContent
@@ -192,7 +192,7 @@ class File
 	 */
 	public function nameHash() : string
 	{
-		return sha1($this->name ?: $this->temporary_file_name ?: '');
+		return hash('sha512', $this->name ?: $this->temporary_file_name ?: '');
 	}
 
 	//----------------------------------------------------------------------------------- previewLink

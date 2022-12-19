@@ -34,7 +34,7 @@ class Token
 
 	//--------------------------------------------------------------------------------- $new_password
 	/**
-	 * @password sha1
+	 * @password sha512
 	 * @var string
 	 */
 	public string $new_password;

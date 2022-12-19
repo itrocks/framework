@@ -26,7 +26,7 @@ class Password
 	/**
 	 * @var string
 	 */
-	public string $encryption_algorithm = Encryption::SHA1;
+	public string $encryption_algorithm = Encryption::SHA512;
 
 	//------------------------------------------------------------------------------------- $password
 	/**

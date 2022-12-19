@@ -7,8 +7,8 @@ use ITRocks\Framework\Tools\Encryption;
 /**
  * This tells the string property stores encrypted data
  *
- * @example @encrypt sha1
- * @see Encryption class to know which encryptions can be used (eg 'crypt', 'md5', 'sha1')
+ * @example @encrypt sha512
+ * @see Encryption class to know which encryptions can be used (eg 'crypt', 'md5', 'sha1', 'sha512')
  */
 class Encrypt_Annotation extends Annotation
 {

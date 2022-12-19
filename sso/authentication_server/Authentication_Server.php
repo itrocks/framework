@@ -103,7 +103,7 @@ class Authentication_Server implements Configurable, Registerable
 	 */
 	public static function buildToken(User $user) : string
 	{
-		return sha1($user->login . session_id() . self::$salt);
+		return hash('sha512', $user->login . session_id() . self::$salt);
 	}
 
 	//---------------------------------------------------------------------- getApplicationBySentence

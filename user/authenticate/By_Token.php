@@ -84,7 +84,7 @@ class By_Token implements Registerable
 		}
 		/** @noinspection PhpUnhandledExceptionInspection class */
 		$token       = Builder::create(Token::class);
-		$token->code = $prefix . sha1(sha1(uniqid('', true)));
+		$token->code = $prefix . hash('sha512', uniqid('', true));
 		$token->user = $user;
 		if ($long_term) {
 			$token->single_use        = false;

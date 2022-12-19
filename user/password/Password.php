@@ -18,14 +18,14 @@ class Password
 
 	//------------------------------------------------------------------------------------- $password
 	/**
-	 * @password sha1
+	 * @password sha512
 	 * @var string
 	 */
 	public string $password = '';
 
 	//------------------------------------------------------------------------------------ $password2
 	/**
-	 * @password sha1
+	 * @password sha512
 	 * @var string
 	 */
 	public string $password2 = '';
