@@ -191,8 +191,9 @@ abstract class Authentication
 		}
 		if (isA($user, Has_Language::class)) {
 			/** @var $user User|Has_Language */
-			$language_code = lParse(lParse($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '', ','), ';');
-			$language      = $language_code
+			$language_code = ($form['language'] ?? '')
+				?: lParse(lParse($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '', ','), ';');
+			$language = $language_code
 				? Dao::searchOne(['code' => $language_code], Language::class)
 				: null;
 			if (!$language && str_contains($language_code, '-')) {
