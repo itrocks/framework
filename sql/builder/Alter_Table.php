@@ -50,7 +50,7 @@ class Alter_Table
 	/**
 	 * Alter table character set (ie UTF8)
 	 *
-	 * @example DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+	 * @example DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 	 * @var ?string
 	 */
 	private ?string $set_character_set = null;

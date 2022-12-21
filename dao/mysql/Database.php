@@ -19,7 +19,7 @@ class Database implements Sql\Database
 	/**
 	 * Default collate for mysql databases
 	 */
-	const COLLATE = 'utf8mb4_general_ci';
+	const COLLATE = 'utf8mb4_0900_ai_ci';
 
 	//------------------------------------------------------------------------------------- $Database
 	/**
@@ -29,7 +29,7 @@ class Database implements Sql\Database
 
 	//------------------------------------------------------------------------ characterSetCollateSql
 	/**
-	 * @return string @example CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+	 * @return string @example CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
 	 */
 	public static function characterSetCollateSql() : string
 	{
@@ -47,7 +47,7 @@ class Database implements Sql\Database
 
 	//------------------------------------------------------------------------------------ collateSql
 	/**
-	 * @return string @example COLLATE utf8mb4_general_ci
+	 * @return string @example COLLATE utf8mb4_0900_ai_ci
 	 */
 	public static function collateSql() : string
 	{

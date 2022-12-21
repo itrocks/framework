@@ -93,7 +93,7 @@ class Column implements Sql\Column
 	 * 'enum("v",...)', 'set("v",...)'
 	 * where 'p' = 'precision', 'l' = 'length', 'd' = 'decimals', 'v' = 'value'
 	 * numeric types can be followed with ' unsigned'
-	 * text types can be followed with 'CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci'
+	 * text types can be followed with 'CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci'
 	 *
 	 * @var string
 	 */
