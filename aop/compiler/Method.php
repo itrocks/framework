@@ -206,8 +206,9 @@ class Method
 
 			switch ($type) {
 				case 'after':
-					if ($joinpoint_code && $joinpoint_has_return) {
-						$advice_code .= $i2 . 'if ($joinpoint_->stop) return isset($result_) ? $result_ : null;';
+					if ($joinpoint_code) {
+						$advice_code .= $i2 . 'if ($joinpoint_->stop) return'
+							. ($joinpoint_has_return ? ' isset($result_) ? $result_ : null;' : ';');
 					}
 					$after_code[] = $advice_code;
 					break;
@@ -217,7 +218,7 @@ class Method
 						: str_replace($method_name, $method_name . '_' . $count , $prototype);
 					$result .= substr($indent, 1) . $my_prototype . substr($i2, 1)
 						. $this->codeAssembly($before_code, $advice_code, $after_code, $indent)
-						. ($joinpoint_has_return ? (LF . $i2 . 'return $result_;') : '')
+						. LF . $i2 . 'return' . ($joinpoint_has_return ? '$result_;' : ';')
 						. $indent . '}' . LF;
 					if ($advice_number < $advices_count) {
 						$count ++;
@@ -229,8 +230,9 @@ class Method
 					if ($advice_has_return && $joinpoint_has_return) {
 						$advice_code .= $i2 . 'if (isset($result_)) return $result_;';
 					}
-					if ($joinpoint_code && $joinpoint_has_return) {
-						$advice_code .= $i2 . 'if ($joinpoint_->stop) return isset($result_) ? $result_ : null;';
+					if ($joinpoint_code) {
+						$advice_code .= $i2 . 'if ($joinpoint_->stop) return'
+							. ($joinpoint_has_return ? ' isset($result_) ? $result_ : null;' : ';');
 					}
 					$before_code[] = $advice_code;
 					break;
@@ -239,7 +241,7 @@ class Method
 		if ($before_code || $after_code) {
 			$result .= substr($indent, 1) . $prototype . substr($i2, 1)
 				. $this->codeAssembly($before_code, $call_code, $after_code, $indent)
-				. ($joinpoint_has_return ? (LF . $i2 . 'return $result_;') : '')
+				. LF . $i2 . 'return' . ($joinpoint_has_return ? ' $result_;' : ';')
 				. $indent . '}' . LF;
 		}
 
