@@ -6,6 +6,7 @@ use ITRocks\Framework\Email;
 use ITRocks\Framework\Email\Encoder;
 use ITRocks\Framework\Email\Sender;
 use ITRocks\Framework\Email\Smtp_Account;
+use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Date_Time;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Transport;
@@ -67,6 +68,17 @@ class Smtp extends Sender
 	 */
 	public function send(Email $email) : bool|string
 	{
+		$has_list_unsubscribe = false;
+		foreach (array_keys($email->headers) as $header_key) {
+			if (!strcasecmp($header_key, 'list-unsubscribe')) {
+				$has_list_unsubscribe = true;
+				break;
+			}
+		}
+		if (!$has_list_unsubscribe) {
+			$email->headers['List-Unsubscribe'] = '<mailto: unsubscribe@'
+				. Session::current()->domainName() . '?subject=unsubscribe>';
+		}
 		// email send configuration
 		$account = $this->smtpAccount($email);
 		$this->sendConfiguration($email);
