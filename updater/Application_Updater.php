@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Updater;
 
+use ITRocks\Framework\AOP\Include_Filter;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Configuration\Environment;
 use ITRocks\Framework\Controller\Main;
@@ -108,6 +109,7 @@ class Application_Updater implements Configurable
 
 		if (isset($_GET['Z'])) {
 			if (!isset($_POST['Z'])) {
+				Include_Filter::$active = false;
 				Main::$current->running = false;
 				die($this->confirmFullUpdateView());
 			}
