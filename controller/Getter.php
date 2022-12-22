@@ -419,7 +419,9 @@ abstract class Getter
 
 		$result = [$class ?? null, $method];
 		if (isset($GLOBALS['D'])) {
-			static::debug(strtoupper($suffix ?: $extension), $result[0], $result[1], $extension, 'FOUND');
+			static::debug(
+				strtoupper($suffix ?: $extension), $result[0] ?: '', $result[1] ?: '', $extension, 'FOUND'
+			);
 		}
 		return $result;
 	}
