@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\Mapper;
 
+use Error;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Date_Time;
-use TypeError;
 
 /**
  * A null object is an object which all properties have a null value
@@ -120,7 +120,7 @@ abstract class Null_Object
 					/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 					$value = $property->getValue($object);
 				}
-				catch (TypeError) {
+				catch (Error) {
 					$value = null;
 				}
 				Getter::$ignore = $getter_ignore;

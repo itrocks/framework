@@ -20,9 +20,9 @@ abstract class Writer
 
 	//--------------------------------------------------------------------------------- $before_write
 	/**
-	 * @var Has_History
+	 * @var Has_History[][]
 	 */
-	private static Has_History $before_write;
+	private static array $before_write = [];
 
 	//------------------------------------------------------------------------------------ afterWrite
 	/**
@@ -37,7 +37,6 @@ abstract class Writer
 			&& ($identifier = $link->getObjectIdentifier($object))
 			&& isset(self::$before_write[$class_name][$identifier])
 		) {
-			/** @var $before_write Has_History */
 			$before_write = self::$before_write[$class_name][$identifier];
 			foreach (self::createHistory($before_write, $object) as $history) {
 				Dao::write($history);
@@ -60,6 +59,9 @@ abstract class Writer
 		Dao::begin();
 		if (($link instanceof Identifier_Map) && ($identifier = $link->getObjectIdentifier($object))) {
 			$class_name = Builder::className(get_class($object));
+			if (!isset(self::$before_write[$class_name])) {
+				self::$before_write[$class_name] = [];
+			}
 			self::$before_write[$class_name][$identifier] = $before = $link->read(
 				$identifier, $class_name
 			);
@@ -93,6 +95,7 @@ abstract class Writer
 			if (
 				!($type->isSingleClass() && $property->getAnnotation('component')->value)
 				&& !Store_Annotation::of($property)->isFalse()
+				&& !$property->getType()->isInstanceOf(History::class)
 			) {
 				/** @noinspection PhpUnhandledExceptionInspection $property from class and accessible */
 				$new_value = $property->getValue($after);
