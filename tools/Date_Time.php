@@ -216,7 +216,6 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * Returns a new date with only the day of the current date (with an empty time)
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @deprecated use toBeginOf(Date_Time::DAY) or toEndOf instead
 	 * @param $end_of_day boolean if true, the time will be 23:59:59 instead of an empty time
 	 * @return static
 	 * @see toBeginOf
@@ -784,10 +783,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	//---------------------------------------------------------------------------------------- toNext
 	/**
 	 * @param $what int|string
-	 * @param $unit string|null
+	 * @param $unit string
 	 * @return static
 	 */
-	public function toNext(int|string $what, string $unit = null) : static
+	public function toNext(int|string $what, string $unit = self::DAY) : static
 	{
 		return $unit
 			? (clone $this)->add($what, $unit)
@@ -797,10 +796,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	//------------------------------------------------------------------------------------ toPrevious
 	/**
 	 * @param $what int|string
-	 * @param $unit string|null
+	 * @param $unit string
 	 * @return static
 	 */
-	public function toPrevious(int|string $what, string $unit = null) : static
+	public function toPrevious(int|string $what, string $unit = self::DAY) : static
 	{
 		return $unit
 			? (clone $this)->sub($what, $unit)
