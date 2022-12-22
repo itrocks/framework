@@ -55,16 +55,18 @@ class By_Token implements Registerable
 			Dao::delete($token);
 		}
 		if ($get[static::SID] ?? $post[static::SID] ?? false) {
-			echo '[' . Session::sid() . ']';
+			Main::$current->run_replacement = '[' . Session::sid() . ']';
 		}
 		if ($post['checkToken'] ?? false) {
 			$get['as_widget'] = true;
 			if (($_SERVER['HTTP_ACCEPT'] ?? '') === 'application/json') {
 				/** @noinspection PhpUnhandledExceptionInspection valid structure */
-				echo jsonEncode(['status' => 'ok', 'token' => $token->code, 'sid' => session_id()]);
+				Main::$current->run_replacement = jsonEncode(
+					['status' => 'ok', 'token' => $token->code, 'sid' => session_id()]
+				);
 			}
 			else {
-				echo 'OK:TOKEN:[' . $token->code . ']';
+				Main::$current->run_replacement = 'OK:TOKEN:[' . $token->code . ']';
 			}
 		}
 	}

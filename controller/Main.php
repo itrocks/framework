@@ -65,6 +65,14 @@ class Main
 	 */
 	private array $redirects = [];
 
+	//------------------------------------------------------------------------------ $run_replacement
+	/**
+	 * You can set this if you want the controller not to be run and to force the result output
+	 *
+	 * @var ?string
+	 */
+	public ?string $run_replacement = null;
+
 	//-------------------------------------------------------------------------------------- $running
 	/**
 	 * true if the main controller is running.
@@ -512,6 +520,9 @@ class Main
 		try {
 			$this->sessionStart($get, $post);
 			$this->applicationUpdate();
+			if (isset($this->run_replacement)) {
+				return $this->run_replacement;
+			}
 			// TODO NORMAL replace by runController call when AOP after-around-before priority is resolved
 			$result = $this->doRunController($uri, $get, $post, $files);
 			if (isset($this->redirection)) {
