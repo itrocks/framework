@@ -1,0 +1,18 @@
+article > table.data td, article > table.data th {
+  border-bottom: 1px solid #d8d8d8;
+  color: #333;
+  padding: 0 .8em;
+  vertical-align: middle;
+  white-space: nowrap; }
+  article > table.data td:last-child, article > table.data th:last-child {
+    border-right: 1px solid #d8d8d8; }
+article > table.data th {
+  font-weight: 500; }
+article > table.data tr {
+  height: 31px; }
+article > table.data > tbody > tr:nth-child(2n) {
+  background: #f8f8f8; }
+article > table.data > tbody > tr:nth-child(2n+1) {
+  background: white; }
+article > table.data > thead {
+  background: #efefef; }
