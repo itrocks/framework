@@ -279,6 +279,9 @@ class Feature
 					$this->yaml ? $this->yaml->getFeatures($class_path) : [],
 					$this->getPropertiesFeatures()
 				);
+				if (!$features) {
+					$features[$this->path] = new Low_Level_Feature($this->path);
+				}
 				$this->features = $features;
 			}
 			else {

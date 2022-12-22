@@ -39,19 +39,25 @@ trait Has_Groups
 		$cache    = Low_Level_Features_Cache::current();
 		$features = $cache ? $cache->features : [];
 		$uri      = new Uri($uri);
-		$class_name = Builder::current()->sourceClassName(
+		$source_class_name = Builder::current()->sourceClassName(
 			Names::setToClass($uri->controller_name, false)
 		);
-		$feature_name = $uri->feature_name;
-		if (isset($features[$class_name]) && isset($features[$class_name][$feature_name])) {
-			return $features[$class_name][$feature_name];
+		$final_class_name = Builder::className($source_class_name);
+		$feature_name     = $uri->feature_name;
+		$options          = null;
+		foreach ([$final_class_name, $source_class_name] as $class_name) {
+			if (isset($features[$class_name]) && isset($features[$class_name][$feature_name])) {
+				if (!isset($options)) $options = [];
+				$options = array_merge($options, $features[$class_name][$feature_name]);
+			}
 		}
 		if (
 			isset($features[User::class]) && isset($features[User::class][Controller\Feature::F_SUPER])
 		) {
-			return $features[User::class][Controller\Feature::F_SUPER];
+			if (!isset($options)) $options = [];
+			$options = array_merge($options, $features[User::class][Controller\Feature::F_SUPER]);
 		}
-		return null;
+		return $options;
 	}
 
 	//--------------------------------------------------------------------------- getLowLevelFeatures
