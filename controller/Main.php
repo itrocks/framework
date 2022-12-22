@@ -248,6 +248,10 @@ class Main
 		string $uri, array $get = [], array $post = [], array $files = [], string $sub_feature = null
 	) : ?string
 	{
+		if (isset($this->run_replacement)) {
+			return $this->run_replacement;
+		}
+
 		$uri                  = new Uri($uri, $get);
 		$uri->controller_name = Builder::className($uri->controller_name);
 		$parameters           = clone $uri->parameters;
@@ -520,9 +524,6 @@ class Main
 		try {
 			$this->sessionStart($get, $post);
 			$this->applicationUpdate();
-			if (isset($this->run_replacement)) {
-				return $this->run_replacement;
-			}
 			// TODO NORMAL replace by runController call when AOP after-around-before priority is resolved
 			$result = $this->doRunController($uri, $get, $post, $files);
 			if (isset($this->redirection)) {
