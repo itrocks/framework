@@ -84,7 +84,7 @@ class File
 	 */
 	protected function calcHash() : void
 	{
-		$this->hash = isset($this->content) ? hash('512', $this->content) : '';
+		$this->hash = isset($this->content) ? hash('sha512', $this->content) : '';
 	}
 
 	//------------------------------------------------------------------------------------ getContent
