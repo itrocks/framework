@@ -148,7 +148,11 @@ class Counter
 					'{DAY}'    => $date->format('d'),
 					'{HOUR}'   => $date->format('H'),
 					'{MINUTE}' => $date->format('i'),
-					'{SECOND}' => $date->format('s')
+					'{SECOND}' => $date->format('s'),
+					'{RAND1}'  => rand(0, 9),
+					'{RAND2}'  => sprintf('%02s', rand(0, 99)),
+					'{RAND3}'  => sprintf('%03s', rand(0, 999)),
+					'{RAND4}'  => sprintf('%04s', rand(0, 9999))
 				],
 				$format
 			);
