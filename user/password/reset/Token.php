@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User\Password\Reset;
 
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
@@ -42,8 +43,17 @@ class Token
 	//----------------------------------------------------------------------------------------- $user
 	/**
 	 * @link Object
-	 * @var ?User
+	 * @var User
 	 */
-	public ?User $user;
+	public User $user;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString() : string
+	{
+		return $this->user . SP . Loc::dateToLocale($this->date);
+	}
+	
 }
