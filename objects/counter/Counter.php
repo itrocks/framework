@@ -279,7 +279,6 @@ class Counter
 	}
 
 	//-------------------------------------------------------------------------------- showIdentifier
-
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
