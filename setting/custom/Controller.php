@@ -25,7 +25,7 @@ abstract class Controller
 		}
 		// keep it last, as load name could be sent on every calls
 		if (isset($parameters['load_name'])) {
-			$feature = $parameters[Feature::FEATURE] ?? null;
+			$feature = $parameters[Feature::FEATURE] ?? '';
 			/** @see Set::load */
 			$custom_settings = call_user_func_array(
 				[get_class($custom_settings), 'load'],
