@@ -114,7 +114,7 @@ class Select_Controller implements Feature_Controller
 				[$class->name, 'getCompositeProperties'],
 				$composite_class_name
 			);
-			$this->composite_property = reset($composite_properties);
+			$this->composite_property = reset($composite_properties) ?: null;
 		}
 		else {
 			$this->composite_property = null;
