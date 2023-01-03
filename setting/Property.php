@@ -20,13 +20,13 @@ abstract class Property implements Can_Be_Empty
 	 *
 	 * @var string
 	 */
-	public string $display;
+	public string $display = '';
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
 	 * @var string
 	 */
-	public string $path;
+	public string $path = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
