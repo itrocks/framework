@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 use DateTime;
 use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Decimal;
 use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Integer;
+use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
@@ -32,9 +33,15 @@ trait Column_Builder_Property
 		Reflection_Property $property, Column $column
 	) : mixed
 	{
-		$default = $property->getDefaultValue('constant');
+		$default       = $property->getDefaultValue('constant');
+		$property_type = $property->getType();
+		if (
+			$property_type->isDateTime()
+			&& (Default_Annotation::of($property)->value === (Date_Time::class . '::now'))
+		) {
+			$default = 'CURRENT_TIMESTAMP';
+		}
 		if (isset($default)) {
-			$property_type = $column->getType();
 			if ($property_type->isInteger()) {
 				$default = is_object($default)
 					? ($default->id ?? 0)

@@ -323,7 +323,11 @@ class Reflection_Property extends ReflectionProperty
 		) {
 			if (!$default_object) {
 				/** @noinspection PhpUnhandledExceptionInspection final class name always valid */
-				$default_object = Builder::create($this->getFinalClassName());
+				$final_class    = new Reflection_Class($this->getFinalClassName());
+				$default_object = ($final_class->isAbstract() || $final_class->isInterface() || $final_class->isTrait())
+					? null
+					/** @noinspection PhpUnhandledExceptionInspection class valid and can be instantiated */
+					: $final_class->newInstance();
 			}
 			try {
 				$method     = new ReflectionMethod($default_annotation->value);

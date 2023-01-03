@@ -205,7 +205,7 @@ class Reflection_Class extends ReflectionClass
 	 * @return array
 	 */
 	public function getDefaultProperties(
-		array $flags = [], bool $use_annotation = true, string $property_name = ''
+		array $flags = [], bool|string $use_annotation = true, string $property_name = ''
 	) : array
 	{
 		// list default values

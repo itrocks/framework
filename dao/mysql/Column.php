@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Sql;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -194,12 +195,12 @@ class Column implements Sql\Column
 	{
 		$column = new Column();
 		// instructions order matters : do not change it
+		$column->Extra   = '';
 		$column->Field   = self::propertyNameToMysql($property);
 		$column->Type    = self::propertyTypeToMysql($property);
 		$column->Null    = self::propertyNullToMysql($property);
 		$column->Key     = self::propertyKeyToMysql($property);
 		$column->Default = self::propertyDefaultToMysql($property, $column);
-		$column->Extra   = '';
 		return $column;
 	}
 
@@ -291,16 +292,21 @@ class Column implements Sql\Column
 	 */
 	public function equiv(Sql\Column $column) : bool
 	{
-		$column_default = $column->Default;
-		$this_default   = $this->Default;
-		if (is_object($column_default) || is_numeric($column_default)) {
-			$column_default = strval($column_default);
-		}
-		if (is_object($this_default) || is_numeric($this_default)) {
-			$this_default = strval($this_default);
-		}
-		$type1 = $column->Type;
-		$type2 = $this->Type;
+		$column_default = strval(
+			is_object($this->Default)
+				? (Dao::getObjectIdentifier($this->Default) ?: strval($this->Default))
+				: $this->Default
+
+		);
+		$this_default = strval(
+			is_object($this->Default)
+				? (Dao::getObjectIdentifier($this->Default) ?: strval($this->Default))
+				: $this->Default
+		);
+		$column_extra = str_replace('DEFAULT_GENERATED', '', $column->Extra);
+		$this_extra   = str_replace('DEFAULT_GENERATED', '', $this->Extra);
+		$type1        = $column->Type;
+		$type2        = $this->Type;
 		if ($type1 !== $type2) {
 			if (str_contains($type1, '(') && !str_contains($type2, '(')) {
 				$type1 = lParse($type1, '(') . rParse($type1, ')');
@@ -310,10 +316,10 @@ class Column implements Sql\Column
 			}
 		}
 		return ($this_default === $column_default)
-			&& ($this->Extra === $column->Extra)
-			&& ($this->Field === $column->Field)
-			&& ($this->Null  === $column->Null)
-			&& ($type1       === $type2);
+			&& ($this_extra     === $column_extra)
+			&& ($this->Field    === $column->Field)
+			&& ($this->Null     === $column->Null)
+			&& ($type1          === $type2);
 	}
 
 	//------------------------------------------------------------------------------- getDefaultValue
@@ -446,7 +452,14 @@ class Column implements Sql\Column
 			$sql .= ' NOT NULL';
 		}
 		if (($postfix !== (SP . self::AUTO_INCREMENT)) && !$this->alwaysNullDefault()) {
-			$sql .= ' DEFAULT ' . Value::escape($this->getDefaultValue());
+			$default_value = $this->getDefaultValue();
+			$default = (($type === 'datetime') && ($default_value === 'CURRENT_TIMESTAMP'))
+				? $default_value
+				: Value::escape($default_value);
+			if (is_numeric($default)) {
+				$default = Q . $default . Q;
+			}
+			$sql .= ' DEFAULT ' . $default;
 		}
 		$sql .= $postfix;
 		if ($primary_key && ($postfix === (SP . self::AUTO_INCREMENT))) {
