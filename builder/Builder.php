@@ -165,28 +165,36 @@ class Builder implements Activable
 			// copy official properties values from the source object
 			$properties = (new Reflection_Class($source_class_name))->getProperties();
 			foreach ($properties as $property) {
-				if (!isset($save_aop[$property->name])) {
-					$property->setValue($clone, $property->getValue($object));
+				if (isset($save_aop[$property->name])) {
+					if (Link_Annotation::of($property)->isCollection()) {
+						$property->getValue($object);
+					}
+					continue;
 				}
+				$property->setValue($clone, $property->getValue($object));
 			}
 			// copy unofficial properties values from the source object (ie AOP properties aliases)
 			// clone collection objects using the destination collection property type
 			$clone_collection = [];
 			foreach (get_object_vars($object) as $property_name => $value) {
-				if (($property_name !== '_') && !isset($properties[$property_name])) {
-					$clone->$property_name = $value;
-					if (isset($properties[rtrim($property_name, '_')])) {
-						$property = $properties[rtrim($property_name, '_')];
-						if (Link_Annotation::of($property)->isCollection()) {
-							$element_class_from = $property->getType()->getElementTypeAsString();
-							$property           = $destination_class->getProperty($property->name);
-							$element_class_to   = $property->getType()->getElementTypeAsString();
-							if ($element_class_to !== $element_class_from) {
-								$clone_collection[substr($property_name, 0, -1)] = $element_class_to;
-							}
-						}
-					}
+				if (($property_name === '_') || isset($properties[$property_name])) {
+					continue;
 				}
+				$clone->$property_name = $value;
+				if (!isset($properties[rtrim($property_name, '_')])) {
+					continue;
+				}
+				$property = $properties[rtrim($property_name, '_')];
+				if (!Link_Annotation::of($property)->isCollection()) {
+					continue;
+				}
+				$element_class_from = $property->getType()->getElementTypeAsString();
+				$property           = $destination_class->getProperty($property->name);
+				$element_class_to   = $property->getType()->getElementTypeAsString();
+				if ($element_class_to === $element_class_from) {
+					continue;
+				}
+				$clone_collection[substr($property_name, 0, -1)] = $element_class_to;
 			}
 			// reactivate AOP
 			if (isset($save_aop)) {
@@ -203,10 +211,11 @@ class Builder implements Activable
 			}
 			// linked class object to link class object : store source object to linked object
 			$destination_class = new Link_Class($class_name);
-			if ($linked_class_name = $destination_class->getLinkedClassName()) {
-				if ($linked_class_name === $source_class_name) {
-					$destination_class->getLinkProperty()->setValue($clone, $object);
-				}
+			if (
+				($linked_class_name = $destination_class->getLinkedClassName())
+				&& ($linked_class_name === $source_class_name)
+			) {
+				$destination_class->getLinkProperty()->setValue($clone, $object);
 			}
 		}
 		else {
@@ -236,7 +245,9 @@ class Builder implements Activable
 	 */
 	public static function current(Builder $set_current = null) : static
 	{
-		return self::dCurrent($set_current);
+		/** @var $current static */
+		$current = self::dCurrent($set_current);
+		return $current;
 	}
 
 	//------------------------------------------------------------------------------------- fromArray
@@ -249,8 +260,8 @@ class Builder implements Activable
 	 * @param $array                 array
 	 * @param $constructor_arguments array
 	 * @return T
-	 * @throws ReflectionException
 	 * @template T
+	 * @throws ReflectionException
 	 */
 	public static function fromArray(
 		string $class_name, array $array, array $constructor_arguments = []
@@ -457,7 +468,7 @@ class Builder implements Activable
 	 * @template T
 	 */
 	public function setReplacement(string $class_name, array|string|null $replacement_class_name)
-	: ?string
+		: ?string
 	{
 		$result = $this->replacements[$class_name] ?? null;
 		if (!isset($replacement_class_name)) {
