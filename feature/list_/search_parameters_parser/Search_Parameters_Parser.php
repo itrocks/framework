@@ -3,8 +3,6 @@ namespace ITRocks\Framework\Feature\List_;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Func\Comparison;
-use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Date;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Range;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Scalar;
@@ -121,11 +119,11 @@ class Search_Parameters_Parser
 	/**
 	 * @param $search_value string
 	 * @param $property     ?Reflection_Property
-	 * @return Comparison|Logical|string
+	 * @return Func\Comparison|Func\Logical|Func\Range|string
 	 * @throws Exception
 	 */
 	protected function applyAnd(string $search_value, ?Reflection_Property $property)
-		: Comparison|Logical|string
+		: Func\Comparison|Func\Logical|Func\Range|string
 	{
 		if (!str_contains($search_value, '&')) {
 			return $this->applyNot($search_value, $property);
@@ -223,11 +221,11 @@ class Search_Parameters_Parser
 	/**
 	 * @param $search_value string
 	 * @param $property     ?Reflection_Property
-	 * @return Func\Comparison|Func\Logical|string
+	 * @return Func\Comparison|Func\Logical|Func\Range|string
 	 * @throws Exception
 	 */
 	protected function applyNot(string $search_value, ?Reflection_Property $property)
-		: Func\Comparison|Func\Logical|string
+		: Func\Comparison|Func\Logical|Func\Range|string
 	{
 		if (!str_starts_with(trim($search_value), '!')) {
 			return $this->applyComplexValue($search_value, $property);
@@ -247,11 +245,11 @@ class Search_Parameters_Parser
 	/**
 	 * @param $search_value string
 	 * @param $property     ?Reflection_Property
-	 * @return Comparison|Logical|string
+	 * @return Func\Comparison|Func\Logical|Func\Range|string
 	 * @throws Exception
 	 */
 	protected function applyOr(string $search_value, ?Reflection_Property $property)
-		: Comparison|Logical|string
+		: Func\Comparison|Func\Logical|Func\Range|string
 	{
 		if (!str_contains($search_value, ',')) {
 			return $this->applyAnd($search_value, $property);
@@ -392,10 +390,10 @@ class Search_Parameters_Parser
 					}
 					break;
 				}
-				// without @values : let it continue to 'default' in order to apply the 'default' process
-			// Float | Integer | String types without @values
-			// case Type::FLOAT: case Type::INTEGER: case Type::STRING: case Type::STRING_ARRAY:
 			default:
+				// without @values : let it continue to 'default' in order to apply the 'default' process
+				// Float | Integer | String types without @values
+				// case Type::FLOAT: case Type::INTEGER: case Type::STRING: case Type::STRING_ARRAY:
 				$search = Words::applyWordMeaningEmpty($search_value, $property)
 					?: Scalar::applyScalar($search_value);
 		}
@@ -428,7 +426,7 @@ class Search_Parameters_Parser
 	public function parseArray(array &$search_values, array &$to_unset) : void
 	{
 		foreach ($search_values as $property_path => &$search_value) {
-			if ($search_value instanceof Logical) {
+			if ($search_value instanceof Func\Logical) {
 				$this->parseArray($search_value->arguments, $to_unset);
 				continue;
 			}
