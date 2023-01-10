@@ -58,6 +58,9 @@ class Html_Builder_Property extends Html_Builder_Type
 			parent::__construct(null, null, $value, $prefix);
 			return;
 		}
+		if ($property instanceof Reflection_Property_Value) {
+			$this->object = $property->getObject();
+		}
 		if ($customized = $property->getAnnotation('customized')->value) {
 			$this->classes[] = $customized;
 		}
