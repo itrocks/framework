@@ -27,10 +27,13 @@ class Null_Annotation extends Boolean_Annotation implements Property_Context_Ann
 		parent::__construct($value);
 		// default value for @null is true when the property links to a non-mandatory object
 		if (
-			!isset($value)
-			&& !$this->value
-			&& !Mandatory_Annotation::of($property)->value
-			&& Link_Annotation::of($property)->isObject()
+			(
+				!isset($value)
+				&& !$this->value
+				&& !Mandatory_Annotation::of($property)->value
+				&& Link_Annotation::of($property)->isObject()
+			)
+			|| $property->getType()->allowsNull()
 		) {
 			$this->value = true;
 		}
