@@ -332,10 +332,10 @@ class Loc implements Registerable
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
 	 * @param $value    string|null
-	 * @return Date_Time|float|integer|string
+	 * @return Date_Time|float|integer|string|null
 	 */
 	public static function propertyToIso(Reflection_Property $property, string $value = null)
-		: Date_Time|float|int|string
+		: Date_Time|float|int|string|null
 	{
 		/** @noinspection PhpUnhandledExceptionInspection caught at high-level, not programmatically */
 		return Locale::current()->propertyToIso($property, $value);

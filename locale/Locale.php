@@ -121,11 +121,11 @@ class Locale implements Configurable, Registerable, Updatable
 	 *
 	 * @param $property Reflection_Property
 	 * @param $value    string|null
-	 * @return Date_Time|float|integer|string
+	 * @return Date_Time|float|integer|string|null
 	 * @throws User_Error_Exception
 	 */
 	public function propertyToIso(Reflection_Property $property, string $value = null)
-		: Date_Time|float|int|string
+		: Date_Time|float|int|string|null
 	{
 		if (($property instanceof Reflection_Property_Value) && !isset($value)) {
 			$value = $property->value();
@@ -286,10 +286,10 @@ class Locale implements Configurable, Registerable, Updatable
 	 *
 	 * @param $value string
 	 * @param $type  Type|null
-	 * @return float|integer|string
+	 * @return float|integer|string|null
 	 * @throws User_Error_Exception
 	 */
-	public function toIso(string $value, Type $type = null) : float|int|string
+	public function toIso(string $value, Type $type = null) : float|int|string|null
 	{
 		if (isset($type)) {
 			if ($type->isDateTime()) {
