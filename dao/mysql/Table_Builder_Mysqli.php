@@ -16,12 +16,12 @@ abstract class Table_Builder_Mysqli
 	 * @param $mysqli        mysqli
 	 * @param $table_name    string|null
 	 * @param $database_name string|null
-	 * @return Table|Table[] will be a single table only if $table_name is a
+	 * @return Table|Table[]|null will be a single table only if $table_name is a
 	 *         single table name without jokers characters
 	 */
 	public static function build(
 		mysqli $mysqli, string $table_name = null, string $database_name = null
-	) : array|Table
+	) : array|Table|null
 	{
 		$tables = [];
 		$result = $mysqli->query(
@@ -44,7 +44,7 @@ abstract class Table_Builder_Mysqli
 
 		$unique = isset($table_name) && !str_contains($table_name, '%');
 
-		return $unique ? reset($tables) : $tables;
+		return $unique ? (reset($tables) ?: null) : $tables;
 	}
 
 }
