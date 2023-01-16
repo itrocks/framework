@@ -41,7 +41,7 @@ class Documented_Type_Annotation extends Annotation
 		}
 		/** @noinspection PhpStrictComparisonWithOperandsOfDifferentTypesInspection inspector bug */
 		if ($position === false) {
-			parent::__construct($value);
+			parent::__construct($value . ($add_null ? '|null' : ''));
 			$this->documentation = '';
 		}
 		else {

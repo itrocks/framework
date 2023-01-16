@@ -144,7 +144,8 @@ class Type extends ReflectionType
 				if (!isset($allows_null)) {
 					$this->allows_null = str_contains($type_string, '|' . self::null);
 				}
-				$this->type = substr($type_string, 0, $i);
+				$this->type  = substr($type_string, 0, $i);
+				$type_string = substr(str_replace('|' . self::null . '|', '|', $type_string . '|'), 0, -1);
 			}
 			else {
 				$this->type = $type_string;
