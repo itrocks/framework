@@ -8,7 +8,7 @@ $(document).ready(function()
 		const conditions  = $this.data('conditions').replace(/\(.*\)/g)
 		const will_change = {}
 
-		$.each(conditions.split(';'), function(condition_key, condition) {
+		$.each(conditions.split(';'), (condition_key, condition) => {
 			let index
 			let operator = '='
 			if ((index = condition.indexOf('>')) > -1) {
@@ -17,7 +17,7 @@ $(document).ready(function()
 			else if ((index = condition.indexOf('<')) > -1) {
 				operator = ((condition[index + 1] === '=') ? '<=' : '<')
 			}
-			condition = condition.split(operator)
+			condition = condition.split(operator).map(condition => condition.trim())
 			let $condition
 			if (will_change.hasOwnProperty(condition[0])) {
 				$condition = will_change[condition[0]]
@@ -25,12 +25,9 @@ $(document).ready(function()
 			else {
 				const $form = $this.closest('form')
 				$condition = $form.find('[name="id_' + condition[0] + DQ + ']')
-				if ($condition.length) {
-					$condition = $condition.next()
-				}
-				else {
-					$condition = $form.find('[name=' + DQ + condition[0] + DQ + ']')
-				}
+				$condition = $condition.length
+					? $condition.next()
+					: $form.find('[name=' + DQ + condition[0] + DQ + ']')
 				will_change[condition[0]] = $condition
 			}
 			let condition_name = $condition.attr('name')
@@ -43,7 +40,7 @@ $(document).ready(function()
 			if (!$this.data('conditions').hasOwnProperty(condition_name)) {
 				$this.data('conditions')[condition_name] = { element: $condition, values: {}}
 			}
-			$.each(condition[1].split(','), function(value_key, value) {
+			$.each(condition[1].split(','), (value_key, value) => {
 				if (operator !== '=') {
 					value = (operator + value)
 				}
@@ -63,7 +60,7 @@ $(document).ready(function()
 			}
 		})
 
-		$.each(will_change, function(condition_name, $condition) {
+		$.each(will_change, (condition_name, $condition) => {
 			if ($condition.data('condition-change')) {
 				$condition.change()
 				return
@@ -72,11 +69,11 @@ $(document).ready(function()
 			$condition.change(function()
 			{
 				const $this = $(this)
-				$.each($this.data('condition-of'), function(element_name, $element) {
+				$.each($this.data('condition-of'), (element_name, $element) => {
 					let show = true
-					$.each($element.data('conditions'), function(condition_name, condition) {
+					$.each($element.data('conditions'), (condition_name, condition) => {
 						let found = false
-						$.each(condition.values, function(value) {
+						$.each(condition.values, (value) => {
 							const element_type = condition.element.attr('type')
 							const element      = (element_type === 'radio')
 								? condition.element.filter(':checked')
