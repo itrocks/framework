@@ -121,7 +121,6 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 			}
 		}
 		$possibles = Replaces_Annotations::removeReplacedProperties($possibles);
-		$possibles = $this->reduceToComposites($possibles);
 		if (count($possibles) !== 1) {
 			$this->value = Names::classToProperty($property->getDeclaringClassName());
 		}
@@ -188,18 +187,16 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	 */
 	private function reduceToComposites(array $properties) : array
 	{
-		if (count($properties) > 1) {
-			$composite_properties = [];
-			foreach ($properties as $property) {
-				if ($property->getAnnotation('composite')->value) {
-					$composite_properties[$property->getName()] = $property;
-				}
-			}
-			if ($composite_properties) {
-				$properties = $composite_properties;
+		if (count($properties) <= 1) {
+			return $properties;
+		}
+		$composite_properties = [];
+		foreach ($properties as $property) {
+			if ($property->getAnnotation('composite')->value) {
+				$composite_properties[$property->getName()] = $property;
 			}
 		}
-		return $properties;
+		return $composite_properties ?: $properties;
 	}
 
 }
