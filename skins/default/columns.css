@@ -1,0 +1,6 @@
+ul.columns {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; }
+  ul.columns > li {
+    display: inline-block; }

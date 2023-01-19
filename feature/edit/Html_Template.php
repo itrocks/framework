@@ -177,7 +177,7 @@ class Html_Template extends Template
 	 * Parse a variable / function / include and returns its return value
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection Builder::create with valid parameters
-	 * @param $property_name string can be an unique var or path.of.vars
+	 * @param $property_name string can be a unique var or path.of.vars
 	 * @param $format_value  boolean
 	 * @return mixed var value after reading value / executing specs (can be an object)
 	 */
@@ -193,6 +193,7 @@ class Html_Template extends Template
 				($builder = Widget_Annotation::of($property)->value)
 				&& is_a($builder, Property::class, true)
 			) {
+				/** @noinspection PhpParamsInspection Inspector bug : $builder is a string */
 				/** @noinspection PhpUnhandledExceptionInspection $builder and $property are valid */
 				/** @var $builder Property */
 				$builder = Builder::create($builder, [$property, $property->value(), $this]);

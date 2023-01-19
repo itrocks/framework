@@ -1,0 +1,9 @@
+ul.columns {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+
+	> li {
+		display: inline-block;
+	}
+}

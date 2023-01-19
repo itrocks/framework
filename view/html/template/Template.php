@@ -4,6 +4,7 @@ namespace ITRocks\Framework\View\Html;
 use ITRocks\Framework;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Component\Tab;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Target;
@@ -1171,12 +1172,18 @@ class Template
 			if (!$this->properties_prefix) {
 				reset($this->objects);
 				$object = next($this->objects);
-				if (is_object($object) && property_exists($object, $loop->var_name)) {
+				if (
+					is_object($object)
+					&& property_exists($object, $loop->var_name)
+					&& !($object instanceof Tab)
+				) {
 					$this->properties_prefix[] = $loop->var_name;
 					$pop_properties_prefix = true;
 				}
 			}
-			$this->properties_prefix[] = $loop->key;
+			if ($this->properties_prefix || !is_numeric($loop->key)) {
+				$this->properties_prefix[] = $loop->key;
+			}
 		}
 		$loop->counter ++;
 		$loop_insert   = '';
@@ -1708,9 +1715,9 @@ class Template
 				&& ($builder = Widget_Annotation::of($object)->value)
 				&& is_a($builder, Html\Builder\Property::class, true)
 			) {
+				/** @noinspection PhpParamsInspection Inspector bug : $builder is a string */
 				/** @noinspection PhpUnhandledExceptionInspection widget builder must be valid */
 				/** @var $builder Html\Builder\Property */
-				/** @noinspection PhpParamsInspection Inspector bug : $builder is a string */
 				$builder = Builder::create(
 					$builder, [$object, $this->parseMethod($object, $property_name), $this]
 				);
