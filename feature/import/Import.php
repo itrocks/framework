@@ -24,16 +24,16 @@ class Import
 	/**
 	 * @link Object
 	 * @mandatory
-	 * @var File
+	 * @var ?File
 	 */
-	public File $file;
+	public ?File $file;
 
 	//--------------------------------------------------------------------------------------- $format
 	/**
 	 * @link Object
-	 * @var Import_Export_Format
+	 * @var ?Import_Export_Format
 	 */
-	public Import_Export_Format $format;
+	public ?Import_Export_Format $format;
 
 	//----------------------------------------------------------------------------------- $worksheets
 	/**

@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Import;
+use ITRocks\Framework\Feature\Import\Settings\Behaviour;
 use ITRocks\Framework\Feature\Import\Settings\Import_Class;
 use ITRocks\Framework\Feature\Import\Settings\Import_Property;
 use ITRocks\Framework\Feature\Import\Settings\Import_Settings;
@@ -19,6 +20,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Stringable;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ReflectionException;
@@ -244,7 +246,7 @@ class Import_Array
 	 * The property list is the first or the second line of the array, depending on if the first line
 	 * is a class name or not.
 	 *
-	 * The cursor on $array is set to the row containing the properties path.
+	 * The cursor on $array is set to the row containing the property paths.
 	 *
 	 * @param $array      array $value = string[integer $row_number][integer $column_number]
 	 * @param $class_name string class name : if set, will use current list settings properties alias
@@ -323,7 +325,7 @@ class Import_Array
 		foreach ($identify_properties as $identify_property) {
 			$property                         = $identify_property->toProperty();
 			$value                            = $row[$class_properties_column[$identify_property->name]];
-			$search[$identify_property->name] = Loc::propertyToIso($property, $value);
+			$search[$identify_property->name] = $this->propertyToIso($property, $value);
 			$empty_object                     = $empty_object && empty($value);
 		}
 		return $empty_object ? [] : $search;
@@ -428,10 +430,10 @@ class Import_Array
 			$object = $this->updateExistingObject(reset($found), $row, $class, $class_properties_column);
 		}
 		elseif (!count($found)) {
-			if ($class->object_not_found_behaviour === 'create_new_value') {
+			if ($class->object_not_found_behaviour === Behaviour::CREATE_NEW_VALUE) {
 				$object = $this->writeNewObject($row, $class, $class_properties_column);
 			}
-			elseif ($class->object_not_found_behaviour === 'tell_it_and_stop_import') {
+			elseif ($class->object_not_found_behaviour === Behaviour::TELL_IT_AND_STOP_IMPORT) {
 				throw static::getException('notFound', ['class' => $class, 'search' => $search]);
 			}
 			else {
@@ -502,6 +504,54 @@ class Import_Array
 		return join(DOT, $property_names);
 	}
 
+	//--------------------------------------------------------------------------------- propertyToIso
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $property Reflection_Property
+	 * @param $value    mixed
+	 * @return mixed
+	 */
+	protected function propertyToIso(Reflection_Property $property, mixed $value) : mixed
+	{
+		$value = Loc::propertyToIso($property, $value);
+		if ($property->getType()->isClass() && !is_object($value) && !is_null($value)) {
+			if (trim($value) === '') {
+				return null;
+			}
+			$class_name = $property->getType()->getElementTypeAsString();
+			if (isA($class_name, Stringable::class)) {
+				/** @noinspection PhpUndefinedMethodInspection $class_name */
+				/** @see Stringable::fromString */
+				$value = $class_name::fromString($value);
+				if ($found = Dao::searchOne($value)) {
+					$value = $found;
+				}
+			}
+			else {
+				/** @noinspection PhpUnhandledExceptionInspection must be valid */
+				$class = new Reflection_Class($class_name);
+				$representative_property_names = Class_\Representative_Annotation::of($class)->values();
+				$search = [];
+				$values = explode(' ', $value, count($representative_property_names));
+				foreach ($representative_property_names as $key => $property_name) {
+					/** @noinspection PhpUnhandledExceptionInspection must be valid */
+					$property               = $class->getProperty($property_name);
+					$search[$property_name] = $this->propertyToIso($property, $values[$key] ?? '');
+				}
+				$object = Dao::searchOne($search, $class_name);
+				if (!$object) {
+					/** @noinspection PhpUnhandledExceptionInspection must be valid */
+					$object = $class->newInstance();
+					foreach ($search as $property_name => $value) {
+						$object->$property_name = $value;
+					}
+				}
+				$value = $object;
+			}
+		}
+		return $value;
+	}
+
 	//------------------------------------------------------------------------------------- sameArray
 	/**
 	 * Returns true if $array1 and $array2 contain the same data
@@ -569,7 +619,8 @@ class Import_Array
 	 */
 	protected function simulateNew(
 		/** @noinspection PhpUnusedParameterInspection */ Import_Class $class, object $object
-	) : void {
+	) : void
+	{
 		echo '- write new ' . print_r($object, true);
 	}
 
@@ -636,7 +687,7 @@ class Import_Array
 			foreach (array_keys($class->write_properties) as $property_name) {
 				$value = $row[$class_properties_column[$property_name]];
 				if (isset($class->properties[$property_name])) {
-					$value = Loc::propertyToIso($class->properties[$property_name], $value);
+					$value = $this->propertyToISo($class->properties[$property_name], $value);
 				}
 				if (!$this->sameElement($object->$property_name, $value)) {
 					$object->$property_name = $value;
@@ -676,11 +727,11 @@ class Import_Array
 		foreach (array_keys($class->identify_properties) as $property_name) {
 			$value = $row[$class_properties_column[$property_name]];
 			if (isset($class->properties[$property_name])) {
-				$value = Loc::propertyToIso($class->properties[$property_name], $value);
+				$value = $this->propertyToIso($class->properties[$property_name], $value);
 			}
 			elseif (isset($class->identify_properties[$property_name])) {
 				$identify_property = $class->identify_properties[$property_name];
-				$value             = Loc::propertyToIso($identify_property->toProperty(), $value);
+				$value             = $this->propertyToIso($identify_property->toProperty(), $value);
 			}
 			$object->$property_name = $value;
 			$only_properties[]      = $property_name;
@@ -688,7 +739,7 @@ class Import_Array
 		foreach (array_keys($class->write_properties) as $property_name) {
 			$value = $row[$class_properties_column[$property_name]];
 			if (isset($class->properties[$property_name])) {
-				$value = Loc::propertyToIso($class->properties[$property_name], $value);
+				$value = $this->propertyToIso($class->properties[$property_name], $value);
 			}
 			$object->$property_name = $value;
 			$only_properties[]      = $property_name;
@@ -698,7 +749,7 @@ class Import_Array
 		}
 		// class with @link annotation will crash without restricting the properties here :
 		/** @noinspection PhpUnhandledExceptionInspection import class must be valid */
-		$is_link_class = Link_Annotation::of(new Link_Class($class->class_name))->value;
+		$is_link_class = Class_\Link_Annotation::of(new Link_Class($class->class_name))->value;
 		Dao::write($object, $is_link_class ? Dao::only($only_properties) : []);
 		return $object;
 	}

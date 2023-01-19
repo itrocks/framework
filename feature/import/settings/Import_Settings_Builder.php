@@ -33,9 +33,10 @@ abstract class Import_Settings_Builder
 			}
 		}
 		$auto_identify = [];
+		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
+		$root_class = new Reflection_Class($class_name);
 		foreach ($properties_path as $property_path) {
-			/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
-			$class = new Reflection_Class($class_name);
+			$class = $root_class;
 			foreach (explode(DOT, $property_path) as $pos => $property_name) {
 				if (
 					in_array($property_name, Identify_Annotation::of($class)->values())
@@ -43,11 +44,16 @@ abstract class Import_Settings_Builder
 				) {
 					$auto_identify[$property_path][$pos] = true;
 				}
-				/** @noinspection PhpUnhandledExceptionInspection Property path must be valid */
-				$property = $class->getProperty($property_name);
-				$type     = $property->getType();
-				if ($type->isClass()) {
-					$class = $type->asReflectionClass();
+				try {
+					/** @noinspection PhpUnhandledExceptionInspection Property path must be valid */
+					$property = $class->getProperty($property_name);
+					$type     = $property->getType();
+					if ($type->isClass()) {
+						$class = $type->asReflectionClass();
+					}
+				}
+				catch (ReflectionException) {
+					// nothing
 				}
 			}
 		}
@@ -62,7 +68,7 @@ abstract class Import_Settings_Builder
 	 * Second line must contain the fields paths, relative to the class
 	 * Other liens contain data, and are not used
 	 *
-	 * @param $array      array two dimensional array (keys are row, col)
+	 * @param $array      array two-dimensional array (keys are row, col)
 	 * @param $class_name string|null default class name (if not found into array)
 	 * @return Import_Settings
 	 */
@@ -77,7 +83,6 @@ abstract class Import_Settings_Builder
 		foreach ($properties_path as $property_path) {
 			$sub_class               = $class_name;
 			$last_identify           = false;
-			$class_path              = '';
 			$property_path_for_class = [];
 			foreach (explode(DOT, $property_path) as $pos => $property_name) {
 				$identify = !str_ends_with($property_name, '*');
@@ -89,7 +94,7 @@ abstract class Import_Settings_Builder
 					$classes[$class_key] = new Import_Class(
 						$sub_class,
 						$property_path_for_class,
-						$last_identify ? 'tell_it_and_stop_import' : 'create_new_value'
+						$last_identify ? Behaviour::TELL_IT_AND_STOP_IMPORT : Behaviour::CREATE_NEW_VALUE
 					);
 				}
 				$class           = $classes[$class_key];
@@ -108,8 +113,7 @@ abstract class Import_Settings_Builder
 						$class->properties[$property_name]       = $property;
 						$class->write_properties[$property_name] = $import_property;
 					}
-					$sub_class   = $property->getType()->getElementTypeAsString();
-					$class_path .= $sub_class . DOT;
+					$sub_class = $property->getType()->getElementTypeAsString();
 				}
 				catch (ReflectionException) {
 					$class->ignore_properties[$property_name]  = $import_property;

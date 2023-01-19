@@ -40,10 +40,10 @@ class Import_Class
 
 	//------------------------------------------------------------------- $object_not_found_behaviour
 	/**
-	 * @values create_new_value, do_nothing, tell_it_and_stop_import
+	 * @values Behaviour::const
 	 * @var string
 	 */
-	public string $object_not_found_behaviour = 'do_nothing';
+	public string $object_not_found_behaviour = Behaviour::DO_NOTHING;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -77,8 +77,7 @@ class Import_Class
 	/**
 	 * @param $class_name                 string|null
 	 * @param $property_path              string[]|null
-	 * @param $object_not_found_behaviour string|null @values create_new_value, do_nothing,
-	 *                                    tell_it_and_stop_import
+	 * @param $object_not_found_behaviour string|null @values Behaviour::const
 	 */
 	public function __construct(
 		string $class_name = null, array $property_path = null,

@@ -386,7 +386,8 @@ class Functions
 	 * @return string
 	 */
 	public function getEdit(
-		Template $template, string $name, bool $ignore_user = false, bool $can_always_be_null = false
+		Template $template, string $name = '', bool $ignore_user = false,
+		bool $can_always_be_null = false
 	) : string
 	{
 		if ($name !== '') {
