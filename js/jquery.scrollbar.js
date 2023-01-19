@@ -218,8 +218,8 @@
 	const fixedColumnsWidth = function(columns)
 	{
 		let total_width = 0
-		for (const $column of columns) {
-			total_width += $column.width()
+		for (const index in columns) if (columns.hasOwnProperty(index)) {
+			total_width += columns[index].width()
 		}
 		return total_width
 	}
