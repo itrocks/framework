@@ -3,6 +3,7 @@ namespace ITRocks\Framework\View\Html\Template;
 
 use Exception;
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Component\Tab;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func\Comparison;
@@ -675,7 +676,7 @@ class Functions
 					}
 				}
 			}
-			return $this->filterProperties($this->getObject($template), $properties);
+			return $this->filterProperties($this->getObject($template, [Tab::class]), $properties);
 		}
 		// property
 		if ($properties instanceof Reflection_Property) {
@@ -1009,15 +1010,16 @@ class Functions
 	 *
 	 * After this call, current($template->var_names) will give you the var name of the object
 	 *
-	 * @param $template Template
+	 * @param $template        Template
+	 * @param $exclude_classes string[]
 	 * @return object
 	 */
-	public function getObject(Template $template) : object
+	public function getObject(Template $template, array $exclude_classes = []) : object
 	{
 		$object = null;
 		reset($template->var_names);
 		foreach ($template->objects as $object) {
-			if (is_object($object)) {
+			if (is_object($object) && !isA($object, $exclude_classes)) {
 				break;
 			}
 			next($template->var_names);

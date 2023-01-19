@@ -1557,6 +1557,7 @@ class Template
 			$value = (
 				property_exists($object, $property_name)
 				|| property_exists($object, $property_name . '_')
+				|| isset($object->$property_name)
 			)
 				? $object->$property_name
 				: null;
@@ -1709,10 +1710,11 @@ class Template
 			) {
 				/** @noinspection PhpUnhandledExceptionInspection widget builder must be valid */
 				/** @var $builder Html\Builder\Property */
+				/** @noinspection PhpParamsInspection Inspector bug : $builder is a string */
 				$builder = Builder::create(
 					$builder, [$object, $this->parseMethod($object, $property_name), $this]
 				);
-				$value = $builder->buildHtml();
+				$value   = $builder->buildHtml();
 				if ($value === static::ORIGIN) {
 					$add_div = true;
 				}
@@ -2496,8 +2498,8 @@ class Template
 
 	//-------------------------------------------------------------------------------- restoreContext
 	/**
-	 * @param $context array [string[], array, string[]] [$var_names, $objects,
-	 *                 $translation_contexts]
+	 * @param $context array [string[], array, string[]]
+	 *                       [$var_names, $objects, $translation_contexts]
 	 * @see backupContext(), parseValue()
 	 */
 	protected function restoreContext(array $context) : void
