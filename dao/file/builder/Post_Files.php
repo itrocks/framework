@@ -17,7 +17,7 @@ class Post_Files
 	/**
 	 * @var string
 	 */
-	public string $for_class_name;
+	public string $for_class_name = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
