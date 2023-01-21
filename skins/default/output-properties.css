@@ -31,6 +31,10 @@ ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):n
 .property:not(a):not(span):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
   display: table-row;
   position: relative; }
+  ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div,
+  ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div,
+  .property:not(a):not(span):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div {
+    min-width: 100px; }
   ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h3, ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h4, ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h5, ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label,
   ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h3,
   ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h4,

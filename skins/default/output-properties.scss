@@ -33,6 +33,10 @@ ul.properties:not(.tiny) > *,
 		display: table-row;
 		position: relative;
 
+		> div {
+			min-width: 100px;
+		}
+
 		> h3, > h4, > h5, > label {
 			font-weight: $medium;
 			padding: 9px 0;
