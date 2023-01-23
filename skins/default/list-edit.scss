@@ -1,0 +1,10 @@
+@import 'colors.scss';
+
+article.list > form > table > tbody > tr > td.selected {
+
+	border: 2px solid #008ddf;
+	box-shadow: 0 0 10px #008ddf;
+	padding-left: calc(.5em - 2px);
+	padding-right: calc(.75em - 2px);
+	position: relative;
+}
