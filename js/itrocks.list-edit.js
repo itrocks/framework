@@ -71,27 +71,77 @@ $(document).ready(() => {
 	const moveDown = () =>
 	{
 		select(
-			$(selected.closest('tr')).next('tr').get(0)
+			$(selected.closest('tr')).next('tr[data-id]').get(0)
 				?.querySelector('td:nth-of-type(' + ($(selected).prevAll('td').length + 1) + ')')
 		)
+		show()
+	}
+
+	const moveEnd = last_line =>
+	{
+		if (last_line) {
+			const $next_tr = $(selected).parent().nextAll('tr[data-id]:last')
+			const $next_td = $next_tr.children('td:not(.trailing)')
+			select($next_td.get($next_td.length - 1))
+		}
+		else {
+			const $next_td = $(selected).nextAll('td:not(.trailing)')
+			select($next_td.get($next_td.length - 1))
+		}
+		show()
+	}
+
+	const moveHome = first_line =>
+	{
+		select(
+			first_line
+				? $(selected).parent().prevAll('tr:first-of-type').children('td:first-of-type').get(0)
+				: $(selected).prevAll('td:first-of-type').get(0)
+		)
+		show()
 	}
 
 	const moveLeft = () =>
 	{
 		select($(selected).prev('td').get(0))
+		show()
 	}
 
 	const moveRight = () =>
 	{
-		select($(selected).next('td').get(0))
+		select($(selected).next('td:not(.trailing)').get(0))
+		show()
 	}
 
 	const moveUp = () =>
 	{
 		select(
-			$(selected.closest('tr')).prev('tr').get(0)
+			$(selected.closest('tr')).prev('tr[data-id]').get(0)
 				?.querySelector('td:nth-of-type(' + ($(selected).prevAll('td').length + 1) + ')')
 		)
+		show()
+	}
+
+	const pageDown = () =>
+	{
+		const count = Math.round(
+			selected.closest('tbody').getBoundingClientRect().height
+			/ selected.getBoundingClientRect().height
+		)
+		for (let i = 0; i < count; i ++) {
+			moveDown()
+		}
+	}
+
+	const pageUp = () =>
+	{
+		const count = Math.round(
+			selected.closest('tbody').getBoundingClientRect().height
+			/ selected.getBoundingClientRect().height
+		)
+		for (let i = 0; i < count; i ++) {
+			moveUp()
+		}
 	}
 
 	const restoreOldValue = () =>
@@ -114,6 +164,31 @@ $(document).ready(() => {
 		if (!td || (td.tagName !== 'TD')) return
 		selected = td
 		selected.classList.add('selected')
+	}
+
+	const show = () =>
+	{
+		const table         = selected.closest('table')
+		const body          = table.querySelector('tbody')
+		const body_rect     = body.getBoundingClientRect()
+		const selected_rect = selected.getBoundingClientRect()
+		const th_rect       = $(selected).prevAll('th').get(0).getBoundingClientRect()
+		if (selected_rect.left < (body_rect.left + th_rect.width)) {
+			body.scrollLeft = body.scrollLeft + selected_rect.left - body_rect.left - th_rect.width
+			$(table).scrollBar('draw')
+		}
+		if (selected_rect.top < body_rect.top) {
+			body.scrollTop = body.scrollTop + selected_rect.top - body_rect.top
+			$(table).scrollBar('draw')
+		}
+		if ((selected_rect.left + selected_rect.width) > (body_rect.left + body_rect.width)) {
+			body.scrollLeft = body.scrollLeft + (selected_rect.left + selected_rect.width - body_rect.left - body_rect.width)
+			$(table).scrollBar('draw')
+		}
+		if ((selected_rect.top + selected_rect.height * 2) > (body_rect.top + body_rect.height)) {
+			body.scrollTop = body.scrollTop + (selected_rect.top + selected_rect.height * 2 - body_rect.top - body_rect.height)
+			$(table).scrollBar('draw')
+		}
 	}
 
 	const unEdit = () =>
@@ -162,7 +237,12 @@ $(document).ready(() => {
 	//------------------------------------------------------------------------------------ body click
 	$body.build('click', 'body', event =>
 	{
-		if (!edit_mode || !selected || (event.target.closest('tbody') === selected.closest('tbody'))) {
+		if (
+			!edit_mode
+			|| !selected
+			|| (event.target.closest('tbody') === selected.closest('tbody'))
+			|| event.target.closest('.scrollbar')
+		) {
 			return
 		}
 		unselect()
@@ -226,6 +306,9 @@ $(document).ready(() => {
 			case 'ArrowUp':
 				moveUp()
 				break
+			case 'End':
+				moveEnd(event.ctrlKey)
+				break
 			case 'Enter':
 				prevent = true
 				edit()
@@ -235,6 +318,15 @@ $(document).ready(() => {
 				break
 			case 'F2':
 				edit()
+				break
+			case 'Home':
+				moveHome(event.ctrlKey)
+				break
+			case 'PageDown':
+				pageDown()
+				break
+			case 'PageUp':
+				pageUp()
 				break
 			default:
 				if (event.key.length <= 2) {
