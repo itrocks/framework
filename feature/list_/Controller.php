@@ -420,13 +420,19 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				'Add',
 				View::link($class_name, Feature::F_ADD),
 				Feature::F_ADD,
-				[Target::MAIN, new Color(Color::GREEN)]
+				Target::MAIN
+			),
+			Feature::F_LIST_EDIT => new Button(
+				'Edit',
+				View::link($class_name, Feature::F_LIST_EDIT),
+				Feature::F_LIST_EDIT,
+				Target::TOP
 			),
 			Feature::F_IMPORT => new Button(
 				'Import',
 				View::link($class_name, Feature::F_IMPORT),
 				Feature::F_IMPORT,
-				[Target::MAIN, new Color(Color::GREEN)]
+				Target::MAIN
 			)
 		];
 	}

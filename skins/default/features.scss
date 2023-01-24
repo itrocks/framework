@@ -67,6 +67,10 @@ ul.actions > li {
 		background-image: url('img/install-24.svg');
 	}
 
+	&.list-edit > a {
+		background-image: url('img/edit-24.svg');
+	}
+
 	&.lock > a {
 		background-image: url('img/lock-24.svg');
 	}

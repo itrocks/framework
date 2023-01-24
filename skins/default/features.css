@@ -62,6 +62,10 @@ li.action.install > a,
 li.actions > ul > li.install > a,
 ul.actions > li.install > a {
   background-image: url("img/install-24.svg"); }
+li.action.list-edit > a,
+li.actions > ul > li.list-edit > a,
+ul.actions > li.list-edit > a {
+  background-image: url("img/edit-24.svg"); }
 li.action.lock > a,
 li.actions > ul > li.lock > a,
 ul.actions > li.lock > a {

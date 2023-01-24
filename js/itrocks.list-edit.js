@@ -1,12 +1,20 @@
 $(document).ready(() => {
 	const $body = $('body')
+	let   edit_mode = false
 	let   old_value
 	let   selected
 
 	const blurEvent = () =>
 	{
 		unEdit()
-		console.log('blur')
+	}
+
+	const cancelEdit = action =>
+	{
+		$(action.closest('.actions')).nextAll('table.list').find('td[data-old-value]').each(function() {
+			this.innerHTML = this.getAttribute('data-old-value')
+			this.removeAttribute('data-old-value')
+		})
 	}
 
 	const edit = () =>
@@ -16,6 +24,38 @@ $(document).ready(() => {
 		selected.setAttribute('contentEditable', '')
 		selected.addEventListener('blur', blurEvent)
 		selected.focus()
+	}
+
+	const enterEditMode = action =>
+	{
+		const $actions = $(action.closest('.actions'))
+		const url      = action.getAttribute('href').lLastParse(SL)
+		const $close   = $(
+			'<li class="close"><a href="' + url + '/close">'
+			+ tr('Close')
+			+ '</a></li>'
+		)
+		const $save = $(
+			'<li class="save"><a href="' + url + '/listSave" target="#responses">'
+			+ tr('Save')
+			+ '</a></li>'
+		)
+		$actions.children().css('display', 'none')
+		$actions.append($close).append($save)
+		$close.build()
+		$save.build()
+		edit_mode = true
+		select($actions.nextAll('table.list').find('tbody > tr:first-child > td:nth-of-type(2)').get(0))
+	}
+
+	const exitEditMode = action =>
+	{
+		const $actions = $(action.closest('.actions'))
+		unselect()
+		$actions.children('.close').remove()
+		$actions.children('.save').remove()
+		$actions.children().css('display', '')
+		edit_mode = false
 	}
 
 	const isEditing = () =>
@@ -61,12 +101,15 @@ $(document).ready(() => {
 
 	const saveOldValue = () =>
 	{
+		if (!selected.hasAttribute('data-old-value')) {
+			selected.setAttribute('data-old-value', selected.innerHTML)
+		}
 		old_value = selected.innerHTML
 	}
 
 	const select = td =>
 	{
-		if (isSelected(td)) return
+		if (isSelected(td) || !td) return
 		unselect()
 		if (!td || (td.tagName !== 'TD')) return
 		selected = td
@@ -78,28 +121,57 @@ $(document).ready(() => {
 		if (!isEditing()) return
 		selected.removeAttribute('contentEditable')
 		selected.removeEventListener('blur', blurEvent)
+		selected.innerHTML = selected.innerText.trim()
+		if (selected.getAttribute('data-old-value').trim() === selected.innerHTML.trim()) {
+			selected.innerHTML = selected.getAttribute('data-old-value')
+			selected.removeAttribute('data-old-value')
+		}
 	}
 
 	const unselect = () =>
 	{
 		if (!selected) return
+		unEdit()
 		selected.classList.remove('selected')
-		if (isEditing()) {
-			unEdit()
-		}
 		selected = undefined
 	}
+
+	//--------------------------------------------------------------------------- list-edit > a click
+	$body.build('click', 'article.list .general.actions .close > a', function(event)
+	{
+		event.preventDefault()
+		event.stopImmediatePropagation()
+		cancelEdit(this)
+		exitEditMode(this)
+	})
+
+	//--------------------------------------------------------------------------- list-edit > a click
+	$body.build('click', 'article.list .general.actions .list-edit > a', function(event)
+	{
+		event.preventDefault()
+		event.stopImmediatePropagation()
+		enterEditMode(this)
+	})
+
+	//--------------------------------------------------------------------------- list-edit > a click
+	$body.build('click', 'article.list .general.actions .save > a', function()
+	{
+		exitEditMode(this)
+	})
 
 	//------------------------------------------------------------------------------------ body click
 	$body.build('click', 'body', event =>
 	{
-		if (!selected || (event.target.closest('tbody') === selected.closest('tbody'))) return
+		if (!edit_mode || !selected || (event.target.closest('tbody') === selected.closest('tbody'))) {
+			return
+		}
 		unselect()
 	})
 
 	//---------------------------------------------------------------------- article.list tbody click
 	$body.build('click', 'article.list tbody', event =>
 	{
+		if (!edit_mode) return
 		const td = event.target.closest('td')
 		if (!td) return
 		// 2nd click : edit
@@ -114,7 +186,10 @@ $(document).ready(() => {
 	const oldKeyDown = document.onkeydown
 	document.onkeydown = (event) =>
 	{
-		if (!selected) return
+		if (!edit_mode || !selected) {
+			if (oldKeyDown) oldKeyDown.call(document, event)
+			return
+		}
 		let prevent = false
 
 		if (event.key === 'Tab') {
@@ -125,6 +200,7 @@ $(document).ready(() => {
 		else if (isEditing()) switch (event.key) {
 			case 'Enter':
 				prevent = true
+				unEdit()
 				moveDown()
 				break
 			case 'Escape':
