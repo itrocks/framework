@@ -174,7 +174,10 @@ class Select_Controller implements Feature_Controller
 				|| $property->getAnnotation('composite')->value
 				// TODO this consideration is only on some cases (here : lists can't deal with @store false)
 				|| Store_Annotation::of($property)->isFalse()
-				|| !$property_class->getAnnotation('business')->value
+				|| !(
+					$property_class->getAnnotation('business')->value
+					|| $property_class->getAnnotation('stored')->value
+				)
 			) {
 				unset($properties[$property_path]);
 				continue;

@@ -175,7 +175,10 @@ class Collection
 			is_object($value)
 			&& !($value instanceof Stringable)
 			&& $type->isSingleClass()
-			&& $type->asReflectionClass()->getAnnotation('business')->value
+			&& (
+				($class = $type->asReflectionClass())->getAnnotation('business')->value
+				|| $class->getAnnotation('stored')->value
+			)
 			&& Dao::getObjectIdentifier($value, 'id')
 		) {
 			$anchor = new Anchor(View::link($value), strval($value));
@@ -186,11 +189,12 @@ class Collection
 			($builder = Widget_Annotation::of($property)->value)
 			&& is_a($builder, Property::class, true)
 		) {
+			/** @noinspection PhpParamsInspection Inspector bug : $builder is a string */
 			/** @noinspection PhpUnhandledExceptionInspection $builder and $property are valid */
 			/** @var $builder Property */
-			$builder = Builder::create($builder, [$property_value, $value, $this->template]);
+			$builder                              = Builder::create($builder, [$property_value, $value, $this->template]);
 			$builder->parameters[Feature::F_EDIT] = Feature::F_EDIT;
-			$value = $builder->buildHtml();
+			$value                                = $builder->buildHtml();
 			if ($builder instanceof Value_Widget) {
 				$value = (new Html_Builder_Property($property_value, $value))
 					->setTemplate($this->template)

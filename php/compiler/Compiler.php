@@ -579,7 +579,7 @@ class Compiler extends Cache
 			if (
 				!isset($store_is_set[$class->name])
 				&& !$class->isAbstract()
-				&& $class->getAnnotation('business')->value
+				&& ($class->getAnnotation('business')->value || $class->getAnnotation('stored')->value)
 			) {
 				$dependency                  = new Dependency();
 				$dependency->class_name      = $class->name;

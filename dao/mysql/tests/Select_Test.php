@@ -59,7 +59,7 @@ class Select_Test extends Test
 				$class = new Reflection_Class(Builder::className($dependency->class_name));
 				if (
 					!$class->isAbstract()
-					&& $class->getAnnotation('business')->value
+					&& ($class->getAnnotation('business')->value || $class->getAnnotation('stored')->value)
 					&& !str_contains($class->name, BS . 'Sub0')
 					&& !str_contains($class->name, BS . 'Tests' . BS)
 					&& $this->testConditions($class)

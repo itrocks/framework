@@ -37,6 +37,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 			empty($value)
 			&& $property->getType()->isClass()
 			&& $property->getFinalClass()->getAnnotation('stored')->value
+			&& !Store_Annotation::of($property)->isFalse()
 		) {
 			$value = $this->guessValue($property);
 		}
@@ -54,34 +55,34 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 	 * Guess value for link using the type of the property (var)
 	 * - property is a Date_Time (or a child class) : link will be 'DateTime'
 	 * - property is a single object : link will be 'Object'
-	 * - property is a collection object with 'var Object[] All' : link will be 'All'
-	 * - property is a collection object with 'var Object[] Collection' : link will be 'Collection'
-	 * - property is a collection object with 'var Object[] Map' : link will be 'Map'
-	 * - property is a collection object without telling anything :
-	 *   - link will be 'Collection' if the object is a Component
-	 *   - link will be 'Map' if the object is not a Component
+	 * - property is an array of class, and has @all : link will be 'All'
+	 * - property is an array of Component, or has @component : link will be 'Collection'
+	 * - property is an array of class, and has no @component : link will be 'Map'
 	 *
 	 * Notice : 'link' and 'var' are to be considered as 'property annotation link' and
 	 * 'property annotation var' here.
 	 *
-	 * @param $property Reflection_Property
+	 * @param $property Reflection_Property Must be a Class or Class[] stored property
 	 * @return string returned guessed value for @link
 	 */
 	private function guessValue(Reflection_Property $property) : string
 	{
 		if ($property->getType()->isMultiple()) {
-			/** @var $var_annotation Var_Annotation */
-			$value = lParse($property->getAnnotation('var'), SP);
-			if (empty($value)) {
-				$value = isA($property->getType()->getElementTypeAsString(), Component::class)
-					? self::COLLECTION
-					: self::MAP;
+			if ($property->getAnnotation('all')->value) {
+				$value = self::ALL;
+			}
+			elseif (
+				isA($property->getType()->getElementTypeAsString(), Component::class)
+				|| $property->getAnnotation('component')->value
+			) {
+				$value = self::COLLECTION;
+			}
+			else {
+				$value = self::MAP;
 			}
 		}
 		else {
-			$value = isA($property->getType()->asString(), Date_Time::class)
-				? self::DATETIME
-				: self::OBJECT;
+			$value = $property->getType()->isDateTime() ? self::DATETIME : self::OBJECT;
 		}
 		return $value;
 	}

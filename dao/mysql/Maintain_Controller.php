@@ -84,7 +84,7 @@ class Maintain_Controller implements Feature_Controller
 				if (
 					$class
 					&& !$class->isAbstract()
-					&& $class->getAnnotation('business')->value
+					&& ($class->getAnnotation('business')->value || $class->getAnnotation('stored')->value)
 					&& !$class->getAnnotation('deprecated')->value
 				) {
 					$store = true;
@@ -95,7 +95,10 @@ class Maintain_Controller implements Feature_Controller
 								$child_class
 								&& Store_Name_Annotation::equals($child_class, $class)
 								&& !$child_class->isAbstract()
-								&& $child_class->getAnnotation('business')->value
+								&& (
+									$child_class->getAnnotation('business')->value
+									|| $child_class->getAnnotation('stored')->value
+								)
 								&& !$child_class->getAnnotation('deprecated')->value
 							) {
 								$store = false;

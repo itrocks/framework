@@ -269,7 +269,10 @@ class Loc implements Registerable
 				is_a($context, Reflector::class, true)
 				|| !(
 					class_exists($context)
-					&& (new Reflection_Class($context))->getAnnotation('business')->value
+					&& (
+						($class = new Reflection_Class($context))->getAnnotation('business')->value
+						|| $class->getAnnotation('stored')->value
+					)
 				)
 			)
 		) {

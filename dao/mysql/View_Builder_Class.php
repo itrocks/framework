@@ -78,7 +78,10 @@ class View_Builder_Class
 			$sub_class = new Reflection_Class(Builder::className($class_name));
 			if (
 				$sub_class->isAbstract()
-				|| !$sub_class->getAnnotation('business')->value
+				|| !(
+					$sub_class->getAnnotation('business')->value
+					|| $sub_class->getAnnotation('stored')->value
+				)
 				|| $sub_class->getAnnotation('private')->value
 				|| Link_Annotation::of($sub_class)->value
 				|| !$this->mysqli->exists(Store_Name_Annotation::of($sub_class)->value)

@@ -1743,7 +1743,10 @@ class Template
 						is_object($object)
 						&& !($object instanceof Stringable)
 						&& $type->isSingleClass()
-						&& (new Reflection_Class($object))->getAnnotation('business')->value
+						&& (
+							($class = new Reflection_Class($object))->getAnnotation('business')->value
+							|| $class->getAnnotation('stored')->value
+						)
 						&& Dao::getObjectIdentifier($object)
 					) {
 						$anchor = new Anchor(Framework\View::link($object), strval($object));

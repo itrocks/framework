@@ -402,14 +402,14 @@ class Type extends ReflectionType
 	 * if you don't want them
 	 * Not basic types are *, [] objects, class names
 	 *
-	 * @param $include_multiple_string boolean if false, string[] is not considered as a basic type
+	 * @param $include_multiple_basic boolean if false, basic[] is not considered as a basic type
 	 * @return boolean
 	 */
-	public function isBasic(bool $include_multiple_string = true) : bool
+	public function isBasic(bool $include_multiple_basic = true) : bool
 	{
 		return $this->isStrictlyBasic()
 			|| $this->isDateTime()
-			|| ($include_multiple_string && $this->isMultipleString());
+			|| ($include_multiple_basic && $this->isMultipleBasic());
 	}
 
 	//------------------------------------------------------------------------------------- isBoolean
@@ -431,7 +431,7 @@ class Type extends ReflectionType
 	 */
 	public function isClass() : bool
 	{
-		return !$this->getElementType()->isStrictlyBasic();
+		return !($this->getElementType()->isStrictlyBasic() || $this->isMultipleBasic());
 	}
 
 	//------------------------------------------------------------------------------------ isDateTime
@@ -506,6 +506,15 @@ class Type extends ReflectionType
 		return (str_ends_with($this->type, '[]') || $this->isArray()) ? self::MULTIPLE : false;
 	}
 
+	//------------------------------------------------------------------------------- isMultipleBasic
+	/**
+	 * @return boolean
+	 */
+	public function isMultipleBasic() : bool
+	{
+		return str_ends_with($this->type, '[]') && $this->getElementType()->isBasic();
+	}
+	
 	//------------------------------------------------------------------------------- isMultipleClass
 	/**
 	 * Returns true if type is a multiple class

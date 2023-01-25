@@ -306,6 +306,12 @@ Parser::$default_annotations = [
 	Parser::T_METHOD . '@return_constant' => Boolean_Annotation::class,
 
 	/**
+	 * @all
+	 * Refers to a multiple-class property that links all stored objects
+	 */
+	Parser::T_PROPERTY . '@all' => Boolean_Annotation::class,
+
+	/**
 	 * @after_add_element afterAddElement
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the Collection/Map property element is added
