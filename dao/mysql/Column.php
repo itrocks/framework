@@ -259,12 +259,12 @@ class Column implements Sql\Column
 	 */
 	private function cleanupDefault() : static
 	{
-		if (isset($this->Default)) {
+		if (isset($this->Default) && ($this->Null === 'NO')) {
 			if ($this->getType()->isFloat()) {
-				$this->default = floatval($this->Default);
+				$this->Default = floatval($this->Default);
 			}
 			elseif ($this->getType()->isInteger()) {
-				$this->default = intval($this->Default);
+				$this->Default = intval($this->Default);
 			}
 			elseif ($this->getType()->isString()) {
 				$this->Default = strval($this->Default);
