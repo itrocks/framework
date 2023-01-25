@@ -176,7 +176,7 @@ class Select_Controller implements Feature_Controller
 				|| Store_Annotation::of($property)->isFalse()
 				|| !(
 					$property_class->getAnnotation('business')->value
-					|| $property_class->getAnnotation('stored')->value
+					|| Store_Annotation::of($property_class)->value
 				)
 			) {
 				unset($properties[$property_path]);

@@ -12,6 +12,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Http\Uri;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -1748,7 +1749,7 @@ class Template
 						&& $type->isSingleClass()
 						&& (
 							($class = new Reflection_Class($object))->getAnnotation('business')->value
-							|| $class->getAnnotation('stored')->value
+							|| Store_Annotation::of($class)->value
 						)
 						&& Dao::getObjectIdentifier($object)
 					) {

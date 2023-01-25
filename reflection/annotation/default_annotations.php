@@ -248,16 +248,6 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@on_list' => Method_Annotation::class,
 
 	/**
-	 * @stored [false]
-	 * Identifies a class that may be stored using data links
-	 * When this annotation is set, this enables simplified / implicit use of @link
-	 * ie "@link Object" and @link DateTime" will be implicit (you won't need it)
-	 * ie "@link All", "@link Collection", "@link Map"
-	 *   will be replaced by "@var Object[] All", "@var Object[] Collection" and "@var Object[] Map"
-	 */
-	Parser::T_CLASS . '@stored' => Boolean_Annotation::class,
-
-	/**
 	 * @test_condition testCondition
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call in order to decide if massive tests (e.g. testEverything)

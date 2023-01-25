@@ -15,6 +15,7 @@ use ITRocks\Framework\PHP\Compiler\More_Sources;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Router;
 use ITRocks\Framework\Session;
@@ -579,7 +580,7 @@ class Compiler extends Cache
 			if (
 				!isset($store_is_set[$class->name])
 				&& !$class->isAbstract()
-				&& ($class->getAnnotation('business')->value || $class->getAnnotation('stored')->value)
+				&& ($class->getAnnotation('business')->value || Store_Annotation::of($class)->value)
 			) {
 				$dependency                  = new Dependency();
 				$dependency->class_name      = $class->name;

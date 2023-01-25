@@ -719,7 +719,7 @@ class Dao implements Configurable
 		$type = $property->getType();
 		return $type->isClass()
 			&& !$type->isDateTime()
-			&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, ''], true);
+			&& in_array(Store_Annotation::of($property)->value, [null, ''], true);
 	}
 
 	//------------------------------------------------------------------------------------- timeLimit

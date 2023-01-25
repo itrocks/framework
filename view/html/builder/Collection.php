@@ -10,6 +10,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
@@ -177,7 +178,7 @@ class Collection
 			&& $type->isSingleClass()
 			&& (
 				($class = $type->asReflectionClass())->getAnnotation('business')->value
-				|| $class->getAnnotation('stored')->value
+				|| Store_Annotation::of($class)->value
 			)
 			&& Dao::getObjectIdentifier($value, 'id')
 		) {

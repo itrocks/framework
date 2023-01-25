@@ -249,10 +249,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			$filters = Filters_Annotation::of($this->property)->parse($this->object);
 		}
 		if (is_null($as_string)) {
-			$as_string = (
-				$this->property->getAnnotation(Store_Annotation::ANNOTATION)->value
-					=== Store_Annotation::STRING
-			);
+			$as_string = (Store_Annotation::of($this->property)->value === Store_Annotation::STRING);
 		}
 		return parent::buildObject($filters, $as_string);
 	}

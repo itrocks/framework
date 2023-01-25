@@ -10,9 +10,9 @@ use ITRocks\Framework\User\Group\Has_Guest;
 /**
  * A user business object for all your uses in user authentication
  *
- * @business
  * @feature
  * @representative login
+ * @store
  */
 class User
 {

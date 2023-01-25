@@ -35,7 +35,7 @@ trait Property_Filter
 				$type->isMultipleString()
 				|| !$type->isMultiple()
 				|| in_array(
-					$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
+					Store_Annotation::of($property)->value,
 					[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING],
 					true
 				)
@@ -44,7 +44,7 @@ trait Property_Filter
 			&& (
 				!$property->getAnnotation('component')->value
 				|| in_array(
-					$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
+					Store_Annotation::of($property)->value,
 					[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING],
 					true
 				)

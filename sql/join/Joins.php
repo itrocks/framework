@@ -497,10 +497,7 @@ class Joins
 				// knowing anything about the specific
 				$foreign_class_name = $foreign_type->asString();
 			}
-			elseif (
-				!$foreign_type->isBasic()
-				&& !$master_property->getAnnotation(Store_Annotation::ANNOTATION)->value
-			) {
+			elseif (!$foreign_type->isBasic() && !Store_Annotation::of($master_property)->value) {
 				$join->mode = $master_property->getAnnotation('mandatory')->value
 					? Join::INNER
 					: Join::LEFT;

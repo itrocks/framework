@@ -9,6 +9,7 @@ use ITRocks\Framework\Locale\Option\Replace;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
@@ -271,7 +272,7 @@ class Loc implements Registerable
 					class_exists($context)
 					&& (
 						($class = new Reflection_Class($context))->getAnnotation('business')->value
-						|| $class->getAnnotation('stored')->value
+						|| Store_Annotation::of($class)->value
 					)
 				)
 			)

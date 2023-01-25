@@ -8,8 +8,8 @@ use ITRocks\Framework\Traits\Has_Email;
  *
  * It has a login, a password, and an email for password recovery automation.
  *
- * @business
  * @override email @mandatory
+ * @store
  */
 trait Account
 {

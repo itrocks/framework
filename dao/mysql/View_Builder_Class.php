@@ -8,6 +8,7 @@ use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Sql\Builder\Select;
@@ -80,7 +81,7 @@ class View_Builder_Class
 				$sub_class->isAbstract()
 				|| !(
 					$sub_class->getAnnotation('business')->value
-					|| $sub_class->getAnnotation('stored')->value
+					|| Store_Annotation::of($sub_class)->value
 				)
 				|| $sub_class->getAnnotation('private')->value
 				|| Link_Annotation::of($sub_class)->value

@@ -59,7 +59,10 @@ class Select_Test extends Test
 				$class = new Reflection_Class(Builder::className($dependency->class_name));
 				if (
 					!$class->isAbstract()
-					&& ($class->getAnnotation('business')->value || $class->getAnnotation('stored')->value)
+					&& (
+						$class->getAnnotation('business')->value
+						|| Class_\Store_Annotation::of($class)->value
+					)
 					&& !str_contains($class->name, BS . 'Sub0')
 					&& !str_contains($class->name, BS . 'Tests' . BS)
 					&& $this->testConditions($class)
@@ -120,7 +123,7 @@ class Select_Test extends Test
 					$type->isClass()
 					&& ($type_string !== 'object')
 					&& Link_Annotation::of($property)->value
-					&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
+					&& !Store_Annotation::of($property)->value
 				) {
 					$sub_class = new Reflection_Class($type_string);
 					foreach ($this->propertyNames($sub_class, $depth - 1) as $sub_property_name) {

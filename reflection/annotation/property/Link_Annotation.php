@@ -3,10 +3,10 @@ namespace ITRocks\Framework\Reflection\Annotation\Property;
 
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Template\Has_Is;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
-use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Link annotation defines which kind of link is defined for an object or array of objects property
@@ -36,8 +36,8 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 		if (
 			empty($value)
 			&& $property->getType()->isClass()
-			&& $property->getFinalClass()->getAnnotation('stored')->value
 			&& !Store_Annotation::of($property)->isFalse()
+			&& Class_\Store_Annotation::of($property->getFinalClass())->value
 		) {
 			$value = $this->guessValue($property);
 		}

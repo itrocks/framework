@@ -8,6 +8,7 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ReflectionException;
@@ -84,7 +85,7 @@ class Maintain_Controller implements Feature_Controller
 				if (
 					$class
 					&& !$class->isAbstract()
-					&& ($class->getAnnotation('business')->value || $class->getAnnotation('stored')->value)
+					&& ($class->getAnnotation('business')->value || Store_Annotation::of($class)->value)
 					&& !$class->getAnnotation('deprecated')->value
 				) {
 					$store = true;
@@ -97,7 +98,7 @@ class Maintain_Controller implements Feature_Controller
 								&& !$child_class->isAbstract()
 								&& (
 									$child_class->getAnnotation('business')->value
-									|| $child_class->getAnnotation('stored')->value
+									|| Store_Annotation::of($child_class)->value
 								)
 								&& !$child_class->getAnnotation('deprecated')->value
 							) {
