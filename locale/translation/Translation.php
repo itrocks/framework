@@ -1,14 +1,18 @@
 <?php
 namespace ITRocks\Framework\Locale;
 
+use AllowDynamicProperties;
+
 /**
  * A translation is the association of the origin programmed text and its translation using a given
  * language
  *
- * @business
  * @display_order language, text, translation, context
  * @representative language, text, context, translation
+ * @stored
+ * @todo Remove AllowDynamicProperties where $id will be general to all @stored classes
  */
+#[AllowDynamicProperties]
 class Translation
 {
 

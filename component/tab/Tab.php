@@ -13,9 +13,6 @@ use ITRocks\Framework\Tools\Names;
  * - can contain multiple columns into $columns, each column is a content array
  * - can contain multiple content rows into $content
  * - can contain included sub-tabs into $includes
- *
- * @property int id  patch for output/object.html view
- * @property int id2 patch for output/object.html view
  */
 class Tab
 {
@@ -129,10 +126,6 @@ class Tab
 	 */
 	public function filterVisibleProperties(bool $hide_empty_test = true) : void
 	{
-		if (isset($this->id)) {
-			// patch for output/object.html view
-			$this->id2 = $this->id;
-		}
 		if (isset($this->content) && $this->content) {
 			foreach ($this->content as $key => $element) {
 				if (($element instanceof Reflection_Property) && method_exists($element, 'isVisible')) {

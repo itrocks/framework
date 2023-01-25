@@ -25,6 +25,9 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 */
 	private string $doc_comment;
 
+	//--------------------------------------------------------------------------------------- $indent
+	public string $indent;
+	
 	//---------------------------------------------------------------------------------- $is_abstract
 	/**
 	 * @var boolean
@@ -54,6 +57,12 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 * @var string
 	 */
 	public string $name;
+
+	//----------------------------------------------------------------------------- $parameters_names
+	/**
+	 * @var string[]
+	 */
+	private array $parameters_names;
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**

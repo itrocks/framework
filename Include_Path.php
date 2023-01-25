@@ -17,6 +17,12 @@ class Include_Path
 	 */
 	private string $application_class;
 
+	//--------------------------------------------------------------------------------- $include_path
+	/**
+	 * @var string
+	 */
+	private string $include_path;
+
 	//-------------------------------------------------------------------------- $origin_include_path
 	/**
 	 * The original PHP include_path is kept here

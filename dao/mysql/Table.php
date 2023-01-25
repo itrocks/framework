@@ -1,11 +1,13 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
+use AllowDynamicProperties;
 use ITRocks\Framework\Dao\Sql;
 
 /**
  * An object representation of a mysql table
  */
+#[AllowDynamicProperties]
 class Table implements Sql\Table
 {
 

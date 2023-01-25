@@ -18,6 +18,12 @@ class Manager implements IManager
 	 */
 	private array $activated = [];
 
+	//------------------------------------------------------------------------------- $configurations
+	/**
+	 * @var array[] key is the plugin class name, value is the raw plugin configuration
+	 */
+	private array $configurations = [];
+
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
 	 * The plugins list : key is the class name
@@ -48,8 +54,8 @@ class Manager implements IManager
 						if (method_exists($object, '__serialize')) {
 							$data[$level][$class_name] = serialize($object);
 						}
-						elseif (isset($object->plugin_configuration)) {
-							$data[$level][$class_name] = serialize($object->plugin_configuration);
+						elseif (isset($this->configurations[$class_name])) {
+							$data[$level][$class_name] = serialize($this->configurations[$class_name]);
 						}
 						else {
 							$data[$level][$class_name] = true;
@@ -183,7 +189,7 @@ class Manager implements IManager
 			if (is_array($serialized)) {
 				/** @noinspection PhpUnhandledExceptionInspection must be valid */
 				$plugin = Builder::create($class_name, [$serialized]);
-				$plugin->plugin_configuration = $serialized;
+				$this->configurations[$class_name] = $serialized;
 			}
 			// serialized object, or configuration, or configuration constant
 			elseif (is_string($serialized) || is_numeric($serialized)) {
@@ -202,7 +208,7 @@ class Manager implements IManager
 					}
 					/** @noinspection PhpUnhandledExceptionInspection */
 					$plugin = Builder::create($class_name, [$configuration]);
-					$plugin->plugin_configuration = $configuration;
+					$this->configurations[$class_name] = $configuration;
 				}
 			}
 			else {
@@ -228,7 +234,7 @@ class Manager implements IManager
 		// register plugin
 		if ($register && ($plugin instanceof Registerable)) {
 			$weaver = $this->plugins[Weaver::class] ?? null;
-			$plugin->register(new Register($plugin->plugin_configuration ?? null, $weaver));
+			$plugin->register(new Register($this->getConfiguration($class_name), $weaver));
 			$activate = true;
 		}
 		// activate plugin
@@ -267,8 +273,7 @@ class Manager implements IManager
 	 */
 	public function getConfiguration(string $class_name) : ?array
 	{
-		$plugin = $this->get($class_name);
-		return $plugin->plugin_configuration ?? null;
+		return $this->configurations[$class_name] ?? null;
 	}
 
 	//------------------------------------------------------------------------------------------- has

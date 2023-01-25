@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
+use AllowDynamicProperties;
 use ITRocks\Framework\Traits\Has_Code;
 
 /**
@@ -10,6 +11,7 @@ use ITRocks\Framework\Traits\Has_Code;
  * @property integer call_before_write
  * @store_name test_items
  */
+#[AllowDynamicProperties]
 class Item
 {
 	use Has_Code;

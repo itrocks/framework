@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\PHP;
 
+use AllowDynamicProperties;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
@@ -14,9 +15,11 @@ use ReflectionException;
 /**
  * This stores a dependency between two class names
  *
- * @business
- * @index set type, dependency_name
+ * @index type, class_name, dependency_name, file_name
+ * @stored
+ * @todo Remove AllowDynamicProperties where $id will be general to all @stored classes
  */
+#[AllowDynamicProperties]
 class Dependency
 {
 
@@ -105,9 +108,8 @@ class Dependency
 	 * - 'use' for a 'use Dependency_Name' into the class
 	 * - 'var' for a '@var ...' into the source code (property doc comment)
 	 *
-	 * @noinspection PhpVarTagWithoutVariableNameInspection inspector bug
 	 * @values bridge_feature, class, compatibility, declaration, extends, feature, implements,
-	 *         namespace_use, new, param, return, set, static, store, use, var
+	 *   namespace_use, new, param, return, set, static, store, use, var
 	 * @var string
 	 */
 	public string $type;

@@ -25,6 +25,24 @@ class Reflection_Class extends ReflectionClass
 {
 	use Annoted;
 
+	//--------------------------------------------------------------------------- $interfaces_methods
+	/**
+	 * @var Reflection_Method[]
+	 */
+	private array $interfaces_methods;
+
+	//------------------------------------------------------------------------------- $parent_methods
+	/**
+	 * @var Reflection_Method[]
+	 */
+	private array $parent_methods;
+
+	//------------------------------------------------------------------------------- $traits_methods
+	/**
+	 * @var Reflection_Method[]
+	 */
+	private array $traits_methods;
+
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string The name of the class
