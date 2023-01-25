@@ -25,7 +25,6 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 *
 	 * @param $value    bool|string|null
 	 * @param $property Interfaces\Reflection_Property
 	 */

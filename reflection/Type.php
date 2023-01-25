@@ -431,7 +431,9 @@ class Type extends ReflectionType
 	 */
 	public function isClass() : bool
 	{
-		return !($this->getElementType()->isStrictlyBasic() || $this->isMultipleBasic());
+		return !(
+			$this->getElementType()->isStrictlyBasic() || $this->isMultipleBasic() || $this->isMixed()
+		);
 	}
 
 	//------------------------------------------------------------------------------------ isDateTime

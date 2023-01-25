@@ -463,7 +463,11 @@ class Link extends Dao\Sql\Link
 	 */
 	public function fetch(mixed $result_set, string $class_name = null) : ?object
 	{
-		if (!($object = $result_set->fetch_object(Builder::className($class_name)))) {
+		// TODO Found a solution for object fetch with fields that have no matching property (e.g. old)
+		$error_reporting = error_reporting(E_ALL & ~E_DEPRECATED);
+		$object          = $result_set->fetch_object(Builder::className($class_name));
+		error_reporting($error_reporting);
+		if (!$object) {
 			return null;
 		}
 		if ($object instanceof Abstract_Class) {

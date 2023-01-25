@@ -1551,6 +1551,9 @@ class Template
 	) : mixed
 	{
 		$class_name = get_class($object);
+		if ($property_name === 'id') {
+			return $object->$property_name ?? null;
+		}
 		if (property_exists($class_name, $property_name)) {
 			/** @noinspection PhpUnhandledExceptionInspection property exists */
 			$property = new Reflection_Property($class_name, $property_name);

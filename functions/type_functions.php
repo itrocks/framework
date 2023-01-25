@@ -141,7 +141,12 @@ function isA(object|string|null $object, array|object|string $class_name) : bool
 function isInitialized(object $object, string $property_name) : bool
 {
 	if (isset($object->_[$property_name])) {
-		return property_exists($object, $property_name . '_');
+		try {
+			return (new ReflectionProperty($object, $property_name.'_'))->isInitialized($object);
+		}
+		catch (ReflectionException) {
+			return property_exists($object, $property_name . '_');
+		}
 	}
 	try {
 		return (new ReflectionProperty($object, $property_name))->isInitialized($object);

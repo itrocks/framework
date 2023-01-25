@@ -82,8 +82,8 @@ abstract class Identifier_Map extends Data_Link
 	public function getObjectIdentifier(?object $object, string $property_name = null) : mixed
 	{
 		if (is_object($object)) {
-			if (isset($property_name)) {
-				$id_property_name = ($property_name === 'id') ? 'id' : ('id_' . $property_name);
+			if (isset($property_name) && ($property_name !== 'id')) {
+				$id_property_name = 'id_' . $property_name;
 				if (isset($object->$id_property_name)) {
 					return $object->$id_property_name;
 				}
@@ -94,7 +94,7 @@ abstract class Identifier_Map extends Data_Link
 				}
 				return null;
 			}
-			return property_exists($object, 'id') ? $object->id : null;
+			return property_exists($object, 'id') ? ($object->id ?? null) : null;
 		}
 		return $object;
 	}

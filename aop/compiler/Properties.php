@@ -207,8 +207,13 @@ class Properties
 	private function compileAop(array $advices) : string
 	{
 		$parent_code = '';
+		// TODO A little bit radical. Should be filtered or id_ removed and identifier stored into _
+		$properties  = '$id, $' . join('_, $', array_keys($advices)) . '_'
+			. ', $id_' . join(', $id_', array_keys($advices));
 		$begin_code  = '
 	/** AOP initialization for an object : called by __construct */
+	public array $_;
+	public mixed ' . $properties . ';
 	protected function __aop($init = true)
 	{
 		if ($init) $this->_ = [];';
@@ -491,7 +496,7 @@ class Properties
 	private function & _' . $property_name . '_read() : mixed
 	{
 		unset($this->_[' . Q . $property_name . Q . ']);
-		if (property_exists($this, ' . Q . $property_name . '_' . Q . ')) {
+		if ((new \ReflectionProperty($this, ' . Q . $property_name . '_' . Q . '))->isInitialized($this)) {
 			$this->' . $property_name . ' = $this->' . $property_name . '_;
 			' . $last . '$value = $this->' . $property_name . ' =& $this->' . $property_name . '_;
 			unset($this->' . $property_name . '_);
@@ -672,7 +677,7 @@ class Properties
 			return '';
 		}
 		return $over['prototype'] . '
-		if ($this->_) foreach (array_keys($this->_) as $aop_property) {
+		if (isset($this->_)) foreach (array_keys($this->_) as $aop_property) {
 			unset($this->$aop_property);
 		}
 	}
@@ -699,7 +704,7 @@ class Properties
 	{
 		if (isset($this->_[' . Q . $property_name . Q . '])) {
 			unset($this->_[' . Q . $property_name . Q . ']);
-			if (property_exists($this, ' . Q . $property_name . '_' . Q . ')) {
+			if ((new \ReflectionProperty($this, ' . Q . $property_name . '_' . Q . '))->isInitialized($this)) {
 				$this->' . $property_name . ' =  $this->' . $property_name . '_;
 				$this->' . $property_name . ' =& $this->' . $property_name . '_;
 				unset($this->' . $property_name . '_);

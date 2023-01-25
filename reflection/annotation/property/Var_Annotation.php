@@ -26,6 +26,9 @@ class Var_Annotation extends Documented_Type_Annotation implements Property_Cont
 	 */
 	public function __construct(?string $value, Reflection_Property $reflection_property)
 	{
+		if (!isset($value)) {
+			$value = 'mixed';
+		}
 		parent::__construct($value);
 		if (!$this->value) {
 			$types       = $reflection_property->getDeclaringClass()->getDefaultProperties();

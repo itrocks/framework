@@ -42,7 +42,10 @@ abstract class Search_Object extends Null_Object
 		if ($deactivate_aop) {
 			AOP::propertiesOff($object);
 		}
+		// TODO do something before it is not allowed to create properties dynamically anymore
+		$error_reporting = error_reporting(E_ALL & ~E_DEPRECATED);
 		$object->_search_object = true;
+		error_reporting($error_reporting);
 		return $object;
 	}
 
