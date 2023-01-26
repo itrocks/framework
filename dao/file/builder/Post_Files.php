@@ -100,7 +100,7 @@ class Post_Files
 						new Reflection_Property($this->for_class_name, $property_path . DOT . $key);
 						$property_path .= DOT . $key;
 					}
-					catch(ReflectionException) {
+					catch (ReflectionException) {
 					}
 				}
 				if ($result_as_files) {

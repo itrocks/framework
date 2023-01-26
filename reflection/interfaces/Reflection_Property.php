@@ -43,12 +43,6 @@ interface Reflection_Property extends Reflection_Class_Component
 	 */
 	public function getFinalClass() : Reflection_Class;
 
-	//--------------------------------------------------------------------------------- getRootClass
-	/**
-	 * @return Reflection_Class
-	 */
-	public function getRootClass() : Reflection_Class;
-
 	//----------------------------------------------------------------------------- getFinalClassName
 	/**
 	 * Gets final class name : the one where the property came from with a call to getProperties()
@@ -56,6 +50,12 @@ interface Reflection_Property extends Reflection_Class_Component
 	 * @return string
 	 */
 	public function getFinalClassName() : string;
+
+	//---------------------------------------------------------------------------------- getRootClass
+	/**
+	 * @return Reflection_Class
+	 */
+	public function getRootClass() : Reflection_Class;
 
 	//--------------------------------------------------------------------------------------- getType
 	/**
@@ -73,6 +73,9 @@ interface Reflection_Property extends Reflection_Class_Component
 	 * @return mixed
 	 */
 	public function getValue(object $object) : mixed;
+
+	//-------------------------------------------------------------------------------------------- is
+	public function is(Reflection_Property $object) : bool;
 
 	//-------------------------------------------------------------------------------------- isStatic
 	/**

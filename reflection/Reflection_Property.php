@@ -651,6 +651,13 @@ class Reflection_Property extends ReflectionProperty
 		return $sub_objects;
 	}
 
+	//-------------------------------------------------------------------------------------------- is
+	public function is(Interfaces\Reflection_Property $object) : bool
+	{
+		return ($object->getName() === $this->getName())
+			&& ($object->getDeclaringClassName() === $this->getDeclaringClassName());
+	}
+
 	//----------------------------------------------------------------------------------- isComponent
 	/**
 	 * @return boolean

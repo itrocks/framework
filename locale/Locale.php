@@ -296,14 +296,10 @@ class Locale implements Configurable, Registerable, Updatable
 				return $this->date_format->toIso($value);
 			}
 			elseif ($type->isFloat()) {
-				return (($value === '') && !$type->allowsNull())
-					? .0
-					: $this->number_format->floatToIso($value);
+				return $this->number_format->floatToIso($value);
 			}
 			elseif ($type->isInteger()) {
-				return (($value === '') && !$type->allowsNull())
-					? 0
-					: $this->number_format->integerToIso($value);
+				return $this->number_format->integerToIso($value);
 			}
 		}
 		return $value;

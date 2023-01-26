@@ -79,8 +79,12 @@ trait Types_Annotation
 			$values[$key] = $declared_class_name . $multiple;
 		}
 
+		$allows_null = is_string($this->value) && str_contains($this->value, '|null');
 		$this->declared_class_names = $declared_class_names;
 		$this->value                = is_array($this->value) ? $values : reset($values);
+		if ($allows_null) {
+			$this->value .= '|null';
+		}
 	}
 
 }

@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\View\Html;
 
+use Error;
 use ITRocks\Framework;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
@@ -1762,7 +1763,20 @@ class Template
 					}
 				}
 				else {
-					$object = $this->parseMethod($object, $property_name);
+					try {
+						$object = $this->parseMethod($object, $property_name);
+					}
+					catch (Error $exception) {
+						$object = Loc::tr('undefined');
+						if (
+							!$ignore_undefined_property
+							|| !str_contains(
+								$exception->getMessage(), 'Cannot access uninitialized non-nullable property'
+							)
+						) {
+							throw $exception;
+						}
+					}
 				}
 			}
 		}

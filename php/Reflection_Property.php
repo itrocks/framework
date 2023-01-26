@@ -216,6 +216,13 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 		return $object->{$this->name};
 	}
 
+	//-------------------------------------------------------------------------------------------- is
+	public function is(Interfaces\Reflection_Property $object) : bool
+	{
+		return ($object->getName() === $this->getName())
+			&& ($object->getDeclaringClassName() === $this->getDeclaringClassName());
+	}
+
 	//------------------------------------------------------------------------------------- isPrivate
 	public function isPrivate() : bool
 	{
