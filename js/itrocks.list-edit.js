@@ -12,7 +12,8 @@ $(document).ready(() => {
 	const cancelEdit = action =>
 	{
 		$(action.closest('.actions')).nextAll('table.list').find('td[data-old-value]').each(function() {
-			this.innerHTML = this.getAttribute('data-old-value')
+			this.innerHTML = this['data-old-value']
+			delete this['data-old-value']
 			this.removeAttribute('data-old-value')
 		})
 	}
@@ -152,7 +153,8 @@ $(document).ready(() => {
 	const saveOldValue = () =>
 	{
 		if (!selected.hasAttribute('data-old-value')) {
-			selected.setAttribute('data-old-value', selected.innerHTML)
+			selected.setAttribute('data-old-value', selected.innerText.trim())
+			selected['data-old-value'] = selected.innerHTML
 		}
 		old_value = selected.innerHTML
 	}
@@ -164,6 +166,32 @@ $(document).ready(() => {
 		if (!td || (td.tagName !== 'TD')) return
 		selected = td
 		selected.classList.add('selected')
+	}
+
+	const setDataPost = anchor =>
+	{
+		const $table     = $(anchor.closest('.actions')).nextAll('table.list')
+		const post       = []
+		const properties = []
+		$table.find('thead > .title > th').each((column, th) => {
+			const property = th.getAttribute('data-property')
+			if (property) {
+				properties[column] = property
+			}
+		})
+		$table.find('td[data-old-value]').each(function() {
+			const column = $(this).prevAll('td, th').length
+			if (properties[column]) {
+				post.push(
+					this.parentNode.getAttribute('data-id')
+					+ '_'
+					+ encodeURIComponent(properties[column])
+					+ '='
+					+ encodeURIComponent(this.innerText.trim())
+				)
+			}
+		})
+		anchor.setAttribute('data-post', post.join('&'))
 	}
 
 	const show = () =>
@@ -196,10 +224,10 @@ $(document).ready(() => {
 		if (!isEditing()) return
 		selected.removeAttribute('contentEditable')
 		selected.removeEventListener('blur', blurEvent)
-		selected.innerHTML = selected.innerText.trim()
-		if (selected.getAttribute('data-old-value').trim() === selected.innerHTML.trim()) {
-			selected.innerHTML = selected.getAttribute('data-old-value')
+		if (selected.innerText.trim() === selected.getAttribute('data-old-value')) {
+			selected.innerHTML = selected['data-old-value']
 			selected.removeAttribute('data-old-value')
+			delete selected['data-old-value']
 		}
 	}
 
@@ -231,6 +259,7 @@ $(document).ready(() => {
 	//--------------------------------------------------------------------------- list-edit > a click
 	$body.build('click', 'article.list .general.actions .save > a', function()
 	{
+		setDataPost(this)
 		exitEditMode(this)
 	})
 
@@ -330,6 +359,10 @@ $(document).ready(() => {
 				break
 			default:
 				if (event.key.length <= 2) {
+					if (!selected.hasAttribute('data-old-value')) {
+						selected.setAttribute('data-old-value', selected.innerText.trim())
+						selected['data-old-value'] = selected.innerHTML
+					}
 					selected.innerHTML = ''
 					edit()
 				}
