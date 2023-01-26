@@ -1120,12 +1120,17 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 		$depth            = 0;
 		$this->stop       = null;
+		$type             = '';
 		$visibility_token = null;
 
 		$this->getTokens();
 		if (!$this->tokens) return;
 		$token = $this->tokens[$this->token_key];
 		do {
+
+			if ($visibility_token) {
+				$type .= is_array($token) ? $token[1] : $token;
+			}
 
 			switch ($token[0]) {
 
@@ -1173,6 +1178,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				case T_PUBLIC:
 				case T_VAR:
 					if ($depth === 1) {
+						$type = '';
 						$visibility_token = $this->token_key;
 					}
 					break;
@@ -1180,16 +1186,18 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				case T_VARIABLE:
 					if (($depth === 1) && isset($visibility_token)) {
 						$property_name = substr($token[1], 1);
-						$visibility = $this->tokens[$visibility_token][0];
-						$property = new Reflection_Property(
+						$visibility    = $this->tokens[$visibility_token][0];
+						$property      = new Reflection_Property(
 							$this,
 							$property_name,
 							$this->tokens[$visibility_token][2],
 							$visibility_token,
 							($visibility === T_VAR) ? T_PUBLIC : $visibility
 						);
+						$property->type = trim(substr($type, 0, -strlen($token[1])));
 						$this->properties[$property_name] = $property;
 					}
+					$type = '';
 					$visibility_token = null;
 					break;
 
@@ -1203,6 +1211,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 						$this->methods[$token[1]] = new Reflection_Method(
 							$this, $token[1], $line, $token_key, $visibility_token ?: T_PUBLIC
 						);
+						$type = '';
 						$visibility_token = null;
 					}
 					break;
@@ -1212,6 +1221,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				case T_STRING_VARNAME:
 				case '{':
 					$depth ++;
+					$type = '';
 					$visibility_token = null;
 					break;
 
@@ -1225,6 +1235,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 							$this->stop += substr_count($token[1], LF);
 						}
 					}
+					$type = '';
 					$visibility_token = null;
 					break;
 

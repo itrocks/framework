@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Template\Has_Is;
@@ -71,10 +70,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 			if ($property->getAnnotation('all')->value) {
 				$value = self::ALL;
 			}
-			elseif (
-				isA($property->getType()->getElementTypeAsString(), Component::class)
-				|| $property->getAnnotation('component')->value
-			) {
+			elseif ($property->getAnnotation('component')->value) {
 				$value = self::COLLECTION;
 			}
 			else {

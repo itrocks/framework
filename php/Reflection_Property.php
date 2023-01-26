@@ -14,78 +14,48 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	use Annoted;
 
 	//---------------------------------------------------------------------------------------- $class
-	/**
-	 * @var Reflection_Class
-	 */
 	public Reflection_Class $class;
 
 	//------------------------------------------------------------------------------ $declaring_trait
 	/**
 	 * Cache for getDeclaringTrait() : please do never use it directly
-	 *
-	 * @var Reflection_Class
 	 */
 	private Reflection_Class $declaring_trait;
 
 	//---------------------------------------------------------------------------------- $doc_comment
-	/**
-	 * @var string
-	 */
 	private string $doc_comment;
 
 	//---------------------------------------------------------------------------------- $final_class
-	/**
-	 * @var Reflection_Class|string
-	 */
-	public Reflection_Class|string $final_class;
+	public Reflection_Class $final_class;
 
 	//------------------------------------------------------------------------------------ $is_static
-	/**
-	 * @var boolean
-	 */
 	private bool $is_static;
 
 	//----------------------------------------------------------------------------------------- $line
-	/**
-	 * @var integer
-	 */
 	public int $line;
 
 	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
 	public string $name;
 
 	//--------------------------------------------------------------------------------------- $parent
-	/**
-	 * @var Interfaces\Reflection_Property|boolean|null
-	 */
 	protected Interfaces\Reflection_Property|bool|null $parent;
 
 	//------------------------------------------------------------------------------------ $token_key
 	/**
 	 * The key for the T_VAR / T_PUBLIC / T_PROTECTED / T_PRIVATE token
-	 *
-	 * @var integer
 	 */
 	private int $token_key;
+
+	//----------------------------------------------------------------------------------------- $type
+	public string $type = '';
 
 	//----------------------------------------------------------------------------------- $visibility
 	/**
 	 * @values T_PUBLIC, T_PROTECTED, T_PRIVATE
-	 * @var integer
 	 */
 	public int $visibility;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $class      Reflection_Class
-	 * @param $name       string
-	 * @param $line       integer
-	 * @param $token_key  integer
-	 * @param $visibility integer
-	 */
 	public function __construct(
 		Reflection_Class $class, string $name, int $line, int $token_key, int $visibility
 	) {
@@ -101,8 +71,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	/**
 	 * Gets the declaring class for the reflected property.
 	 * If the property has been declared into a trait, returns the class that uses this trait.
-	 *
-	 * @return Reflection_Class
 	 */
 	public function getDeclaringClass() : Reflection_Class
 	{
@@ -113,8 +81,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	/**
 	 * Gets the declaring class name for the reflected property.
 	 * If the property has been declared into a trait, returns the name of the class using the trait.
-	 *
-	 * @return string
 	 */
 	public function getDeclaringClassName() : string
 	{
@@ -125,8 +91,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	/**
 	 * Gets the declaring trait for the reflected property
 	 * If the property has been declared into a class, this returns this class
-	 *
-	 * @return Reflection_Class
 	 */
 	public function getDeclaringTrait() : Reflection_Class
 	{
@@ -140,10 +104,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	}
 
 	//--------------------------------------------------------------------- getDeclaringTraitInternal
-	/**
-	 * @param $class Reflection_Class
-	 * @return ?Reflection_Class
-	 */
 	private function getDeclaringTraitInternal(Reflection_Class $class) : ?Reflection_Class
 	{
 		$traits = $class->getTraits();
@@ -165,8 +125,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	/**
 	 * Gets the declaring trait name for the reflected property
 	 * If the property has been declared into a class, this returns this class name
-	 *
-	 * @return string
 	 */
 	public function getDeclaringTraitName() : string
 	{
@@ -191,8 +149,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	//--------------------------------------------------------------------------------- getFinalClass
 	/**
 	 * Gets the final class where the property came from with a call to getProperties()
-	 *
-	 * @return Reflection_Class
 	 */
 	public function getFinalClass() : Reflection_Class
 	{
@@ -202,8 +158,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	//----------------------------------------------------------------------------- getFinalClassName
 	/**
 	 * Gets final class name : the one where the property came from with a call to getProperties()
-	 *
-	 * @return string
 	 */
 	public function getFinalClassName() : string
 	{
@@ -211,18 +165,12 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	}
 
 	//--------------------------------------------------------------------------------------- getName
-	/**
-	 * @return string
-	 */
 	public function getName() : string
 	{
 		return $this->name;
 	}
 
 	//------------------------------------------------------------------------------------- getParent
-	/**
-	 * @return ?Interfaces\Reflection_Property
-	 */
 	public function getParent() : ?Interfaces\Reflection_Property
 	{
 		if (!isset($this->parent)) {
@@ -245,9 +193,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	}
 
 	//---------------------------------------------------------------------------------- getRootClass
-	/**
-	 * @return Reflection_Class
-	 */
 	public function getRootClass() : Reflection_Class
 	{
 		return $this->getFinalClass();
@@ -256,8 +201,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	//--------------------------------------------------------------------------------------- getType
 	/**
 	 * Gets the type of the property, as defined by its var annotation
-	 *
-	 * @return Type
 	 */
 	public function getType() : Type
 	{
@@ -267,9 +210,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	//-------------------------------------------------------------------------------------- getValue
 	/**
 	 * Gets value
-	 *
-	 * @param $object object
-	 * @return mixed
 	 */
 	public function getValue(object $object) : mixed
 	{
@@ -277,27 +217,18 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	}
 
 	//------------------------------------------------------------------------------------- isPrivate
-	/**
-	 * @return boolean
-	 */
 	public function isPrivate() : bool
 	{
 		return $this->visibility === T_PRIVATE;
 	}
 
 	//----------------------------------------------------------------------------------- isProtected
-	/**
-	 * @return boolean
-	 */
 	public function isProtected() : bool
 	{
 		return $this->visibility === T_PROTECTED;
 	}
 
 	//-------------------------------------------------------------------------------------- isPublic
-	/**
-	 * @return boolean
-	 */
 	public function isPublic() : bool
 	{
 		return $this->visibility === T_PUBLIC;
@@ -306,8 +237,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	//-------------------------------------------------------------------------------------- isStatic
 	/**
 	 * Checks if property is static
-	 *
-	 * @return boolean
 	 */
 	public function isStatic() : bool
 	{
@@ -343,9 +272,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	 * - 3 : 'private', 'protected', 'public' or empty
 	 * - 4 : 'static' or empty
 	 * - 5 : the name of the property
-	 *
-	 * @param $property_name string
-	 * @return string
 	 */
 	public static function regex(string $property_name = '') : string
 	{
@@ -363,9 +289,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	}
 
 	//------------------------------------------------------------------------------------ scanBefore
-	/**
-	 * TODO doc
-	 */
 	private function scanBefore() : void
 	{
 		$this->doc_comment = '';

@@ -289,14 +289,22 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 		$implemented_properties = $class->getProperties([T_USE]);
 		foreach ($implemented_properties as $property) {
 			$expr = '%'
-				. '\n\s+\*\s+'            // each line beginning by '* '
-				. '@(getter|link|setter)' // 1 : AOP annotation
-				. '(?:\s+'                // class name and method or function name are optional
-				. '(?:([\\\\\w]+)::)?'    // 2 : class name (optional)
-				. '(\w+)'                 // 3 : method or function name
-				. ')?'                    // end of optional block
+				. '\n\s+\*\s+'                // each line beginning by '* '
+				. '@(all|getter|link|setter)' // 1 : AOP annotation
+				. '(?:\s+'                    // class name and method or function name are optional
+				. '(?:([\\\\\w]+)::)?'        // 2 : class name (optional)
+				. '(\w+)'                     // 3 : method or function name
+				. ')?'                        // end of optional block
 				. '%';
 			preg_match_all($expr, $property->getDocComment(), $match);
+			if (
+				!in_array('getter', $match[1])
+				&& !in_array('link', $match[1])
+				&& !in_array('all', $match[1])
+				&& Link_Annotation::of($property)->value
+			) {
+				$match[1][] = 'link';
+			}
 			foreach ($match[1] as $type) {
 				$type = ($type === 'setter') ? Handler::WRITE : Handler::READ;
 				$properties[$property->name]['implements'][$type] = true;
@@ -325,13 +333,14 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 					continue;
 				}
 				$property = $class_properties[$match['property_name']];
-				$property->final_class = $class->name;
+				$property->final_class = $class;
 				if (
-					!str_contains($property->getDocComment(), '@getter')
+					!str_contains($property->getDocComment(), '@all')
+					&& !str_contains($property->getDocComment(), '@getter')
 					&& !str_contains($property->getDocComment(), '@link')
 					&& !str_contains($property->getDocComment(), '@setter')
 				) {
-					$expr = '%@override\s+' . $match['property_name'] . '\s+.*(@getter|@link|@setter)%';
+					$expr = '%@override\s+' . $match['property_name'] . '\s+.*(@all|@getter|@link|@setter)%';
 					preg_match($expr, $property->class->getDocComment([]), $match2);
 					if ($match2) {
 						$properties[$match['property_name']]['override'] = true;

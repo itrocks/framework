@@ -31,6 +31,13 @@ class Documented_Type_Annotation extends Annotation
 	public function __construct(?string $value)
 	{
 		$value = strval($value);
+		if (
+			str_contains($value, '<')
+			&& ((strpos($value, '<') < strpos($value, ' ')) || !str_contains($value, ' '))
+		) {
+			// don't handle 'array<string,mixed>' at the moment
+			$value = '';
+		}
 		if ($add_null = str_starts_with($value, '?')) {
 			$value = substr($value, 1);
 		}

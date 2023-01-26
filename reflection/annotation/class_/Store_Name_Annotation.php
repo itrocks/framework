@@ -19,19 +19,25 @@ class Store_Name_Annotation extends Annotation
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'store_name';
 
-	//----------------------------------------------------------------------------------- __construct
+	//----------------------------------------------------------------------------------- $calculated
 	/**
-	 * @param $value ?string
-	 * @param $class Reflection_Class
+	 * Every Class has a @store_name. It can be set explicitly or automatically calculated, if there
+	 * is no explicit annotation.
+	 * $calculated is true if there was no explicit @store_name annotation for the class
 	 */
+	public bool $calculated = false;
+
+	//----------------------------------------------------------------------------------- __construct
 	public function __construct(?string $value, Reflection_Class $class)
 	{
 		parent::__construct(strtolower(strval($value)));
-		if (!$this->value) {
-			$this->value = strtolower(Namespaces::shortClassName(Set_Annotation::of($class)->value));
-			if ($class->isAbstract()) {
-				$this->value .= '_view';
-			}
+		if ($this->value) {
+			return;
+		}
+		$this->calculated = true;
+		$this->value = strtolower(Namespaces::shortClassName(Set_Annotation::of($class)->value));
+		if ($class->isAbstract()) {
+			$this->value .= '_view';
 		}
 	}
 

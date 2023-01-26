@@ -1,10 +1,15 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Property;
 
+use ITRocks\Framework\PHP;
+use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
+use ReflectionIntersectionType;
+use ReflectionNamedType;
+use ReflectionUnionType;
 
 /**
  * Describes the data type of the property.
@@ -20,14 +25,10 @@ class Var_Annotation extends Documented_Type_Annotation implements Property_Cont
 	const ANNOTATION = 'var';
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value               ?string
-	 * @param $reflection_property Reflection_Property
-	 */
 	public function __construct(?string $value, Reflection_Property $reflection_property)
 	{
-		if (!isset($value)) {
-			$value = 'mixed';
+		if (!$value) {
+			$value = $this->fromRealType($reflection_property);
 		}
 		parent::__construct($value);
 		if (!$this->value) {
@@ -36,10 +37,52 @@ class Var_Annotation extends Documented_Type_Annotation implements Property_Cont
 		}
 	}
 
+	//---------------------------------------------------------------------------------- fromRealType
+	protected function fromRealType(Reflection_Property $reflection_property) : ?string
+	{
+		if ($reflection_property instanceof Reflection\Reflection_Property) {
+			$types = $reflection_property->getTypeOrigin();
+			if (
+				($types instanceof ReflectionIntersectionType)
+				|| ($types instanceof ReflectionUnionType)
+			) {
+				$value = [];
+				foreach ($types->getTypes() as $type) {
+					$type = $type->getName();
+					if (ctype_upper($type[0])) {
+						$type = BS . $type;
+					}
+					$value[] = $type;
+				}
+				$value = join('|', $value);
+			}
+			elseif ($types instanceof ReflectionNamedType) {
+				$value = $types->getName();
+			}
+			else {
+				return null;
+			}
+			if ($types->allowsNull()) {
+				$value .= '|null';
+			}
+		}
+		elseif ($reflection_property instanceof PHP\Reflection_Property) {
+			$value = $reflection_property->type;
+		}
+		else {
+			return null;
+		}
+		$value = explode('|', $value);
+		foreach ($value as &$part) {
+			switch ($part) {
+				case 'bool': $part = 'boolean'; break;
+				case 'int':  $part = 'integer'; break;
+			}
+		}
+		return join('|', $value);
+	}
+
 	//--------------------------------------------------------------------------------------- getType
-	/**
-	 * @return Type
-	 */
 	public function getType() : Type
 	{
 		return new Type($this->value . ($this->documentation ? ('|' . $this->documentation) : ''));

@@ -29,6 +29,7 @@ use ITRocks\Framework\Tools\Names;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
+use ReflectionType;
 use ReturnTypeWillChange;
 
 /**
@@ -554,6 +555,12 @@ class Reflection_Property extends ReflectionProperty
 			);
 		}
 		return $type;
+	}
+
+	//--------------------------------------------------------------------------------- getTypeOrigin
+	public function getTypeOrigin() : ?ReflectionType
+	{
+		return parent::getType();
 	}
 
 	//----------------------------------------------------------------------------------- getUserType

@@ -97,30 +97,19 @@ trait Scanners
 			}
 		}
 		foreach ($class->getProperties([]) as $property) {
-			if (
-				!isset($disable[$property->name])
-				&& str_contains($property->getDocComment(), '* @link')
-			) {
-				$expr = '%'
-					. '\n\s+\*\s+'                           // each line beginning by '* '
-					. '@link\s+'                             // link annotation
-					. '(All|Collection|DateTime|Map|Object)' // 1 : link keyword
-					. '%';
-				preg_match($expr, $property->getDocComment(), $match);
-				if ($match) {
-					$advice = [Getter::class, 'get' . $match[1]];
-				}
-				else {
-					trigger_error(
-						'@link of ' . $property->class->name . '::' . $property->name
-						. ' must be All, Collection, DateTime, Map or Object',
-						E_USER_ERROR
-					);
-					/** @noinspection PhpUnreachableStatementInspection in case of caught error */
-					$advice = null;
-				}
-				$properties[$property->name][] = [Handler::READ, $advice];
+			if (isset($disable[$property->name])) {
+				continue;
 			}
+			$type = $property->getType();
+			if (!$type->isClass()) {
+				continue;
+			}
+			$link_annotation = Link_Annotation::of($property);
+			if (!$link_annotation->value) {
+				continue;
+			}
+			$advice = [Getter::class, 'get' . $link_annotation->value];
+			$properties[$property->name][] = [Handler::READ, $advice];
 		}
 		$annotations = [Link_Annotation::ANNOTATION];
 		foreach ($this->scanForOverrides($class->getDocComment([]), $annotations, $disable) as $match) {

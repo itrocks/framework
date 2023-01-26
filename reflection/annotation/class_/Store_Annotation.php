@@ -29,7 +29,7 @@ class Store_Annotation extends Boolean_Annotation implements Class_Context_Annot
 	 */
 	public function __construct(bool|null|string $value, Reflection_Class $class)
 	{
-		if (is_null($value) && Store_Name_Annotation::of($class)->value) {
+		if (is_null($value) && !Store_Name_Annotation::of($class)->calculated) {
 			$value = true;
 		}
 		parent::__construct($value);

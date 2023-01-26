@@ -5,6 +5,7 @@ use ITRocks\Framework\AOP\Weaver\Handler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Method;
 use ITRocks\Framework\PHP\Reflection_Source;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 
 /**
  * Aspect weaver properties compiler
@@ -252,12 +253,12 @@ class Properties
 				foreach ($parent_class->getProperties([T_EXTENDS, T_USE]) as $property) {
 					$expr = '%'
 						. '\n\s+\*\s+'               // each line beginning by '* '
-						. '@(getter|link|setter)'    // 1 : AOP annotation
+						. '@(all|getter|link|setter)'    // 1 : AOP annotation
 						. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
 						. '(\w+)?)?'                 // 3 : method or function name
 						. '%';
 					preg_match($expr, $property->getDocComment(), $match);
-					if ($match) {
+					if ($match || Link_Annotation::of($property)->value) {
 						$parent_code = '
 
 		if (method_exists(get_parent_class($this), \'__aop\')) parent::__aop(false);';
@@ -929,7 +930,7 @@ class Properties
 			&& ($this->class->type === T_CLASS)
 			&& ($parent = $this->class->getParentClass())
 		) {
-			$annotation = ($method_name === '__get') ? '(getter|link)' : 'setter';
+			$annotation = ($method_name === '__get') ? '(all|getter|link)' : 'setter';
 			$type       = ($method_name === '__get') ? Handler::READ : Handler::WRITE;
 			$overrides  = [];
 			foreach ($this->scanForOverrides(
@@ -946,7 +947,11 @@ class Properties
 						. '(\w+)?)?'                 // 3 : method or function name
 						. '%';
 					preg_match($expr, $property->getDocComment(), $match);
-					if ($match || isset($overrides[$property->name])) {
+					if (
+						$match
+						|| isset($overrides[$property->name])
+						|| Link_Annotation::of($property)->value
+					) {
 						$cases[$property->name] = LF . TAB . TAB . TAB . 'case ' . Q . $property->name . Q . ':';
 					}
 				}
