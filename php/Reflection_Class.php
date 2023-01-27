@@ -179,12 +179,18 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * Constructs a reflection class object using PHP source code
 	 *
-	 * @param $source Reflection_Source The PHP source code object that contains the class
+	 * @param $source Reflection_Source|string The PHP source code object that contains the class
 	 * @param $name   string|null The name of the class.
 	 *                If not set, the first class in source will be reflected.
+	 * @todo Calling this with class name only will create a duplicate in cache.
+	 * @todo Should change this class to a wrapper to have a unique instance in cache.
 	 */
-	public function __construct(Reflection_Source $source, string $name = null)
+	public function __construct(Reflection_Source|string $source, string $name = null)
 	{
+		if (is_string($source)) {
+			$name   = $source;
+			$source = static::of($source)->source;
+		}
 		$this->source = $source;
 
 		$this->line = null;
