@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Sql;
 
+use Error;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func\Dao_Function;
 use ITRocks\Framework\Dao\Option;
@@ -115,7 +116,7 @@ class Select
 	/**
 	 * If false, fetch will generate an error if the array contains data for properties that do not
 	 * exist in object's class.
-	 * With true, you do not generate this error but we ignore unknown properties
+	 * With true, you do not generate this error, but we ignore unknown properties
 	 * With null, we store unknown properties into the object
 	 *
 	 * @var boolean|null
@@ -202,7 +203,6 @@ class Select
 	}
 
 	//--------------------------------------------------------------------------------------- doFetch
-
 	/**
 	 * @param $data_store array[]|List_Data|object[]
 	 * @return array[]|List_Data|object[]|null
@@ -239,7 +239,6 @@ class Select
 	}
 
 	//--------------------------------------------------------------------------- executeClassColumns
-
 	/**
 	 * A simple execute() feature to use it quick with minimal options
 	 *
@@ -258,7 +257,6 @@ class Select
 	}
 
 	//---------------------------------------------------------------------------------- executeQuery
-
 	/**
 	 * A simple execute() feature to use with an already built query
 	 * Useful for imports from external SQL data sources
@@ -280,7 +278,6 @@ class Select
 	}
 
 	//------------------------------------------------------------------------------- fetchResultRows
-
 	/**
 	 * @param $result_set mixed A Link::query() result set
 	 * @param $data_store array[]|callable|List_Data|object[]|null
@@ -491,7 +488,12 @@ class Select
 						catch (ReflectionException) {
 						}
 					}
-					$object->$property_name = $result[$i];
+					try {
+						$object->$property_name = $result[$i];
+					}
+					catch (Error) {
+						unset($object->$property_name);
+					}
 				}
 				// may be time-consuming, and do we need the real complete object ?
 				/*
@@ -512,7 +514,6 @@ class Select
 	}
 
 	//----------------------------------------------------------------------------------------- store
-
 	/**
 	 * Store the row into the data store
 	 *
