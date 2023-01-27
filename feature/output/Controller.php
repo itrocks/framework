@@ -196,7 +196,6 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @noinspection PhpDocSignatureInspection $settings
 	 * @param $object     object|string object or class name
 	 * @param $parameters array parameters
 	 * @param $settings   Setting\Custom\Set&Output_Setting\Set|null
