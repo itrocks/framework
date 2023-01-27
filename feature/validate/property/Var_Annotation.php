@@ -92,9 +92,7 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 			return null;
 		}
 		/** @noinspection PhpUnhandledExceptionInspection $property is always valid for $object */
-		$value = $this->property->isInitialized($object)
-			? $this->property->getValue($object)
-			: null;
+		$value = $this->property->getValue($object);
 		// allowed null
 		if (is_null($value) && Null_Annotation::of($this->property)->value) {
 			return true;

@@ -134,6 +134,7 @@ class Object_Builder_Array
 	 * @param $null_if_empty        boolean
 	 * @param $ignore_property_name string|null
 	 * @return ?T
+	 * @template T
 	 * @throws User_Error_Exception
 	 */
 	public function build(
@@ -471,6 +472,7 @@ class Object_Builder_Array
 			&& ($builder = Widget_Annotation::of($property)->value)
 			&& is_a($builder, Property::class, true)
 		) {
+			/** @noinspection PhpParamsInspection Inspector bug : $builder is a string */
 			/** @noinspection PhpUnhandledExceptionInspection widget builder class name must be valid */
 			/** @var $builder Property */
 			$builder             = Builder::create($builder, [$property, $value]);
