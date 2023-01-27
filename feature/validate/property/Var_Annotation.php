@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Feature\Validate\Property;
 
+use Error;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection;
@@ -91,8 +92,18 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 		) {
 			return null;
 		}
-		/** @noinspection PhpUnhandledExceptionInspection $property is always valid for $object */
-		$value = $this->property->getValue($object);
+		try {
+			/** @noinspection PhpUnhandledExceptionInspection $property is always valid for $object */
+			$value = $this->property->getValue($object);
+		}
+		catch (Error $exception) {
+			$value = null;
+			if (!str_contains(
+				$exception->getMessage(), 'Cannot access uninitialized non-nullable property'
+			)) {
+				throw $exception;
+			}
+		}
 		// allowed null
 		if (is_null($value) && Null_Annotation::of($this->property)->value) {
 			return true;
