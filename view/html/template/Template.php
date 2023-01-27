@@ -1726,7 +1726,7 @@ class Template
 				$builder = Builder::create(
 					$builder, [$object, $this->parseMethod($object, $property_name), $this]
 				);
-				$value   = $builder->buildHtml();
+				$value = $builder->buildHtml();
 				if ($value === static::ORIGIN) {
 					$add_div = true;
 				}

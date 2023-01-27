@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
+use ITRocks\Framework\PHP;
+use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
@@ -23,14 +25,24 @@ class Store_Annotation extends Boolean_Annotation implements Class_Context_Annot
 	const ANNOTATION = 'store';
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value bool|null|string
-	 * @param $class Reflection_Class
-	 */
 	public function __construct(bool|null|string $value, Reflection_Class $class)
 	{
-		if (is_null($value) && !Store_Name_Annotation::of($class)->calculated) {
-			$value = true;
+		if (is_null($value)) {
+			if (!Store_Name_Annotation::of($class)->calculated) {
+				$value = true;
+			}
+			else {
+				foreach (Extends_Annotation::of($class)->values() as $extends) {
+					/** @noinspection PhpUnhandledExceptionInspection must be valid */
+					$extends_class = ($class instanceof PHP\Reflection_Class)
+						? PHP\Reflection_Class::of($extends)
+						: new Reflection\Reflection_Class($extends);
+					if (Store_Annotation::of($extends_class)->value) {
+						$value = true;
+						break;
+					}
+				}
+			}
 		}
 		parent::__construct($value);
 	}
