@@ -68,6 +68,9 @@ class Var_Annotation extends Documented_Type_Annotation implements Property_Cont
 		}
 		elseif ($reflection_property instanceof PHP\Reflection_Property) {
 			$value = $reflection_property->type;
+			if (str_starts_with($value, '?')) {
+				$value = substr($value, 1) . '|null';
+			}
 		}
 		else {
 			return null;
