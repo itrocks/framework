@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Class_\Set;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
@@ -13,9 +14,9 @@ use ITRocks\Framework\User;
  * Or create another property with @replaces object
  *
  * @representative object, date, property_name, old_value, new_value
- * @set            History
  * @sort           date, user
  */
+#[Set('History')]
 abstract class History
 {
 

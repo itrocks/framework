@@ -102,9 +102,9 @@ class Dependency
 	 * - 'new' for a 'new Dependency_Name' into the source code
 	 * - 'param' for a '@param ...' into the source code (method doc comment)
 	 * - 'return' for a '@return ...' into the source code (method doc comment)
-	 * - 'set' for a '@set ...' into the source code (class doc comment)
+	 * - 'set' for a #Set ... into the source code (class attribute)
 	 * - 'static' for a '__CLASS_NAME__::' / 'self::' / 'static::' / 'Dependency_Name::' call
-	 * - 'store' for a '@set ...' into the source code (lowercase storage repository name)
+	 * - 'store' for a #Store_Name into the source code (repository storage name)
 	 * - 'use' for a 'use Dependency_Name' into the class
 	 * - 'var' for a '@var ...' into the source code (property doc comment)
 	 *

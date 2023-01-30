@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Plugin\Installable\Installed;
 
 use ITRocks\Framework\Plugin\Installable\Installed;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 
 /**
  * An installed menu (into menu.php)
- *
- * @store_name installed_menus
  */
+#[Store_Name('installed_menus')]
 class Menu extends Installed
 {
 

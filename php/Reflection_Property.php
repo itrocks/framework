@@ -3,8 +3,10 @@ namespace ITRocks\Framework\PHP;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property_Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Type;
+use ReflectionException;
 
 /**
  * The same as PHP's ReflectionProperty, but working with PHP source, without loading the class
@@ -12,6 +14,7 @@ use ITRocks\Framework\Reflection\Type;
 class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Reflection_Property
 {
 	use Annoted;
+	use Property_Has_Attributes;
 
 	//---------------------------------------------------------------------------------------- $class
 	public Reflection_Class $class;
@@ -36,6 +39,15 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 
 	//----------------------------------------------------------------------------------------- $name
 	public string $name;
+
+	//-------------------------------------------------------------------------- $overridden_property
+	/**
+	 * Only if the property is declared into a parent class as well as into the child class.
+	 * If not, this will be false.
+	 *
+	 * @var ?Reflection_Property
+	 */
+	private ?Reflection_Property $overridden_property;
 
 	//--------------------------------------------------------------------------------------- $parent
 	protected Interfaces\Reflection_Property|bool|null $parent;
@@ -168,6 +180,24 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	public function getName() : string
 	{
 		return $this->name;
+	}
+
+	//------------------------------------------------------------------------- getOverriddenProperty
+	/**
+	 * Gets the parent property overridden by the current one from the parent class
+	 */
+	public function getOverriddenProperty() : ?Reflection_Property
+	{
+		if (!isInitialized($this, 'overridden_property')) {
+			$parent = $this->getDeclaringClass()->getParentClass();
+			try {
+				$this->overridden_property = $parent?->getProperty($this->name);
+			}
+			catch (ReflectionException) {
+				$this->overridden_property = null;
+			}
+		}
+		return $this->overridden_property;
 	}
 
 	//------------------------------------------------------------------------------------- getParent

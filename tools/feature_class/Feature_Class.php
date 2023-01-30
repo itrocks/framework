@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\Traits\Is_Immutable;
@@ -28,7 +28,7 @@ class Feature_Class
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string|null the name of the source class
-	 * @param $name       string|null the displayed name (matches @display of the built class)
+	 * @param $name       string|null the displayed name (matches #Display of the built class)
 	 */
 	public function __construct(string $class_name = null, string $name = null)
 	{
@@ -40,7 +40,7 @@ class Feature_Class
 		}
 		if ($this->class_name && !$this->name) {
 			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
-			$this->name = Display_Annotation::of(new Reflection_Class($this->class_name))->value;
+			$this->name = Display::of(new Reflection_Class($this->class_name))->value;
 		}
 	}
 

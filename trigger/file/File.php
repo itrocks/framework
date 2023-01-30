@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Trigger;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Trigger;
 
 /**
@@ -11,8 +12,8 @@ use ITRocks\Framework\Trigger;
  * @display_order name, file_path, delete_flag_file, actions
  * @override actions @set_store_name file_trigger_actions @var File\Action[]
  * @property File\Action[] actions
- * @store_name file_triggers
  */
+#[Store_Name('file_triggers')]
 class File extends Trigger
 {
 

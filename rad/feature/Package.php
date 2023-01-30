@@ -2,14 +2,16 @@
 namespace ITRocks\Framework\RAD\Feature;
 
 use ITRocks\Framework\RAD\Feature;
+use ITRocks\Framework\Reflection\Attribute\Class_\Displays;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * @display_order name, super_packages, sub_packages, features
- * @displays feature packages
  * @feature
- * @store_name rad_packages
  */
+#[Displays('feature packages')]
+#[Store_Name('rad_packages')]
 class Package
 {
 	use Has_Name;

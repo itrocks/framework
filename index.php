@@ -23,7 +23,7 @@ mysqli_report(MYSQLI_REPORT_OFF);
 putenv('LANG=fr_FR.UTF-8');
 set_time_limit(30);
 
-// immediately available functions
+// immediately available constants and functions
 include_once __DIR__ . '/functions/php81_wrapper.php';
 include_once __DIR__ . '/functions/php82_wrapper.php';
 include_once __DIR__ . '/functions/constants.php';

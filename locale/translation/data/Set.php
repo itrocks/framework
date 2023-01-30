@@ -6,15 +6,12 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Language;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Translation\Data;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
 
-/**
- * Data set
- *
- * @display translation data set
- */
+#[Display('translation data set')]
 class Set
 {
 

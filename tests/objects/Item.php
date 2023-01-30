@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tests\Objects;
 
 use AllowDynamicProperties;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Traits\Has_Code;
 
 /**
@@ -9,9 +10,9 @@ use ITRocks\Framework\Traits\Has_Code;
  *
  * @before_write beforeWrite
  * @property integer call_before_write
- * @store_name test_items
  */
 #[AllowDynamicProperties]
+#[Store_Name('test_items')]
 class Item
 {
 	use Has_Code;

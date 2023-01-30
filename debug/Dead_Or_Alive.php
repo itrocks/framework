@@ -3,15 +3,15 @@ namespace ITRocks\Framework\Debug;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Attribute\Class_\Set;
 use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Traits\Date_Logged;
 
 /**
  * Tell if a feature is dead or alive
  * This is a dead-code detector
- *
- * @set Dead_Or_Alive
  */
+#[Set('Dead_Or_Alive')]
 class Dead_Or_Alive
 {
 	use Date_Logged;

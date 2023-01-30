@@ -3,15 +3,15 @@ namespace ITRocks\Framework\Reflection\Annotation\Tests;
 
 use ITRocks\Framework\Reflection\Annotation\Tests\Conditions\Conditions_Collection;
 use ITRocks\Framework\Reflection\Annotation\Tests\Conditions\Conditions_Trait;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 
 /**
  * Example business class for @conditions
  *
  * To test it :
  * http://localhost/itrocks/ITRocks/Framework/Reflection/Annotation/Tests/Conditions/add
- *
- * @store_name tests_conditions
  */
+#[Store_Name('tests_conditions')]
 class Conditions
 {
 	use Conditions_Trait;

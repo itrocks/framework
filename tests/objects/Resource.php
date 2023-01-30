@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A 'test object' class to test links between objects with real data stored into database
- *
- * @store_name test_objects
  */
+#[Store_Name('test_objects')]
 class Resource
 {
 	use Has_Name;

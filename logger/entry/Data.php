@@ -4,13 +4,14 @@ namespace ITRocks\Framework\Logger\Entry;
 use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Logger\Entry;
 use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Reflection\Attribute\Class_\Set;
 
 /**
  * Logger entry data
  *
  * @business
- * @set Logs_Data
  */
+#[Set('Logs_Data')]
 class Data implements Validate\Except
 {
 	use Component;

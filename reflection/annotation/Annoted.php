@@ -7,9 +7,9 @@ use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 
 /**
- * An annoted class contains annotations.
+ * An annotated class contains annotations.
  *
- * Common annoted classes are Reflection_Class, Reflection_Property, Reflection_Method.
+ * Common annotated classes are Reflection_Class, Reflection_Property, Reflection_Method.
  * Classes that use this trait must implement Has_Doc_Comment !
  *
  * @implements Has_Doc_Comment
@@ -186,7 +186,6 @@ trait Annoted
 	public function getListAnnotations(string $annotation_name) : array
 	{
 		$annotations = $this->getCachedAnnotation($annotation_name, true);
-		/** @noinspection PhpDeprecatedStdLibCallInspection inspector bug : this is an array */
 		if ($annotations && !(reset($annotations) instanceof List_Annotation)) {
 			trigger_error(
 				'Bad annotation type getListAnnotations(' . $annotation_name . ')', E_USER_ERROR

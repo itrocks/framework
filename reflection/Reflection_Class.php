@@ -6,6 +6,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Display_Order_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Stringable;
@@ -24,6 +25,7 @@ class Reflection_Class extends ReflectionClass
 	implements Has_Doc_Comment, Interfaces\Reflection_Class, Stringable
 {
 	use Annoted;
+	use Class_Has_Attributes;
 
 	//--------------------------------------------------------------------------- $interfaces_methods
 	/**
@@ -524,8 +526,8 @@ class Reflection_Class extends ReflectionClass
 		foreach ($properties as $property_name => $property) {
 			if (
 				in_array($property_name, ['_', 'id'])
-				|| (str_ends_with($property_name, '_') && in_array(substr($property_name, 0, -1), $properties))
-				|| (str_starts_with($property_name, 'id_') && in_array(substr($property_name, 3), $properties))
+				|| (str_ends_with($property_name, '_') && isset($properties[substr($property_name, 0, -1)]))
+				|| (str_starts_with($property_name, 'id_') && isset($properties[substr($property_name, 3)]))
 			) {
 				unset($properties[$property_name]);
 			}

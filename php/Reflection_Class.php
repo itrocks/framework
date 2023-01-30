@@ -5,11 +5,13 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Parser;
+use ITRocks\Framework\Reflection\Attribute\Class_Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
+use ReflectionException;
 
 /**
  * A reflection class parser that uses php tokens to parse php source code instead of loading
@@ -18,10 +20,17 @@ use ITRocks\Framework\Tools\Namespaces;
 class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 {
 	use Annoted;
+	use Class_Has_Attributes { Class_Has_Attributes::getAttributesCommon as private; }
 	use Tokens_Parser;
 
 	//--------------------------------------------------------------------------------- T_DOC_EXTENDS
 	const T_DOC_EXTENDS = 'T_DOC_EXTENDS';
+
+	//----------------------------------------------------------------------------------- $attributes
+	/**
+	 * @var Reflection_Attribute[]
+	 */
+	private array $attributes;
 
 	//------------------------------------------------------------------------------------ $constants
 	/**
@@ -263,6 +272,41 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				}
 			}
 		}
+	}
+
+	//--------------------------------------------------------------------------- getAttributesCommon
+	/**
+	 * Gets the attributes list associated to the element
+	 *
+	 * _INHERITABLE attributes : parent (and interface and class) attributes are scanned too.
+	 *
+	 * The returned array key is the name of the attribute.
+	 *
+	 * The value of each returned array element is :
+	 * - !Attribute::IS_REPEATABLE attributes : a single ReflectionAttribute.
+	 * - Attribute::IS_REPEATABLE attributes : an array of ReflectionAttribute.
+	 *
+	 * @param $name  string|null
+	 * @param $flags integer
+	 * @return Reflection_Attribute[]|Reflection_Attribute[][]
+	 */
+	public function getAttributesCommon(?string $name = null, int $flags = 0) : array
+	{
+		if (!isset($this->attributes)) {
+			$this->scanUntilClassName();
+		}
+		$attributes = [];
+		/** @noinspection PhpMultipleClassDeclarationsInspection All parents use Has_Attributes */
+		foreach ($this->attributes as $attribute) {
+			if ($name && ($attribute->getName() !== $name)) continue;
+			if ($this->isAttributeRepeatable($attribute->getName())) {
+				$attributes[$attribute->getName()][] = $attribute;
+			}
+			else {
+				$attributes[$attribute->getName()] = $attribute;
+			}
+		}
+		return $attributes;
 	}
 
 	//----------------------------------------------------------------------------------- getConstant
@@ -698,10 +742,15 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @param $name string The name of the property to get
 	 * @return Reflection_Property
+	 * @throws ReflectionException
 	 */
 	public function getProperty(string $name) : Reflection_Property
 	{
-		return $this->getProperties()[$name];
+		$properties = $this->getProperties();
+		if (!isset($properties[$name])) {
+			throw new ReflectionException("Property $this->name::\$$name does not exist");
+		}
+		return $properties[$name];
 	}
 
 	//------------------------------------------------------------------------------- getSetClassName
@@ -1277,8 +1326,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (!$this->tokens) return;
 		$token = $this->tokens[$this->token_key = 0];
 
-		$this->namespace = '';
-		$this->use       = [];
+		$attribute        = null;
+		$this->attributes = [];
+		$this->namespace  = '';
+		$this->use        = [];
 		do {
 
 			$this->doc_comment = '';
@@ -1288,6 +1339,14 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			while (!is_array($token) || !in_array($token[0], [T_CLASS, T_INTERFACE, T_TRAIT])) {
 				if (is_array($token)) {
 					switch ($token[0]) {
+
+						case T_ATTRIBUTE:
+							$attribute = new Reflection_Attribute($this->fullClassName($this->scanClassName()));
+							break;
+
+						case T_CONSTANT_ENCAPSED_STRING:
+							$attribute?->addArgument(substr($token[1], 1, -1));
+							break;
 
 						case T_NAMESPACE:
 							$this->namespace = $this->scanClassName();
@@ -1318,6 +1377,11 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 						default:
 							$this->doc_comment = '';
 
+					}
+				}
+				elseif ($attribute) {
+					if ($token === ')') {
+						$this->attributes[] = $attribute;
 					}
 				}
 				else {

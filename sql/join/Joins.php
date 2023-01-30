@@ -399,7 +399,7 @@ class Joins
 	 * @param $master_property_name string @example From an Order context : 'Order_Line(order)'
 	 * @param $foreign_path         string
 	 * @return string the foreign class name
-	 * @todo use @store_name to get correct master and foreign columns name
+	 * @todo use #Store_Name to get correct master and foreign columns name
 	 */
 	private function addReverseJoin(
 		Join $join, string &$master_path, string $master_property_name, string $foreign_path

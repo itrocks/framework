@@ -9,7 +9,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ReflectionException;
 
@@ -74,7 +74,7 @@ class Maintain_Controller implements Feature_Controller
 		/** @var $mysql Mysql\Link */
 		$mysql = Dao::current();
 		$table_names = array_flip($mysql->getConnection()->getTables());
-		// @business classes + without Builder replacement + without children with same @store_name
+		// @business classes + without Builder replacement + without children with same #Store_Name
 		// + existing MySQL table
 		$classes      = [];
 		$dependencies = Dao::search(['declaration' => Dependency::T_CLASS], Dependency::class);
@@ -94,7 +94,7 @@ class Maintain_Controller implements Feature_Controller
 							$child_class = $this->classNamed($child_class_name);
 							if (
 								$child_class
-								&& Store_Name_Annotation::equals($child_class, $class)
+								&& Store_Name::equals($child_class, $class)
 								&& !$child_class->isAbstract()
 								&& (
 									$child_class->getAnnotation('business')->value
@@ -111,7 +111,7 @@ class Maintain_Controller implements Feature_Controller
 						$store
 						&& (
 							$this->create_empty_tables
-							|| isset($table_names[Store_Name_Annotation::of($class)->value])
+							|| isset($table_names[Store_Name::of($class)->value])
 						)
 					) {
 						$classes[$class_name] = $class;

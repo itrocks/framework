@@ -16,7 +16,7 @@ use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Router;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Files;
@@ -584,7 +584,7 @@ class Compiler extends Cache
 			) {
 				$dependency                  = new Dependency();
 				$dependency->class_name      = $class->name;
-				$dependency->dependency_name = Store_Name_Annotation::of($class)->value;
+				$dependency->dependency_name = Store_Name::of($class)->value;
 				$dependency->file_name       = $source->file_name;
 				$dependency->type            = Dependency::T_STORE;
 				$dependencies[]              = $dependency;

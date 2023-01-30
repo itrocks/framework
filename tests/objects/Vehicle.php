@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A vehicle
- *
- * @store_name test_vehicles
  */
+#[Store_Name('test_vehicles')]
 class Vehicle
 {
 	use Has_Name;

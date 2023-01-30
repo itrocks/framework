@@ -5,10 +5,10 @@ use ITRocks\Framework\Application;
 use ITRocks\Framework\Autoloader;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
-use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Displays_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display;
+use ITRocks\Framework\Reflection\Attribute\Class_\Displays;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ReflectionClass;
 
@@ -20,7 +20,7 @@ abstract class Names
 
 	//------------------------------------------------------------------------------------ $irregular
 	/**
-	 * This nouns and adjectives are invariant and should not be changed from/to singular / plural
+	 * These nouns and adjectives are invariant and should not be changed from/to singular / plural
 	 */
 	public static array $irregular = [
 		// invariant nouns @see https://en.wiktionary.org/wiki/Category:English_invariant_nouns
@@ -53,14 +53,14 @@ abstract class Names
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
-	 * @param $annotation boolean if true, will use the value of @display first, if exists
+	 * @param $annotation boolean if true, will use the value of #Display first, if exists
 	 * @return string
 	 */
 	public static function classToDisplay(string $class_name, bool $annotation = true) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection Should be called with valid class name */
 		$display = ($annotation && class_exists($class_name))
-			? Display_Annotation::of(new Reflection_Class($class_name))->value
+			? Display::of(new Reflection_Class($class_name))->value
 			: null;
 		return $display ?: strtolower(str_replace('_', SP, Namespaces::shortClassName($class_name)));
 	}
@@ -71,7 +71,7 @@ abstract class Names
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
-	 * @param $annotation boolean if true, will use the value of @displays first, if exists
+	 * @param $annotation boolean if true, will use the value of #Displays first, if exists
 	 * @return string
 	 */
 	public static function classToDisplays(string $class_name, bool $annotation = true) : string
@@ -81,7 +81,7 @@ abstract class Names
 		}
 		/** @noinspection PhpUnhandledExceptionInspection Should be called with valid class name(s) */
 		$displays = (class_exists($class_name) && $annotation)
-			? Displays_Annotation::of(new Reflection_Class($class_name))->value
+			? Displays::of(new Reflection_Class($class_name))->value
 			: null;
 		return $displays
 			?: strtolower(
@@ -164,7 +164,7 @@ abstract class Names
 	public static function classToSet(string $class_name) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection Must be called with a valid class name */
-		return Set_Annotation::of(new Reflection_Class($class_name))->value;
+		return Class_\Set::of(new Reflection_Class($class_name))->value;
 	}
 
 	//------------------------------------------------------------------------------------ classToUri
@@ -433,7 +433,7 @@ abstract class Names
 				/** @noinspection PhpUnhandledExceptionInspection Reflection_Class : class exists */
 				if (
 					(class_exists($set_class_name) || trait_exists($set_class_name))
-					&& (Set_Annotation::of(new Reflection_Class($set_class_name))->value === $set_class_name)
+					&& (Class_\Set::of(new Reflection_Class($set_class_name))->value === $set_class_name)
 				) {
 					self::$sets[$set_class_name] = $set_class_name;
 					return $set_class_name;

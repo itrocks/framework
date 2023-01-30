@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Mapper;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 
 /**
  * A component class for @component @link Object properties testing
- *
- * @store_name test_client_components
  */
+#[Store_Name('test_client_components')]
 class Client_Component
 {
 	use Mapper\Component;

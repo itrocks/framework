@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Mapper;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 
 /**
  * A salesman with specific data for its link to a quote
@@ -9,8 +10,8 @@ use ITRocks\Framework\Mapper;
  * The 'link' annotation allow to consider this class as a link class
  *
  * @link Salesman
- * @store_name test_quote_salesmen
  */
+#[Store_Name('test_quote_salesman')]
 class Quote_Salesman extends Salesman
 {
 	use Mapper\Component;

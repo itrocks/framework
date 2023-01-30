@@ -4,12 +4,12 @@ namespace ITRocks\Framework\Plugin\Installable\Installed;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Installable\Installed;
 use ITRocks\Framework\RAD\Feature;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 
 /**
  * A feature installed as a dependency of another features
- *
- * @store_name installed_dependencies
  */
+#[Store_Name('installed_dependencies')]
 class Dependency extends Installed
 {
 

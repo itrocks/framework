@@ -11,12 +11,12 @@ use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Property;
 use ITRocks\Framework\Reflection;
-use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Displays_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display;
+use ITRocks\Framework\Reflection\Attribute\Class_\Displays;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
@@ -150,8 +150,8 @@ class Select_Controller implements Feature_Controller
 	{
 		// class and its parents
 		$base_class     = Builder::current()->sourceClassName($class->name);
-		$class_display  = Display_Annotation::of($class)->value;
-		$class_displays = Displays_Annotation::of($class)->value;
+		$class_display  = Display::of($class)->value;
+		$class_displays = Displays::of($class)->value;
 		$class_name     = $class->name;
 		$class_names    = [$class_name];
 		while ($class_name && ($class_name !== $base_class)) {

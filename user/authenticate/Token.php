@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User\Authenticate;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Traits\Has_Code;
 use ITRocks\Framework\Traits\Has_Creation_Date_Time;
@@ -9,8 +10,8 @@ use ITRocks\Framework\User;
 
 /**
  * @override validity_end_date @default defaultValidityEndDate
- * @store_name user_tokens
  */
+#[Store_Name('user_tokens')]
 class Token
 {
 	use Has_Code;

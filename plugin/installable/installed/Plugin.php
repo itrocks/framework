@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Plugin\Installable\Installed;
 
 use ITRocks\Framework\Plugin\Installable\Installed;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 
 /**
  * An installed plugin (into config.php)
- *
- * @store_name installed_plugins
  */
+#[Store_Name('installed_plugins')]
 class Plugin extends Installed
 {
 

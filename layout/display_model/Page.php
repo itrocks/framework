@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Layout\Display_Model;
 
 use ITRocks\Framework\Layout\Display_Model;
 use ITRocks\Framework\Layout\Model;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 
 /**
  * Print model page
@@ -10,8 +11,8 @@ use ITRocks\Framework\Layout\Model;
  * @override model @var Display_Model
  * @override ordering @max_length 2
  * @property Display_Model model
- * @store_name display_model_pages
  */
+#[Store_Name('display_model_pages')]
 class Page extends Model\Page
 {
 

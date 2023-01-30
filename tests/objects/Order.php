@@ -1,11 +1,12 @@
 <?php /** @noinspection PhpUnusedPrivateFieldInspection */
 namespace ITRocks\Framework\Tests\Objects;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+
 /**
  * An order class
- *
- * @store_name test_orders
  */
+#[Store_Name('test_orders')]
 class Order extends Document
 {
 

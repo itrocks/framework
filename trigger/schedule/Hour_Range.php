@@ -2,14 +2,15 @@
 namespace ITRocks\Framework\Trigger\Schedule;
 
 use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Trigger\Schedule;
 
 /**
  * Hour range
  *
  * @sort from, until, frequency
- * @store_name trigger_schedule_hour_ranges
  */
+#[Store_Name('trigger_schedule_hour_ranges')]
 class Hour_Range
 {
 	use Component;

@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Reflection\Interfaces;
 
+use ReflectionException;
+
 /**
  * An interface for all reflection classes
  */
@@ -128,6 +130,7 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @param $name string The name of the property to get
 	 * @return ?Reflection_Property
+	 * @throws ReflectionException
 	 */
 	public function getProperty(string $name) : ?Reflection_Property;
 

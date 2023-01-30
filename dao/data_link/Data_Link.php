@@ -9,8 +9,8 @@ use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Option\Key;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -393,7 +393,7 @@ abstract class Data_Link
 	public function storeNameOf(string $class_name) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $class_name must always be valid */
-		return Store_Name_Annotation::of(new Reflection_Class($class_name))->value;
+		return Store_Name::of(new Reflection_Class($class_name))->value;
 	}
 
 	//-------------------------------------------------------------------------------------- truncate

@@ -5,6 +5,7 @@ use ITRocks\Framework\PHP;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 
 /**
@@ -28,7 +29,7 @@ class Store_Annotation extends Boolean_Annotation implements Class_Context_Annot
 	public function __construct(bool|null|string $value, Reflection_Class $class)
 	{
 		if (is_null($value)) {
-			if (!Store_Name_Annotation::of($class)->calculated) {
+			if (!Store_Name::of($class)->calculated) {
 				$value = true;
 			}
 			else {

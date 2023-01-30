@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Objects\Counter;
 
 use ITRocks\Framework\Objects\Counter;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 
 /**
  * Simplified counter, for and easier configuration
@@ -17,8 +18,8 @@ use ITRocks\Framework\Objects\Counter;
  * @override identifier  @alias document
  * @override last_update @user  invisible
  * @override last_value  @alias example @store false
- * @store_name counters
  */
+#[Store_Name('counters')]
 class Simple extends Counter
 {
 

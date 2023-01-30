@@ -7,7 +7,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
-use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\Updater\Updatable;
@@ -84,7 +84,7 @@ class Update implements Registerable, Updatable
 		}
 		if (($feature === true) || (!is_null($feature) && ctype_lower(substr($feature, 0, 1)))) {
 			$class_name = Builder::current()->sourceClassName($class_name);
-			$name       = Display_Annotation::of($class)->value;
+			$name       = Display::of($class)->value;
 			// update name
 			if (isset($feature_classes[$class_name])) {
 				$feature_class       = $feature_classes[$class_name];

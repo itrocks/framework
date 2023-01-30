@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Class_\Tests;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tests\Objects\A_Trait;
 use ITRocks\Framework\Tests\Objects\Document;
@@ -81,13 +81,11 @@ class Class_Test extends Test
 
 	//--------------------------------------------------------------- testStoreNameWithParentAndTrait
 	/**
-	 * Gets the @store_name from a parent and a trait : the trait must override the parent
+	 * Gets the #Store_Name from a parent and a trait : the trait must override the parent
 	 */
 	public function testStoreNameWithParentAndTrait() : void
 	{
-		$store_name = Store_Name_Annotation::of(new Reflection_Class(
-			Class_With_Trait_And_Parent::class
-		));
+		$store_name = Store_Name::of(new Reflection_Class(Class_With_Trait_And_Parent::class));
 		static::assertEquals('test_trait_for_class_store_name', $store_name->value, __METHOD__);
 	}
 

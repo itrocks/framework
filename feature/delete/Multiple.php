@@ -1,8 +1,8 @@
 <?php
 namespace ITRocks\Framework\Feature\Delete;
 
-use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Displays_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display;
+use ITRocks\Framework\Reflection\Attribute\Class_\Displays;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -25,11 +25,11 @@ class Multiple
 	public function __construct(array $objects)
 	{
 		$this->objects = $objects;
-		// get @displays of $objects to set Multiple's @display value
+		// get #Displays of $objects to set Multiple's #Display value
 		/** @noinspection PhpUnhandledExceptionInspection existing object */
-		$display = Displays_Annotation::of(new Reflection_Class(reset($objects)))->value;
+		$display = Displays::of(new Reflection_Class(reset($objects)))->value;
 		/** @noinspection PhpUnhandledExceptionInspection $this */
-		Display_Annotation::of(new Reflection_Class($this))->value = $display;
+		Display::of(new Reflection_Class($this))->value = $display;
 	}
 
 	//------------------------------------------------------------------------------------ __toString

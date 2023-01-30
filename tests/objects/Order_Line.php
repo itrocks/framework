@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Mapper;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 
 /**
  * An order line class
- *
- * @store_name test_order_lines
  */
+#[Store_Name('test_order_lines')]
 class Order_Line
 {
 	use Mapper\Component;

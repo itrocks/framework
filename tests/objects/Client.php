@@ -1,12 +1,14 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+
 /**
  * A client class
  *
  * @representative number, name
- * @store_name test_clients
  */
+#[Store_Name('test_clients')]
 class Client
 {
 

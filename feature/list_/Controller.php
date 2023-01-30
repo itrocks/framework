@@ -37,7 +37,6 @@ use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
@@ -46,6 +45,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Reflection\Type;
@@ -53,7 +53,6 @@ use ITRocks\Framework\Session;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Tools;
 use ITRocks\Framework\Tools\Call_Stack;
-use ITRocks\Framework\Tools\Color;
 use ITRocks\Framework\Tools\Contextual_Callable;
 use ITRocks\Framework\Tools\Default_List_Data;
 use ITRocks\Framework\Tools\List_Data;
@@ -504,7 +503,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		else {
 			$t = $i = '';
 		}
-		$class_display = Names::classToDisplay(Set_Annotation::of($list_settings->getClass())->value);
+		$class_display = Names::classToDisplay(
+			Attribute\Class_\Set::of($list_settings->getClass())->value
+		);
 		$summary         = $t . $i. ucfirst($class_display) . $i . ' filtered by' . $t;
 		$summary_builder = new Summary_Builder($class_name, $search);
 		$summary        .= SP . $summary_builder;

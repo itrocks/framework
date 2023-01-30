@@ -9,7 +9,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Sql\Builder\Select;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
@@ -85,7 +85,7 @@ class View_Builder_Class
 				)
 				|| $sub_class->getAnnotation('private')->value
 				|| Link_Annotation::of($sub_class)->value
-				|| !$this->mysqli->exists(Store_Name_Annotation::of($sub_class)->value)
+				|| !$this->mysqli->exists(Store_Name::of($sub_class)->value)
 			) {
 				continue;
 			}

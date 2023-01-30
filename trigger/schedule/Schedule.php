@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Trigger;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Comparator;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Trigger;
 use ITRocks\Framework\Trigger\Action\Status;
@@ -15,8 +16,8 @@ use ITRocks\Framework\Trigger\Schedule\Hour_Range;
  * @display_order name, hours, days_of_month, months, years, days_of_weeks
  * @override actions @set_store_name trigger_schedule_actions @var Schedule\Action[]
  * @property Schedule\Action[] actions
- * @store_name trigger_schedules
  */
+#[Store_Name('trigger_schedules')]
 class Schedule extends Trigger
 {
 

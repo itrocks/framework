@@ -18,6 +18,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property_Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Can_Be_Empty;
@@ -39,6 +40,7 @@ class Reflection_Property extends ReflectionProperty
 	implements Field, Has_Doc_Comment, Interfaces\Reflection_Property
 {
 	use Annoted;
+	use Property_Has_Attributes;
 
 	//---------------------------------------------------------------------------------------- $alias
 	/**
@@ -167,7 +169,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function __toString() : string
 	{
-		return $this->name;
+		return $this->getFinalClassName() . '::$' . $this->name;
 	}
 
 	//---------------------------------------------------------------------------------------- exists

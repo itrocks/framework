@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User\Group;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
 use ITRocks\Framework\User;
 
 /**
@@ -11,8 +12,8 @@ use ITRocks\Framework\User;
  * @feature false
  * @override groups @foreign user
  * @private
- * @store_name users
  */
+#[Store_Name('users')]
 class Groups_User extends User
 {
 	use Has_Groups;
