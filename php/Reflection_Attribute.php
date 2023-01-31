@@ -1,34 +1,16 @@
 <?php
 namespace ITRocks\Framework\PHP;
 
-use ReflectionClass;
-use ReflectionException;
+use ITRocks\Framework\Reflection;
 
-class Reflection_Attribute
+class Reflection_Attribute extends Reflection\Reflection_Attribute
 {
 
-	//--------------------------------------------------------------------------------- IS_INSTANCEOF
-	public const IS_INSTANCEOF = \ReflectionAttribute::IS_INSTANCEOF;
-
 	//------------------------------------------------------------------------------------ $arguments
-	private array $arguments;
+	protected array $arguments = [];
 
 	//----------------------------------------------------------------------------------------- $name
-	private string $name;
-
-	//------------------------------------------------------------------------------------- $repeated
-	private bool $repeated = false;
-	
-	//--------------------------------------------------------------------------------------- $target
-	private int $target;
-
-	//----------------------------------------------------------------------------------- __construct
-	public function __construct(string $name, array $arguments = [], int $target = 0)
-	{
-		$this->arguments = $arguments;
-		$this->name      = $name;
-		$this->target    = $target;
-	}
+	protected string $name;
 
 	//----------------------------------------------------------------------------------- addArgument
 	public function addArgument(mixed $argument) : void
@@ -40,33 +22,6 @@ class Reflection_Attribute
 	public function getArguments() : array
 	{
 		return $this->arguments;
-	}
-
-	//--------------------------------------------------------------------------------------- getName
-	public function getName() : string
-	{
-		return $this->name;
-	}
-
-	//------------------------------------------------------------------------------------- getTarget
-	public function getTarget() : int
-	{
-		return $this->target;
-	}
-
-	//------------------------------------------------------------------------------------ isRepeated
-	public function isRepeated() : bool
-	{
-		return $this->repeated;
-	}
-
-	//----------------------------------------------------------------------------------- newInstance
-	/**
-	 * @throws ReflectionException
-	 */
-	public function newInstance() : object
-	{
-		return (new ReflectionClass($this->name))->newInstanceArgs($this->arguments);
 	}
 
 }

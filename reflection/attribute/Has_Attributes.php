@@ -3,8 +3,10 @@ namespace ITRocks\Framework\Reflection\Attribute;
 
 use Attribute;
 use Error;
-use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection;
+use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Attribute;
 use ReflectionAttribute;
 use ReflectionClass;
 
@@ -26,52 +28,35 @@ trait Has_Attributes
 	{
 		static $cache = [];
 		$cache_key = strval($this);
+		$class = ($this instanceof Reflection_Property) ? $this->getFinalClass() : $this;
 		if (isset($cache[$cache_key][$name])) {
 			return $cache[$cache_key][$name];
 		}
-		$attributes = $this->getAttributes($name, $flags);
+		$attributes = $this->getAttributes($name, $flags, $this, $class);
 		$attributes = reset($attributes);
 		if (!$attributes) {
 			if ($this->isAttributeRepeatable($name)) {
 				$attributes = [];
 			}
 			elseif (is_a($name, Reflection\Attribute::class, true)) {
-				/** @noinspection PhpAccessStaticViaInstanceInspection Inspector bug : $name is a string */
+				$attributes = new Reflection_Attribute($name, $this, $this, $class);
 				/** @noinspection PhpUnhandledExceptionInspection is_a */
-				$attributes = Builder::create(
-					$name, method_exists($name, 'getDefaultArguments') ? $name::getDefaultArguments() : []
-				);
-				/** @var $attributes Reflection\Attribute */
-				$attributes->setTarget($this);
+				$attributes = $attributes->newInstance(true);
 			}
 			else {
 				$attributes = null;
 			}
 		}
-		elseif (is_array($attributes)) {
-			foreach ($attributes as &$attribute) {
-				if (is_a($name, Reflection\Attribute::class, true)) {
-					/** @noinspection PhpUnhandledExceptionInspection is_a */
-					$attribute = Builder::create($name, $attribute->getArguments());
-					/** @var $attribute Reflection\Attribute */
-					$attribute->setTarget($this);
-				}
-				elseif (class_exists($name)) {
+		elseif (class_exists($name)) {
+			if (is_array($attributes)) {
+				foreach ($attributes as &$attribute) {
 					/** @noinspection PhpUnhandledExceptionInspection class_exists */
-					$attribute = Builder::create($name, $attribute->getArguments());
+					$attribute = $attribute->newInstance();
 				}
 			}
-		}
-		else {
-			if (is_a($name, Reflection\Attribute::class, true)) {
-				/** @noinspection PhpUnhandledExceptionInspection is_a */
-				$attributes = Builder::create($name, $attributes->getArguments());
-				/** @var $attribute Reflection\Attribute */
-				$attributes->setTarget($this);
-			}
-			elseif (class_exists($name)) {
+			else {
 				/** @noinspection PhpUnhandledExceptionInspection class_exists */
-				$attributes = Builder::create($name, $attributes->getArguments());
+				$attributes = $attributes->newInstance();
 			}
 		}
 		$cache[$cache_key][$name] = $attributes;
@@ -87,20 +72,30 @@ trait Has_Attributes
 	 * The returned array key is the name of the attribute.
 	 *
 	 * The value of each returned array element is :
-	 * - !Attribute::IS_REPEATABLE attributes : a single ReflectionAttribute.
-	 * - Attribute::IS_REPEATABLE attributes : an array of ReflectionAttribute.
+	 * - !Attribute::IS_REPEATABLE attributes : a single Reflection_Attribute.
+	 * - Attribute::IS_REPEATABLE attributes : an array of Reflection_Attribute.
 	 *
 	 * @param $name  string|null
 	 * @param $flags integer
-	 * @return ReflectionAttribute[]|ReflectionAttribute[][]
+	 * @param $final Interfaces\Reflection|null
+	 * @param $class Interfaces\Reflection_Class|null
+	 * @return Reflection_Attribute[]|Reflection_Attribute[][]
 	 */
-	public function getAttributes(?string $name = null, int $flags = 0) : array
+	public function getAttributes(
+		string $name = null, int $flags = 0,
+		Interfaces\Reflection $final = null,
+		Interfaces\Reflection_Class $class = null
+	) : array
 	{
 		$attributes = [];
+		if (!$final) {
+			$final = $this;
+		}
 		/** @noinspection PhpMultipleClassDeclarationsInspection All parents use Has_Attributes */
 		foreach (parent::getAttributes($name, $flags) as $attribute) {
+			$attribute      = new Reflection_Attribute($attribute, $this, $final, $class);
 			$attribute_name = $attribute->getName();
-			if ($this->isAttributeRepeatable($attribute_name)) {
+			if ($attribute->isRepeatable()) {
 				$attributes[$attribute_name][] = $attribute;
 			}
 			else {
@@ -110,22 +105,6 @@ trait Has_Attributes
 		return $attributes;
 	}
 
-	//----------------------------------------------------------------------------------- isAttribute
-	public function isAttribute(?string $name) : bool
-	{
-		return $name
-			&& class_exists($name)
-			&& (new ReflectionClass($name))->getAttributes(Attribute::class);
-	}
-
-	//------------------------------------------------------------------------ isAttributeInheritable
-	public function isAttributeInheritable(?string $name) : bool
-	{
-		return !$name
-			|| !class_exists($name)
-			|| !(new ReflectionClass($name))->getAttributes(Local::class);
-	}
-
 	//------------------------------------------------------------------------------ isAttributeLocal
 	public function isAttributeLocal(?string $name) : bool
 	{
@@ -133,7 +112,7 @@ trait Has_Attributes
 			&& class_exists($name)
 			&& (new ReflectionClass($name))->getAttributes(Local::class);
 	}
-	
+
 	//------------------------------------------------------------------------- isAttributeRepeatable
 	public function isAttributeRepeatable(?string $name) : bool
 	{
@@ -145,6 +124,11 @@ trait Has_Attributes
 	}
 
 	//------------------------------------------------------------------------------- mergeAttributes
+	/**
+	 * @param $attributes        Reflection_Attribute[]|Reflection_Attribute[][]
+	 * @param $name              ?string
+	 * @param $parent_attributes Reflection_Attribute[]|Reflection_Attribute[][]
+	 */
 	private function mergeAttributes(array &$attributes, ?string $name, array $parent_attributes)
 		: void
 	{
@@ -154,7 +138,7 @@ trait Has_Attributes
 					$attributes[$parent_name] = array_merge($attributes[$parent_name], $attribute);
 				}
 			}
-			elseif ($name || !$this->isAttributeLocal($parent_name)) {
+			elseif ($name || !$attribute->isLocal()) {
 				$attributes[$parent_name] = $attribute;
 			}
 		}

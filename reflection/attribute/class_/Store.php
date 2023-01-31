@@ -4,9 +4,10 @@ namespace ITRocks\Framework\Reflection\Attribute\Class_;
 use Attribute;
 use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Class_Has_Attributes;
 use ITRocks\Framework\Reflection\Attribute\Has_String_Value;
-use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Attribute;
 use ITRocks\Framework\Tools\Namespaces;
 
 #[Attribute]
@@ -23,6 +24,9 @@ class Store extends Class_
 	//----------------------------------------------------------------------------------- $calculated
 	public bool $calculated = false;
 
+	//---------------------------------------------------------------------------------------- $class
+	public Reflection_Class|Class_Has_Attributes $class;
+
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct(bool|string $value = true)
 	{
@@ -34,20 +38,20 @@ class Store extends Class_
 	}
 
 	//--------------------------------------------------------------------------------- calculateName
-	public function calculateName() : string
+	public function calculateName(Reflection_Class $class) : string
 	{
-		$name = strtolower(Namespaces::shortClassName(Set::of($this->class)->value));
-		if ($this->class->isAbstract()) {
+		$name = strtolower(Namespaces::shortClassName(Set::of($class)->value));
+		if ($class->isAbstract()) {
 			$name .= '_view';
 		}
 		return $name;
 	}
 
 	//--------------------------------------------------------------------------------------- extends
-	protected function extends() : void
+	protected function extends(Reflection_Class $class) : void
 	{
-		foreach (Extends_Annotation::of($this->class)->values() as $extends) {
-			$reflection_class = get_class($this->class);
+		foreach (Extends_Annotation::of($class)->values() as $extends) {
+			$reflection_class = get_class($class);
 			$store_extends    = static::of(new $reflection_class($extends));
 			if ($value = $store_extends->value) {
 				$this->calculated = $store_extends->calculated;
@@ -64,18 +68,43 @@ class Store extends Class_
 		return [static::EXTENDS];
 	}
 
-	//------------------------------------------------------------------------------------- setTarget
-	public function setTarget(Reflection|Reflection_Class $target) : void
+	//----------------------------------------------------------------------------- setDeclaringClass
+	public function setDeclaringClass(Reflection_Class $class) : void
 	{
-		$this->class = $target;
-		if (!in_array($this->value, [static::CALCULATE, static::EXTENDS])) return;
+		$this->class = $class;
+		if ($this->value === static::CALCULATE) {
+			$this->calculated = true;
+			$this->value      = $this->calculateName($class);
+		}
+	}
 
+	//-------------------------------------------------------------------------------------- setFinal
+	public function setFinal(Reflection_Class $class) : void
+	{
 		if ($this->value === static::EXTENDS) {
-			$this->extends();
+			$this->extends($class);
+		}
+	}
+
+	//------------------------------------------------------------------------------------- storeName
+	public function storeName() : string
+	{
+		if ($this->value) {
+			return $this->value;
+		}
+		$attributes = [];
+		$this->class->mergeParentAttributes(
+			$attributes, get_class($this), 0, $this->class, $this->class
+		);
+		if ($attributes) {
+			/** @var $attribute Reflection_Attribute */
+			$attribute = reset($attributes);
+			/** @noinspection PhpUnhandledExceptionInspection static class */
+			$store = $attribute->newInstance();
+			return $store->storeName();
 		}
 		else {
-			$this->calculated = true;
-			$this->value      = $this->calculateName();
+			return $this->calculateName($this->class);
 		}
 	}
 

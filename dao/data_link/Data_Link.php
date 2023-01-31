@@ -389,8 +389,13 @@ abstract class Data_Link
 	public function storeNameOf(object|string $class) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $class_name must always be valid */
-		$store = Store::of(($class instanceof Reflection_Class) ? $class : new Reflection_Class($class));
-		return $store->value ?: $store->calculateName();
+		$class = ($class instanceof Reflection_Class) ? $class : new Reflection_Class($class);
+		$value = Store::of($class)->storeName();
+		if (!$value) {
+			// TODO should never happen
+			trigger_error('Missing #Store for class ' . $class->getName(), E_USER_ERROR);
+		}
+		return $value;
 	}
 
 	//-------------------------------------------------------------------------------------- truncate

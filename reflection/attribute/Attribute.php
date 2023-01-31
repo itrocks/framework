@@ -27,7 +27,4 @@ abstract class Attribute
 		return $has_attributes->getAttribute(get_called_class());
 	}
 
-	//------------------------------------------------------------------------------------- setTarget
-	abstract public function setTarget(Reflection $target) : void;
-
 }

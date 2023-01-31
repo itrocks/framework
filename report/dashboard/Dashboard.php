@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Report;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Report\Dashboard\Indicator;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Traits\Has_Name;
@@ -13,6 +14,7 @@ use ITRocks\Framework\Traits\Has_Name;
  *
  * @feature
  */
+#[Store]
 class Dashboard
 {
 	use Has_Name;

@@ -288,9 +288,14 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @param $name  string|null
 	 * @param $flags integer
+	 * @param $final Interfaces\Reflection|null
+	 * @praam $class Interfaces\Reflection_Class|null
 	 * @return Reflection_Attribute[]|Reflection_Attribute[][]
 	 */
-	public function getAttributesCommon(?string $name = null, int $flags = 0) : array
+	public function getAttributesCommon(
+		string $name = null, int $flags = 0, Interfaces\Reflection $final = null,
+		Interfaces\Reflection_Class $class = null
+	) : array
 	{
 		if (!isset($this->attributes)) {
 			$this->scanUntilClassName();
@@ -1342,7 +1347,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 					switch ($token[0]) {
 
 						case T_ATTRIBUTE:
-							$attribute = new Reflection_Attribute($this->fullClassName($this->scanClassName()));
+							$attribute = new Reflection_Attribute(
+								$this->fullClassName($this->scanClassName()), $this, $this, $this
+							);
 							$this->token_key --;
 							$attribute_depth = 0;
 							break;
@@ -1408,7 +1415,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 					}
 					elseif (($token === ',') && !$attribute_depth) {
 						$this->attributes[] = $attribute;
-						$attribute = new Reflection_Attribute($this->fullClassName($this->scanClassName()));
+						$attribute = new Reflection_Attribute(
+							$this->fullClassName($this->scanClassName()), $this, $this, $this
+						);
 						$this->token_key --;
 					}
 				}

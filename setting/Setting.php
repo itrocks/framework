@@ -3,6 +3,7 @@ namespace ITRocks\Framework;
 
 use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting\Custom;
 use ITRocks\Framework\Tools\Names;
@@ -14,6 +15,7 @@ use ITRocks\Framework\Tools\Names;
  * @before_write invalidateValueSetting
  * @feature admin
  */
+#[Store]
 class Setting implements Validate\Except
 {
 
