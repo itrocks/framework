@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Plugin\Installable\Installed;
 
 use ITRocks\Framework\Plugin\Installable\Installed;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * An installed build (into builder.php)
  */
-#[Store_Name('installed_builds')]
+#[Store('installed_builds')]
 class Builder extends Installed
 {
 

@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * A salesman with specific data for its link to a quote and with additional specific data
@@ -10,7 +10,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
  *
  * @link Quote_Salesman
  */
-#[Store_Name('test_quotes_salesmen_additional')]
+#[Store('test_quotes_salesmen_additional')]
 class Quote_Salesman_Additional extends Quote_Salesman
 {
 

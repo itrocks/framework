@@ -34,7 +34,7 @@ trait Property_Has_Attributes
 		$attributes = $this->getAttributesCommon($name, $flags);
 		$cache[$cache_key][$name ?: ''][$flags] = $attributes;
 		if (
-			!$this->isAttributeInheritable($name)
+			$this->isAttributeLocal($name)
 			|| ($attributes && !$this->isAttributeRepeatable($name))
 			|| !($overridden_property = $this->getOverriddenProperty())
 		) {

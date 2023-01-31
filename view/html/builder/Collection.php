@@ -10,8 +10,6 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
@@ -19,6 +17,8 @@ use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -176,10 +176,7 @@ class Collection
 			is_object($value)
 			&& !($value instanceof Stringable)
 			&& $type->isSingleClass()
-			&& (
-				($class = $type->asReflectionClass())->getAnnotation('business')->value
-				|| Store_Annotation::of($class)->value
-			)
+			&& Store::of($type->asReflectionClass())->value
 			&& Dao::getObjectIdentifier($value, 'id')
 		) {
 			$anchor = new Anchor(View::link($value), strval($value));
@@ -247,7 +244,7 @@ class Collection
 			$this->property_displays[$property->path]
 			?? (
 				$this->property_displays[$property->path] = Loc::tr(
-					Names::propertyToDisplay(Alias_Annotation::of($property)->value), $this->class_name
+					Names::propertyToDisplay(Alias::of($property)->value), $this->class_name
 				)
 			)
 		);
@@ -274,7 +271,7 @@ class Collection
 			) {
 				$cell = new Item(
 					Loc::tr(
-						Names::propertyToDisplay(Alias_Annotation::of($property)->value),
+						Names::propertyToDisplay(Alias::of($property)->value),
 						$this->class_name
 					)
 				);

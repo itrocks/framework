@@ -81,7 +81,7 @@ class Json
 	 */
 	protected function getUnduplicateNameFromObject(object $business_object) : string
 	{
-		return Dao::current()->storeNameOf(get_class($business_object))
+		return Dao::current()->storeNameOf($business_object)
 			. SL
 			. Dao::getObjectIdentifier($business_object);
 	}

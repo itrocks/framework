@@ -7,6 +7,7 @@ use ITRocks\Framework\Layout\Model\Page;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Property\Reflection_Property;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Feature_Class;
 use ITRocks\Framework\Tools\Names;
@@ -17,10 +18,10 @@ use ReflectionException;
 /**
  * A print model gives the way to print an object of a given class
  *
- * @business
  * @override name @getter
  * @representative document.name, name
  */
+#[Store]
 abstract class Model
 {
 	use Has_Name;

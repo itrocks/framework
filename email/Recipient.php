@@ -4,17 +4,18 @@ namespace ITRocks\Framework\Email;
 use ITRocks\Framework\Component\Combo\Fast_Add;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Traits\Has_Email;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * An email recipient (or sender, this object can be used for both)
  *
- * @business
  * @override name @mandatory false
  * @representative name, email
  * @sort name, email
  */
+#[Store]
 class Recipient implements Fast_Add
 {
 	use Has_Email;

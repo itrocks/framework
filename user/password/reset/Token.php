@@ -2,11 +2,11 @@
 namespace ITRocks\Framework\User\Password\Reset;
 
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
-#[Store_Name('password_reset_tokens')]
+#[Store('password_reset_tokens')]
 class Token
 {
 

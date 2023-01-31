@@ -1,12 +1,12 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * A simple generic counter manager
  */
-#[Store_Name('test_counters')]
+#[Store('test_counters')]
 class Counter
 {
 

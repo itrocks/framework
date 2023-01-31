@@ -1,11 +1,12 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+
 /**
  * A trait for creation and update date logged objects
- *
- * @business
  */
+#[Store]
 trait Date_Logged
 {
 	use Has_Creation_Date_Time;

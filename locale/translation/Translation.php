@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Locale;
 
 use AllowDynamicProperties;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * A translation is the association of the origin programmed text and its translation using a given
@@ -9,10 +10,10 @@ use AllowDynamicProperties;
  *
  * @display_order language, text, translation, context
  * @representative language, text, context, translation
- * @stored
- * @todo Remove AllowDynamicProperties where $id will be general to all @stored classes
+ * @todo Remove #AllowDynamicProperties where $id will be general to all #Store classes
  */
 #[AllowDynamicProperties]
+#[Store]
 class Translation
 {
 

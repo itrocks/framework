@@ -4,14 +4,17 @@ namespace ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Attribute\Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 
-trait Attribute
+abstract class Attribute
 {
+
+	//------------------------------------------------------------------------------------ __toString
+	abstract public function __toString() : string;
 
 	//---------------------------------------------------------------------------------------- equals
 	public static function equals(Reflection $reflection_object, Reflection $other_reflection_object)
 		: bool
 	{
-		return (static::of($reflection_object)->value === static::of($other_reflection_object)->value);
+		return !strcmp(static::of($reflection_object), static::of($other_reflection_object));
 	}
 
 	//-------------------------------------------------------------------------------------------- of
@@ -23,5 +26,8 @@ trait Attribute
 	{
 		return $has_attributes->getAttribute(get_called_class());
 	}
+
+	//------------------------------------------------------------------------------------- setTarget
+	abstract public function setTarget(Reflection $target) : void;
 
 }

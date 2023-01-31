@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Class_\Tests;
 
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Option;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * Class annotations unit tests
@@ -15,7 +15,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
  * @before_write localBeforeWrite
  * @before_write Test_Object::distantBeforeWrite
  */
-#[Store_Name('unit_tests')]
+#[Store('unit_tests')]
 class Test_Object
 {
 

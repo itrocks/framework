@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\User;
 
 /**
  * Sensitive data encryption keys
  */
-#[Store_Name('sensitive_data_keys')]
+#[Store('sensitive_data_keys')]
 class Key
 {
 

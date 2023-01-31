@@ -111,7 +111,7 @@ class Object_To_Write_Array
 	//----------------------------------------------------------------------------------------- $only
 	/**
 	 * Will write only these properties (property names)
-	 * If empty, all properties but excluded and @store false will be written
+	 * If empty, all properties but excluded and #Store(false) will be written
 	 *
 	 * @var string[]
 	 */

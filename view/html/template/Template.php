@@ -13,9 +13,9 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Http\Uri;
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
@@ -1748,10 +1748,7 @@ class Template
 						is_object($object)
 						&& !($object instanceof Stringable)
 						&& $type->isSingleClass()
-						&& (
-							($class = new Reflection_Class($object))->getAnnotation('business')->value
-							|| Store_Annotation::of($class)->value
-						)
+						&& Store::of(new Reflection_Class($object))->value
 						&& Dao::getObjectIdentifier($object)
 					) {
 						$anchor = new Anchor(Framework\View::link($object), strval($object));

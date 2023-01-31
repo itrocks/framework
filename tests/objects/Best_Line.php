@@ -1,12 +1,12 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * Test line class
  */
-#[Store_Name('test_best_lines')]
+#[Store('test_best_lines')]
 class Best_Line
 {
 

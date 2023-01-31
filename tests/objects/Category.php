@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A category class
  */
-#[Store_Name('test_categories')]
+#[Store('test_categories')]
 class Category
 {
 	use Has_Name;

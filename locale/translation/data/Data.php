@@ -5,14 +5,14 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Language;
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * Application data translation
  *
  * @representative class_name, property_name, language.code, translation
  */
-#[Store_Name('data_translations')]
+#[Store('data_translations')]
 class Data
 {
 

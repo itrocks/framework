@@ -1,12 +1,14 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+
 /**
  * Use it for any class or trait that need to have $ordering, helpful to sort elements
  *
- * @business
  * @sort ordering
  */
+#[Store]
 trait Has_Ordering
 {
 

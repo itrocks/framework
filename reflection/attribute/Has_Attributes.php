@@ -4,9 +4,9 @@ namespace ITRocks\Framework\Reflection\Attribute;
 use Attribute;
 use Error;
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection;
 use ReflectionAttribute;
 use ReflectionClass;
-use ReflectionException;
 
 /**
  * For reflection elements that have attributes
@@ -16,6 +16,7 @@ trait Has_Attributes
 
 	//---------------------------------------------------------------------------------- getAttribute
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $name  class-string<T>
 	 * @param $flags integer
 	 * @return T|T[]|null
@@ -31,40 +32,46 @@ trait Has_Attributes
 		$attributes = $this->getAttributes($name, $flags);
 		$attributes = reset($attributes);
 		if (!$attributes) {
-			try {
-				$attributes = $this->isAttributeRepeatable($name) ? [] : Builder::create($name);
-				if ($attributes instanceof Calculated) {
-					$attributes->calculate($this);
-				}
+			if ($this->isAttributeRepeatable($name)) {
+				$attributes = [];
 			}
-			catch (ReflectionException) {
+			elseif (is_a($name, Reflection\Attribute::class, true)) {
+				/** @noinspection PhpAccessStaticViaInstanceInspection Inspector bug : $name is a string */
+				/** @noinspection PhpUnhandledExceptionInspection is_a */
+				$attributes = Builder::create(
+					$name, method_exists($name, 'getDefaultArguments') ? $name::getDefaultArguments() : []
+				);
+				/** @var $attributes Reflection\Attribute */
+				$attributes->setTarget($this);
+			}
+			else {
 				$attributes = null;
 			}
 		}
 		elseif (is_array($attributes)) {
 			foreach ($attributes as &$attribute) {
-				try {
-					$attribute = $attribute->newInstance();
+				if (is_a($name, Reflection\Attribute::class, true)) {
+					/** @noinspection PhpUnhandledExceptionInspection is_a */
+					$attribute = Builder::create($name, $attribute->getArguments());
+					/** @var $attribute Reflection\Attribute */
+					$attribute->setTarget($this);
 				}
-				catch (Error $error) {
-					if (!static::newInstanceError($error)) throw $error;
-				}
-				if ($attribute instanceof Calculated) {
-					$attribute->calculate($this);
+				elseif (class_exists($name)) {
+					/** @noinspection PhpUnhandledExceptionInspection class_exists */
+					$attribute = Builder::create($name, $attribute->getArguments());
 				}
 			}
 		}
 		else {
-			try {
-				$attributes = $attributes->newInstance();
+			if (is_a($name, Reflection\Attribute::class, true)) {
+				/** @noinspection PhpUnhandledExceptionInspection is_a */
+				$attributes = Builder::create($name, $attributes->getArguments());
+				/** @var $attribute Reflection\Attribute */
+				$attributes->setTarget($this);
 			}
-			catch (Error $error) {
-				if (!static::newInstanceError($error)) {
-					throw $error;
-				}
-			}
-			if ($attributes instanceof Calculated) {
-				$attributes->calculate($this);
+			elseif (class_exists($name)) {
+				/** @noinspection PhpUnhandledExceptionInspection class_exists */
+				$attributes = Builder::create($name, $attributes->getArguments());
 			}
 		}
 		$cache[$cache_key][$name] = $attributes;
@@ -92,14 +99,23 @@ trait Has_Attributes
 		$attributes = [];
 		/** @noinspection PhpMultipleClassDeclarationsInspection All parents use Has_Attributes */
 		foreach (parent::getAttributes($name, $flags) as $attribute) {
-			if ($this->isAttributeRepeatable($attribute->getName())) {
-				$attributes[$attribute->getName()][] = $attribute;
+			$attribute_name = $attribute->getName();
+			if ($this->isAttributeRepeatable($attribute_name)) {
+				$attributes[$attribute_name][] = $attribute;
 			}
 			else {
-				$attributes[$attribute->getName()] = $attribute;
+				$attributes[$attribute_name] = $attribute;
 			}
 		}
 		return $attributes;
+	}
+
+	//----------------------------------------------------------------------------------- isAttribute
+	public function isAttribute(?string $name) : bool
+	{
+		return $name
+			&& class_exists($name)
+			&& (new ReflectionClass($name))->getAttributes(Attribute::class);
 	}
 
 	//------------------------------------------------------------------------ isAttributeInheritable
@@ -107,9 +123,17 @@ trait Has_Attributes
 	{
 		return !$name
 			|| !class_exists($name)
-			|| (new ReflectionClass($name))->getAttributes(Inheritable::class);
+			|| !(new ReflectionClass($name))->getAttributes(Local::class);
 	}
 
+	//------------------------------------------------------------------------------ isAttributeLocal
+	public function isAttributeLocal(?string $name) : bool
+	{
+		return $name
+			&& class_exists($name)
+			&& (new ReflectionClass($name))->getAttributes(Local::class);
+	}
+	
 	//------------------------------------------------------------------------- isAttributeRepeatable
 	public function isAttributeRepeatable(?string $name) : bool
 	{
@@ -130,7 +154,7 @@ trait Has_Attributes
 					$attributes[$parent_name] = array_merge($attributes[$parent_name], $attribute);
 				}
 			}
-			elseif ($name || $this->isAttributeInheritable($parent_name)) {
+			elseif ($name || !$this->isAttributeLocal($parent_name)) {
 				$attributes[$parent_name] = $attribute;
 			}
 		}

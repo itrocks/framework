@@ -8,8 +8,7 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\PHP\Dependency;
-use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ReflectionException;
 
@@ -74,7 +73,7 @@ class Maintain_Controller implements Feature_Controller
 		/** @var $mysql Mysql\Link */
 		$mysql = Dao::current();
 		$table_names = array_flip($mysql->getConnection()->getTables());
-		// @business classes + without Builder replacement + without children with same #Store_Name
+		// #Store classes + without Builder replacement + without children with same #Store_Name
 		// + existing MySQL table
 		$classes      = [];
 		$dependencies = Dao::search(['declaration' => Dependency::T_CLASS], Dependency::class);
@@ -85,7 +84,7 @@ class Maintain_Controller implements Feature_Controller
 				if (
 					$class
 					&& !$class->isAbstract()
-					&& ($class->getAnnotation('business')->value || Store_Annotation::of($class)->value)
+					&& Store::of($class)->value
 					&& !$class->getAnnotation('deprecated')->value
 				) {
 					$store = true;
@@ -94,12 +93,8 @@ class Maintain_Controller implements Feature_Controller
 							$child_class = $this->classNamed($child_class_name);
 							if (
 								$child_class
-								&& Store_Name::equals($child_class, $class)
+								&& Store::equals($child_class, $class)
 								&& !$child_class->isAbstract()
-								&& (
-									$child_class->getAnnotation('business')->value
-									|| Store_Annotation::of($child_class)->value
-								)
 								&& !$child_class->getAnnotation('deprecated')->value
 							) {
 								$store = false;
@@ -109,10 +104,7 @@ class Maintain_Controller implements Feature_Controller
 					}
 					if (
 						$store
-						&& (
-							$this->create_empty_tables
-							|| isset($table_names[Store_Name::of($class)->value])
-						)
+						&& ($this->create_empty_tables || isset($table_names[Store::of($class)->value]))
 					) {
 						$classes[$class_name] = $class;
 					}

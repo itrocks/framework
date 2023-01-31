@@ -5,12 +5,12 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
-use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
@@ -191,9 +191,10 @@ class Html_Builder_Collection extends Collection
 			&& is_a($builder, Property::class, true)
 		) {
 			$this->template->properties_prefix[] = $pre_path;
+			/** @noinspection PhpParamsInspection $builder Inspector bug : $builder is a string */
 			/** @noinspection PhpUnhandledExceptionInspection $builder and $property are valid */
 			/** @var $builder Property */
-			$builder = Builder::create($builder, [$property_value, $value, $this->template]);
+			$builder                              = Builder::create($builder, [$property_value, $value, $this->template]);
 			$builder->parameters[Feature::F_EDIT] = Feature::F_EDIT;
 			if (property_exists($builder, 'pre_path')) {
 				$builder->pre_path = $pre_path . '[]';
@@ -233,11 +234,7 @@ class Html_Builder_Collection extends Collection
 		}
 		$cell->setData('property', $property->path);
 		$cell->setData(
-			'title',
-			Loc::tr(
-				Names::propertyToDisplay(Alias_Annotation::of($property)->value),
-				$this->class_name
-			)
+			'title', Loc::tr(Names::propertyToDisplay(Alias::of($property)->value), $this->class_name)
 		);
 		if ($component_object_html = $property->isComponentObjectHtml()) {
 			$cell->addClass($component_object_html);

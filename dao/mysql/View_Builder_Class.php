@@ -8,8 +8,7 @@ use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Store_Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Sql\Builder\Select;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
@@ -65,7 +64,7 @@ class View_Builder_Class
 	 */
 	private function buildClassView(Reflection_Class $class) : View
 	{
-		$view_name  = Dao::current()->storeNameOf($class->name);
+		$view_name  = Dao::current()->storeNameOf($class);
 		$view       = new View($view_name);
 		$properties = $class->getProperties();
 		foreach ($properties as $property_name => $property) {
@@ -79,13 +78,10 @@ class View_Builder_Class
 			$sub_class = new Reflection_Class(Builder::className($class_name));
 			if (
 				$sub_class->isAbstract()
-				|| !(
-					$sub_class->getAnnotation('business')->value
-					|| Store_Annotation::of($sub_class)->value
-				)
+				|| !Store::of($sub_class)->value
 				|| $sub_class->getAnnotation('private')->value
 				|| Link_Annotation::of($sub_class)->value
-				|| !$this->mysqli->exists(Store_Name::of($sub_class)->value)
+				|| !$this->mysqli->exists(Store::of($sub_class)->value)
 			) {
 				continue;
 			}

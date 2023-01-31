@@ -3,14 +3,14 @@ namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * A vehicle door
  *
  * @validate codeValid
  */
-#[Store_Name('test_vehicle_doors')]
+#[Store('test_vehicle_doors')]
 class Vehicle_Door
 {
 	use Mapper\Component;

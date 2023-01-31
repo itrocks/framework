@@ -7,6 +7,7 @@ use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template;
 use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Do_Not_Inherit;
+use ITRocks\Framework\Reflection\Attribute\Class_\Displays;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
@@ -51,13 +52,11 @@ class Feature_Menu_Annotation extends Annotation
 		$value = str_replace(':', SP, $value);
 		if (substr($value, 0, 1) !== SL) {
 			$value = View::link(Names::classToSet($class->getName()), Feature::F_LIST) . SP . $value;
-			$this->item_caption = ucfirst(Displays_Annotation::of($class));
+			$this->item_caption = ucfirst(Displays::of($class));
 		}
 		else {
 			$class_name         = Names::uriToClass(lParse($value, SP));
-			$this->item_caption = ucfirst(
-				Displays_Annotation::of(new Reflection\Reflection_Class($class_name))
-			);
+			$this->item_caption = ucfirst(Displays::of(new Reflection\Reflection_Class($class_name)));
 		}
 		[$link, $value] = explode(SP, $value, 2);
 		parent::__construct($link);

@@ -3,15 +3,16 @@ namespace ITRocks\Framework\SSO;
 
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\User;
 
 /**
  * Plugin to manage the framework as a SSO authentication server
  *
- * @business
  * @representative action, login, request_time_float
  * @validate validateAuthentication
  */
+#[Store]
 class Authentication
 {
 

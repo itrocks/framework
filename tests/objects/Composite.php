@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A sample composite class
  */
-#[Store_Name('test_composites')]
+#[Store('test_composites')]
 class Composite
 {
 	use Has_Name;

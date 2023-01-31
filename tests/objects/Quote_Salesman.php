@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Mapper;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * A salesman with specific data for its link to a quote
@@ -11,7 +11,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
  *
  * @link Salesman
  */
-#[Store_Name('test_quote_salesman')]
+#[Store('test_quote_salesman')]
 class Quote_Salesman extends Salesman
 {
 	use Mapper\Component;

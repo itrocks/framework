@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * A document class
  */
-#[Store_Name('test_documents')]
+#[Store('test_documents')]
 abstract class Document
 {
 	use Has_Counter;

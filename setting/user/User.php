@@ -4,7 +4,7 @@ namespace ITRocks\Framework\Setting;
 use ITRocks\Framework;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Mapper\Getter;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Setting;
 
 /**
@@ -12,7 +12,7 @@ use ITRocks\Framework\Setting;
  *
  * @before_write invalidateObjects
  */
-#[Store_Name('user_settings')]
+#[Store('user_settings')]
 class User extends Setting
 {
 	use Component;

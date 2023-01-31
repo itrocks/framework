@@ -1327,6 +1327,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		$token = $this->tokens[$this->token_key = 0];
 
 		$attribute        = null;
+		$attribute_depth  = 0;
 		$this->attributes = [];
 		$this->namespace  = '';
 		$this->use        = [];
@@ -1342,10 +1343,25 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 						case T_ATTRIBUTE:
 							$attribute = new Reflection_Attribute($this->fullClassName($this->scanClassName()));
+							$this->token_key --;
+							$attribute_depth = 0;
 							break;
 
 						case T_CONSTANT_ENCAPSED_STRING:
-							$attribute?->addArgument(substr($token[1], 1, -1));
+							if ($attribute_depth === 1) {
+								$attribute?->addArgument(substr($token[1], 1, - 1));
+							}
+							break;
+
+						case T_STRING:
+							if ($attribute_depth === 1) {
+								$attribute?->addArgument(match($token[1]) {
+									'false' => false,
+									'null'  => null,
+									'true'  => true,
+									default => $token[1]
+								});
+							}
 							break;
 
 						case T_NAMESPACE:
@@ -1380,8 +1396,20 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 					}
 				}
 				elseif ($attribute) {
-					if ($token === ')') {
+					if ($token === '(') {
+						$attribute_depth ++;
+					}
+					elseif ($token === ')') {
+						$attribute_depth --;
+					}
+					elseif ($token === ']') {
 						$this->attributes[] = $attribute;
+						$attribute = null;
+					}
+					elseif (($token === ',') && !$attribute_depth) {
+						$this->attributes[] = $attribute;
+						$attribute = new Reflection_Attribute($this->fullClassName($this->scanClassName()));
+						$this->token_key --;
 					}
 				}
 				else {

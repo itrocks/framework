@@ -133,7 +133,7 @@ class Link extends Identifier_Map
 	public function propertyFileName(object $object, string $property_name) : string
 	{
 		return $this->path
-			. $this->storeNameOf(get_class($object)) . SL
+			. $this->storeNameOf($object) . SL
 			. $this->getObjectIdentifier($object) . '-' . $property_name;
 	}
 

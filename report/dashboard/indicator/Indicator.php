@@ -12,7 +12,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Constant_Or_Method_Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Report\Dashboard;
 use ITRocks\Framework\Report\Dashboard\Indicator\Property_Path\Widget;
@@ -28,7 +28,7 @@ use ReflectionException;
  * @feature move
  * @representative setting.code
  */
-#[Store_Name('dashboard_indicators')]
+#[Store('dashboard_indicators')]
 class Indicator
 {
 	use Component;

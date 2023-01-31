@@ -9,13 +9,13 @@ use ITRocks\Framework\Email\Output\Has_Output_Properties;
 use ITRocks\Framework\Email\Recipient;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * A ITRocks electronic mail object to get full access to mails without depending on MIME or the else
  *
  * @before_write beforeWrite
- * @business
  * @display_order account, date, send_date, receive_date, from, to, copy_to, blind_copy_to,
  * reply_to, return_path, headers, send_message, uidl, subject, content, attachments
  * @feature admin
@@ -26,6 +26,7 @@ use ITRocks\Framework\Tools\Date_Time;
  * @feature send
  * @representative date, from, to, subject
  */
+#[Store]
 class Email
 {
 	use Has_Output_Properties;

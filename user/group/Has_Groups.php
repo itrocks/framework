@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\User;
 use ITRocks\Framework\User\Group;
@@ -13,9 +14,8 @@ use ITRocks\Framework\User\Group;
  * For business objects that need groups.
  *
  * Done for User, but can be used for other environments objects : eg organisations, etc.
- *
- * @business
  */
+#[Store]
 trait Has_Groups
 {
 

@@ -4,8 +4,8 @@ namespace ITRocks\Framework\Dao\Mysql\Information_Schema;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\PHP\Dependency;
-use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -103,7 +103,7 @@ EOT;
 			}
 			/** @noinspection PhpUnhandledExceptionInspection */
 			foreach ((new Reflection_Class($class_name))->getProperties() as $property) {
-				if (Alias_Annotation::of($property)->value === $property_name) {
+				if (Alias::of($property)->value === $property_name) {
 					$property_name = $property->name;
 				}
 				if (Store_Name_Annotation::of($property)->value === $property_name) {

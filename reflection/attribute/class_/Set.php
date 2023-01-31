@@ -2,33 +2,23 @@
 namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
 use Attribute;
-use ITRocks\Framework\Reflection;
-use ITRocks\Framework\Reflection\Attribute\Calculated;
-use ITRocks\Framework\Reflection\Attribute\Has_Attributes;
-use ITRocks\Framework\Reflection\Attribute\Inheritable;
-use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Has_String_Value;
+use ITRocks\Framework\Reflection\Interfaces\Reflection;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 
 #[Attribute]
-#[Inheritable]
-class Set implements Calculated
+class Set extends Class_
 {
-	use Reflection\Attribute;
+	use Has_String_Value;
 
-	//---------------------------------------------------------------------------------------- $value
-	public string $value;
-
-	//----------------------------------------------------------------------------------- __construct
-	public function __construct(string $value = '')
+	//------------------------------------------------------------------------------------- setTarget
+	public function setTarget(Reflection|Reflection_Class $target) : void
 	{
-		$this->value = $value;
-	}
-
-	//------------------------------------------------------------------------------------- calculate
-	public function calculate(Has_Attributes|Interfaces\Reflection $reflection) : void
-	{
+		$this->class = $target;
 		if ($this->value) return;
-		$this->value = Names::singleToSet($reflection->getName());
+		$this->value = Names::singleToSet($target->getName());
 	}
 
 }

@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Email\Store;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
@@ -9,7 +9,7 @@ use ITRocks\Framework\Traits\Has_Name;
  *
  * @representative full_path
  */
-#[Store_Name('email_directories')]
+#[Store('email_directories')]
 class Directory
 {
 	use Has_Name;

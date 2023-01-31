@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Trigger;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Trigger;
 
 /**
@@ -13,7 +13,7 @@ use ITRocks\Framework\Trigger;
  * @override actions @set_store_name file_trigger_actions @var File\Action[]
  * @property File\Action[] actions
  */
-#[Store_Name('file_triggers')]
+#[Store('file_triggers')]
 class File extends Trigger
 {
 

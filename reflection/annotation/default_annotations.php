@@ -164,12 +164,6 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@before_writes' => Method_Annotation::class,
 
 	/**
-	 * @business
-	 * This defines a class or a trait used to describe business objects
-	 */
-	Parser::T_CLASS . '@business' => Boolean_Annotation::class,
-
-	/**
 	 * @data_access_control dataAccessControl
 	 * This is a Multiple_Annotation : several access control callbacks can be defined
 	 */

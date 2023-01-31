@@ -3,13 +3,13 @@ namespace ITRocks\Framework\Component\Button;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Button\Code\Command\Parser;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Stringable;
 
 /**
  * Dynamic source code typed in by the user
- *
- * @business
  */
+#[Store]
 class Code implements Stringable
 {
 

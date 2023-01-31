@@ -1,11 +1,12 @@
 <?php
 namespace ITRocks\Framework\Mapper;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+
 /**
  * A remover class implements a remove() object to remove any of its possible composite objects
- *
- * @business
  */
+#[Store]
 trait Remover
 {
 

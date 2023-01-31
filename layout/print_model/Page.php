@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Layout\Print_Model;
 
 use ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\Layout\Print_Model;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * Print model page
@@ -13,7 +13,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
  * @override ordering @max_length 2
  * @property Print_Model model
  */
-#[Store_Name('print_model_pages')]
+#[Store('print_model_pages')]
 class Page extends Model\Page
 {
 

@@ -2,14 +2,13 @@
 namespace ITRocks\Framework\Objects\Counter;
 
 use ITRocks\Framework\Objects\Counter;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * Simplified counter, for and easier configuration
  *
  * @after_read formatToSimple
  * @before_write simpleToFormat
- * @business false
  * @display_order identifier, last_update, last_value, format, prefix, yearly_reset,
  *                year_with_4_characters, complete_with_zeros, documents_count
  * @feature Easy incremental counters configuration
@@ -19,7 +18,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
  * @override last_update @user  invisible
  * @override last_value  @alias example @store false
  */
-#[Store_Name('counters')]
+#[Store(false)]
 class Simple extends Counter
 {
 

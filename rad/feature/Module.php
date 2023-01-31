@@ -2,13 +2,13 @@
 namespace ITRocks\Framework\RAD\Feature;
 
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * @override name @translate common
  */
-#[Store_Name('rad_feature_modules')]
+#[Store('rad_feature_modules')]
 class Module
 {
 	use Has_Name;

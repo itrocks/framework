@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\Traits\Is_Immutable;
@@ -10,9 +11,9 @@ use ITRocks\Framework\Traits\Is_Immutable;
 /**
  * Feature class
  *
- * @business
  * @override name @translate common
  */
+#[Store]
 class Feature_Class
 {
 	use Has_Name;

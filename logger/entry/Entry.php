@@ -8,7 +8,7 @@ use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Logger\Entry\Data;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
@@ -23,7 +23,7 @@ use ITRocks\Framework\User;
  * @representative start, uri
  * @sort -start, uri
  */
-#[Store_Name('logs')]
+#[Store('logs')]
 class Entry implements Validate\Except
 {
 

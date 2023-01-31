@@ -1,16 +1,17 @@
 <?php
 namespace ITRocks\Framework\Objects;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
- * @business
  * @display_order text, title, date, object
  * @feature
  * @feature summaryEdit
  * @feature summaryOutput
  * @sort -date, title
  */
+#[Store]
 class Note
 {
 

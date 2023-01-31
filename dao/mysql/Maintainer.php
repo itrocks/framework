@@ -11,7 +11,7 @@ use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -745,9 +745,9 @@ class Maintainer implements Configurable, Registerable
 				}
 				elseif (class_exists($context_class_name) && class_exists($class_name)) {
 					/** @noinspection PhpUnhandledExceptionInspection known class names */
-					$same_table = (
-						Store_Name::of(new Reflection_Class($context_class_name))->value
-						=== Store_Name::of(new Reflection_Class($class_name))->value
+					$same_table = Store::equals(
+						new Reflection_Class($class_name),
+						new Reflection_Class($context_class_name)
 					);
 				}
 				if (!$same_table) {

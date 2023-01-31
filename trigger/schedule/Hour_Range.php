@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Trigger\Schedule;
 
 use ITRocks\Framework\Mapper\Component;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Trigger\Schedule;
 
 /**
@@ -10,7 +10,7 @@ use ITRocks\Framework\Trigger\Schedule;
  *
  * @sort from, until, frequency
  */
-#[Store_Name('trigger_schedule_hour_ranges')]
+#[Store('trigger_schedule_hour_ranges')]
 class Hour_Range
 {
 	use Component;

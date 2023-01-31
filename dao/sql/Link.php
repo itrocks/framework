@@ -12,6 +12,7 @@ use ITRocks\Framework\Dao\Func\Where;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Default_List_Data;
 use ITRocks\Framework\Tools\List_Data;
@@ -171,7 +172,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * Executes an SQL query and returns the inserted record identifier (if applicable)
 	 *
 	 * @param $query      string
-	 * @param $class_name class-string<T>|null if set, the result will be object[] with read data
+	 * @param $class_name class-string<T>|null if set, the result will be 'object[]' with read data
 	 * @param $result     mixed The result set associated to the data link, if $class_name is constant
 	 *        Call $query with $result = true to store the result set into $result
 	 * @return mixed|T[] depends on $class_name specific constants used
@@ -216,14 +217,14 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class         class-string<T> class for the read object
 	 * @param $properties    string[]|string|Column[] the list of property paths : only those
-	 *                       properties will be read. You can use Dao\Func\Column sub-classes to get
+	 *                       properties will be read. You can use Dao\Func\Column subclasses to get
 	 *                       result of functions.
 	 * @param $filter_object array|T|null source object for filter, set properties will be used
 	 *                       for search. Can be an array associating properties names to matching
 	 *                       search value too.
 	 * @param $options       Option|Option[] some options for advanced search
-	 * @return List_Data a list of read records. Each record values (may be objects) are stored in
-	 *                   the same order than columns.
+	 * @return List_Data a list of read records. Each record values (maybe objects) are stored in
+	 *                   the same order as columns.
 	 * @template T
 	 */
 	public function select(
@@ -268,7 +269,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	/**
 	 * @param $object_class  string class for the read object
 	 * @param $properties    string[]|Column[] the list of property paths : only those properties will
-	 *                       be read. You can use Dao\Func\Column sub-classes to get result of
+	 *                       be read. You can use Dao\Func\Column subclasses to get result of
 	 *                       functions.
 	 * @param $filter_object array|object source object for filter, set properties will be used for
 	 *                       search. Can be an array associating properties names to matching search
@@ -319,7 +320,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object_class  string class for the read object
 	 * @param $properties    string[]|Column[] the list of property paths : only those properties will
-	 *                       be read. You can use Dao\Func\Column sub-classes to get result of
+	 *                       be read. You can use Dao\Func\Column subclasses to get result of
 	 *                       functions.
 	 * @param $options       Option[] some options for advanced search
 	 * @return string[] path of the properties we keep for the first pass, for correct rows counting
@@ -396,7 +397,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @param $options Option[]|callable[] some options for advanced search
 	 * @param $columns string[]|Column[] the list of the columns names : only those properties will be
 	 *                 read. You can use 'column.sub_column' to get values from linked objects from
-	 *                 the same data source. You can use Dao\Func\Column sub-classes to get result of
+	 *                 the same data source. You can use Dao\Func\Column subclasses to get result of
 	 *                 functions.
 	 * @return array [boolean $double_pass, array $list]
 	 */
@@ -428,13 +429,16 @@ abstract class Link extends Identifier_Map implements Transactional
 
 	//----------------------------------------------------------------------------------- storeNameOf
 	/**
-	 * @param $class_name string
+	 * @param $class object|string
 	 * @return string
 	 */
-	public function storeNameOf(string $class_name) : string
+	public function storeNameOf(object|string $class) : string
 	{
+		$class_name = is_string($class)
+			? $class
+			: (($class instanceof Reflection_Class) ? $class->getName() : get_class($class));
 		if (!isset($this->tables[$class_name])) {
-			$this->tables[$class_name] = parent::storeNameOf($class_name);
+			$this->tables[$class_name] = parent::storeNameOf($class);
 		}
 		return $this->tables[$class_name];
 	}

@@ -1,14 +1,15 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * A trait for creation and modification date logged objects
  *
  * @before_write calculateLastUpdateDateTime
- * @business
  */
+#[Store]
 trait Has_Update_Date_Time
 {
 

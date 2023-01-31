@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Sql\Builder;
 
 use ITRocks\Framework\Mapper\Search_Object;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tests\Objects\Client;
 use ITRocks\Framework\Tests\Objects\Item;
@@ -369,7 +369,7 @@ class Select_Test extends Test
 	//-------------------------------------------------------------------- testQuoteSalesmanStoreName
 	public function testQuoteSalesmanStoreName() : void
 	{
-		$store_name = Store_Name::of(new Reflection_Class(Quote_Salesman::class))->value;
+		$store_name = Store::of(new Reflection_Class(Quote_Salesman::class))->value;
 		static::assertEquals('test_quote_salesmen', $store_name, __METHOD__);
 	}
 

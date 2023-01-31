@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Layout\Display_Model;
 
 use ITRocks\Framework\Layout\Display_Model;
 use ITRocks\Framework\Layout\Model;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * Print model page
@@ -12,7 +12,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
  * @override ordering @max_length 2
  * @property Display_Model model
  */
-#[Store_Name('display_model_pages')]
+#[Store('display_model_pages')]
 class Page extends Model\Page
 {
 
@@ -121,7 +121,7 @@ class Page extends Model\Page
 
 	//------------------------------------------------------------------------------- orderingCaption
 	/**
-	 * Get ordering caption (eg first, middle, last page), or page number if free ordering number
+	 * Get ordering caption (e.g. first, middle, last page), or page number if free ordering number
 	 *
 	 * @return string @example 'screen'
 	 */

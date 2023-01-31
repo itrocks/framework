@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Traits\Has_Email;
 
 /**
@@ -9,8 +10,8 @@ use ITRocks\Framework\Traits\Has_Email;
  * It has a login, a password, and an email for password recovery automation.
  *
  * @override email @mandatory
- * @store
  */
+#[Store]
 trait Account
 {
 	use Has_Email;

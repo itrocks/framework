@@ -17,6 +17,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display;
 use ITRocks\Framework\Reflection\Attribute\Class_\Displays;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
@@ -174,10 +175,7 @@ class Select_Controller implements Feature_Controller
 				|| $property->getAnnotation('composite')->value
 				// TODO this consideration is only on some cases (here : lists can't deal with @store false)
 				|| Store_Annotation::of($property)->isFalse()
-				|| !(
-					$property_class->getAnnotation('business')->value
-					|| Store_Annotation::of($property_class)->value
-				)
+				|| !Store::of($property_class)->value
 			) {
 				unset($properties[$property_path]);
 				continue;

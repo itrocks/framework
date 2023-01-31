@@ -2,13 +2,13 @@
 namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Mapper;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A component
  */
-#[Store_Name('test_components')]
+#[Store('test_components')]
 class Component
 {
 	use Has_Name;

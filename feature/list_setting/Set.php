@@ -3,8 +3,8 @@ namespace ITRocks\Framework\Feature\List_Setting;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Option\Sort;
-use ITRocks\Framework\Reflection\Annotation\Class_\Displays_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Displays;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting;
@@ -14,8 +14,8 @@ use ReflectionException;
 /**
  * Data list settings : all that can be customized into a list view
  *
- * @property Property[] $properties
  * @override $properties Property[]
+ * @property Property[] $properties
  */
 class Set extends Setting\Custom\Set
 {
@@ -157,7 +157,7 @@ class Set extends Setting\Custom\Set
 	 */
 	private function getDefaultTitle() : string
 	{
-		return ucfirst(Displays_Annotation::of($this->getClass())->value);
+		return ucfirst(Displays::of($this->getClass())->value);
 	}
 
 	//-------------------------------------------------------------------------------- initProperties

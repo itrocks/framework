@@ -1,15 +1,15 @@
 <?php
 namespace ITRocks\Framework;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\Trigger\Action;
 use ITRocks\Framework\Widget\Map_As_Collection;
 
 /**
  * A trigger calculates if an action must be run
- *
- * @business
  */
+#[Store]
 abstract class Trigger
 {
 	use Has_Name;

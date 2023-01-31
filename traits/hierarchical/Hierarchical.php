@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Traits;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Map;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 
 /**
@@ -23,9 +24,8 @@ use ITRocks\Framework\Reflection\Link_Class;
  *
  * TODO LOW add a single annotation on properties that will result in auto-calling of getSub
  * and writeSub without having to implement the getter and after_write into the business class.
- *
- * @business
  */
+#[Store]
 trait Hierarchical
 {
 

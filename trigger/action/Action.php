@@ -4,7 +4,7 @@ namespace ITRocks\Framework\Trigger;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Logger\Entry;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Trigger\Action\Status;
@@ -18,7 +18,7 @@ use ITRocks\Framework\View;
  * @list last, status, action
  * @representative action
  */
-#[Store_Name('trigger_actions')]
+#[Store('trigger_actions')]
 class Action
 {
 

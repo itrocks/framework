@@ -1,12 +1,14 @@
 <?php
 namespace ITRocks\Framework\Address;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+
 /**
  * Physical person trait : use it for classes that represent a physical person.
  *
- * @business
  * @representative first_name, last_name
  */
+#[Store]
 trait Person
 {
 

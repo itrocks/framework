@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Option\Group_By;
 use ITRocks\Framework\PHP\Dependency\Cache;
 use ITRocks\Framework\PHP\Dependency\Declaration;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ReflectionException;
@@ -16,10 +17,10 @@ use ReflectionException;
  * This stores a dependency between two class names
  *
  * @index type, class_name, dependency_name, file_name
- * @stored
- * @todo Remove AllowDynamicProperties where $id will be general to all @stored classes
+ * @todo Remove #AllowDynamicProperties where $id will be general to all #Store classes
  */
 #[AllowDynamicProperties]
+#[Store]
 class Dependency
 {
 

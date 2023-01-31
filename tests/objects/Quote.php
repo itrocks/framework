@@ -1,12 +1,12 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * A quote class to test classes having the 'link' annotation
  */
-#[Store_Name('test_quotes')]
+#[Store('test_quotes')]
 class Quote extends Document
 {
 

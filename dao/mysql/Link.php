@@ -1118,7 +1118,7 @@ class Link extends Dao\Sql\Link
 	 */
 	public function replaceReferences(object $replaced, object $replacement) : bool
 	{
-		$table_name     = $this->storeNameOf(get_class($replaced));
+		$table_name     = $this->storeNameOf($replaced);
 		$replaced_id    = $this->getObjectIdentifier($replaced);
 		$replacement_id = $this->getObjectIdentifier($replacement);
 		if ($replaced_id && $replacement_id && $table_name) {

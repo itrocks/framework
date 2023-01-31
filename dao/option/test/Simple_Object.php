@@ -23,8 +23,8 @@ class Simple_Object
 
 	//----------------------------------------------------------------------------------- $sub_object
 	/**
-	 * @store false
 	 * @getter
+	 * @store false
 	 * @var object
 	 */
 	public object $sub_object;

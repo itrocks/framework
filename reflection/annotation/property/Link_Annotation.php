@@ -2,9 +2,9 @@
 namespace ITRocks\Framework\Reflection\Annotation\Property;
 
 use ITRocks\Framework\Reflection\Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Template\Has_Is;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
@@ -36,7 +36,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 			empty($value)
 			&& $property->getType()->isClass()
 			&& !Store_Annotation::of($property)->isFalse()
-			&& Class_\Store_Annotation::of($property->getFinalClass())->value
+			&& Store::of($property->getFinalClass())->value
 		) {
 			$value = $this->guessValue($property);
 		}

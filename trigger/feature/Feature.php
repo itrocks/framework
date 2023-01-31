@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Trigger;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Trigger;
 
 /**
@@ -11,7 +11,7 @@ use ITRocks\Framework\Trigger;
  * @override running @var Feature\Run[]
  * @property Feature\Run[] running
  */
-#[Store_Name('feature_triggers')]
+#[Store('feature_triggers')]
 class Feature extends Trigger
 {
 	use Has_Condition;

@@ -3,14 +3,14 @@ namespace ITRocks\Framework\PHP\Compiler;
 
 use ITRocks\Framework\Logger\Entry;
 use ITRocks\Framework\Reflection\Attribute\Class_\Set;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * PHP Compiler log entry
- *
- * @business
  */
 #[Set('Compiler_Log')]
+#[Store]
 class Compiler_Log
 {
 

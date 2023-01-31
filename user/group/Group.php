@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\User\Group\Feature;
 use ITRocks\Framework\User\Group\Has_Groups;
@@ -11,11 +12,11 @@ use ITRocks\Framework\User\Group\Low_Level_Feature;
  *
  * Used by access control plugins to manage the users access
  *
- * @business
  * @display_order name, groups, features
  * @feature
  * @override groups @foreignlink super_group
  */
+#[Store]
 class Group
 {
 	use Has_Groups { getLowLevelFeatures as private hasGroupsGetLowLevelFeatures; }

@@ -1,14 +1,14 @@
 <?php
 namespace ITRocks\Framework\Email;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Traits\Has_Email;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * An email account : configuration of multi-protocols access to a given email box
  */
-#[Store_Name('email_accounts')]
+#[Store('email_accounts')]
 class Account
 {
 	use Has_Email;

@@ -9,7 +9,6 @@ use ITRocks\Framework\Property\Path;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Class_\Override_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
-use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
@@ -18,6 +17,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property_Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
@@ -159,7 +159,7 @@ class Reflection_Property extends ReflectionProperty
 		}
 		$this->final_class = $class_name;
 		parent::__construct($class_name, $property_name);
-		$this->alias        = Alias_Annotation::of($this)->value;
+		$this->alias        = Alias::of($this)->value;
 		$this->aliased_path = $aliases ? implode(DOT, $aliases) . DOT . $this->alias : $this->alias;
 	}
 

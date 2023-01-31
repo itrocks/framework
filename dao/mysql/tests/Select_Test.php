@@ -14,6 +14,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -59,10 +60,7 @@ class Select_Test extends Test
 				$class = new Reflection_Class(Builder::className($dependency->class_name));
 				if (
 					!$class->isAbstract()
-					&& (
-						$class->getAnnotation('business')->value
-						|| Class_\Store_Annotation::of($class)->value
-					)
+					&& Store::of($class)->value
 					&& !str_contains($class->name, BS . 'Sub0')
 					&& !str_contains($class->name, BS . 'Tests' . BS)
 					&& $this->testConditions($class)

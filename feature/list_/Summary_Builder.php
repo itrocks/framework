@@ -277,7 +277,7 @@ class Summary_Builder
 			return $value->toHuman($this, $path, $prefix);
 		}
 		elseif ($value instanceof Date_Time) {
-			// TODO a class annotation (@business? @string?) could help choose
+			// TODO a class annotation (#Business? @string?) could help choose
 			$value = $value->toISO(false);
 		}
 		switch (gettype($value)) {

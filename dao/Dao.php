@@ -698,12 +698,12 @@ class Dao implements Configurable
 	/**
 	 * Gets the store name for records typed as $class_name
 	 *
-	 * @param $class_name string
+	 * @param $class object|string
 	 * @return string
 	 */
-	public static function storeNameOf(string $class_name) : string
+	public static function storeNameOf(object|string $class) : string
 	{
-		return self::current()->storeNameOf($class_name);
+		return self::current()->storeNameOf($class);
 	}
 
 	//------------------------------------------------------------------------------- storedAsForeign

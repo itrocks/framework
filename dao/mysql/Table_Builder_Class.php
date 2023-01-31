@@ -62,7 +62,7 @@ class Table_Builder_Class
 	 */
 	private function buildClassTable(Reflection_Class $class, Column $more_field = null) : Table
 	{
-		$table_name = Dao::current()->storeNameOf($class->name);
+		$table_name = Dao::current()->storeNameOf($class);
 		$table      = new Table($table_name);
 		if (!in_array('id', $this->excluded_properties, true)) {
 			$table->addColumn(Column::buildId());

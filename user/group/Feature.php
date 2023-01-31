@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Getter;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Feature_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
@@ -16,10 +17,10 @@ use ITRocks\Framework\Tools\Namespaces;
  *
  * @DISABLED-after_read emptyName # Disabled because slows-down configuration
  * @before_write beforeWrite
- * @business
  * @representative name
  * @sort name
  */
+#[Store]
 class Feature
 {
 

@@ -7,7 +7,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\RAD\Feature\Module;
 use ITRocks\Framework\RAD\Feature\Status;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 
@@ -19,7 +19,7 @@ use ITRocks\Framework\Tools\Namespaces;
  * @list title, status
  * @representative title
  */
-#[Store_Name('rad_features')]
+#[Store('rad_features')]
 class Feature
 {
 

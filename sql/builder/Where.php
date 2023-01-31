@@ -318,7 +318,7 @@ class Where implements With_Build_Column
 			return $value->toSql($this, $path, $prefix);
 		}
 		elseif ($value instanceof Date_Time) {
-			// TODO a class annotation (@business? @string?) could help choose
+			// TODO a class annotation (#Store? @string?) could help choose
 			$value = $value->toISO(false);
 		}
 		switch (gettype($value)) {

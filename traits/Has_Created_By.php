@@ -1,14 +1,15 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\User;
 
 /**
  * If you need to have the created by user information for each of your objects
  *
  * @before_write setCreatedBy
- * @business
  */
+#[Store]
 trait Has_Created_By
 {
 

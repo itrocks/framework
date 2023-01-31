@@ -2,14 +2,15 @@
 namespace ITRocks\Framework\Traits;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\User;
 
 /**
  * If you need to have the updated by user information for each of your objects
  *
  * @before_write setUpdatedBy
- * @business
  */
+#[Store]
 trait Has_Updated_By
 {
 

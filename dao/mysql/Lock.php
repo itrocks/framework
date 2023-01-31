@@ -2,12 +2,11 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Traits\Has_Creation_Date_Time;
 
-/**
- * @business
- */
+#[Store]
 class Lock
 {
 	use Has_Creation_Date_Time;

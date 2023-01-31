@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Layout;
 
 use ITRocks\Framework\Layout\Print_Model\Page;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * Print model
@@ -11,7 +11,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
  * @override pages @var Page[]
  * @property Page[] pages
  */
-#[Store_Name('print_models')]
+#[Store('print_models')]
 class Print_Model extends Model
 {
 

@@ -10,7 +10,7 @@ use ITRocks\Framework\Dao\Option\Key;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -385,15 +385,12 @@ abstract class Data_Link
 	//----------------------------------------------------------------------------------- storeNameOf
 	/**
 	 * Gets the store name for records typed as $class_name
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name string
-	 * @return string
 	 */
-	public function storeNameOf(string $class_name) : string
+	public function storeNameOf(object|string $class) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $class_name must always be valid */
-		return Store_Name::of(new Reflection_Class($class_name))->value;
+		$store = Store::of(($class instanceof Reflection_Class) ? $class : new Reflection_Class($class));
+		return $store->value ?: $store->calculateName();
 	}
 
 	//-------------------------------------------------------------------------------------- truncate

@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Trigger;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store_Name;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Trigger;
 use ITRocks\Framework\Trigger\Change\Plugin;
 
@@ -16,7 +16,7 @@ use ITRocks\Framework\Trigger\Change\Plugin;
  * @property Change\Action[] actions
  * @property Change\Run[]    running
  */
-#[Store_Name('change_triggers')]
+#[Store('change_triggers')]
 class Change extends Trigger
 {
 	use Has_Condition;

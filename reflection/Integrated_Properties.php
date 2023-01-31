@@ -4,9 +4,9 @@ namespace ITRocks\Framework\Reflection;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
-use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ReflectionException;
 
 /**
@@ -255,7 +255,7 @@ class Integrated_Properties
 						$integrated_simple
 							? (
 								$integrated_alias
-									? Alias_Annotation::of($property)->value
+									? Alias::of($property)->value
 									: rLastParse($property->path, DOT, 1, true)
 							)
 							: $display
@@ -291,7 +291,7 @@ class Integrated_Properties
 			$integrated_simple
 				? (
 					$integrated_alias
-						? Alias_Annotation::of($sub_property)->value
+						? Alias::of($sub_property)->value
 						: rLastParse($sub_property->path, DOT, 1, true)
 				)
 				: $display

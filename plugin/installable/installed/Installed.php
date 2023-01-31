@@ -5,13 +5,13 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\RAD\Feature;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Call_Stack;
 
 /**
  * Common code for installed things
- *
- * @business
  */
+#[Store]
 abstract class Installed
 {
 
