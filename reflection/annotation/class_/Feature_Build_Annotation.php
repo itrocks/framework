@@ -41,7 +41,7 @@ class Feature_Build_Annotation extends Template\List_Annotation
 	 * Interface_Or_Trait_Name <=> Current_class, Interface_Or_Trait_Name
 	 * @example
 	 * If not in class :
-	 * Interface_Or_Trait_Name <=> Interface_Or_Trait_Name's @extends, Interface_Or_Trait_Name
+	 * Interface_Or_Trait_Name <=> Interface_Or_Trait_Name's #Extends, Interface_Or_Trait_Name
 	 * @example
 	 * If in interface or trait :
 	 * Class_Name <=> Class_Name, Current_Interface_Or_Trait_Name

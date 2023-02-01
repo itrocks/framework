@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Feature\Validate\Annotation;
 
 use ITRocks\Framework\Feature\Validate\Validator;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 
 /**
  * For validator that get a specific message
- *
- * @extends Validator
  */
+#[Extends_(Validator::class)]
 trait Has_Message
 {
 

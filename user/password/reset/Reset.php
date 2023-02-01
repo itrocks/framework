@@ -10,6 +10,7 @@ use ITRocks\Framework\Email\Sender\File;
 use ITRocks\Framework\Email\Sender\Smtp;
 use ITRocks\Framework\Locale\Has_Language;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
@@ -17,9 +18,7 @@ use ITRocks\Framework\User\Password;
 use ITRocks\Framework\User\Password\Reset\Token;
 use ITRocks\Framework\View\Html\Template;
 
-/**
- * @extends Password
- */
+#[Extends_(Password::class)]
 trait Reset
 {
 

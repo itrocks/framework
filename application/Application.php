@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework;
 
-use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -306,18 +306,16 @@ class Application
 	 */
 	public static function getParentClasses(bool $recursive = false) : array
 	{
-		/** @noinspection PhpUnhandledExceptionInspection static */
-		$class               = new Reflection_Class(static::class);
-		$parent_class_name   = get_parent_class(static::class);
-		$extends_annotations = Extends_Annotation::allOf($class);
-		$parents             = [];
+		$parents = [];
 		// 1st : php extends
+		$parent_class_name = get_parent_class(static::class);
 		if ($parent_class_name) {
 			$parents[$parent_class_name] = [];
 		}
-		// 2nd : @extends annotations
-		foreach ($extends_annotations as $extends_annotation) {
-			foreach ($extends_annotation->values() as $extends) {
+		// 2nd : #Extends attributes
+		$extends_attributes = Extends_::of(new Reflection_Class(static::class));
+		foreach ($extends_attributes as $extends_attribute) {
+			foreach ($extends_attribute->extends as $extends) {
 				$parents[$extends] = [];
 			}
 		}

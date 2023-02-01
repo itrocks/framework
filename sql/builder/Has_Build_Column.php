@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Dao\Func\Concat;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Join;
@@ -13,9 +14,8 @@ use ITRocks\Framework\Tools\Date_Time;
  * For sql builders that need a buildColumn() function
  *
  * They will automatically get Has_Joins, so they do not need to use Has_Joins.
- *
- * @extends With_Build_Column
  */
+#[Extends_(With_Build_Column::class)]
 trait Has_Build_Column
 {
 	use Has_Joins;

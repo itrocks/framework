@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Layout\Structure\Field\Text;
 
 use ITRocks\Framework\Layout\Structure\Field\Text;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 
 /**
  * Formatted text feature
- *
- * @extends Text
  */
+#[Extends_(Text::class)]
 trait Formatted
 {
 

@@ -4,15 +4,16 @@ namespace ITRocks\Framework\Feature\Validate\Property;
 use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use TypeError;
 
 /**
  * Common to all property annotations : includes the property context
  *
- * @extends Reflection\Annotation
  * @implements Property_Context_Annotation
  */
+#[Extends_(Reflection\Annotation::class)]
 trait Annotation
 {
 	use Validate\Annotation;

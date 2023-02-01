@@ -4,13 +4,14 @@ namespace ITRocks\Framework\Address;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 
 /**
- * @extends Person
  * @feature Person with civility
  * @feature_install initCivilities
  * @see Person_Plugin
  */
+#[Extends_(Person::class)]
 trait Has_Civility
 {
 

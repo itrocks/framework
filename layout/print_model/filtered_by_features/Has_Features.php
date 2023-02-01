@@ -7,13 +7,14 @@ use ITRocks\Framework\Dao\Option\Having;
 use ITRocks\Framework\Layout\Print_Model;
 use ITRocks\Framework\RAD\Feature;
 use ITRocks\Framework\RAD\Feature\Status;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 
 /**
  * Your print model are filtered by features
  *
- * @extends Print_Model
  * @filter filterByFeatures
  */
+#[Extends_(Print_Model::class)]
 trait Has_Features
 {
 

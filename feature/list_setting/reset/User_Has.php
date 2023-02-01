@@ -2,13 +2,13 @@
 namespace ITRocks\Framework\Feature\List_Setting\Reset;
 
 use ITRocks\Framework\Feature\List_Setting\Reset;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\User;
 
 /**
  * User has a reset list setting property
- *
- * @extends User
  */
+#[Extends_(User::class)]
 trait User_Has
 {
 

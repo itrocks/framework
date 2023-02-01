@@ -3,15 +3,15 @@ namespace ITRocks\Framework\Plugin;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Plugin;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Session;
 
 /**
  * Allow plugins to be accessible with a static method get()
  *
  * All plugins should use this trait
- *
- * @extends Plugin
  */
+#[Extends_(Plugin::class)]
 trait Has_Get
 {
 

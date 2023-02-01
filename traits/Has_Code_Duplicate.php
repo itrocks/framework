@@ -1,13 +1,14 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+
 /**
  * Standard renaming on duplicate
  *
  * @duplicate duplicateCode
- * @extends Duplicate_Discriminate_By_Counter
- * @extends Has_Code
  */
+#[Extends_(Duplicate_Discriminate_By_Counter::class, Has_Code::class)]
 trait Has_Code_Duplicate
 {
 

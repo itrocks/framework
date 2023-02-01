@@ -3,11 +3,12 @@ namespace ITRocks\Framework\Objects\Counter;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Objects\Counter;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 
 /**
- * @extends Counter
  * @feature Random counters
  */
+#[Extends_(Counter::class)]
 trait Random
 {
 
@@ -36,7 +37,7 @@ trait Random
 		if ($this->random) {
 			return;
 		}
-		/** @noinspection PhpUndefinedClassInspection @extends Counter */
+		/** @noinspection PhpUndefinedClassInspection #Extends_(Counter::class) */
 		/** @see Counter::decrement */
 		parent::decrement($class_name, $property_name);
 	}
@@ -55,7 +56,7 @@ trait Random
 	{
 		/** @var $this Counter|static */
 		if (!$this->random) {
-			/** @noinspection PhpUndefinedClassInspection @extends Counter */
+			/** @noinspection PhpUndefinedClassInspection #Extends_(Counter::class) */
 			/** @see Counter::next */
 			return parent::next($object);
 		}

@@ -1,11 +1,12 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+
 /**
  * A trait here to extend another trait, himself extending a class
- *
- * @extends Has_Counter
  */
+#[Extends_(Has_Counter::class)]
 trait A_Trait
 {
 

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Template;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Reflection\Type;
 
 /**
@@ -13,9 +14,8 @@ use ITRocks\Framework\Reflection\Type;
  *
  * Notice for annotation classes that use this trait : if it calculates a default value for not set
  * annotation, the default value must include namespace, because applyNamespace will not be called.
- *
- * @extends Annotation
  */
+#[Extends_(Annotation::class)]
 trait Types_Annotation
 {
 

@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
 use Attribute;
-use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Class_Has_Attributes;
 use ITRocks\Framework\Reflection\Attribute\Has_String_Value;
@@ -10,7 +9,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Attribute;
 use ITRocks\Framework\Tools\Namespaces;
 
-#[Attribute]
+#[Attribute(Attribute::TARGET_CLASS)]
 class Store extends Class_
 {
 	use Has_String_Value;
@@ -50,13 +49,15 @@ class Store extends Class_
 	//--------------------------------------------------------------------------------------- extends
 	protected function extends(Reflection_Class $class) : void
 	{
-		foreach (Extends_Annotation::of($class)->values() as $extends) {
-			$reflection_class = get_class($class);
-			$store_extends    = static::of(new $reflection_class($extends));
-			if ($value = $store_extends->value) {
-				$this->calculated = $store_extends->calculated;
-				$this->value      = $value;
-				return;
+		foreach (Extends_::of($class) as $extends_attribute) {
+			foreach ($extends_attribute->extends as $extends) {
+				$reflection_class = get_class($class);
+				$store_extends    = static::of(new $reflection_class($extends));
+				if ($value = $store_extends->value) {
+					$this->calculated = $store_extends->calculated;
+					$this->value      = $value;
+					return;
+				}
 			}
 		}
 		$this->value = '';

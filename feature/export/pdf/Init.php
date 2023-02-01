@@ -2,13 +2,13 @@
 namespace ITRocks\Framework\Feature\Export\PDF;
 
 use ITRocks\Framework\Feature\Export\PDF;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 /**
  * Initialisation features
- *
- * @extends PDF
  */
+#[Extends_(PDF::class)]
 trait Init
 {
 

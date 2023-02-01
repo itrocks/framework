@@ -2,13 +2,13 @@
 namespace ITRocks\Framework\Layout\Structure\Field\Text;
 
 use ITRocks\Framework\Layout\Structure\Field\Text;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Tools\Names;
 
 /**
  * Text templating trait
- *
- * @extends Text
  */
+#[Extends_(Text::class)]
 trait Templating
 {
 

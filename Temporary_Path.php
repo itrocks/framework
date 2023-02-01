@@ -2,12 +2,12 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 
 /**
  * All methods related to the Application's temporary path management
- *
- * @extends Application
  */
+#[Extends_(Application::class)]
 trait Temporary_Path
 {
 

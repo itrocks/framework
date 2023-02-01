@@ -7,7 +7,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Source;
-use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Namespaces;
 
@@ -64,9 +64,9 @@ class Class_Builder
 			$class                     = Reflection_Class::of($interface_trait);
 			$classes[$interface_trait] = $class;
 			if ($class->isTrait()) {
-				$extends_annotations = Extends_Annotation::allOf($class);
-				foreach ($extends_annotations as $extends_annotation) {
-					foreach ($extends_annotation->values() as $extends) {
+				$extends_attributes = Extends_::of($class);
+				foreach ($extends_attributes as $extends_attribute) {
+					foreach ($extends_attribute->extends as $extends) {
 						if (Dao::search(
 							['class_name' => $extends, 'declaration' => Dependency::T_TRAIT_DECLARATION],
 							Dependency::class

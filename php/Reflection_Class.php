@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Parser;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Reflection\Attribute\Class_Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
@@ -458,28 +459,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		return $doc_comment;
 	}
 
-	//--------------------------------------------------------------------------------- getDocExtends
-	/**
-	 * Gets the classes matching extends annotation instead of use to allow diamond multiple inheritance
-	 *
-	 * @return Reflection_Class[]
-	 */
-	public function getDocExtends() : array
-	{
-		$extends = [];
-		$expr    = '%'
-			. '\n\s+\*\s+'     // each line beginning by '* '
-			. '@extends'       // extends annotation
-			. '\s+([\\\\\w]+)' // 1 : class name
-			. '%';
-		if (preg_match_all($expr, $this->getDocComment([]), $matches)) {
-			foreach ($matches[1] as $match) {
-				$extends[] = Reflection_Class::of($this->fullClassName($match));
-			}
-		}
-		return $extends;
-	}
-
 	//----------------------------------------------------------------------------------- getFileName
 	/**
 	 * Gets the filename of the file in which the class has been defined
@@ -571,8 +550,11 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				$methods = array_merge($this->interfaces_methods, $methods);
 			}
 			if (isset($flip[self::T_DOC_EXTENDS])) {
-				foreach ($this->getDocExtends() as $extends) {
-					$methods = array_merge($extends->getMethods([self::T_DOC_EXTENDS, T_USE]), $methods);
+				foreach (Extends_::of($this) as $extends_attribute) {
+					foreach ($extends_attribute->extends as $extends) {
+						$extends = Reflection_Class::of($extends);
+						$methods = array_merge($extends->getMethods([self::T_DOC_EXTENDS, T_USE]), $methods);
+					}
 				}
 			}
 		}
@@ -1332,18 +1314,24 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (!$this->tokens) return;
 		$token = $this->tokens[$this->token_key = 0];
 
-		$attribute        = null;
-		$attribute_depth  = 0;
-		$this->attributes = [];
-		$this->namespace  = '';
-		$this->use        = [];
+		$attribute                = null;
+		$attribute_argument       = '';
+		$attribute_argument_build = false;
+		$attribute_depth          = 0;
+		$this->attributes         = [];
+		$this->namespace          = '';
+		$this->use                = [];
 		do {
 
 			$this->doc_comment = '';
 			$this->is_abstract = false;
 			$this->is_final    = false;
 
-			while (!is_array($token) || !in_array($token[0], [T_CLASS, T_INTERFACE, T_TRAIT])) {
+			while (
+				$attribute_depth
+				|| !is_array($token)
+				|| !in_array($token[0], [T_CLASS, T_INTERFACE, T_TRAIT])
+			) {
 				if (is_array($token)) {
 					switch ($token[0]) {
 
@@ -1352,24 +1340,25 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 								$this->fullClassName($this->scanClassName()), $this, $this, $this
 							);
 							$attribute->line = $token[2];
-							$attribute_depth = 0;
 							$this->token_key --;
+							break;
+
+						case T_CLASS:
+						case T_INTERFACE:
+						case T_TRAIT:
+							if (
+								$attribute_argument_build
+								&& ($attribute_depth === 1)
+								&& str_ends_with($attribute_argument, '::')
+							) {
+								$attribute_argument = $this->fullClassName(substr($attribute_argument, 0, -2));
+							}
 							break;
 
 						case T_CONSTANT_ENCAPSED_STRING:
 							if ($attribute_depth === 1) {
-								$attribute?->addArgument(substr($token[1], 1, - 1));
-							}
-							break;
-
-						case T_STRING:
-							if ($attribute_depth === 1) {
-								$attribute?->addArgument(match($token[1]) {
-									'false' => false,
-									'null'  => null,
-									'true'  => true,
-									default => $token[1]
-								});
+								$attribute_argument       = substr($token[1], 1, - 1);
+								$attribute_argument_build = true;
 							}
 							break;
 
@@ -1400,8 +1389,24 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 							break;
 
 						default:
-							$this->doc_comment = '';
-
+							if ($attribute_depth === 1) {
+								$attribute_argument_part = match($token[1]) {
+									'false' => false,
+									'null'  => null,
+									'true'  => true,
+									default => $token[1]
+								};
+								if ($attribute_argument_build) {
+									$attribute_argument .= $attribute_argument_part;
+								}
+								else {
+									$attribute_argument       = $attribute_argument_part;
+									$attribute_argument_build = true;
+								}
+							}
+							else {
+								$this->doc_comment = '';
+							}
 					}
 				}
 				elseif ($attribute) {
@@ -1411,17 +1416,28 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 					elseif ($token === ')') {
 						$attribute_depth --;
 					}
-					elseif ($token === ']') {
-						$this->attributes[] = $attribute;
-						$attribute = null;
+					elseif (($token === ',') && $attribute_depth) {
+						if ($attribute_argument_build) {
+							$attribute->addArgument($attribute_argument);
+							$attribute_argument_build = false;
+						}
 					}
-					elseif (($token === ',') && !$attribute_depth) {
+					elseif (in_array($token, [',', ']']) && !$attribute_depth) {
+						if ($attribute_argument_build) {
+							$attribute->addArgument($attribute_argument);
+							$attribute_argument_build = false;
+						}
 						$this->attributes[] = $attribute;
-						$attribute = new Reflection_Attribute(
-							$this->fullClassName($this->scanClassName()), $this, $this, $this
-						);
-						$attribute->line = $this->line;
-						$this->token_key --;
+						if ($token === ',') {
+							$attribute = new Reflection_Attribute(
+								$this->fullClassName($this->scanClassName()), $this, $this, $this
+							);
+							$attribute->line = $this->line;
+							$this->token_key --;
+						}
+						else {
+							$attribute = null;
+						}
 					}
 				}
 				else {

@@ -1,14 +1,14 @@
 <?php
 namespace ITRocks\Framework\User\Last_Connection;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
 /**
  * User last connexion date
- *
- * @extends User
  */
+#[Extends_(User::class)]
 trait Has
 {
 

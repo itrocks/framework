@@ -3,11 +3,10 @@ namespace ITRocks\Framework\Email\Output;
 
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Property\Reflection_Property;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 
-/**
- * @extends Email
- */
+#[Extends_(Email::class)]
 trait Has_Output_Properties
 {
 

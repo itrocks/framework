@@ -7,7 +7,7 @@ use ITRocks\Framework\Reflection\Attribute\Has_String_Value;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 
-#[Attribute]
+#[Attribute(Attribute::TARGET_CLASS)]
 class Display extends Class_
 {
 	use Has_String_Value;

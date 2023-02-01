@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Reflection\Annotation\Class_\Tests;
 
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tests\Objects\A_Trait;
@@ -36,45 +36,45 @@ class Class_Test extends Test
 
 	//----------------------------------------------------------------- testExtendsEmptyParentExtends
 	/**
-	 * Test read of @extends (annotation that does not inherit)
-	 * class has no @extends, parent has a @extends : must result in empty
+	 * Test read of #Extends (attribute that does not inherit)
+	 * class has no #Extends, parent has a #Extends : must result in empty
 	 */
 	public function testExtendsEmptyParentExtends() : void
 	{
-		$extends = Extends_Annotation::allOf(new Reflection_Class(Quote::class));
+		$extends = Extends_::of(new Reflection_Class(Quote::class));
 		$values  = [];
 		foreach ($extends as $extend) {
-			$values[] = $extend->values();
+			$values[] = $extend->extends;
 		}
 		static::assertEquals(print_r([], true), print_r($values, true), __METHOD__);
 	}
 
 	//--------------------------------------------------------------- testExtendsExtendsParentExtends
 	/**
-	 * Test read of @extends (annotation that does not inherit)
-	 * class has @extends, parent has an @extends : must return the class @extends alone
+	 * Test read of #Extends (attribute that does not inherit)
+	 * class has #Extends, parent has an #Extends : must return the class #Extends alone
 	 */
 	public function testExtendsExtendsParentExtends() : void
 	{
-		$extends = Extends_Annotation::allOf(new Reflection_Class(A_Trait::class));
+		$extends = Extends_::of(new Reflection_Class(A_Trait::class));
 		$values  = [];
 		foreach ($extends as $extend) {
-			$values[] = $extend->values();
+			$values[] = $extend->extends;
 		}
 		static::assertEquals(print_r([[Has_Counter::class]], true), print_r($values, true), __METHOD__);
 	}
 
 	//--------------------------------------------------------------- testExtendsExtendsWithoutParent
 	/**
-	 * Test read of @extends (annotation that does not inherit)
-	 * class has @extends, no parent : must return the @extends
+	 * Test read of #Extends (attribute that does not inherit)
+	 * class has #Extends, no parent : must return the #Extends
 	 */
 	public function testExtendsExtendsWithoutParent() : void
 	{
-		$extends = Extends_Annotation::allOf(new Reflection_Class(Has_Counter::class));
+		$extends = Extends_::of(new Reflection_Class(Has_Counter::class));
 		$values  = [];
 		foreach ($extends as $extend) {
-			$values[] = $extend->values();
+			$values[] = $extend->extends;
 		}
 		static::assertEquals(print_r([[Document::class]], true), print_r($values, true), __METHOD__);
 	}

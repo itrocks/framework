@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
 use ITRocks\Framework\Tests\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -15,9 +16,8 @@ use PHPUnit\Framework\MockObject\MockObject;
  * Examples :
  *   $link_mock->expects($this->once())->method('search')->willReturn([new Object()])
  *   $link_mock->expects($this->any())->method('write')->willReturn(null);
- *
- * @extends Test
  */
+#[Extends_(Test::class)]
 trait Has_Dao_Mock
 {
 
