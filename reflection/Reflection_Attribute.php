@@ -31,6 +31,9 @@ class Reflection_Attribute
 	//---------------------------------------------------------------------------------------- $final
 	protected Reflection $final;
 
+	//------------------------------------------------------------------------------------- $instance
+	protected ?object $instance = null;
+
 	//--------------------------------------------------------------------------------- $is_attribute
 	protected bool $is_attribute;
 	
@@ -45,16 +48,21 @@ class Reflection_Attribute
 
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct(
-		ReflectionAttribute|string $attribute, Reflection $declaring, Reflection $final,
+		object|string $attribute, Reflection $declaring, Reflection $final,
 		?Interfaces\Reflection_Class $declaring_class
 	) {
-		if ($attribute instanceof ReflectionAttribute) {
+		if (is_string($attribute)) {
+			$this->attribute = null;
+			$this->name      = $attribute;
+		}
+		elseif ($attribute instanceof ReflectionAttribute) {
 			$this->attribute = $attribute;
 			$this->name      = $attribute->getName();
 		}
 		else {
 			$this->attribute = null;
-			$this->name      = $attribute;
+			$this->instance  = $attribute;
+			$this->name      = get_class($attribute);
 		}
 		$this->declaring       = $declaring;
 		$this->declaring_class = $declaring_class;
@@ -71,8 +79,8 @@ class Reflection_Attribute
 	public function getDeclaringClass(bool $trait = true) : ?Interfaces\Reflection_Class
 	{
 		return $trait
-			? $this->declaring_class
-			: (($this->declaring instanceof Interfaces\Reflection_Class) ? $this->declaring : null);
+			? (($this->declaring instanceof Interfaces\Reflection_Class) ? $this->declaring : null)
+			: $this->declaring_class;
 	}
 
 	//-------------------------------------------------------------------------- getDeclaringProperty
@@ -152,10 +160,15 @@ class Reflection_Attribute
 	 */
 	public function newInstance($default = false) : object
 	{
-		$name   = $this->name;
-		$object = ($default && method_exists($name, 'getDefaultArguments'))
-			? Builder::create($name, $name::getDefaultArguments())
-			: ($this->attribute?->newInstance() ?: Builder::create($name, $this->getArguments()));
+		if ($this->instance) {
+			$object = $this->instance;
+		}
+		else {
+			$name   = $this->name;
+			$object = ($default && method_exists($name, 'getDefaultArguments'))
+				? Builder::create($name, $name::getDefaultArguments())
+				: ($this->attribute?->newInstance() ?: Builder::create($name, $this->getArguments()));
+		}
 		if (method_exists($object, 'setReflectionAttribute')) {
 			$object->setReflectionAttribute($this);
 		}

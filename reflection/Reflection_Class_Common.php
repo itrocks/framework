@@ -1,11 +1,11 @@
 <?php
-namespace ITRocks\Framework\Reflection\Attribute;
+namespace ITRocks\Framework\Reflection;
 
+use ITRocks\Framework\Reflection\Attribute\Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
-use ITRocks\Framework\Reflection\Reflection_Attribute;
 
-trait Class_Has_Attributes
+trait Reflection_Class_Common
 {
 	use Has_Attributes { Has_Attributes::getAttributes as private getAttributesCommon; }
 
@@ -49,6 +49,44 @@ trait Class_Has_Attributes
 		return $attributes;
 	}
 
+	//--------------------------------------------------------------------------- getParentClassNames
+	/**
+	 * @return string[]
+	 */
+	public function getParentClassNames() : array
+	{
+		return array_keys($this->getParentClasses());
+	}
+
+	//------------------------------------------------------------------------------ getParentClasses
+	/**
+	 * Returns all parent classes, interfaces and traits class names, ordered by appliance priority
+	 *
+	 * @return static[]
+	 */
+	public function getParentClasses() : array
+	{
+		$parents = $results = [$this->getName() => $this];
+		while ($parents) {
+			$next = [];
+			foreach ($parents as $class) {
+				$parent         = $class->getParentClass();
+				$parent_parents = array_merge(
+					$class->getTraits(), $class->getInterfaces(), $parent ? [$parent] : []
+				);
+				foreach ($parent_parents as $parent) {
+					$name = $parent->getName();
+					if (!isset($results[$name])) {
+						$next[$name]    = $parent;
+						$results[$name] = $parent;
+					}
+				}
+			}
+			$parents = $next;
+		}
+		return $results;
+	}
+
 	//------------------------------------------------------------------------- mergeParentAttributes
 	/**
 	 * @param $attributes Reflection_Attribute[]|Reflection_Attribute[][]
@@ -61,19 +99,13 @@ trait Class_Has_Attributes
 		array &$attributes, ?string $name, int $flags, Reflection $final, Reflection_Class $class = null
 	) : void
 	{
-		$parent_class   = $this->getParentClass();
-		$parent_classes = array_merge(
-			$this->getTraits(),
-			$this->getInterfaces(),
-			$parent_class ? [$parent_class] : []
+		$parent  = $this->getParentClass();
+		$parents = array_merge($this->getTraits(), $this->getInterfaces(), $parent ? [$parent] : []
 		);
-		foreach ($parent_classes as $parent_class) {
+		foreach ($parents as $parent) {
 			$this->mergeAttributes(
-				$attributes, $name, $parent_class->getAttributes(
-					$name,
-					$flags,
-					$final,
-					(($parent_class->isClass() && !$parent_class->isAbstract()) ? $parent_class : $class)
+				$attributes, $name, $parent->getAttributes(
+					$name, $flags, $final, (($parent->isClass() && !$parent->isAbstract()) ? $parent : $class)
 				)
 			);
 		}

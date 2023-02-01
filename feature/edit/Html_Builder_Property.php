@@ -1,10 +1,8 @@
 <?php
 namespace ITRocks\Framework\Feature\Edit;
 
-use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
@@ -17,7 +15,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\User_Change;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Editor;
@@ -276,25 +274,16 @@ class Html_Builder_Property extends Html_Builder_Type
 		}
 		if (
 			!$this->property->getType()->isMultiple()
-			&& ($user_changes = $this->property->getAnnotations('user_change'))
+			&& ($user_changes = User_Change::of($this->property))
 		) {
-			/** @var $user_changes Method_Target_Annotation[] */
 			foreach ($user_changes as $user_change) {
 				$object = ($this->property instanceof Reflection_Property_Value)
 					? $this->property->getObject()
 					: $this->object;
-				if ($object && $user_change->is_composite) {
-					/** @var $object Component */
-					$object = $object->getComposite();
-					if ($object && str_contains($user_change, '::')) {
-						$user_change->value = Builder::current()->sourceClassName(get_class($object))
-							. '::' . rParse($user_change->value, '::');
-					}
-				}
 				$this->on_change[] = $user_change->asHtmlData($object);
-			}
-			if ($this->on_change) {
-				$this->realtime_change = $this->property->getAnnotation('user_change_realtime')->value;
+				if ($user_change->realtime) {
+					$this->realtime_change = true;
+				}
 			}
 		}
 		if (!$this->property->getAnnotation('empty_check')->value) {

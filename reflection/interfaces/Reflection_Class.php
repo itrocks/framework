@@ -233,4 +233,7 @@ interface Reflection_Class extends Reflection
 	 */
 	public function isUserDefined() : bool;
 
+	//-------------------------------------------------------------------------------------------- of
+	public static function of(string $class_name) : static;
+
 }

@@ -6,7 +6,6 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Display_Order_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Stringable;
@@ -25,7 +24,7 @@ class Reflection_Class extends ReflectionClass
 	implements Has_Doc_Comment, Interfaces\Reflection_Class, Stringable
 {
 	use Annoted;
-	use Class_Has_Attributes;
+	use Reflection_Class_Common;
 
 	//--------------------------------------------------------------------------- $interfaces_methods
 	/**
@@ -626,6 +625,15 @@ class Reflection_Class extends ReflectionClass
 	public function isClass() : bool
 	{
 		return !$this->isInterface() && !$this->isTrait();
+	}
+
+	//-------------------------------------------------------------------------------------------- of
+	/**
+	 * @throws ReflectionException
+	 */
+	public static function of(string $class_name) : static
+	{
+		return new static($class_name);
 	}
 
 	//-------------------------------------------------------------------------------- sortProperties

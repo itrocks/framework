@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection\Attribute;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Attribute;
 
@@ -30,22 +31,83 @@ trait Property_Has_Attributes
 	) : array
 	{
 		static $cache = [];
-		$cache_key = strval($this);
+		$cache_key    = strval($this);
 		if (isset($cache[$cache_key][$name ?: ''][$flags])) {
 			return $cache[$cache_key][$name ?: ''][$flags];
 		}
-		// TODO get #[Override] attributes here
-		$attributes = $this->getAttributesCommon($name, $flags, $final ?: $this);
-		$cache[$cache_key][$name ?: ''][$flags] = $attributes;
+		$attributes    = $this->getAttributesCommon($name, $flags, $final ?: $this);
+		$is_repeatable = $this->isAttributeRepeatable($name);
 		if (
 			!$this->isAttributeLocal($name)
-			&& !($attributes && !$this->isAttributeRepeatable($name))
+			&& !($attributes && $is_repeatable)
 			&& ($overridden_property = $this->getOverriddenProperty())
 		) {
 			$this->mergeAttributes(
 				$attributes, $name, $overridden_property->getAttributes($name, $flags, $final)
 			);
 		}
+		$cache[$cache_key][$name ?: ''][$flags] = $attributes;
+		// get overrides
+		$property_name = $this->getName();
+		$overrides     = $this->getFinalClass()->getAttributes(Override::class);
+		$overrides     = reset($overrides);
+		if (!$overrides) return $attributes;
+		// keep property overrides only
+		$overrides = array_filter(
+			$overrides,
+			function(Reflection_Attribute $override) use($property_name) {
+				return $override->getArguments()[0] === $property_name;
+			}
+		);
+		if (!$overrides) return $attributes;
+		// keep $name overrides only
+		$override_attributes = [];
+		if ($name) {
+			$overrides = array_filter(
+				$overrides,
+				function(Reflection_Attribute $override) use($is_repeatable, $name, &$override_attributes) {
+					foreach (array_slice($override->getArguments(), 1) as $attribute) {
+						if (is_a($attribute, $name, true)) {
+							$attribute = new Reflection_Attribute(
+								$attribute,
+								$override->getDeclaringClass(),
+								$override->getFinalClass(),
+								$override->getDeclaringClass(false)
+							);
+							if ($is_repeatable) {
+								$override_attributes[$name][] = $attribute;
+							}
+							elseif (!isset($override_attributes[$name])) {
+								$override_attributes[$name] = $attribute;
+							}
+							return true;
+						}
+					}
+					return false;
+				}
+			);
+			if (!$overrides) return $attributes;
+		}
+		else {
+			foreach ($overrides as $override) {
+				foreach (array_slice($override->getArguments(), 1) as $attribute) {
+					$attribute = new Reflection_Attribute(
+						$attribute,
+						$override->getDeclaringClass(),
+						$override->getFinalClass(),
+						$override->getDeclaringClass(false)
+					);
+					$attribute_name = $attribute->getName();
+					if ($is_repeatable) {
+						$override_attributes[$attribute_name][] = $attribute;
+					}
+					elseif (!$override_attributes[$attribute_name]) {
+						$override_attributes[$attribute_name] = $attribute;
+					}
+				}
+			}
+		}
+		$this->mergeAttributes($attributes, $name, $override_attributes);
 		return $attributes;
 	}
 

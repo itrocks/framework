@@ -3,10 +3,10 @@ namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
 use Attribute;
 use ITRocks\Framework\Reflection\Attribute\Class_;
-use ITRocks\Framework\Reflection\Attribute\Class_Has_Attributes;
 use ITRocks\Framework\Reflection\Attribute\Has_String_Value;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Attribute;
+use ITRocks\Framework\Reflection\Reflection_Class_Common;
 use ITRocks\Framework\Tools\Namespaces;
 
 #[Attribute(Attribute::TARGET_CLASS)]
@@ -24,7 +24,7 @@ class Store extends Class_
 	public bool $calculated = false;
 
 	//---------------------------------------------------------------------------------------- $class
-	public Reflection_Class|Class_Has_Attributes $class;
+	public Reflection_Class|Reflection_Class_Common $class;
 
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct(bool|string $value = true)
@@ -52,7 +52,7 @@ class Store extends Class_
 		foreach (Extends_::of($class) as $extends_attribute) {
 			foreach ($extends_attribute->extends as $extends) {
 				$reflection_class = get_class($class);
-				$store_extends    = static::of(new $reflection_class($extends));
+				$store_extends    = static::of($reflection_class::of($extends));
 				if ($value = $store_extends->value) {
 					$this->calculated = $store_extends->calculated;
 					$this->value      = $value;

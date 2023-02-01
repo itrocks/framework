@@ -37,7 +37,7 @@ class Html_Template_Functions extends Edit\Html_Template_Functions
 		Mandatory_Annotation::local($property)->value     = false;
 		$property->setAnnotationLocal('editor')->value    = false;
 		$property->setAnnotationLocal('multiline')->value = false;
-		$property->setAnnotationsLocal('user_change', []);
+		$property->setAnnotationsLocal('user_change', []); // TODO will not work with #User_Change
 		return parent::getEditReflectionProperty($property, $name, $ignore_user, $can_always_be_null);
 	}
 

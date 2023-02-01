@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Objects\Counter;
 
 use ITRocks\Framework\Objects\Counter;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\User_Change;
 
 /**
  * Simplified counter, for and easier configuration
@@ -25,51 +26,45 @@ class Simple extends Counter
 	//-------------------------------------------------------------------------- $complete_with_zeros
 	/**
 	 * @store false
-	 * @user_change applySimpleForm
-	 * @user_change_realtime
 	 * @var boolean
 	 */
+	#[User_Change('applySimpleForm', true)]
 	public bool $complete_with_zeros = true;
 
 	//------------------------------------------------------------------------------ $documents_count
 	/**
 	 * @conditions complete_with_zeros=true
 	 * @mandatory
-	 * @realtime_change
 	 * @store false
 	 * @unit per year
-	 * @user_change applySimpleForm
-	 * @user_change_realtime
 	 * @var integer
 	 */
+	#[User_Change('applySimpleForm', true)]
 	public int $documents_count = 9999;
 
 	//--------------------------------------------------------------------------------------- $prefix
 	/**
 	 * @store false
-	 * @user_change applySimpleForm
-	 * @user_change_realtime
 	 * @var string
 	 */
+	#[User_Change('applySimpleForm', true)]
 	public string $prefix = '';
 
 	//----------------------------------------------------------------------- $year_with_4_characters
 	/**
 	 * @conditions yearly_reset=true
 	 * @store false
-	 * @user_change applySimpleForm
-	 * @user_change_realtime
 	 * @var boolean
 	 */
+	#[User_Change('applySimpleForm', true)]
 	public bool $year_with_4_characters = false;
 
 	//--------------------------------------------------------------------------------- $yearly_reset
 	/**
 	 * @store false
-	 * @user_change applySimpleForm
-	 * @user_change_realtime
 	 * @var boolean
 	 */
+	#[User_Change('applySimpleForm', true)]
 	public bool $yearly_reset = true;
 
 	//------------------------------------------------------------------------------- formatLastValue

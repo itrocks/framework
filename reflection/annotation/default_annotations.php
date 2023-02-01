@@ -620,20 +620,6 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@update_constraint' => Annotation::class,
 
 	/**
-	 * @user_change [[\Vendor\Module\]Class_Name::]featureName] [target_selector]
-	 * Associates a feature controller to call each time a property value is changed by the final user
-	 * into an input form.
-	 * a target selector can be used to define where the result is loaded (#responses as default)
-	 */
-	Parser::T_PROPERTY . '@user_change' => Method_Target_Annotation::class,
-
-	/**
-	 * @user_change_realtime true
-	 * user_change annotation event is called each time the user presses a key, not only on blur
-	 */
-	Parser::T_PROPERTY . '@user_change_realtime' => Boolean_Annotation::class,
-
-	/**
 	 * @user_default [[\Class\Namespace\]Class_Name::]methodName
 	 * Identifies a method that gets the default value for the property into forms only
 	 * The Property will be sent as an argument to this callable

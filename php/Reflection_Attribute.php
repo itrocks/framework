@@ -8,6 +8,11 @@ class Reflection_Attribute extends Reflection\Reflection_Attribute
 {
 
 	//------------------------------------------------------------------------------------ $arguments
+	/**
+	 * Each argument is set as "raw php code", which will be evaluated on getArguments() call only
+	 *
+	 * @var string[]
+	 */
 	protected array $arguments = [];
 
 	//----------------------------------------------------------------------------------------- $line
@@ -25,7 +30,10 @@ class Reflection_Attribute extends Reflection\Reflection_Attribute
 	//---------------------------------------------------------------------------------- getArguments
 	public function getArguments() : array
 	{
-		return $this->arguments;
+		return array_map(
+			function($argument) { return eval('return ' . $argument . ';'); },
+			$this->arguments
+		);
 	}
 
 	//----------------------------------------------------------------------------- setFinalDeclaring

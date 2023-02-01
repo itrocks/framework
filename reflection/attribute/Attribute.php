@@ -20,9 +20,9 @@ abstract class Attribute
 	//-------------------------------------------------------------------------------------------- of
 	/**
 	 * @param $reflection Reflection|Has_Attributes
-	 * @return static|static[]
+	 * @return static|static[]|null
 	 */
-	public static function of(Reflection|Has_Attributes $reflection) : array|object
+	public static function of(Reflection|Has_Attributes $reflection) : array|object|null
 	{
 		return $reflection->getAttribute(get_called_class());
 	}

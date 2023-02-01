@@ -38,7 +38,11 @@ trait Has_Attributes
 			if ($this->isAttributeRepeatable($name)) {
 				$attributes = [];
 			}
-			elseif (is_a($name, Reflection\Attribute::class, true)) {
+			/** @noinspection PhpUnhandledExceptionInspection is_a */
+			elseif (
+				is_a($name, Reflection\Attribute::class, true)
+				&& !(new ReflectionClass($name))->getConstructor()->getNumberOfRequiredParameters()
+			) {
 				$attributes = new Reflection_Attribute($name, $this, $this, $class);
 				/** @noinspection PhpUnhandledExceptionInspection is_a */
 				$attributes = $attributes->newInstance(true);

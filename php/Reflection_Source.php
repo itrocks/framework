@@ -145,7 +145,7 @@ class Reflection_Source
 			}
 		}
 		if ($this->internal = (!$file_name && $class_name)) {
-			$class = static::$class_cache[$class_name] ?? new Reflection_Class($this, $class_name);
+			$class = self::$class_cache[$class_name] ?? new Reflection_Class($this, $class_name);
 			$this->classes = [$class_name => $class];
 		}
 		$source_class_name = $this->getFirstClassName();
@@ -392,7 +392,7 @@ class Reflection_Source
 						E_USER_ERROR
 					);
 				}
-				$class = static::$class_cache[$class_name] ?? new Reflection_Class($this, $class_name);
+				$class = self::$class_cache[$class_name] ?? new Reflection_Class($this, $class_name);
 				$class->line = $token[2];
 				$class->type = $token_id;
 				$class_depth = $depth;
@@ -659,7 +659,7 @@ class Reflection_Source
 	{
 		$classes = $this->getClasses();
 		return $classes[$class_name]
-			?? static::$class_cache[$class_name]
+			?? self::$class_cache[$class_name]
 			?? new Reflection_Class($this, $class_name);
 	}
 
