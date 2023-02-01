@@ -64,7 +64,7 @@ class Reflection_Attribute
 	//---------------------------------------------------------------------------------- getArguments
 	public function getArguments() : array
 	{
-		return $this->attribute->getArguments() ?? [];
+		return $this->attribute?->getArguments() ?: [];
 	}
 
 	//----------------------------------------------------------------------------- getDeclaringClass
@@ -102,7 +102,7 @@ class Reflection_Attribute
 	//------------------------------------------------------------------------------------- getTarget
 	public function getTarget() : int
 	{
-		return $this->attribute->getTarget() ?? 0;
+		return $this->attribute?->getTarget() ?: 0;
 	}
 
 	//----------------------------------------------------------------------------------- isAttribute
@@ -143,7 +143,7 @@ class Reflection_Attribute
 	//------------------------------------------------------------------------------------ isRepeated
 	public function isRepeated() : bool
 	{
-		return $this->attribute->isRepeated() ?? false;
+		return $this->attribute?->isRepeated() ?: false;
 	}
 
 	//----------------------------------------------------------------------------------- newInstance
@@ -155,7 +155,7 @@ class Reflection_Attribute
 		$name   = $this->name;
 		$object = ($default && method_exists($name, 'getDefaultArguments'))
 			? Builder::create($name, $name::getDefaultArguments())
-			: ($this->attribute?->newInstance() ?: Builder::create($name));
+			: ($this->attribute?->newInstance() ?: Builder::create($name, $this->getArguments()));
 		if (method_exists($object, 'setReflectionAttribute')) {
 			$object->setReflectionAttribute($this);
 		}

@@ -289,7 +289,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $name  string|null
 	 * @param $flags integer
 	 * @param $final Interfaces\Reflection|null
-	 * @praam $class Interfaces\Reflection_Class|null
+	 * @param $class Interfaces\Reflection_Class|null
 	 * @return Reflection_Attribute[]|Reflection_Attribute[][]
 	 */
 	public function getAttributesCommon(
@@ -304,6 +304,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		/** @noinspection PhpMultipleClassDeclarationsInspection All parents use Has_Attributes */
 		foreach ($this->attributes as $attribute) {
 			if ($name && ($attribute->getName() !== $name)) continue;
+			$attribute->setFinalDeclaring($final, $class);
 			if ($this->isAttributeRepeatable($attribute->getName())) {
 				$attributes[$attribute->getName()][] = $attribute;
 			}
@@ -527,7 +528,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//------------------------------------------------------------------------------------ getMethods
 	/**
-	 * @param $flags integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE, self::T_DOCEXTENDS
+	 * @param $flags integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE, self::T_DOC_EXTENDS
 	 * @return Reflection_Method[] key is the name of the method
 	 */
 	public function getMethods(array|int $flags = null) : array
@@ -1350,8 +1351,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 							$attribute = new Reflection_Attribute(
 								$this->fullClassName($this->scanClassName()), $this, $this, $this
 							);
-							$this->token_key --;
+							$attribute->line = $token[2];
 							$attribute_depth = 0;
+							$this->token_key --;
 							break;
 
 						case T_CONSTANT_ENCAPSED_STRING:
@@ -1418,6 +1420,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 						$attribute = new Reflection_Attribute(
 							$this->fullClassName($this->scanClassName()), $this, $this, $this
 						);
+						$attribute->line = $this->line;
 						$this->token_key --;
 					}
 				}

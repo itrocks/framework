@@ -43,7 +43,9 @@ trait Class_Has_Attributes
 		if (!$this->isAttributeLocal($name) && (!$attributes || $this->isAttributeRepeatable($name))) {
 			$this->mergeParentAttributes($attributes, $name, $flags, $final, $class);
 		}
-		$cache[$cache_key][$name ?: ''][$flags] = $attributes;
+		if (($this === $final) && ($final === $class)) {
+			$cache[$cache_key][$name ?: ''][$flags] = $attributes;
+		}
 		return $attributes;
 	}
 
@@ -68,7 +70,10 @@ trait Class_Has_Attributes
 		foreach ($parent_classes as $parent_class) {
 			$this->mergeAttributes(
 				$attributes, $name, $parent_class->getAttributes(
-					$name, $flags, $final, ($parent_class->isClass() ? $parent_class : $class)
+					$name,
+					$flags,
+					$final,
+					(($parent_class->isClass() && !$parent_class->isAbstract()) ? $parent_class : $class)
 				)
 			);
 		}

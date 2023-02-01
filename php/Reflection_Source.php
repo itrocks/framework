@@ -475,17 +475,6 @@ class Reflection_Source
 									if (!$class->name) {
 										$missing_class_name[] = $dependency;
 									}
-									if ($type === Dependency::T_SET) {
-										$dependency                  = clone $dependency;
-										$dependency->dependency_name = strtolower(
-											Namespaces::shortClassName($class_name)
-										);
-										$dependency->type     = Dependency::T_STORE;
-										$this->dependencies[] = $dependency;
-										if (!$class->name) {
-											$missing_class_name[] = $dependency;
-										}
-									}
 								}
 							}
 						}

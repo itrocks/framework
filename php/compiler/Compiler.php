@@ -579,14 +579,22 @@ class Compiler extends Cache
 			if (
 				!isset($store_is_set[$class->name])
 				&& !$class->isAbstract()
-				&& ($store_name = Store::of($class)->value)
+				&& ($store = Store::of($class))
+				&& ($store_name = $store->value)
 			) {
 				$dependency                  = new Dependency();
 				$dependency->class_name      = $class->name;
 				$dependency->dependency_name = $store_name;
 				$dependency->file_name       = $source->file_name;
 				$dependency->type            = Dependency::T_STORE;
-				$dependencies[]              = $dependency;
+				if (
+					($store->class->getName() === $class->name)
+					&& ($attributes = $class->getAttributes(Store::class))
+				) {
+					/** @var $attributes Reflection_Attribute[] */
+					$dependency->line = reset($attributes)->line;
+				}
+				$dependencies[] = $dependency;
 			}
 		}
 		(new Set)->replace(

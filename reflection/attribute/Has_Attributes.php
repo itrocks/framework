@@ -27,8 +27,8 @@ trait Has_Attributes
 	public function getAttribute(string $name, int $flags = 0) : array|object|null
 	{
 		static $cache = [];
-		$cache_key = strval($this);
-		$class = ($this instanceof Reflection_Property) ? $this->getFinalClass() : $this;
+		$cache_key    = strval($this);
+		$class        = ($this instanceof Reflection_Property) ? $this->getFinalClass() : $this;
 		if (isset($cache[$cache_key][$name])) {
 			return $cache[$cache_key][$name];
 		}
@@ -93,7 +93,9 @@ trait Has_Attributes
 		}
 		/** @noinspection PhpMultipleClassDeclarationsInspection All parents use Has_Attributes */
 		foreach (parent::getAttributes($name, $flags) as $attribute) {
-			$attribute      = new Reflection_Attribute($attribute, $this, $final, $class);
+			if ((!$attribute instanceof Reflection_Attribute)) {
+				$attribute = new Reflection_Attribute($attribute, $this, $final, $class);
+			}
 			$attribute_name = $attribute->getName();
 			if ($attribute->isRepeatable()) {
 				$attributes[$attribute_name][] = $attribute;

@@ -9,7 +9,7 @@ use ITRocks\Framework\Tools\Stringable;
 /**
  * Dynamic source code typed in by the user
  */
-#[Store]
+#[Store('button_codes')]
 class Code implements Stringable
 {
 
