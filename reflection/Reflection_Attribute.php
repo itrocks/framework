@@ -2,7 +2,12 @@
 namespace ITRocks\Framework\Reflection;
 
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Reflection\Attribute\Local;
+use ITRocks\Framework\Reflection\Attribute\Inheritable;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Get_Default_Arguments;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Declaring;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Declaring_Class;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Reflection_Attribute;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ReflectionAttribute;
@@ -37,8 +42,8 @@ class Reflection_Attribute
 	//--------------------------------------------------------------------------------- $is_attribute
 	protected bool $is_attribute;
 	
-	//------------------------------------------------------------------------------------- $is_local
-	protected bool $is_local;
+	//------------------------------------------------------------------------------- $is_inheritable
+	protected bool $is_inheritable;
 
 	//-------------------------------------------------------------------------------- $is_repeatable
 	protected bool $is_repeatable;
@@ -113,27 +118,14 @@ class Reflection_Attribute
 		return $this->attribute?->getTarget() ?: 0;
 	}
 
-	//----------------------------------------------------------------------------------- isAttribute
-	public function isAttribute() : bool
+	//--------------------------------------------------------------------------------- isInheritable
+	public function isInheritable() : bool
 	{
-		if (isset($this->is_attribute)) {
-			return $this->is_attribute;
+		if (isset($this->is_inheritable)) {
+			return $this->is_inheritable;
 		}
-		$this->is_attribute = $this->name
-			&& class_exists($this->name)
-			&& (new ReflectionClass($this->name))->getAttributes(Attribute::class);
-		return $this->is_attribute;
-	}
-
-	//--------------------------------------------------------------------------------------- isLocal
-	public function isLocal() : bool
-	{
-		if (isset($this->is_local)) {
-			return $this->is_local;
-		}
-		$this->is_local = class_exists($this->name)
-			&& (new ReflectionClass($this->name))->getAttributes(Local::class);
-		return $this->is_local;
+		return $this->is_inheritable = class_exists($this->name)
+			&& (new ReflectionClass($this->name))->getAttributes(Inheritable::class);
 	}
 	
 	//---------------------------------------------------------------------------------- isRepeatable
@@ -165,21 +157,21 @@ class Reflection_Attribute
 		}
 		else {
 			$name   = $this->name;
-			$object = ($default && method_exists($name, 'getDefaultArguments'))
+			$object = ($default && is_a($name, Has_Get_Default_Arguments::class, true))
 				? Builder::create($name, $name::getDefaultArguments())
 				: ($this->attribute?->newInstance() ?: Builder::create($name, $this->getArguments()));
 		}
-		if (method_exists($object, 'setReflectionAttribute')) {
-			$object->setReflectionAttribute($this);
-		}
-		if (method_exists($object, 'setDeclaring')) {
+		if ($object instanceof Has_Set_Declaring) {
 			$object->setDeclaring($this->declaring);
 		}
-		if (method_exists($object, 'setDeclaringClass')) {
+		if ($object instanceof Has_Set_Declaring_Class) {
 			$object->setDeclaringClass($this->declaring_class);
 		}
-		if (method_exists($object, 'setFinal')) {
+		if ($object instanceof Has_Set_Final) {
 			$object->setFinal($this->final);
+		}
+		if ($object instanceof Has_Set_Reflection_Attribute) {
+			$object->setReflectionAttribute($this);
 		}
 		return $object;
 	}

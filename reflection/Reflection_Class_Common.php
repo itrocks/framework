@@ -40,7 +40,10 @@ trait Reflection_Class_Common
 			$final = $this;
 		}
 		$attributes = $this->getAttributesCommon($name, $flags, $final, $class);
-		if (!$this->isAttributeLocal($name) && (!$attributes || $this->isAttributeRepeatable($name))) {
+		if (
+			$this->isAttributeInheritable($name)
+			&& (!$attributes || $this->isAttributeRepeatable($name))
+		) {
 			$this->mergeParentAttributes($attributes, $name, $flags, $final, $class);
 		}
 		if (($this === $final) && ($final === $class)) {

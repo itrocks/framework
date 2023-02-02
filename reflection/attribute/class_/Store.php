@@ -2,15 +2,22 @@
 namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
 use Attribute;
+use ITRocks\Framework\Reflection\Attribute\Always;
 use ITRocks\Framework\Reflection\Attribute\Class_;
-use ITRocks\Framework\Reflection\Attribute\Has_String_Value;
+use ITRocks\Framework\Reflection\Attribute\Inheritable;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Get_Default_Arguments;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Declaring_Class;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_String_Value;
+use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Attribute;
 use ITRocks\Framework\Reflection\Reflection_Class_Common;
 use ITRocks\Framework\Tools\Namespaces;
 
-#[Attribute(Attribute::TARGET_CLASS)]
+#[Always, Attribute(Attribute::TARGET_CLASS), Inheritable]
 class Store extends Class_
+	implements Has_Get_Default_Arguments, Has_Set_Declaring_Class, Has_Set_Final
 {
 	use Has_String_Value;
 
@@ -70,20 +77,20 @@ class Store extends Class_
 	}
 
 	//----------------------------------------------------------------------------- setDeclaringClass
-	public function setDeclaringClass(Reflection_Class $class) : void
+	public function setDeclaringClass(Reflection|Reflection_Class $reflection) : void
 	{
-		$this->class = $class;
+		$this->class = $reflection;
 		if ($this->value === static::CALCULATE) {
 			$this->calculated = true;
-			$this->value      = $this->calculateName($class);
+			$this->value      = $this->calculateName($reflection);
 		}
 	}
 
 	//-------------------------------------------------------------------------------------- setFinal
-	public function setFinal(Reflection_Class $class) : void
+	public function setFinal(Reflection|Reflection_Class $reflection) : void
 	{
 		if ($this->value === static::EXTENDS) {
-			$this->extends($class);
+			$this->extends($reflection);
 		}
 	}
 

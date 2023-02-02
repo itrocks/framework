@@ -38,7 +38,7 @@ trait Property_Has_Attributes
 		$attributes    = $this->getAttributesCommon($name, $flags, $final ?: $this);
 		$is_repeatable = $this->isAttributeRepeatable($name);
 		if (
-			!$this->isAttributeLocal($name)
+			$this->isAttributeInheritable($name)
 			&& !($attributes && $is_repeatable)
 			&& ($overridden_property = $this->getOverriddenProperty())
 		) {
@@ -56,7 +56,8 @@ trait Property_Has_Attributes
 		$overrides = array_filter(
 			$overrides,
 			function(Reflection_Attribute $override) use($property_name) {
-				return $override->getArguments()[0] === $property_name;
+				$arguments = $override->getArguments();
+				return reset($arguments) === $property_name;
 			}
 		);
 		if (!$overrides) return $attributes;

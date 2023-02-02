@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework\Reflection\Attribute;
+namespace ITRocks\Framework\Reflection\Attribute\Template;
 
 trait Has_String_Value
 {

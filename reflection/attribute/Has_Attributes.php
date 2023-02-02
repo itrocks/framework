@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Reflection\Attribute;
 
 use Attribute;
 use Error;
-use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Attribute;
@@ -39,10 +38,7 @@ trait Has_Attributes
 				$attributes = [];
 			}
 			/** @noinspection PhpUnhandledExceptionInspection is_a */
-			elseif (
-				is_a($name, Reflection\Attribute::class, true)
-				&& !(new ReflectionClass($name))->getConstructor()->getNumberOfRequiredParameters()
-			) {
+			elseif ((new ReflectionClass($name))->getAttributes(Always::class)) {
 				$attributes = new Reflection_Attribute($name, $this, $this, $class);
 				/** @noinspection PhpUnhandledExceptionInspection is_a */
 				$attributes = $attributes->newInstance(true);
@@ -111,12 +107,11 @@ trait Has_Attributes
 		return $attributes;
 	}
 
-	//------------------------------------------------------------------------------ isAttributeLocal
-	public function isAttributeLocal(?string $name) : bool
+	//------------------------------------------------------------------------ isAttributeInheritable
+	public function isAttributeInheritable(?string $name) : bool
 	{
-		return $name
-			&& class_exists($name)
-			&& (new ReflectionClass($name))->getAttributes(Local::class);
+		return !$name
+			|| (class_exists($name) && (new ReflectionClass($name))->getAttributes(Inheritable::class));
 	}
 
 	//------------------------------------------------------------------------- isAttributeRepeatable
@@ -126,7 +121,7 @@ trait Has_Attributes
 		return $name
 			&& class_exists($name)
 			&& ($attribute = (new ReflectionClass($name))->getAttributes(Attribute::class))
-			&& ($attribute[0]->newInstance()->flags & Attribute::IS_REPEATABLE);
+			&& (reset($attribute)->newInstance()->flags & Attribute::IS_REPEATABLE);
 	}
 
 	//------------------------------------------------------------------------------- mergeAttributes
@@ -144,7 +139,7 @@ trait Has_Attributes
 					$attributes[$parent_name] = array_merge($attributes[$parent_name], $attribute);
 				}
 			}
-			elseif ($name || !$attribute->isLocal()) {
+			elseif ($name || $attribute->isInheritable()) {
 				$attributes[$parent_name] = $attribute;
 			}
 		}

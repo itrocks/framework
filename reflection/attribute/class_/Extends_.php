@@ -5,14 +5,13 @@ use Attribute;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Attribute\Has_Attributes;
-use ITRocks\Framework\Reflection\Attribute\Local;
 use ITRocks\Framework\Reflection\Interfaces;
 
 /**
  * This must be used for traits that are designed to extend a given class
  * Builder will use it to sort built classes
  */
-#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS), Local]
+#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
 class Extends_ extends Reflection\Attribute
 {
 
@@ -45,7 +44,7 @@ class Extends_ extends Reflection\Attribute
 	public function __toString() : string
 	{
 		sort($this->extends);
-		return join("\n", $this->extends);
+		return join(LF, $this->extends);
 	}
 
 	//------------------------------------------------------------------------------------------- has

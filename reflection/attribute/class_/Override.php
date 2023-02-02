@@ -4,8 +4,9 @@ namespace ITRocks\Framework\Reflection\Attribute\Class_;
 use Attribute;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Inheritable;
 
-#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
+#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS), Inheritable]
 class Override extends Class_
 {
 

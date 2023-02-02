@@ -4,12 +4,14 @@ namespace ITRocks\Framework\Reflection\Attribute\Property;
 use Attribute;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Attribute\Inheritable;
 use ITRocks\Framework\Reflection\Attribute\Property;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
-use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
-#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_PROPERTY)]
-class User_Change extends Property
+#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_PROPERTY), Inheritable]
+class User_Change extends Property implements Has_Set_Final
 {
 
 	//------------------------------------------------------------------------------- $change_feature
@@ -64,9 +66,9 @@ class User_Change extends Property
 	public function setFinal(Reflection $reflection) : void
 	{
 		if (reset($this->change_feature)) return;
-		$this->change_feature[key($this->change_feature)] = ($reflection instanceof Reflection_Class)
-			? $reflection->getName()
-			: $reflection->getFinalClassName();
+		$this->change_feature[key($this->change_feature)] = ($reflection instanceof Reflection_Property)
+			? $reflection->getFinalClassName()
+			: $reflection->getName();
 	}
 
 }
