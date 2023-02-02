@@ -76,7 +76,11 @@ trait Toolbox
 			$advice_parameters = $advice_method->getParameters();
 		}
 
-		$advice_has_return = str_contains($advice_method->getDocComment(), '@return');
+		$advice_has_return = str_contains($advice_method->getDocComment(), '@return')
+			|| (
+				($return_type_string = $advice_method->getReturnTypeString())
+				&& ($return_type_string !== 'void')
+			);
 
 		return [
 			$advice_class_name,
@@ -137,10 +141,15 @@ trait Toolbox
 			$ref = $method->returnsReference() ? '&' : '';
 			// static method call
 			if ($is_advice_static) {
+				$access_code = $method->isStatic()
+					? (
+						(in_array($advice[0], ['self', 'static']) ? $advice[0] : (BS . $advice_class_name))
+						. '::'
+					)
+					: '$this->';
 				return $joinpoint_code
 					. $i2 . ($advice_has_return ? ($result . SP . '=' . $ref . SP) : '')
-					. (in_array($advice[0], ['self', 'static']) ? $advice[0] : (BS . $advice_class_name))
-					. '::' . $advice_method_name
+					. $access_code . $advice_method_name
 					. '(' . $advice_parameters_string . ');';
 			}
 			// object method call

@@ -258,31 +258,6 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 		return $this->parent ?: null;
 	}
 
-	//--------------------------------------------------------------------------- getReturnTypeString
-	/**
-	 * @return string
-	 */
-	public function getReturnTypeString() : string
-	{
-		if (!isset($this->return_type_string)) {
-			$this->return_type_string = '';
-			$get_type  =  false;
-			$tokens    =& $this->class->source->getTokens();
-			$token_key =  $this->token_key;
-			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
-			while (($tokens[++$token_key]) !== '(');
-			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
-			while (($tokens[++$token_key]) !== ')');
-			while (($token = $tokens[++$token_key]) !== '{') {
-				if ($get_type) {
-					$this->return_type_string .= $token;
-				}
-				if ($token === ':') $get_type = true;
-			}
-		}
-		return $this->return_type_string ?: 'void';
-	}
-
 	//---------------------------------------------------------------------------- getPrototypeString
 	/**
 	 * The prototype of the function, beginning with first whitespaces before function and its doc
@@ -309,6 +284,32 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 			$this->prototype_string .= $token . LF;
 		}
 		return $this->prototype_string;
+	}
+
+	//--------------------------------------------------------------------------- getReturnTypeString
+	/**
+	 * @return string
+	 */
+	public function getReturnTypeString() : string
+	{
+		if (!isset($this->return_type_string)) {
+			$this->return_type_string = '';
+			$get_type  =  false;
+			$tokens    =& $this->class->source->getTokens();
+			$token_key =  $this->token_key;
+			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
+			while (($tokens[++$token_key]) !== '(');
+			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
+			while (($tokens[++$token_key]) !== ')');
+			while (($token = $tokens[++$token_key]) !== '{') {
+				if ($get_type) {
+					$this->return_type_string .= is_array($token) ? $token[1] : $token;
+				}
+				if ($token === ':') $get_type = true;
+			}
+			$this->return_type_string = trim($this->return_type_string);
+		}
+		return $this->return_type_string ?: 'void';
 	}
 
 	//------------------------------------------------------------------------------------ isAbstract
