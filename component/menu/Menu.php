@@ -108,7 +108,7 @@ class Menu implements Configurable
 	 *                      If it is an object, will build a configuration to access this object.
 	 * @return string[] key is the URI to call the feature, value if the caption of the menu item
 	 */
-	public static function configurationOf(array|object|string ...$class_names) : array
+	public static function configurationOf(array|object|string... $class_names) : array
 	{
 		$configuration_items = [];
 		foreach (func_get_args() as $class_names) {

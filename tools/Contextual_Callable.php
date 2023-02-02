@@ -40,7 +40,7 @@ class Contextual_Callable
 	 * @param $args mixed ...
 	 * @return mixed
 	 */
-	public function call(mixed ...$args) : mixed
+	public function call(mixed... $args) : mixed
 	{
 		return func_num_args()
 			? call_user_func_array($this->getCallable(), func_get_args())
