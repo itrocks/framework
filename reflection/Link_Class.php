@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection;
 
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 
 /**
  * Link class
@@ -80,7 +81,7 @@ class Link_Class extends Reflection_Class
 	/**
 	 * Returns the two or more properties of the class that make the link
 	 * ie : properties defined into the class @link annotation, if set,
-	 * otherwise @composite properties
+	 * otherwise #Composite properties
 	 *
 	 * @return Reflection_Property[] The key contains the name of the property
 	 */
@@ -93,7 +94,7 @@ class Link_Class extends Reflection_Class
 	/**
 	 * Returns the two or more properties names of the class that make the link
 	 * ie : properties defined into the class @link annotation, if set,
-	 * otherwise @composite properties names
+	 * otherwise #Composite properties names
 	 *
 	 * @return string[] key and value are the name of each link property
 	 */
@@ -288,7 +289,7 @@ class Link_Class extends Reflection_Class
 		foreach ($link->getUniqueProperties() as $property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property from object must be accessible */
 			$value = $property->getValue($object);
-			if ($strict && empty($value) && $property->getAnnotation('composite')->value) {
+			if ($strict && empty($value) && Composite::of($property)?->value) {
 				return null;
 			}
 			$property->setValue($search, $value);

@@ -10,15 +10,12 @@ class Built_Object
 {
 
 	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * @var object
-	 */
 	public object $object;
 
 	//-------------------------------------------------------------------------------- $write_options
 	/**
 	 * You may want to set some write options here, like Dao::only(...)
-	 * TODO LOW cannot be easily automated for data coming from forms : @before_write and @setter may change other values
+	 * TODO LOW cannot be easily automated for data coming from forms : @before_write and #Setter may change other values
 	 *
 	 * @var Option[]
 	 */

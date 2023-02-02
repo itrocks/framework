@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Implement;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 
 /**
@@ -11,9 +12,8 @@ use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
  *
  * Common annotated classes are Reflection_Class, Reflection_Property, Reflection_Method.
  * Classes that use this trait must implement Has_Doc_Comment !
- *
- * @implements Has_Doc_Comment
  */
+#[Implement(Has_Doc_Comment::class)]
 trait Annoted
 {
 

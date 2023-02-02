@@ -2,6 +2,8 @@
 namespace ITRocks\Framework\View\Logger;
 
 use ITRocks\Framework;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\No_Escape;
 use ITRocks\Framework\View\Logger;
@@ -14,13 +16,11 @@ trait Entry
 
 	//--------------------------------------------------------------------------------------- $output
 	/**
-	 * @getter
 	 * @max_length 100000000
 	 * @multiline
-	 * @store false
 	 * @user_getter userGetOutput
-	 * @var string|No_Escape
 	 */
+	#[Getter('getOutput'), Store(false)]
 	public string|No_Escape $output;
 
 	//----------------------------------------------------------------------------- deactivateScripts

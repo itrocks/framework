@@ -59,7 +59,7 @@ class Object_Builder_Array_Test extends Test
 			'component' => ['name' => 'Component object']
 		]);
 
-		// only the main object : Dao::write() will always write the @composite property
+		// only the main object : Dao::write() will always write the #Composite property
 		$assume = [new Built_Object($composite)];
 
 		static::assertEquals($assume, $builder->getBuiltObjects());
@@ -89,7 +89,7 @@ class Object_Builder_Array_Test extends Test
 			'name'                => $object->name
 		]);
 
-		// only the main object : sub-objects that are not @composite are not explicitly built objects,
+		// only the main object : sub-objects that are not #Composite are not explicitly built objects,
 		// but they are inside the object that use them
 		// (the default write controller will not write them even if data has changed)
 		$assume = [new Built_Object(Dao::searchOne($object))];

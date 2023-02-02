@@ -5,7 +5,7 @@ use ITRocks\Framework\Reflection\Annotation;
 
 /**
  * Type annotation : a fictive class when you need to resolve a unique class name
- * ie : Used by Getter_Annotation
+ * ie : Used by #Getter
  */
 class Type_Annotation extends Annotation
 {

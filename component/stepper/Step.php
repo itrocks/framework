@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Component\Stepper;
 
 use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 
 /**
  * Class Step
@@ -13,10 +14,7 @@ class Step
 	public string $caption = '';
 
 	//------------------------------------------------------------------------------------ $css_class
-	/**
-	 * @getter
-	 * @var string
-	 */
+	#[Getter('getCssClass')]
 	public string $css_class = '';
 
 	//-------------------------------------------------------------------------------------- $current

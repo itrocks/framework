@@ -23,8 +23,7 @@ class Asynchronous
 
 	//-------------------------------------------------------------------------------- $max_processes
 	/**
-	 * @setter
-	 * @var integer
+	 * #Setter
 	 */
 	public int $max_processes = 8;
 
@@ -35,9 +34,6 @@ class Asynchronous
 	public array $running_processes = [];
 
 	//------------------------------------------------------------------------------ $session_counter
-	/**
-	 * @var integer
-	 */
 	public int $session_counter = 0;
 
 	//---------------------------------------------------------------------------- $waiting_processes
@@ -49,8 +45,6 @@ class Asynchronous
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Constructs an asynchronous calls stack
-	 *
-	 * @param $max_processes integer|null
 	 */
 	public function __construct(int $max_processes = null)
 	{
@@ -61,13 +55,13 @@ class Asynchronous
 
 	//------------------------------------------------------------------------------------------ call
 	/**
-	 * Calls an URI (controller) from the console asynchronously, using the same session handler than
+	 * Calls a URI (controller) from the console asynchronously, using the same session handler than
 	 * the caller
 	 *
 	 * @param $uri              string Call this URI : link to a controller, including parameters
 	 * @param $then             array A callback for when the job is done (class + method + arguments)
-	 * @param $needs_session    boolean true automatically clones current session (authenticated call)
-	 * @param $needs_identifier boolean true generates an unique identifier for X-Request-ID
+	 * @param $needs_session    boolean True automatically clones current session (authenticated call)
+	 * @param $needs_identifier boolean True generates an unique identifier for X-Request-ID
 	 * @return Process
 	 */
 	public function call(
@@ -122,11 +116,8 @@ class Asynchronous
 
 	//-------------------------------------------------------------------------------- processesCount
 	/**
-	 * Counts how many processes are running or waiting (total)
-	 *
-	 * When 0 : all processes are done
-	 *
-	 * @return integer
+	 * Counts how many processes are running or waiting (total).
+	 * When 0: all processes are done.
 	 */
 	public function processesCount() : int
 	{
@@ -161,8 +152,6 @@ class Asynchronous
 	//------------------------------------------------------------------------------------ runProcess
 	/**
 	 * Runs the process. Appends the session id to the command if needed
-	 *
-	 * @param $process Process
 	 */
 	protected function runProcess(Process $process) : void
 	{
@@ -192,9 +181,7 @@ class Asynchronous
 
 	//------------------------------------------------------------------------------- setMaxProcesses
 	/**
-	 * $max_processes @setter : if increased, runs waiting processes immediately
-	 *
-	 * @param $max_processes integer
+	 * $max_processes #Setter : if increased, runs waiting processes immediately
 	 */
 	protected function setMaxProcesses(int $max_processes) : void
 	{

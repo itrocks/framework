@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Tests\Replaces;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+
 /**
  * Replacement property with getter test
  */
@@ -8,23 +10,16 @@ class Replacement_Getter
 {
 
 	//------------------------------------------------------------------------------------- $replaced
-	/**
-	 * @var string
-	 */
 	public string $replaced;
 
 	//---------------------------------------------------------------------------------- $replacement
 	/**
-	 * @getter
 	 * @replaces replaced
-	 * @var string
 	 */
+	#[Getter]
 	public string $replacement;
 
 	//-------------------------------------------------------------------------------- getReplacement
-	/**
-	 * @return string
-	 */
 	protected function getReplacement() : string
 	{
 		return $this->replacement . '(get)';

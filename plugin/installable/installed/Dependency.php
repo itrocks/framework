@@ -14,17 +14,9 @@ class Dependency extends Installed
 {
 
 	//----------------------------------------------------------------------------------- $dependency
-	/**
-	 * @link Object
-	 * @var Feature
-	 */
 	public Feature $dependency;
 
 	//------------------------------------------------------------------------------------------- add
-	/**
-	 * @param $dependency string|Feature
-	 * @return static
-	 */
 	public function add(string|Feature $dependency) : static
 	{
 		if (is_string($dependency)) {
@@ -34,10 +26,6 @@ class Dependency extends Installed
 	}
 
 	//---------------------------------------------------------------------------------------- remove
-	/**
-	 * @param $dependency string|Feature
-	 * @return static
-	 */
 	public function remove(string|Feature $dependency) : static
 	{
 		if (is_string($dependency)) {

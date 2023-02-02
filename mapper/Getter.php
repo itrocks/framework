@@ -7,7 +7,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -94,7 +94,7 @@ abstract class Getter
 		if (
 			!self::$ignore
 			&& ($property instanceof Reflection_Property)
-			&& Store_Annotation::of($property)->isJson()
+			&& Store::of($property)->isJson()
 		) {
 			if (isset($stored) && is_string($stored)) {
 				$objects_arrays = json_decode($stored, true);
@@ -368,33 +368,27 @@ abstract class Getter
 			}
 		}
 		if (isset($stored) && !is_object($stored)) {
-			if (
-				isset($property)
-				&& Store_Annotation::of($property)->value
-				&& !Store_Annotation::of($property)->isFalse()
-			) {
-				if (Store_Annotation::of($property)->isGz()) {
+			if (isset($property) && ($store = Store::of($property))->isString()) {
+				if ($store->isGz()) {
 					$inflated = gzinflate($stored);
 					if ($inflated !== false) {
 						$stored = $inflated;
 					}
 				}
-				switch (Store_Annotation::of($property)->value) {
-					case Store_Annotation::JSON:
-						$stored = json_decode($stored, true);
-						$stored = static::schemaDecode($stored, $property);
-						break;
-					default:
-						// TODO QUESTION $class_name and $property_class_name... Isn't it the same ?
-						// TODO QUESTION Is Builder::className($property_class_name) missing ?
-						$property_class_name = $property->getType()->asString();
-						if (is_a($property_class_name, Stringable::class, true)) {
-							$stored = call_user_func([$property_class_name, 'fromString'], $stored);
-						}
-						elseif (method_exists($property_class_name, '__unserialize')) {
-							$stored = unserialize($stored);
-						}
-						break;
+				if ($store->isJson()) {
+					$stored = json_decode($stored, true);
+					$stored = static::schemaDecode($stored, $property);
+				}
+				else {
+					// TODO QUESTION $class_name and $property_class_name... Isn't it the same ?
+					// TODO QUESTION Is Builder::className($property_class_name) missing ?
+					$property_class_name = $property->getType()->asString();
+					if (is_a($property_class_name, Stringable::class, true)) {
+						$stored = call_user_func([$property_class_name, 'fromString'], $stored);
+					}
+					elseif (method_exists($property_class_name, '__unserialize')) {
+						$stored = unserialize($stored);
+					}
 				}
 			}
 			else {
@@ -409,7 +403,7 @@ abstract class Getter
 
 	//-------------------------------------------------------------------------------- getStringArray
 	/**
-	 * Use it for var string[] without @values : add @getter Getter::getStringArray
+	 * Use it for var string[] without @values : add #Getter Getter::getStringArray
 	 * TODO create @link StringArray as a shortcut
 	 *
 	 * @param $stored string|string[]
@@ -473,9 +467,9 @@ abstract class Getter
 	public static function schemaDecode(array $stored, Reflection_Property $property = null) : object
 	{
 		$stored_array = $stored;
-		if (isset($stored_array[Store_Annotation::JSON_CLASS])) {
-			$class_name = $stored_array[Store_Annotation::JSON_CLASS];
-			unset($stored_array[Store_Annotation::JSON_CLASS]);
+		if (isset($stored_array[Store::JSON_CLASS])) {
+			$class_name = $stored_array[Store::JSON_CLASS];
+			unset($stored_array[Store::JSON_CLASS]);
 		}
 		elseif ($property?->getType()->isClass()) {
 			$class_name = $property->getType()->getElementTypeAsString();
@@ -486,12 +480,12 @@ abstract class Getter
 		if ($class_name) {
 			$class_name = Builder::className($class_name);
 		}
-		if (isset($stored_array[Store_Annotation::JSON_CONSTRUCT])) {
-			$constructor_arguments = $stored_array[Store_Annotation::JSON_CONSTRUCT];
+		if (isset($stored_array[Store::JSON_CONSTRUCT])) {
+			$constructor_arguments = $stored_array[Store::JSON_CONSTRUCT];
 			if (!is_array($constructor_arguments)) {
 				$constructor_arguments = [$constructor_arguments];
 			}
-			unset($stored_array[Store_Annotation::JSON_CONSTRUCT]);
+			unset($stored_array[Store::JSON_CONSTRUCT]);
 		}
 		else {
 			$constructor_arguments = [];

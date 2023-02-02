@@ -32,7 +32,6 @@ class Counter
 	/**
 	 * @example 'F{YEAR}{ITRocks\Framework\User.current.login.0.upper}%04s'
 	 * @mandatory
-	 * @var string
 	 */
 	public string $format = '{YEAR}%04d';
 
@@ -41,15 +40,12 @@ class Counter
 	 * @mandatory
 	 * @user add_only
 	 * @user_getter showIdentifier
-	 * @var string
 	 */
 	public string $identifier;
 
 	//---------------------------------------------------------------------------------- $last_update
 	/**
-	 * @link DateTime
 	 * @user readonly
-	 * @var Date_Time|string
 	 */
 	public Date_Time|string $last_update;
 
@@ -61,14 +57,10 @@ class Counter
 	 * @user readonly
 	 * @user_getter formatLastValue
 	 * @user_var string
-	 * @var integer
 	 */
 	public int $last_value = 0;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $identifier string|null
-	 */
 	public function __construct(string $identifier = null)
 	{
 		if (isset($identifier)) {
@@ -81,7 +73,6 @@ class Counter
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
-	 * @return string
 	 * @throws ReflectionException
 	 */
 	public function __toString() : string
@@ -110,10 +101,6 @@ class Counter
 	}
 
 	//------------------------------------------------------------------------------------- decrement
-	/**
-	 * @param $class_name    string
-	 * @param $property_name string
-	 */
 	protected function decrement(string $class_name, string $property_name) : void
 	{
 		$old_value = $this->last_value;
@@ -131,9 +118,6 @@ class Counter
 	//------------------------------------------------------------------------------- formatLastValue
 	/**
 	 * Returns the last counter value, formatted
-	 *
-	 * @param $object object|null
-	 * @return string
 	 */
 	public function formatLastValue(object $object = null) : string
 	{
@@ -197,10 +181,6 @@ class Counter
 	}
 
 	//--------------------------------------------------------------------------- incrementIdentifier
-	/**
-	 * @param $object object
-	 * @return string
-	 */
 	public static function incrementIdentifier(object $object) : string
 	{
 		return Builder::current()->sourceClassName(get_class($object));
@@ -282,7 +262,6 @@ class Counter
 	//-------------------------------------------------------------------------------- showIdentifier
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return string
 	 * @throws ReflectionException
 	 */
 	public function showIdentifier() : string
@@ -324,9 +303,6 @@ class Counter
 	}
 
 	//---------------------------------------------------------------------------------------- unlock
-	/**
-	 * @param $mutex Mutex
-	 */
 	protected static function unlock(Mutex $mutex) : void
 	{
 		$mutex->unlock();

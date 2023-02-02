@@ -4,15 +4,16 @@ namespace ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Option\Spreadable;
-use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation\Class_;
-use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -44,7 +45,7 @@ class Object_To_Write_Array
 	/**
 	 * The class of the written object we want to write properties from
 	 *
-	 * On @link classes : Object_To_Write_Array may be called for each @link class, then for the
+	 * On @link classes, Object_To_Write_Array may be called for each @link class, then for the
 	 * linked class, to restrict the written properties (one write per link class).
 	 *
 	 * @var Link_Class
@@ -102,7 +103,7 @@ class Object_To_Write_Array
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
-	 * The resulting component objects (matches @component @link Object properties of $object)
+	 * The resulting component objects (matches #Component @link Object properties of $object)
 	 *
 	 * @var array
 	 */
@@ -173,27 +174,27 @@ class Object_To_Write_Array
 			: [];
 		$properties        = $this->class->getProperties();
 		$properties        = Replaces_Annotations::removeReplacedProperties($properties);
-		$aop_getter_ignore = Getter::$ignore;
+		$aop_getter_ignore = Mapper\Getter::$ignore;
 		foreach ($properties as $property) {
 			if (
 				(empty($this->only) || in_array($property->name, $this->only, true))
 				&& !$property->isStatic()
 				&& !in_array($property->name, $this->exclude, true)
 				&& !in_array($property->name, $exclude_properties, true)
-				&& !Store_Annotation::of($property)->isFalse()
-				&& !($this->json_encoding && $property->getAnnotation('composite')->value)
+				&& !Store::of($property)->isFalse()
+				&& !($this->json_encoding && Composite::of($property)?->value)
 			) {
 				$property_name = $property->name;
-				if (Getter_Annotation::of($property)->value) {
-					// call @getter (not really : only isset is called. Real @getter call may cause problems)
+				if (Getter::of($property)->callable) {
+					// call #Getter (not really : only isset is called. Real @getter call may cause problems)
 					// TODO isset now calls getter in order to get a real data isset result. Problems ?
 					$is_property_set = isset($this->object->$property_name);
 				}
 				else {
 					// do not call @link implicit getters
-					Getter::$ignore  = true;
+					Mapper\Getter::$ignore  = true;
 					$is_property_set = isset($this->object->$property_name);
-					Getter::$ignore  = $aop_getter_ignore;
+					Mapper\Getter::$ignore  = $aop_getter_ignore;
 				}
 				/** @noinspection PhpUnhandledExceptionInspection $property is valid for $object */
 				$value = $is_property_set ? $property->getValue($this->object) : null;
@@ -253,9 +254,9 @@ class Object_To_Write_Array
 		$write_value = null;
 		if (
 			$property->getType()->getElementType()->isString()
-			&& Store_Annotation::of($property)->is([Store_Annotation::GZ, Store_Annotation::HEX])
+			&& ($store = Store::of($property))->is(Store::GZ | Store::HEX)
 		) {
-			if (Store_Annotation::of($property)->isGz()) {
+			if ($store->isGz()) {
 				$value = gzdeflate($value);
 			}
 			$will_hex = true;
@@ -374,7 +375,7 @@ class Object_To_Write_Array
 
 	//--------------------------------------------------------------------------- propertyStoreString
 	/**
-	 * Value to be stored as string : change an array / object to string when it has a @store option
+	 * Value to be stored as string : change an array / object to string when it has a #Store option
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
@@ -383,7 +384,7 @@ class Object_To_Write_Array
 	 */
 	protected function propertyStoreString(Reflection_Property $property, mixed $value) : string
 	{
-		$store = Store_Annotation::of($property);
+		$store = Store::of($property);
 		if ($store->isJson()) {
 			if (is_object($value) && ($write = (new Call_Stack)->getObject(Write::class))) {
 				$write->beforeWrite($value, $this->options, Write::BEFORE_WRITE);
@@ -410,7 +411,7 @@ class Object_To_Write_Array
 	//----------------------------------------------------------------------- propertyTableColumnName
 	/**
 	 * Build the value to be written for a property linked to a table column
-	 * (it must not have @store false, nor be a collection, map or component object)
+	 * (it must not have #Store(false), nor be a collection, map or component object)
 	 *
 	 * @param $property Reflection_Property The property
 	 * @param $value    mixed The value of the property to be written
@@ -421,15 +422,15 @@ class Object_To_Write_Array
 		$class_name             = null;
 		$element_type           = $property->getType()->getElementType();
 		$storage_name           = Store_Name_Annotation::of($property)->value;
-		$store_annotation_value = Store_Annotation::of($property)->value;
-		$value_is_json_encoding = ($store_annotation_value === Store_Annotation::JSON);
+		$store_attribute        = Store::of($property);
+		$value_is_json_encoding = $store_attribute->isJson();
 		$write_property         = null;
 		// write basic but test store as json too
 		if ($element_type->isBasic(false) && !$value_is_json_encoding) {
 			$write_value = $this->propertyBasic($property, $value);
 		}
-		// write array or object into a @store gz/hex/string
-		elseif ($store_annotation_value) {
+		// write array or object into a #Store(GZ|Hex|String)
+		elseif ($store_attribute->isString()) {
 			$write_value = $this->propertyStoreString($property, $value);
 			if ($write_property = $this->propertyDao($property, $write_value)) {
 				$write_value = '';
@@ -443,8 +444,8 @@ class Object_To_Write_Array
 		elseif ($this->json_encoding && ($value instanceof Date_Time)) {
 			$value_class_name = Builder::current()->sourceClassName(get_class($value));
 			$write_value      = [
-				Store_Annotation::JSON_CLASS     => $value_class_name,
-				Store_Annotation::JSON_CONSTRUCT => $value->toISO()
+				Store::JSON_CLASS     => $value_class_name,
+				Store::JSON_CONSTRUCT => $value->toISO()
 			];
 		}
 		elseif ($element_type->isMixed()) {
@@ -511,7 +512,7 @@ class Object_To_Write_Array
 			$maps        = $object_to_write_array->maps;
 			// JSON comes first, like it is done by serialize()
 			$value_class_name = Builder::current()->sourceClassName(get_class($value));
-			$array            = array_merge([Store_Annotation::JSON_CLASS => $value_class_name], $array);
+			$array            = array_merge([Store::JSON_CLASS => $value_class_name], $array);
 			foreach ($array as $key => $value) {
 				if (is_object($value)) {
 					if ($identifier = Dao::getObjectIdentifier($value)) {
@@ -522,7 +523,7 @@ class Object_To_Write_Array
 					}
 					else {
 						$value = $this->valueToWriteArray($value, $options);
-						unset($value[Store_Annotation::JSON_CLASS]);
+						unset($value[Store::JSON_CLASS]);
 					}
 					$array[$key] = $value;
 				}
@@ -531,7 +532,7 @@ class Object_To_Write_Array
 				/** @var $property Reflection_Property */
 				foreach ($values as $key => $value) {
 					$element = $this->valueToWriteArray($value, $options);
-					unset($element[Store_Annotation::JSON_CLASS]);
+					unset($element[Store::JSON_CLASS]);
 					$array[$property->name][$key] = $element;
 				}
 			}
@@ -543,7 +544,7 @@ class Object_To_Write_Array
 					}
 					else {
 						$element = $this->valueToWriteArray($value, $options);
-						unset($element[Store_Annotation::JSON_CLASS]);
+						unset($element[Store::JSON_CLASS]);
 						$array[$property->name][$key] = $element;
 					}
 				}

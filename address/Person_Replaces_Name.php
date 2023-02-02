@@ -1,16 +1,24 @@
 <?php
 namespace ITRocks\Framework\Address;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Override;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
+
 /**
  * A Has_Name Person which $name is always replaced by "$first_name $last_name"
  *
  * Compatible with Person or Person
  *
  * @display_order first_name, last_name, name
- * @override first_name @impacts name @setter setNameComponent
- * @override last_name  @impacts name @setter setNameComponent
+ * @override civility   @impacts name
+ * @override first_name @impacts name
+ * @override last_name  @impacts name
  * @override name       @calculated @user hide_edit, hide_output
  */
+#[Override('civility',   new Setter('setNameComponent'))]
+#[Override('first_name', new Setter('setNameComponent'))]
+#[Override('last_name',  new Setter('setNameComponent'))]
+#[Override('name',       new Setter('setNameComponent'))]
 trait Person_Replaces_Name
 {
 	use Person_Having_Name;
@@ -19,7 +27,7 @@ trait Person_Replaces_Name
 	/**
 	 * A generic setter for all properties that are a component for $this->name if self is a Has_Name
 	 *
-	 * @noinspection PhpUnused @setter
+	 * @noinspection PhpUnused #Setter
 	 * @param $property_name string @values first_name, last_name
 	 * @param $value         string
 	 */

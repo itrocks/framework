@@ -13,11 +13,12 @@ use ITRocks\Framework\Property;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display;
 use ITRocks\Framework\Reflection\Attribute\Class_\Displays;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
@@ -80,7 +81,7 @@ class Select_Controller implements Feature_Controller
 				)
 				&& $source_property->isPublic()
 				&& $source_property->isVisible(false, false)
-				&& (($this->for === Feature::F_PRINT) || !Store_Annotation::of($source_property)->isFalse())
+				&& (($this->for === Feature::F_PRINT) || !Store::of($source_property)->isFalse())
 			) {
 				/** @noinspection PhpUnhandledExceptionInspection valid $property */
 				$property = new Reflection_Property(
@@ -172,10 +173,10 @@ class Select_Controller implements Feature_Controller
 			$property_class = $property->getFinalClass();
 			if (
 				Link_Annotation::of($property_class)->value
-				|| $property->getAnnotation('composite')->value
-				// TODO this consideration is only on some cases (here : lists can't deal with @store false)
-				|| Store_Annotation::of($property)->isFalse()
-				|| !Store::of($property_class)->value
+				|| Composite::of($property)?->value
+				// TODO this consideration is only on some cases (here : lists can't deal with #Store(false))
+				|| Store::of($property)->isFalse()
+				|| !Class_\Store::of($property_class)->value
 			) {
 				unset($properties[$property_path]);
 				continue;

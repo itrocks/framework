@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Tools;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -207,7 +208,7 @@ class Json
 		return $property->isVisible()
 			&& $property->isPublic()
 			&& !$property->isStatic()
-			&& !$property->getAnnotation('composite')->value;
+			&& !Composite::of($property)?->value;
 	}
 
 	//------------------------------------------------------------------- subObjectToStdClassInternal

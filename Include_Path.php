@@ -2,7 +2,7 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\Php\Reflection_Class;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Tools\OS;
 
 /**
@@ -128,9 +128,9 @@ class Include_Path
 				$directories = $this->getSourceDirectories($include_subdirectories, $extends, $already);
 			}
 			// get source directories for secondary applications extends
-			$extends_attributes = Extends_::of(Reflection_Class::of($application_class));
-			foreach ($extends_attributes as $extends_attribute) {
-				foreach ($extends_attribute->extends as $extends) {
+			$extend_attributes = Extend::of(Reflection_Class::of($application_class));
+			foreach ($extend_attributes as $extend_attribute) {
+				foreach ($extend_attribute->extends as $extends) {
 					if (!isset($already[$extends])) {
 						$directories = array_merge(
 							$this->getSourceDirectories($include_subdirectories, $extends, $already),

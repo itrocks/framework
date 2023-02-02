@@ -13,6 +13,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
@@ -38,38 +39,24 @@ class Locale implements Configurable, Registerable, Updatable
 	const NUMBER   = 'number';
 
 	//---------------------------------------------------------------------------------- $date_format
-	/**
-	 * @link Object
-	 * @setter setDateFormat
-	 * @var Date_Format
-	 */
+	#[Setter]
 	public Date_Format $date_format;
 
 	//----------------------------------------------------------------------------- $format_translate
-	/**
-	 * @var boolean
-	 */
 	public bool $format_translate = true;
 
 	//------------------------------------------------------------------------------------- $language
 	/**
 	 * @impacts translations
-	 * @setter setLanguage
-	 * @var string
 	 */
+	#[Setter]
 	public string $language;
 
 	//-------------------------------------------------------------------------------- $number_format
-	/**
-	 * @setter setNumberFormat
-	 * @var Number_Format
-	 */
+	#[Setter]
 	public Number_Format $number_format;
 
 	//--------------------------------------------------------------------------------- $translations
-	/**
-	 * @var Translator
-	 */
 	public Translator $translations;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -105,10 +92,6 @@ class Locale implements Configurable, Registerable, Updatable
 	//-------------------------------------------------------------------------------- methodToLocale
 	/**
 	 * Change an ISO value into a locale formatted value, knowing its method
-	 *
-	 * @param $method Reflection_Method
-	 * @param $value  mixed
-	 * @return string
 	 */
 	public function methodToLocale(Reflection_Method $method, mixed $value) : string
 	{
@@ -119,9 +102,6 @@ class Locale implements Configurable, Registerable, Updatable
 	/**
 	 * Change a locale value into an ISO formatted value, knowing its property
 	 *
-	 * @param $property Reflection_Property
-	 * @param $value    string|null
-	 * @return Date_Time|float|integer|string|null
 	 * @throws User_Error_Exception
 	 */
 	public function propertyToIso(Reflection_Property $property, string $value = null)
@@ -146,10 +126,6 @@ class Locale implements Configurable, Registerable, Updatable
 	//------------------------------------------------------------------------------ propertyToLocale
 	/**
 	 * Change an ISO value into a locale formatted value, knowing its property
-	 *
-	 * @param $property Reflection_Property
-	 * @param $value    string|null
-	 * @return string
 	 */
 	public function propertyToLocale(Reflection_Property $property, string $value = null) : string
 	{
@@ -235,9 +211,6 @@ class Locale implements Configurable, Registerable, Updatable
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @param $register Register
-	 */
 	public function register(Register $register) : void
 	{
 		Application_Updater::get()->addUpdatable($this);
@@ -255,9 +228,6 @@ class Locale implements Configurable, Registerable, Updatable
 	}
 
 	//----------------------------------------------------------------------------------- setLanguage
-	/**
-	 * @param $language string
-	 */
 	public function setLanguage(string $language) : void
 	{
 		if ($language === 'auto') {
@@ -284,9 +254,6 @@ class Locale implements Configurable, Registerable, Updatable
 	/**
 	 * Change a locale value into an ISO formatted value, knowing its data type
 	 *
-	 * @param $value string
-	 * @param $type  Type|null
-	 * @return float|integer|string|null
 	 * @throws User_Error_Exception
 	 */
 	public function toIso(string $value, Type $type = null) : float|int|string|null
@@ -309,9 +276,6 @@ class Locale implements Configurable, Registerable, Updatable
 	/**
 	 * Change an ISO value into a locale formatted value, knowing its data type
 	 *
-	 * @param $type  Type|null
-	 * @param $value mixed
-	 * @return string
 	 * @todo When hard typing will be enabled on all properties, simplify numeric tests (no string)
 	 */
 	public function toLocale(mixed $value, Type $type = null) : string
@@ -354,9 +318,6 @@ class Locale implements Configurable, Registerable, Updatable
 	}
 
 	//---------------------------------------------------------------------------------------- update
-	/**
-	 * @param $last_time integer
-	 */
 	public function update(int $last_time) : void
 	{
 		// too slow to be executed on development environment

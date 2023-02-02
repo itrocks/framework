@@ -11,7 +11,7 @@ abstract class String_Array
 
 	//---------------------------------------------------------------------------------------- getter
 	/**
-	 * Use this with @getter String_Array::getter each time you use @var string[] with @values
+	 * Use this with #Getter String_Array::getter each time you use @var string[] with @values
 	 * This patch is because when you read a SET from a mysql database, MySQL (and then it.rocks)
 	 * returns a string with 'value1,value2' instead of ['value1', 'value2'].
 	 *

@@ -6,7 +6,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 
 /**
- * Identifies the class where to look for @composite for @link class with two identical classes
+ * Identifies the class where to look for #Composite for @link class with two identical classes
  */
 class Link_Same_Annotation extends Annotation
 {

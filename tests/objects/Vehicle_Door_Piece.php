@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
@@ -15,11 +16,7 @@ class Vehicle_Door_Piece
 	use Mapper\Component;
 
 	//----------------------------------------------------------------------------------------- $door
-	/**
-	 * @composite
-	 * @link Object
-	 * @var Vehicle_Door
-	 */
+	#[Property\Composite]
 	public Vehicle_Door $door;
 
 }

@@ -7,6 +7,7 @@ use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ReflectionException;
 
 /**
@@ -204,10 +205,7 @@ class Integrated_Properties
 			if (
 				$sub_property->isPublic()
 				&& !$sub_property->isStatic()
-				&& (
-					!$property->getAnnotation('component')->value
-					|| !$sub_property->getAnnotation('composite')->value
-				)
+				&& (!$property->getAnnotation('component')->value || !Composite::of($sub_property)?->value)
 			) {
 				$expand_properties[$property->path . DOT . $sub_property_name] = $sub_property;
 			}

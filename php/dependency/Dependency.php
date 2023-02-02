@@ -51,8 +51,6 @@ class Dependency
 	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * Name of the class that has a dependency
-	 *
-	 * @var ?string
 	 */
 	public ?string $class_name = null;
 
@@ -60,7 +58,6 @@ class Dependency
 	/**
 	 * @see Declaration
 	 * @values Declaration::const
-	 * @var ?string
 	 */
 	public ?string $declaration = null;
 
@@ -73,24 +70,18 @@ class Dependency
 	//------------------------------------------------------------------------------ $dependency_name
 	/**
 	 * Dependency class name
-	 *
-	 * @var string
 	 */
 	public string $dependency_name;
 
 	//------------------------------------------------------------------------------------ $file_name
 	/**
 	 * The file name where the class is stored
-	 *
-	 * @var ?string
 	 */
 	public ?string $file_name;
 
 	//----------------------------------------------------------------------------------------- $line
 	/**
 	 * The line in file where the dependency was parsed
-	 *
-	 * @var integer
 	 */
 	public int $line;
 
@@ -111,7 +102,6 @@ class Dependency
 	 *
 	 * @values bridge_feature, class, compatibility, declaration, extends, feature, implements,
 	 *   namespace_use, new, param, return, set, static, store, use, var
-	 * @var string
 	 */
 	public string $type;
 
@@ -142,10 +132,6 @@ class Dependency
 	}
 
 	//----------------------------------------------------------------------------- dependencyToClass
-	/**
-	 * @param $dependency_name ?string
-	 * @return ?string
-	 */
 	public static function dependencyToClass(?string $dependency_name) : ?string
 	{
 		if (!$dependency_name) {
@@ -257,10 +243,6 @@ class Dependency
 	}
 
 	//---------------------------------------------------------------------------------------- hasSet
-	/**
-	 * @param $class_name ?string
-	 * @return boolean
-	 */
 	public static function hasSet(?string $class_name) : bool
 	{
 		if (!$class_name) {

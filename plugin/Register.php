@@ -2,6 +2,8 @@
 namespace ITRocks\Framework\Plugin;
 
 use ITRocks\Framework\AOP\Weaver\IWeaver;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 
 /**
  * Plugin register structure
@@ -17,11 +19,9 @@ class Register
 
 	//-------------------------------------------------------------------------------- $configuration
 	/**
-	 * @getter getConfiguration
 	 * @impacts get
-	 * @setter
-	 * @var array|string
 	 */
+	#[Getter('getConfiguration'), Setter('setConfiguration')]
 	public array|string $configuration;
 
 	//------------------------------------------------------------------------------------------ $get

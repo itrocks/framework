@@ -1,9 +1,12 @@
 <?php
-namespace ITRocks\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Attribute\Property;
 
-use ITRocks\Framework\Reflection\Annotation;
-use ITRocks\Framework\Reflection\Annotation\Template\Has_Is;
-use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use Attribute;
+use ITRocks\Framework\Reflection\Attribute\Always;
+use ITRocks\Framework\Reflection\Attribute\Inheritable;
+use ITRocks\Framework\Reflection\Attribute\Property;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
+use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
@@ -18,24 +21,17 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
  * - string if the property type is Date_Time
  * - no value on all others cases
  */
-class Store_Annotation extends Annotation implements Property_Context_Annotation
+#[Always, Attribute(Attribute::TARGET_PROPERTY), Inheritable]
+class Store extends Property implements Has_Set_Final
 {
-	use Has_Is;
 
-	//------------------------------------------------------------------------------------ ANNOTATION
-	const ANNOTATION = 'store';
-
-	//----------------------------------------------------------------------------------------- FALSE
-	const FALSE = 'false';
-
-	//-------------------------------------------------------------------------------------------- GZ
-	const GZ = 'gz';
-
-	//------------------------------------------------------------------------------------------- HEX
-	const HEX = 'hex';
-
-	//------------------------------------------------------------------------------------------ JSON
-	const JSON = 'json';
+	//-------------------------------------------------------------------- Store value flag constants
+	public const FALSE  = 0;
+	public const GZ     = 8  | self::STRING;
+	public const HEX    = 16 | self::STRING;
+	public const JSON   = 4  | self::STRING;
+	public const STORE  = 1;
+	public const STRING = 2;
 
 	//------------------------------------------------------------------------------------ JSON_CLASS
 	/**
@@ -49,25 +45,28 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	 */
 	const JSON_CONSTRUCT = '__construct';
 
-	//---------------------------------------------------------------------------------------- STRING
-	const STRING = 'string';
+	//---------------------------------------------------------------------------------------- $value
+	public int $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    ?string @values gz, hex, string
-	 * @param $property Reflection_Property
+	 * @param $value bool|integer @map static::const<int>
 	 */
-	public function __construct(?string $value, Reflection_Property $property)
+	public function __construct(bool|int $value = self::STORE)
 	{
-		parent::__construct($value);
-		if (empty($this->value)) {
-			if ($property->isStatic()) {
-				$this->value = self::FALSE;
-			}
-			elseif ($property->getType()->isDateTime()) {
-				$this->value = self::STRING;
-			}
-		}
+		$this->value = intval($value);
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	public function __toString() : string
+	{
+		return strval($this->value);
+	}
+
+	//-------------------------------------------------------------------------------------------- is
+	public function is(int $flags) : bool
+	{
+		return $this->value & $flags;
 	}
 
 	//--------------------------------------------------------------------------------------- isFalse
@@ -76,50 +75,51 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	 */
 	public function isFalse() : bool
 	{
-		return $this->value === self::FALSE;
+		return !$this->value;
 	}
 
 	//------------------------------------------------------------------------------------------ isGz
-	/**
-	 * @return boolean
-	 */
 	public function isGz() : bool
 	{
-		return $this->value === self::GZ;
+		return $this->value & self::GZ;
 	}
 
 	//----------------------------------------------------------------------------------------- isHex
-	/**
-	 * @return boolean
-	 */
 	public function isHex() : bool
 	{
-		return $this->value === self::HEX;
+		return $this->value & self::HEX;
 	}
 
 	//---------------------------------------------------------------------------------------- isJson
-	/**
-	 * @return boolean
-	 */
 	public function isJson() : bool
 	{
-		return $this->value === self::JSON;
+		return $this->value & self::JSON;
 	}
 
 	//-------------------------------------------------------------------------------------- isString
 	/**
-	 * Returns true if @store's value allows to store a string representation of the property value
-	 *
-	 * @return boolean
+	 * Returns true if #Store value allows to store a string representation of the property value
 	 */
 	public function isString() : bool
 	{
-		return in_array($this->value, [self::GZ, self::HEX, self::JSON, self::STRING], true);
+		return $this->value & self::STRING;
+	}
+
+	//-------------------------------------------------------------------------------------- setFinal
+	public function setFinal(Reflection|Reflection_Property $reflection) : void
+	{
+		if (isset($this->value)) return;
+		if ($reflection->isStatic()) {
+			$this->value = self::FALSE;
+		}
+		elseif ($reflection->getType()->isDateTime()) {
+			$this->value = self::STRING;
+		}
 	}
 
 	//-------------------------------------------------------------------------- storedPropertiesOnly
 	/**
-	 * Returns only non-static properties which @store annotation is not false
+	 * Returns only non-static properties which #Store is not false
 	 *
 	 * @param $properties Reflection_Property[]
 	 * @return Reflection_Property[] filtered properties list
@@ -127,7 +127,7 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	public static function storedPropertiesOnly(array $properties) : array
 	{
 		foreach ($properties as $key => $property) {
-			if ($property->isStatic() || static::of($property)->isFalse()) {
+			if ($property->isStatic() || !static::of($property)->value) {
 				unset($properties[$key]);
 			}
 		}

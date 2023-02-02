@@ -3,6 +3,8 @@ namespace ITRocks\Framework\Dao\Mysql\File_Logger;
 
 use ITRocks\Framework;
 use ITRocks\Framework\Dao\Mysql\File_Logger;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Session;
 
 /**
@@ -13,18 +15,16 @@ trait Entry
 
 	//------------------------------------------------------------------------------------------ $sql
 	/**
-	 * @getter
 	 * @max_length 1000000000
 	 * @multiline
-	 * @store false
-	 * @var string
 	 */
+	#[Getter('getSql')]
+	#[Store(false)]
 	public string $sql;
 
 	//---------------------------------------------------------------------------------------- getSql
 	/**
-	 * @noinspection PhpUnused @getter
-	 * @return string
+	 * @noinspection PhpUnused #Getter
 	 */
 	protected function getSql() : string
 	{

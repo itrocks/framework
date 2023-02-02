@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Trigger\Change;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Trigger\Action;
 use ITRocks\Framework\Trigger\Change;
 use ITRocks\Framework\Trigger\Has_Condition;
@@ -12,17 +13,12 @@ class Run extends Has_Condition\Run
 
 	//-------------------------------------------------------------------------------------- $actions
 	/**
-	 * @link Map
 	 * @var Action[]
 	 */
 	public array $actions;
 
 	//--------------------------------------------------------------------------------------- $change
-	/**
-	 * @composite
-	 * @link Object
-	 * @var Change
-	 */
+	#[Composite]
 	public Change $change;
 
 }

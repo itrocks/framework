@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Mapper;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -95,7 +96,7 @@ trait Component
 			self::$composite_properties[$path] = [];
 			/** @noinspection PhpUnhandledExceptionInspection self, and property that must be valid */
 			$properties = empty($property_name)
-				? (new Reflection_Class($self))->getAnnotedProperties('composite')
+				? (new Reflection_Class($self))->getAttributeProperties(new Composite)
 				: [new Reflection_Property($self, $property_name)];
 			// take the right composite property
 			foreach ($properties as $property) {

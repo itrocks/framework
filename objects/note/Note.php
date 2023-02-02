@@ -18,19 +18,14 @@ class Note
 	//----------------------------------------------------------------------------------------- $date
 	/**
 	 * @default Date_Time::nowMinute
-	 * @link DateTime
 	 * @mandatory
 	 * @see Date_Time::nowMinute
-	 * @var Date_Time|string
 	 */
 	public Date_Time|string $date;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
-	 * @link Object
-	 * @mandatory
 	 * @user hidden
-	 * @var object
 	 */
 	public object $object;
 
@@ -39,20 +34,13 @@ class Note
 	 * @mandatory
 	 * @max_length 1024
 	 * @multiline
-	 * @var string
 	 */
 	public string $text;
 
 	//---------------------------------------------------------------------------------------- $title
-	/**
-	 * @var string
-	 */
 	public string $title;
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		$text = lParse($this->text, LF);

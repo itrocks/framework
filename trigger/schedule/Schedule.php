@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Trigger;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Comparator;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Trigger;
 use ITRocks\Framework\Trigger\Action\Status;
@@ -29,7 +30,6 @@ class Schedule extends Trigger
 	//-------------------------------------------------------------------------------- $days_of_month
 	/**
 	 * @user hide_empty
-	 * @var string
 	 */
 	public string $days_of_month = '';
 
@@ -44,30 +44,27 @@ class Schedule extends Trigger
 
 	//---------------------------------------------------------------------------------- $hour_ranges
 	/**
-	 * @link Collection
 	 * @user hide_empty
 	 * @var Hour_Range[]
 	 */
+	#[Component]
 	public array $hour_ranges = [];
 
 	//---------------------------------------------------------------------------------------- $hours
 	/**
 	 * @user hide_empty
-	 * @var string
 	 */
 	public string $hours = '';
 
 	//--------------------------------------------------------------------------------------- $months
 	/**
 	 * @user hide_empty
-	 * @var string
 	 */
 	public string $months = '';
 
 	//---------------------------------------------------------------------------------------- $years
 	/**
 	 * @user hide_empty
-	 * @var string
 	 */
 	public string $years = '';
 

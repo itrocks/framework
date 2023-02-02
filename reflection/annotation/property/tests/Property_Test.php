@@ -1,11 +1,11 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
 
-use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
-use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
@@ -132,7 +132,7 @@ class Property_Test extends Test
 
 	//--------------------------------------------------------------------- testGetterAnnotationCases
 	/**
-	 * Test property @getter cases of uses
+	 * Test property #Getter cases of uses
 	 */
 	public function testGetterAnnotationCases() : void
 	{
@@ -145,42 +145,42 @@ class Property_Test extends Test
 
 	//----------------------------------------------------------------------- testGetterAnnotationSet
 	/**
-	 * Test property @getter : setting annotation value
+	 * Test property #Getter : setting annotation value
 	 */
 	public function testGetterAnnotationSet() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid object and constant */
 		$property = new Reflection_Property($this->subject, 'collection_property');
 
-		// @getter methodName
+		// #Getter methodName
 		static::assertEquals(
 			get_class($this->subject) . '::testGetterAnnotation',
-			(new Getter_Annotation('testGetterAnnotation', $property))->value,
+			(new Getter('testGetterAnnotation', $property))->callable,
 			'methodName'
 		);
-		// @getter Local_Class_Name::methodName
+		// #Getter Local_Class_Name::methodName
 		static::assertEquals(
 			User_Annotation::class . '::has',
-			(new Getter_Annotation('User_Annotation::has', $property))->value,
+			(new Getter('User_Annotation::has', $property))->callable,
 			'Local_Class_Name::methodName'
 		);
-		// @getter Distant\Class\Full\Path::methodName
+		// #Getter Distant\Class\Full\Path::methodName
 		static::assertEquals(
 			Annoted::class . '::has',
-			(new Getter_Annotation(BS . Annoted::class . '::has', $property))->value,
+			(new Getter(BS . Annoted::class . '::has', $property))->callable,
 			'Distant\Class\Full\Path\Class_Name::methodName'
 		);
 		// use Distant\Class\Full\Path\Class_Name
-		// @getter Class_Name::methodName
+		// #Getter Class_Name::methodName
 		static::assertEquals(
 			Annoted::class . '::has',
-			(new Getter_Annotation('Annoted::has', $property))->value,
+			(new Getter('Annoted::has', $property))->callable,
 			'use Class_Name::methodName'
 		);
 		// default value for getter when there is a @link annotation
 		static::assertEquals(
-			Getter::class . '::getCollection',
-			$property->getAnnotation(Getter_Annotation::ANNOTATION)->value,
+			Mapper\Getter::class . '::getCollection',
+			Getter::of($property)->callable,
 			'default value when @link'
 		);
 	}
@@ -203,7 +203,7 @@ class Property_Test extends Test
 
 	//--------------------------------------------------------------------- testSetterAnnotationCases
 	/**
-	 * Test property @setter cases of uses
+	 * Test property #Setter cases of uses
 	 */
 	public function testSetterAnnotationCases() : void
 	{

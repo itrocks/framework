@@ -3,8 +3,8 @@ namespace ITRocks\Framework\Sql\Builder;
 
 use ITRocks\Framework\Dao\Func\Concat;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Join;
@@ -15,7 +15,7 @@ use ITRocks\Framework\Tools\Date_Time;
  *
  * They will automatically get Has_Joins, so they do not need to use Has_Joins.
  */
-#[Extends_(With_Build_Column::class)]
+#[Extend(With_Build_Column::class)]
 trait Has_Build_Column
 {
 	use Has_Joins;
@@ -65,7 +65,7 @@ trait Has_Build_Column
 		else {
 			$force_column = (
 				($property = $this->joins->getProperty($master_path, $column_name))
-				&& Store_Annotation::of($property)->isFalse()
+				&& Store::of($property)->isFalse()
 			) ? 'NULL' : null;
 			if (($path === DOT) && !$column_name) {
 				$as   = false;

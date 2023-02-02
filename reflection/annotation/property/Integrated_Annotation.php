@@ -9,9 +9,9 @@ use ITRocks\Framework\Reflection\Annotation\Template\Options_Properties_Annotati
  * Generals : @integrated [alias] [block] [full|simple] [property1[, property.path2[, etc]]
  *
  * Multiple keywords can be used to tell how this sub-form will be integrated into the main form :
- * - alias : the @alias value of each property will be displayed instead for their standard display,
+ * - alias : the #Alias value of each property will be displayed instead for their standard display,
  * - block : the sub-form will be delimited into a <fieldset> block,
- * - final : will not be @integrated if already into an @integrated property
+ * - final : will not be @integrated if already into a @integrated property,
  * - full : the full property.path display will be shown,
  * - simple : the name for each property will be the final property name (or alias) alone, no path.
  *

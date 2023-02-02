@@ -3,9 +3,10 @@ namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property;
 
 /**
- * A component class for @component @link Object properties testing
+ * A component class for #Component @link Object properties testing
  */
 #[Store('test_client_components')]
 class Client_Component
@@ -13,17 +14,10 @@ class Client_Component
 	use Mapper\Component;
 
 	//--------------------------------------------------------------------------------------- $client
-	/**
-	 * @composite
-	 * @link Object
-	 * @var Client
-	 */
+	#[Property\Composite]
 	public Client $client;
 
 	//---------------------------------------------------------------------------------- $little_name
-	/**
-	 * @var string
-	 */
 	public string $little_name = '';
 
 }

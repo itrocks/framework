@@ -20,7 +20,7 @@ use ITRocks\Framework\Reflection\Link_Class;
  * for super-object :
  * - implement your own protected function getSubClassNames containing $this->readSub();
  * - a property linked to all its children of the same class, named $sub_class_names
- *   annotations : @getter getSubClassNames @var Class_Name[] @foreign super_class_name
+ *   annotations : #Getter getSubClassNames @var Class_Name[] @foreign super_class_name
  *
  * TODO LOW add a single annotation on properties that will result in auto-calling of getSub
  * and writeSub without having to implement the getter and after_write into the business class.

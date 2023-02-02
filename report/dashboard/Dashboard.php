@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Report\Dashboard\Indicator;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Traits\Has_Name;
@@ -21,16 +22,15 @@ class Dashboard
 
 	//----------------------------------------------------------------------------------- $indicators
 	/**
-	 * @link Collection
 	 * @var Indicator[]
 	 */
+	#[Component]
 	public array $indicators;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * A constructor for your Has_Name class
 	 *
-	 * @param $name string|null
 	 * @todo use With_Constructor : needs AOP compiler update
 	 */
 	public function __construct(string $name = null)
@@ -43,7 +43,7 @@ class Dashboard
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * Gets the session current / default dashboard. If none : initialized to dashboard Nr 1.
-	 * If does not exist : created.
+	 * If it does not exist : created.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return static

@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Layout\Structure\Element;
 
 use ITRocks\Framework\Layout\Structure\Element;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 
 /**
  * Element with an init method to calculate its non-initialized attributes
  */
-#[Extends_(Element::class)]
+#[Extend(Element::class)]
 interface Has_Init
 {
 

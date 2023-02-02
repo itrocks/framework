@@ -4,6 +4,7 @@ namespace ITRocks\Framework;
 use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting\Custom;
 use ITRocks\Framework\Tools\Names;
@@ -20,25 +21,17 @@ class Setting implements Validate\Except
 {
 
 	//----------------------------------------------------------------------------------------- $code
-	/**
-	 * @var string
-	 */
 	public string $code;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
-	 * @getter
 	 * @max_length 1000000000
 	 * @notice string must come first, because it is stored as this
-	 * @var string|Custom\Set|null string if serialized (for storage)
 	 */
+	#[Getter('getValue')]
 	public string|Custom\Set|null $value = null;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $code  string|null
-	 * @param $value Custom\Set|string|null
-	 */
 	public function __construct(string $code = null, Custom\Set|string $value = null)
 	{
 		if (isset($code))  $this->code = $code;
@@ -46,9 +39,6 @@ class Setting implements Validate\Except
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return (rLastParse($this->code, DOT) ?: $this->code)
@@ -56,28 +46,18 @@ class Setting implements Validate\Except
 	}
 
 	//-------------------------------------------------------------------------------------- getClass
-	/**
-	 * @return string
-	 */
 	public function getClass() : string
 	{
 		return explode(DOT, $this->code)[0];
 	}
 
 	//------------------------------------------------------------------------------------ getFeature
-	/**
-	 * @return string
-	 */
 	public function getFeature() : string
 	{
 		return explode(DOT, $this->code)[1];
 	}
 
 	//-------------------------------------------------------------------------------------- getValue
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return object|string|null
-	 */
 	protected function getValue() : object|string|null
 	{
 		$value = $this->value;

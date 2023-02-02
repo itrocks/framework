@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
@@ -14,10 +15,10 @@ class Vehicle
 
 	//---------------------------------------------------------------------------------------- $doors
 	/**
-	 * @link Collection
 	 * @var Vehicle_Door[]
 	 * @warning hasDoors
 	 */
+	#[Property\Component]
 	public array $doors;
 
 	//-------------------------------------------------------------------------------------- hasDoors
@@ -26,7 +27,7 @@ class Vehicle
 	 */
 	public function hasDoors() : bool
 	{
-		return (bool)$this->doors;
+		return boolval($this->doors);
 	}
 
 }

@@ -3,6 +3,8 @@ namespace ITRocks\Framework\Assets;
 
 use DOMDocument;
 use DOMElement;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Tools\Paths;
 
 /**
@@ -21,30 +23,19 @@ class Element
 	public DOMElement $element;
 
 	//----------------------------------------------------------------------------------------- $path
-	/**
-	 * @getter
-	 * @setter
-	 * @var string
-	 */
+	#[Getter('getPath'), Setter('setPath')]
 	public string $path = '';
 
 	//------------------------------------------------------------------------------- $path_attribute
 	/**
 	 * Attribute name of path location (used for path getter/setter)
 	 *
-	 * @exemple 'src'
+	 * @example 'src'
 	 * @see Element::__construct
-	 * @var string
 	 */
 	private string $path_attribute;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * Element constructor
-	 *
-	 * @param $element DOMElement
-	 * @param $path    string
-	 */
 	public function __construct(DOMElement $element, string $path)
 	{
 		$this->element = $element;
@@ -56,14 +47,10 @@ class Element
 				$this->path_attribute = 'href';
 				break;
 		}
-
 		$this->path = realpath($path . SL . $this->path);
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		$document = new DOMDocument();
@@ -74,7 +61,7 @@ class Element
 
 	//--------------------------------------------------------------------------------------- getPath
 	/**
-	 * @return string
+	 * @noinspection PhpUnused #Getter
 	 */
 	public function getPath() : string
 	{
@@ -83,8 +70,7 @@ class Element
 
 	//--------------------------------------------------------------------------------------- setPath
 	/**
-	 * @noinspection PhpUnused @setter
-	 * @param $path string
+	 * @noinspection PhpUnused #Setter
 	 */
 	public function setPath(string $path) : void
 	{

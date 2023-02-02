@@ -5,6 +5,8 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Where;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Trigger\Has_Condition\Run;
 
 /**
@@ -16,41 +18,27 @@ trait Has_Condition
 {
 
 	//------------------------------------------------------------------------------ $after_condition
-	/**
-	 * @link Object
-	 * @store json
-	 * @var ?Where
-	 */
+	#[Store(Store::JSON)]
 	public ?Where $after_condition;
 
 	//----------------------------------------------------------------------------- $before_condition
-	/**
-	 * @link Object
-	 * @store json
-	 * @var ?Where
-	 */
+	#[Store(Store::JSON)]
 	public ?Where $before_condition;
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
 	public string $class_name;
 
 	//-------------------------------------------------------------------------------------- $running
 	/**
-	 * @link Collection
 	 * @user invisible
 	 * @var Run[]
 	 */
+	#[Component]
 	public array $running;
 
 	//---------------------------------------------------------------------------- conditionIsNotNull
 	/**
-	 * Return true if $condition is Func::isNotNull()
-	 *
-	 * @param $condition ?Where
-	 * @return boolean
+	 * Returns true if $condition is Func::isNotNull()
 	 */
 	public function conditionIsNotNull(?Where $condition) : bool
 	{
@@ -61,10 +49,7 @@ trait Has_Condition
 
 	//------------------------------------------------------------------------------- conditionIsNull
 	/**
-	 * Return true if $condition is Func::isNull()
-	 *
-	 * @param $condition ?Where
-	 * @return boolean
+	 * Returns true if $condition is Func::isNull()
 	 */
 	public function conditionIsNull(?Where $condition) : bool
 	{

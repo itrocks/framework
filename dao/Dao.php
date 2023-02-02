@@ -7,7 +7,8 @@ use ITRocks\Framework\Dao\Data_Link\Transactional;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Plugin\Configurable;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Current;
@@ -244,8 +245,8 @@ class Dao implements Configurable
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object         array|object
-	 * @param $keep_composite bool if false, composite objects are set to null, to avoid recursions
-	 * @param $disconnect     bool if true, all id are deleted
+	 * @param $keep_composite boolean if false, composite objects are set to null, to avoid recursions
+	 * @param $disconnect     boolean if true, all id are deleted
 	 */
 	public static function exhaust(
 		array|object $object, bool $keep_composite = true, bool $disconnect = false
@@ -258,7 +259,7 @@ class Dao implements Configurable
 		}
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($object))->getProperties() as $property) {
-			if (!$keep_composite && $property->getAnnotation('composite')->value) {
+			if (!$keep_composite && Composite::of($property)?->value) {
 				unset($object->$property);
 			}
 			else {
@@ -717,9 +718,7 @@ class Dao implements Configurable
 	public static function storedAsForeign(Reflection_Property $property) : bool
 	{
 		$type = $property->getType();
-		return $type->isClass()
-			&& !$type->isDateTime()
-			&& in_array(Store_Annotation::of($property)->value, [null, ''], true);
+		return $type->isClass() && !$type->isDateTime() && !Store::of($property)->isString();
 	}
 
 	//------------------------------------------------------------------------------------- timeLimit

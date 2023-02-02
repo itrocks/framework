@@ -2,11 +2,13 @@
 namespace ITRocks\Framework\User\Group;
 
 use ITRocks\Framework\Controller;
-use ITRocks\Framework\Controller\Getter;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Feature_Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
@@ -20,7 +22,7 @@ use ITRocks\Framework\Tools\Namespaces;
  * @representative name
  * @sort name
  */
-#[Store]
+#[Class_\Store]
 class Feature
 {
 
@@ -76,11 +78,11 @@ class Feature
 	/**
 	 * The low-level features activated by this end-user feature
 	 *
-	 * @getter
-	 * @link Collection
-	 * @store false
 	 * @var Low_Level_Feature[]
 	 */
+	#[Component]
+	#[Getter('getFeatures')]
+	#[Store(false)]
 	public array $features;
 
 	//------------------------------------------------------------------------------------- $implicit
@@ -98,11 +100,11 @@ class Feature
 	/**
 	 * Included end-user features
 	 *
-	 * @getter
-	 * @link Collection
-	 * @store false
 	 * @var Feature[]
 	 */
+	#[Component]
+	#[Getter('getIncludes')]
+	#[Store(false)]
 	public array $includes;
 
 	//----------------------------------------------------------------------------------------- $name
@@ -111,10 +113,9 @@ class Feature
 	 * Default will be calculated from $path :
 	 * Names::classToDisplay(getClassName()) . SP . Names::methodToDisplay(getFeatureName())
 	 *
-	 * @getter
 	 * @mandatory
-	 * @var string
 	 */
+	#[Getter('getName')]
 	public string $name = '';
 
 	//----------------------------------------------------------------------------------------- $path
@@ -125,7 +126,6 @@ class Feature
 	 *
 	 * @example A/Module/Namespace/A_Class/featureName
 	 * @see getFileNames() for possible storage files for the example path
-	 * @var string
 	 */
 	public string $path = '';
 
@@ -138,16 +138,16 @@ class Feature
 	 * Set by :
 	 * - fileMatches() (once a file matches)
 	 *
-	 * @getter
-	 * @store false
-	 * @var false|Yaml|null false if the feature is not applicable (no file, not implicit)
+	 * false if the feature is not applicable (no file, not implicit)
 	 */
-	public bool|Yaml|null $yaml = null;
+	#[Getter('getYaml')]
+	#[Store(false)]
+	public Yaml|bool|null $yaml = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $path string|null eg 'A/Module/Namespace/A_Class/featureName' always the full path
-	 * @param $name string|null eg 'A class feature name'
+	 * @param $path string|null e.g. 'A/Module/Namespace/A_Class/featureName' always the full path
+	 * @param $name string|null e.g. 'A class feature name'
 	 */
 	public function __construct(string $path = null, string $name = null)
 	{
@@ -174,9 +174,6 @@ class Feature
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->name;
@@ -230,7 +227,6 @@ class Feature
 	 *
 	 * @example 'A/Module/Namespace/A_Class/featureName' :
 	 * the class name is 'A/Module/Namespace/A_Class';
-	 * @return string
 	 */
 	private function getClassName() : string
 	{
@@ -240,8 +236,6 @@ class Feature
 	//---------------------------------------------------------------------------------- getClassPath
 	/**
 	 * Gets the Full/Class_Path from the feature path
-	 *
-	 * @return string
 	 */
 	private function getClassPath() : string
 	{
@@ -254,7 +248,6 @@ class Feature
 	 *
 	 * @example 'A/Module/Namespace/A_Class/featureName' :
 	 * the feature name is 'featureName';
-	 * @return string
 	 */
 	private function getFeatureName() : string
 	{
@@ -266,7 +259,7 @@ class Feature
 	 * Low-level features are always stored into yaml files or implicit, not in databases or others
 	 * data links
 	 *
-	 * @noinspection PhpUnused @getter
+	 * @noinspection PhpUnused #Getter
 	 * @return Low_Level_Feature[]
 	 */
 	protected function getFeatures() : array
@@ -346,7 +339,7 @@ class Feature
 	/**
 	 * Get included end-user features
 	 *
-	 * @noinspection PhpUnused @getter
+	 * @noinspection PhpUnused #Getter
 	 * @return Feature[]
 	 */
 	protected function getIncludes() : array
@@ -361,8 +354,7 @@ class Feature
 	/**
 	 * Initialises the name from the yaml file or generate its default value from $path
 	 *
-	 * @noinspection PhpUnused @getter
-	 * @return string
+	 * @noinspection PhpUnused #Getter
 	 */
 	protected function getName() : string
 	{
@@ -427,7 +419,7 @@ class Feature
 	 * Gets the yaml object of the feature : matches the file that contains the end-user feature data,
 	 * or false if there is no file and the feature is not implicit (bad feature).
 	 *
-	 * @return false|Yaml|null
+	 * @noinspection PhpUnused #Getter
 	 */
 	protected function getYaml() : bool|Yaml|null
 	{
@@ -438,7 +430,7 @@ class Feature
 		$feature_name = $this->getFeatureName();
 		if ($class_name && $feature_name) {
 			// use common algorithm to found yaml feature file everywhere in class tree
-			$filename = Getter::get($class_name, $feature_name, '', 'yaml', false);
+			$filename = Controller\Getter::get($class_name, $feature_name, '', 'yaml', false);
 			if ($filename && reset($filename)) {
 				$filename = Names::classToPath(reset($filename)) . '.yaml';
 				if (file_exists($filename)) {
@@ -473,8 +465,6 @@ class Feature
 	//------------------------------------------------------------------------------------ isImplicit
 	/**
 	 * Returns true if the feature can be considered as implicit (use default feature file)
-	 *
-	 * @return boolean
 	 */
 	private function isImplicit() : bool
 	{
@@ -482,28 +472,18 @@ class Feature
 	}
 
 	//----------------------------------------------------------------------------------- resolveName
-	/**
-	 * @param $name string
-	 * @return string
-	 */
 	private function resolveName(string $name) : string
 	{
 		// name can contain $class and $feature
-		if (str_contains($name, '$')) {
-			$class_name    = $this->getClassName();
-			$feature_name  = $this->getFeatureName();
-			$name = Loc::tr(
-				$name,
-				[static::class, Loc::replace([
-					'class'   => Loc::tr(Names::classToDisplays($class_name),   $class_name),
-					'feature' => Loc::tr(Names::methodToDisplay($feature_name), $class_name)
-				])]
-			);
+		if (!str_contains($name, '$')) {
+			return Loc::tr($name);
 		}
-		else {
-			$name = Loc::tr($name);
-		}
-		return $name;
+		$class_name    = $this->getClassName();
+		$feature_name  = $this->getFeatureName();
+		return Loc::tr($name, [static::class, Loc::replace([
+			'class'   => Loc::tr(Names::classToDisplays($class_name),   $class_name),
+			'feature' => Loc::tr(Names::methodToDisplay($feature_name), $class_name)
+		])]);
 	}
 
 }

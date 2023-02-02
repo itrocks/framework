@@ -17,23 +17,12 @@ class Quote_Salesman extends Salesman
 	use Mapper\Component;
 
 	//----------------------------------------------------------------------------------- $percentage
-	/**
-	 * @var integer
-	 */
 	public int $percentage;
 
 	//---------------------------------------------------------------------------------------- $quote
-	/**
-	 * @link Object
-	 * @var ?Quote
-	 */
 	public ?Quote $quote;
 
 	//------------------------------------------------------------------------------------- $salesman
-	/**
-	 * @link Object
-	 * @var ?Salesman
-	 */
 	public ?Salesman $salesman;
 
 }

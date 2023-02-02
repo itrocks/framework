@@ -6,9 +6,9 @@ use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Decimal;
 use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Integer;
 use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Date_Time;
@@ -115,7 +115,7 @@ trait Column_Builder_Property
 	private static function propertyNameToMysql(Reflection_Property $property) : string
 	{
 		$type = $property->getType();
-		return ($type->isBasic() || Store_Annotation::of($property)->value)
+		return ($type->isBasic() || Store::of($property)->isString())
 			? Store_Name_Annotation::of($property)->value
 			: ('id_' . Store_Name_Annotation::of($property)->value);
 	}
@@ -142,7 +142,7 @@ trait Column_Builder_Property
 	private static function propertyTypeToMysql(Reflection_Property $property) : string
 	{
 		$property_type          = $property->getType();
-		$store_annotation_value = Store_Annotation::of($property)->value;
+		$store_annotation_value = Store::of($property)->isString();
 		if ($property_type->isBasic() || $store_annotation_value) {
 			if ($property_type->isMultipleString()) {
 				$values = self::propertyValues($property);
@@ -178,13 +178,13 @@ trait Column_Builder_Property
 					if (!isset($max_length)) {
 						$max_length = 255;
 					}
-					if ($store_annotation_value === Store_Annotation::GZ) {
+					if ($store_annotation_value === Store::GZ) {
 						return static::sqlBlobColumn($max_length);
 					}
 					return static::sqlTextColumn($max_length);
 				}
 			}
-			elseif ($store_annotation_value === Store_Annotation::JSON) {
+			elseif ($store_annotation_value === Store::JSON) {
 				return static::sqlTextColumn($property->getAnnotation('max_length')->value ?: 65535);
 			}
 			switch ($property_type->asString()) {

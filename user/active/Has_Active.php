@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\User\Active;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\User;
 
-#[Extends_(User::class)]
+#[Extend(User::class)]
 trait Has_Active
 {
 

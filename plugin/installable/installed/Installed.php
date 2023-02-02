@@ -5,13 +5,14 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\RAD\Feature;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Tools\Call_Stack;
 
 /**
  * Common code for installed things
  */
-#[Store]
+#[Class_\Store]
 abstract class Installed
 {
 
@@ -21,26 +22,18 @@ abstract class Installed
 	 *
 	 * Automatically set to the feature that matches the nearest 'plugin_class_name' argument when
 	 * the constructor is called.
-	 *
-	 * @store false
-	 * @var Feature
 	 */
+	#[Store(false)]
 	protected Feature $feature;
 
 	//------------------------------------------------------------------------------------- $features
 	/**
-	 * @link Map
 	 * @set_store_name {master}_features
 	 * @var Feature[]
 	 */
 	public array $features;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * Installed constructor.
-	 *
-	 * @param $feature_plugin Feature|Installable|string|null
-	 */
 	public function __construct(Feature|Installable|string $feature_plugin = null)
 	{
 		$this->feature = ($feature_plugin instanceof Feature)

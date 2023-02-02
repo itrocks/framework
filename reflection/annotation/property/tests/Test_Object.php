@@ -3,6 +3,10 @@ namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Reflection\Interfaces;
 
 /**
@@ -10,6 +14,7 @@ use ITRocks\Framework\Reflection\Interfaces;
  *
  * @see User_Annotation used in tests : testGetterAnnotationSet crashes without the use clause
  */
+#[Store]
 class Test_Object
 {
 
@@ -26,23 +31,17 @@ class Test_Object
 	 * A fictive local property, for unit tests use only
 	 * Annotations set here are used only for the test that uses @link
 	 *
-	 * @link Collection
 	 * @var Property_Test[]
 	 */
+	#[Component]
 	public array $collection_property;
 
 	//-------------------------------------------------------------------------------- $getter_simple
-	/**
-	 * @getter getSimple
-	 * @var string
-	 */
+	#[Getter('getSimple')]
 	public string $getter_simple;
 
 	//-------------------------------------------------------------------------------- $getter_static
-	/**
-	 * @getter getStatic
-	 * @var string
-	 */
+	#[Getter('getStatic')]
 	public string $getter_static;
 
 	//------------------------------------------------------------------------------------- $property
@@ -51,22 +50,15 @@ class Test_Object
 	 * Annotations set here are used only for the test that uses @default
 	 *
 	 * @default getDefaultPropertyValue
-	 * @var string
 	 */
 	public string $property;
 
 	//-------------------------------------------------------------------------------- $setter_simple
-	/**
-	 * @setter setSimple
-	 * @var string
-	 */
+	#[Setter('setSimple')]
 	public string $setter_simple;
 
 	//-------------------------------------------------------------------------------- $setter_static
-	/**
-	 * @setter static::setStatic
-	 * @var string
-	 */
+	#[Setter('setStatic')]
 	public string $setter_static;
 
 	//---------------------------------------------------------------------------------- $with_values
@@ -74,7 +66,6 @@ class Test_Object
 	 * @values a_value, another_value,
 	 *         third_value,
 	 *         fourth_value
-	 * @var string
 	 */
 	public string $with_values;
 
@@ -82,9 +73,7 @@ class Test_Object
 	/**
 	 * Get the default property value, for test of @default annotation
 	 *
-	 * @noinspection PhpUnused @getter
-	 * @param $property Interfaces\Reflection_Property
-	 * @return string
+	 * @noinspection PhpUnused #Getter
 	 */
 	public function getDefaultPropertyValue(Interfaces\Reflection_Property $property) : string
 	{
@@ -93,8 +82,7 @@ class Test_Object
 
 	//------------------------------------------------------------------------------------- getSimple
 	/**
-	 * @noinspection PhpUnused @getter
-	 * @return string
+	 * @noinspection PhpUnused #Getter
 	 */
 	public function getSimple() : string
 	{
@@ -103,9 +91,7 @@ class Test_Object
 
 	//------------------------------------------------------------------------------------- getStatic
 	/**
-	 * @noinspection PhpUnused @getter
-	 * @param $value string
-	 * @return string
+	 * @noinspection PhpUnused #Getter
 	 */
 	public static function getStatic(string $value) : string
 	{
@@ -114,8 +100,7 @@ class Test_Object
 
 	//------------------------------------------------------------------------------------- setSimple
 	/**
-	 * @noinspection PhpUnused @setter
-	 * @param $setter_simple string
+	 * @noinspection PhpUnused #Setter
 	 */
 	public function setSimple(string $setter_simple) : void
 	{
@@ -124,9 +109,7 @@ class Test_Object
 
 	//------------------------------------------------------------------------------------- setStatic
 	/**
-	 * @noinspection PhpUnused @setter
-	 * @param $value string
-	 * @return string
+	 * @noinspection PhpUnused #Setter
 	 */
 	public static function setStatic(string $value) : string
 	{

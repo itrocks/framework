@@ -11,10 +11,10 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User_Change;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
@@ -247,7 +247,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			$filters = Filters_Annotation::of($this->property)->parse($this->object);
 		}
 		if (is_null($as_string)) {
-			$as_string = (Store_Annotation::of($this->property)->value === Store_Annotation::STRING);
+			$as_string = Store::of($this->property)->isString();
 		}
 		return parent::buildObject($filters, $as_string);
 	}

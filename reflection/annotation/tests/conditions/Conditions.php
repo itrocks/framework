@@ -18,15 +18,11 @@ class Conditions
 
 	//---------------------------------------------------------------------------------------- $lines
 	/**
-	 * @link Collection
 	 * @var Conditions_Collection[]
 	 */
 	public array $lines;
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return 'conditions';

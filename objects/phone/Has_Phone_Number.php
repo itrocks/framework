@@ -4,6 +4,8 @@ namespace ITRocks\Framework\Objects\Phone;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Phone\Phone_Format;
 use ITRocks\Framework\Phone\Phone_Number_Exception;
+use ITRocks\Framework\Reflection\Attribute\Class_\Override;
+use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Traits\Has_Number;
 use ReflectionException;
@@ -11,8 +13,9 @@ use ReflectionException;
 /**
  * For classes that embed a phone number
  *
- * @override number @alias phone @mandatory false @validate validateNumber
+ * @override number @mandatory false @validate validateNumber
  */
+#[Override('number', new Alias('phone'))]
 trait Has_Phone_Number
 {
 	use Has_Number;

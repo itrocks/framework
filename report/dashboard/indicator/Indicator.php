@@ -13,6 +13,7 @@ use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Constant_Or_Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Report\Dashboard;
 use ITRocks\Framework\Report\Dashboard\Indicator\Property_Path\Widget;
@@ -40,21 +41,14 @@ class Indicator
 	const GRID_WIDTH = 6;
 
 	//------------------------------------------------------------------------------------ $dashboard
-	/**
-	 * @composite
-	 * @link Object
-	 * @mandatory
-	 * @var Dashboard
-	 */
+	#[Composite]
 	public Dashboard $dashboard;
 
 	//--------------------------------------------------------------------------------------- $grid_x
 	/**
 	 * horizontal coordinate on the dashboard grid, from 0 to 5
 	 *
-	 * @mandatory
 	 * @user invisible
-	 * @var integer
 	 */
 	public int $grid_x;
 
@@ -62,17 +56,11 @@ class Indicator
 	/**
 	 * vertical coordinate on the dashboard grid, from 0 to n
 	 *
-	 * @mandatory
 	 * @user invisible
-	 * @var integer
 	 */
 	public int $grid_y;
 
 	//----------------------------------------------------------------------------------------- $icon
-	/**
-	 * @link Object
-	 * @var ?File
-	 */
 	public ?File $icon = null;
 
 	//-------------------------------------------------------------------------------- $property_path
@@ -80,7 +68,6 @@ class Indicator
 	 * The indicator property path. Can also be '@count' for an objects counter
 	 *
 	 * @see Widget
-	 * @var string
 	 * @widget Widget
 	 */
 	public string $property_path = self::COUNT;
@@ -90,18 +77,10 @@ class Indicator
 	 * An indicator is linked to a list setting : when you click it, you go there.
 	 * The first way to create an indicator on the current home dashboard is to drag a custom list
 	 * setting and drop it into the 'home-page' icon that appears.
-	 *
-	 * @link Object
-	 * @mandatory
-	 * @var Setting
 	 */
 	public Setting $setting;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $setting   Setting|null
-	 * @param $dashboard Dashboard|null
-	 */
 	public function __construct(Setting $setting = null, Dashboard $dashboard = null)
 	{
 		if (isset($setting)) {
@@ -110,22 +89,21 @@ class Indicator
 		if (isset($dashboard)) {
 			$this->dashboard = $dashboard;
 		}
-		elseif (!isset($this->dashboard)) {
-			$this->dashboard = Dashboard::current();
-			if (!Dao::getObjectIdentifier($this->dashboard)) {
-				$dao = Dao::current();
-				if ($dao instanceof Identifier_Map) {
-					$dao->setObjectIdentifier($this->dashboard, 1);
-				}
-				Dao::write($this->dashboard, Dao::add());
-			}
+		elseif (isset($this->dashboard)) {
+			return;
 		}
+		$this->dashboard = Dashboard::current();
+		if (Dao::getObjectIdentifier($this->dashboard)) {
+			return;
+		}
+		$dao = Dao::current();
+		if ($dao instanceof Identifier_Map) {
+			$dao->setObjectIdentifier($this->dashboard, 1);
+		}
+		Dao::write($this->dashboard, Dao::add());
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->setting->value->name;
@@ -137,8 +115,6 @@ class Indicator
 	 *
 	 * The value is formatted using locales, and appended with the property @unit, if it is the same
 	 * for all read values
-	 *
-	 * @return string
 	 */
 	public function formattedValue() : string
 	{
@@ -148,8 +124,6 @@ class Indicator
 	//------------------------------------------------------------------------------------------ link
 	/**
 	 * A link to the target objects list
-	 *
-	 * @return string
 	 */
 	public function link() : string
 	{
@@ -166,9 +140,6 @@ class Indicator
 	 * Move the indicator to this destination on the grid
 	 *
 	 * - If already contains an indicator : exchange places
-	 *
-	 * @param $grid_x integer
-	 * @param $grid_y integer
 	 */
 	public function moveTo(int $grid_x, int $grid_y) : void
 	{

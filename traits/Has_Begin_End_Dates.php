@@ -16,17 +16,11 @@ trait Has_Begin_End_Dates
 {
 
 	//----------------------------------------------------------------------------------- $begin_date
-	/**
-	 * @link DateTime
-	 * @var Date_Time|string
-	 */
 	public Date_Time|string $begin_date;
 
 	//------------------------------------------------------------------------------------- $end_date
 	/**
 	 * @default Date_Time::max
-	 * @link DateTime
-	 * @var Date_Time|string
 	 */
 	public Date_Time|string $end_date;
 
@@ -96,10 +90,6 @@ trait Has_Begin_End_Dates
 	//---------------------------------------------------------------------------------- datesOverlap
 	/**
 	 * Returns true if begin and end dates for the current object overlap dates of $with
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $with Has_Begin_End_Dates
-	 * @return boolean
 	 */
 	public function datesOverlap(Has_Begin_End_Dates $with) : bool
 	{

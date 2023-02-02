@@ -18,7 +18,6 @@ class Package
 
 	//------------------------------------------------------------------------------------- $features
 	/**
-	 * @link Map
 	 * @var Feature[]
 	 */
 	public array $features;
@@ -26,7 +25,6 @@ class Package
 	//---------------------------------------------------------------------------------- $included_in
 	/**
 	 * @foreign includes
-	 * @link Map
 	 * @var Package[]
 	 */
 	public array $included_in;
@@ -34,7 +32,6 @@ class Package
 	//------------------------------------------------------------------------------------- $includes
 	/**
 	 * @foreign included_in
-	 * @link Map
 	 * @var Package[]
 	 */
 	public array $includes;

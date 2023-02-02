@@ -9,6 +9,9 @@ use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Confirm\Confirm;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Tools;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
@@ -16,6 +19,7 @@ use ITRocks\Framework\View;
 /**
  * An HMI button
  */
+#[Store]
 class Button
 {
 
@@ -44,23 +48,18 @@ class Button
 	/**
 	 * @see Align
 	 * @values Align::const
-	 * @var string
 	 */
 	public string $align = '';
 	
 	//--------------------------------------------------------------------------------- $cancel_label
 	/**
 	 * Label of the cancel button in the confirm dialog
-	 *
-	 * @var string
 	 */
 	public string $cancel_label = '';
 
 	//-------------------------------------------------------------------------------------- $caption
 	/**
 	 * Button caption
-	 *
-	 * @var string
 	 */
 	public string $caption = '';
 
@@ -69,20 +68,17 @@ class Button
 	 * More classes for the button
 	 * This is css style, eg 'pressed' or 'if-edit-press'
 	 *
-	 * @getter
 	 * @user hidden
-	 * @var string
 	 */
+	#[Getter]
 	public string $class = '';
 
 	//----------------------------------------------------------------------------------------- $code
 	/**
 	 * Some natural / PHP code to apply to the object before the action is executed
 	 *
-	 * @link Object
 	 * @multiline
 	 * @output string
-	 * @var ?Code
 	 */
 	public ?Code $code = null;
 
@@ -91,7 +87,6 @@ class Button
 	 * The color of the button
 	 *
 	 * @user invisible
-	 * @var ?Tools\Color
 	 */
 	public ?Tools\Color $color;
 
@@ -101,23 +96,18 @@ class Button
 	 *
 	 * @max_length 60000
 	 * @multiline
-	 * @var string
 	 */
 	public string $conditions = '';
 
 	//-------------------------------------------------------------------------------- $confirm_label
 	/**
 	 * Label of the confirm button in the confirm dialog
-	 *
-	 * @var string
 	 */
 	public string $confirm_label = '';
 
 	//------------------------------------------------------------------------------ $confirm_message
 	/**
 	 * Message to display to user in the confirm dialog
-	 *
-	 * @var string
 	 */
 	public string $confirm_message = '';
 
@@ -130,8 +120,6 @@ class Button
 	//---------------------------------------------------------------------------------- $data_object
 	/**
 	 * Object data linked to the button (optional)
-	 *
-	 * @var mixed
 	 */
 	public mixed $data_object = null;
 
@@ -140,15 +128,12 @@ class Button
 	 * Button feature
 	 *
 	 * @user hidden
-	 * @var string
 	 */
 	public string $feature = '';
 
 	//----------------------------------------------------------------------------------------- $hint
 	/**
 	 * A hint for the link
-	 *
-	 * @var string
 	 */
 	public string $hint = '';
 
@@ -156,16 +141,14 @@ class Button
 	/**
 	 * Button link
 	 *
-	 * @getter
 	 * @user invisible
-	 * @var ?string
 	 */
+	#[Getter('getLink')]
 	public ?string $link = null;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * @user invisible
-	 * @var ?object
 	 */
 	public ?object $object = null;
 
@@ -173,10 +156,10 @@ class Button
 	/**
 	 * A button can be linked to a collection of sub-buttons
 	 *
-	 * @link Collection
 	 * @user invisible
 	 * @var Button[]
 	 */
+	#[Component]
 	public array $sub_buttons = [];
 
 	//--------------------------------------------------------------------------------------- $target
@@ -186,7 +169,6 @@ class Button
 	 * If starts with '#', target is the identifier of a DOM element in the page (for ajax call)
 	 *
 	 * @user hidden
-	 * @var string
 	 */
 	public string $target = '#main';
 
@@ -223,9 +205,6 @@ class Button
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->caption;
@@ -287,9 +266,6 @@ class Button
 	//----------------------------------------------------------------------------- conditionsApplyTo
 	/**
 	 * Returns true if the conditions apply to the context object
-	 *
-	 * @param $object object
-	 * @return boolean
 	 */
 	public function conditionsApplyTo(object $object) : bool
 	{
@@ -297,9 +273,6 @@ class Button
 	}
 
 	//-------------------------------------------------------------------------------------- getClass
-	/**
-	 * @return string
-	 */
 	protected function getClass() : string
 	{
 		return $this->class ?: str_replace('_', '-', Names::methodToProperty($this->feature));
@@ -307,8 +280,7 @@ class Button
 
 	//--------------------------------------------------------------------------------------- getLink
 	/**
-	 * @noinspection PhpUnused @getter
-	 * @return ?string
+	 * @noinspection PhpUnused #Getter
 	 */
 	protected function getLink() : ?string
 	{
@@ -348,9 +320,6 @@ class Button
 	}
 
 	//------------------------------------------------------------------------------ setObjectContext
-	/**
-	 * @param $object object
-	 */
 	public function setObjectContext(object $object) : void
 	{
 		$this->object = $object;

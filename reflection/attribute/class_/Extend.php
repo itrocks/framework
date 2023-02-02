@@ -8,11 +8,11 @@ use ITRocks\Framework\Reflection\Attribute\Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 
 /**
- * This must be used for traits that are designed to extend a given class
- * Builder will use it to sort built classes
+ * This must be used for traits that are designed to extend a given class.
+ * Builder will use it to sort built classes.
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
-class Extends_ extends Reflection\Attribute
+class Extend extends Reflection\Attribute
 {
 
 	//---------------------------------------------------------------------------------------- STRICT
@@ -108,9 +108,7 @@ class Extends_ extends Reflection\Attribute
 	) : static
 	{
 		$attributes = static::notOf($reflection, $filter);
-		return $attributes
-			? reset($attributes)
-			: new static();
+		return $attributes ? reset($attributes) : new static();
 	}
 
 	//----------------------------------------------------------------------------------------- oneOf
@@ -127,9 +125,7 @@ class Extends_ extends Reflection\Attribute
 	) : static
 	{
 		$attributes = static::of($reflection, $filter);
-		return $attributes
-			? reset($attributes)
-			: new static();
+		return $attributes ? reset($attributes) : new static();
 	}
 
 }

@@ -2,9 +2,9 @@
 namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
 use ITRocks\Framework\Reflection\Annotation\Property;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template;
 use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -41,13 +41,7 @@ class Sort_Annotation extends Template\List_Annotation implements Class_Context_
 				$property = new Reflection_Property($class->getName(), $property_path);
 				if (
 					!$property->isStatic()
-					&& (
-						!Property\Link_Annotation::of($property)->value
-						|| (
-							($store = Store_Annotation::of($property)->value)
-							&& ($store !== Store_Annotation::FALSE)
-						)
-					)
+					&& (!Property\Link_Annotation::of($property)->value || Store::of($property)->isString())
 				) {
 					$this->value[] = $property_path;
 				}

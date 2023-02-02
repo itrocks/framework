@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection\Annotation\Tests\Replaces;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\User;
 
@@ -16,12 +17,10 @@ class User_Setting_Son extends Setting\User
 
 	//------------------------------------------------------------------------------------------ $guy
 	/**
-	 * @composite
-	 * @link Object
 	 * @override
 	 * @replaces user
-	 * @var User
 	 */
+	#[Composite]
 	public User $guy;
 
 }

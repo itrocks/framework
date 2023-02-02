@@ -2,9 +2,9 @@
 namespace ITRocks\Framework\Configuration\File\Writer;
 
 use ITRocks\Framework\Configuration\File\Writer;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 
-#[Extends_(Writer::class)]
+#[Extend(Writer::class)]
 trait Namespace_White_Lines
 {
 

@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
@@ -57,10 +58,7 @@ trait Foreign_Key_Builder_Property
 		if ($property->getAnnotation('constraint')->value === 'set_null') {
 			return Foreign_Key::SET_NULL;
 		}
-		return (
-			$property->getAnnotation('composite')->value
-			|| $property->getAnnotation('link_composite')->value
-		)
+		return (Composite::of($property)?->value || $property->getAnnotation('link_composite')->value)
 			? Foreign_Key::CASCADE
 			: Foreign_Key::RESTRICT;
 	}
@@ -79,10 +77,7 @@ trait Foreign_Key_Builder_Property
 		if ($property->getAnnotation('constraint')->value === 'set_null') {
 			return Foreign_Key::CASCADE;
 		}
-		return (
-			$property->getAnnotation('composite')->value
-			|| $property->getAnnotation('link_composite')->value
-		)
+		return (Composite::of($property)?->value || $property->getAnnotation('link_composite')->value)
 			? Foreign_Key::CASCADE
 			: Foreign_Key::RESTRICT;
 	}

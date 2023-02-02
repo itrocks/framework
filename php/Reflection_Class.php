@@ -5,7 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Parser;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Reflection\Reflection_Class_Common;
@@ -550,8 +550,8 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				$methods = array_merge($this->interfaces_methods, $methods);
 			}
 			if (isset($flip[self::T_DOC_EXTENDS])) {
-				foreach (Extends_::of($this) as $extends_attribute) {
-					foreach ($extends_attribute->extends as $extends) {
+				foreach (Extend::of($this) as $extend_attribute) {
+					foreach ($extend_attribute->extends as $extends) {
 						$extends = Reflection_Class::of($extends);
 						$methods = array_merge($extends->getMethods([self::T_DOC_EXTENDS, T_USE]), $methods);
 					}

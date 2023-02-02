@@ -6,6 +6,8 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Language;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 
 /**
  * Application data translation
@@ -21,31 +23,22 @@ class Data
 	 * Needed into storage for abstraction of object
 	 *
 	 * @mandatory
-	 * @var string
 	 */
 	public string $class_name;
 
 	//------------------------------------------------------------------------------------- $language
-	/**
-	 * @link Object
-	 * @mandatory
-	 * @var Language
-	 */
 	public Language $language;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
-	 * @getter
 	 * @mandatory
-	 * @setter
-	 * @var object
 	 */
+	#[Getter, Setter]
 	public object $object;
 
 	//-------------------------------------------------------------------------------- $property_name
 	/**
 	 * @mandatory
-	 * @var string
 	 */
 	public string $property_name;
 
@@ -54,14 +47,10 @@ class Data
 	 * @mandatory
 	 * @max_length 50000
 	 * @multiline
-	 * @var string
 	 */
 	public string $translation = '';
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->class_name
@@ -72,9 +61,6 @@ class Data
 	}
 
 	//------------------------------------------------------------------------------------- getObject
-	/**
-	 * @return object
-	 */
 	protected function getObject() : object
 	{
 		if (!is_object($this->object) && !empty($this->id_object) && $this->class_name) {
@@ -86,7 +72,7 @@ class Data
 
 	//------------------------------------------------------------------------------------- setObject
 	/**
-	 * @param $value object
+	 * @noinspection PhpUnused #Setter
 	 */
 	protected function setObject(object $value) : void
 	{
@@ -96,12 +82,7 @@ class Data
 
 	//-------------------------------------------------------------------------------------------- tr
 	/**
-	 * quick value search and translate
-	 *
-	 * @param $object        object
-	 * @param $property_name string
-	 * @param $language      string|null
-	 * @return string
+	 * Quick value search and translate
 	 */
 	public static function tr(object $object, string $property_name, string $language = null) : string
 	{

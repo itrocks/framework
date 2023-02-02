@@ -16,7 +16,6 @@ abstract class Trigger
 
 	//-------------------------------------------------------------------------------------- $actions
 	/**
-	 * @link Map
 	 * @see Map_As_Collection
 	 * @var Action[]
 	 * @widget Map_As_Collection

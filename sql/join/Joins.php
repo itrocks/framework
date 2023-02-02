@@ -7,8 +7,8 @@ use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Same_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -497,7 +497,7 @@ class Joins
 				// knowing anything about the specific
 				$foreign_class_name = $foreign_type->asString();
 			}
-			elseif (!$foreign_type->isBasic() && !Store_Annotation::of($master_property)->value) {
+			elseif (!$foreign_type->isBasic() && !Store::of($master_property)->isString()) {
 				$join->mode = $master_property->getAnnotation('mandatory')->value
 					? Join::INNER
 					: Join::LEFT;

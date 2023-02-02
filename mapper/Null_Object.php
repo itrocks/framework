@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Mapper;
 
 use Error;
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Date_Time;
 
@@ -59,7 +60,7 @@ abstract class Null_Object
 		foreach ((new Reflection_Class($class_name))->getProperties() as $property) {
 			if (
 				!$property->isStatic()
-				&& !$property->getAnnotation('composite')->value
+				&& !Composite::of($property)?->value
 				&& !$property->getAnnotation('link_composite')->value
 				&& $property->getAnnotation('empty_check')->value
 			) {
@@ -112,7 +113,7 @@ abstract class Null_Object
 		foreach ($properties as $property) {
 			if (
 				!$property->isStatic()
-				&& !$property->getAnnotation('composite')->value
+				&& !Composite::of($property)?->value
 				&& $property->getAnnotation('empty_check')->value
 			) {
 				Getter::$ignore = true;

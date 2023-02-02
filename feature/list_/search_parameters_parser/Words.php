@@ -5,7 +5,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Date_Time;
@@ -13,7 +13,7 @@ use ITRocks\Framework\Tools\Date_Time;
 /**
  * Word search parameters parser
  */
-#[Extends_(Search_Parameters_Parser::class)]
+#[Extend(Search_Parameters_Parser::class)]
 abstract class Words
 {
 

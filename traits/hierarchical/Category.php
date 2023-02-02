@@ -1,6 +1,9 @@
 <?php
 namespace ITRocks\Framework\Traits\Hierarchical;
 
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Traits\Hierarchical;
 
 /**
@@ -8,6 +11,7 @@ use ITRocks\Framework\Traits\Hierarchical;
  *
  * @after_write writeSubCategories
  */
+#[Class_\Store]
 trait Category
 {
 	use Hierarchical;
@@ -15,15 +19,15 @@ trait Category
 	//------------------------------------------------------------------------------- $sub_categories
 	/**
 	 * @foreign super_category
-	 * @getter getSubCategories
 	 * @var static[]
 	 */
+	#[Getter('getSubCategories')]
+	#[Store(false)]
 	public array $sub_categories;
 
 	//------------------------------------------------------------------------------- $super_category
 	/**
 	 * @foreign sub_category
-	 * @link Object
 	 * @noinspection PhpDocFieldTypeMismatchInspection static
 	 * @var ?static
 	 */
@@ -65,8 +69,6 @@ trait Category
 	//-------------------------------------------------------------------------------- getTopCategory
 	/**
 	 * Gets top category
-	 *
-	 * @return static
 	 */
 	public function getTopCategory() : static
 	{

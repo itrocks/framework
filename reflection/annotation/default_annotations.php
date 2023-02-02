@@ -290,12 +290,6 @@ Parser::$default_annotations = [
 	Parser::T_METHOD . '@return_constant' => Boolean_Annotation::class,
 
 	/**
-	 * @all
-	 * Refers to a multiple-class property that links all stored objects
-	 */
-	Parser::T_PROPERTY . '@all' => Boolean_Annotation::class,
-
-	/**
 	 * @after_add_element afterAddElement
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the Collection/Map property element is added
@@ -341,20 +335,6 @@ Parser::$default_annotations = [
 	 * The value of this property is calculated : it will not be stored into DAO data links
 	 */
 	Parser::T_PROPERTY . '@calculated' => Boolean_Annotation::class,
-
-	/**
-	 * @component
-	 * The object referenced by the property is a component of the main object.
-	 * It should not exist without its container.
-	 */
-	Parser::T_PROPERTY . '@component' => Boolean_Annotation::class,
-
-	/**
-	 * @composite
-	 * Identifies a property to link to the composite object.
-	 * To be used into a component class only, when multiple properties link to composite class(es)
-	 */
-	Parser::T_PROPERTY . '@composite' => Boolean_Annotation::class,
 
 	/**
 	 * @constraint initial|set_null
@@ -550,14 +530,6 @@ Parser::$default_annotations = [
 	 * Defines the name of the automatically generated link table.
 	 */
 	Parser::T_PROPERTY . '@set_store_name' => Annotation::class,
-
-	/**
-	 * @setter [[[\Vendor\Module\]Class_Name::]methodName]
-	 * This is a Multiple_Annotation
-	 * Tells a method name that is the setter for that property.
-	 * The setter will be called each time the program changes the value of the property.
-	 */
-	Parser::T_PROPERTY . '@setter' => Method_Annotation::class,
 
 	/**
 	 * @show_seconds

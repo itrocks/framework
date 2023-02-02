@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Trigger\Schedule;
 
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Trigger\Schedule;
 
 /**
@@ -19,14 +20,12 @@ class Hour_Range
 	/**
 	 * @max_value 36000
 	 * @min_value 1
-	 * @var integer
 	 */
 	public int $frequency = 0;
 
 	//------------------------------------------------------------------------------- $frequency_unit
 	/**
 	 * @values seconds, minutes, hours, days, months, years
-	 * @var string
 	 */
 	public string $frequency_unit = '';
 
@@ -36,16 +35,11 @@ class Hour_Range
 	 * @max_value 23:59:59
 	 * @min_value 0
 	 * @regexp [0-2][0-9]:[0-5][0-9]([0-5][0-9])?
-	 * @var string
 	 */
 	public string $from = '';
 
 	//------------------------------------------------------------------------------------- $schedule
-	/**
-	 * @composite
-	 * @link Object
-	 * @var Schedule
-	 */
+	#[Composite]
 	public Schedule $schedule;
 
 	//---------------------------------------------------------------------------------------- $until
@@ -54,7 +48,6 @@ class Hour_Range
 	 * @max_value 23:59:59
 	 * @min_value 0
 	 * @regexp [0-2][0-9]:[0-5][0-9]([0-5][0-9])?
-	 * @var string
 	 */
 	public string $until = '';
 
@@ -62,8 +55,6 @@ class Hour_Range
 	/**
 	 * Replace empty range limits from and to by their default values 00:00:00 and 23:59:59
 	 * Complete with default minutes / seconds
-	 *
-	 * @param $until string
 	 */
 	public function normalize(string $until = '23:59:59') : void
 	{

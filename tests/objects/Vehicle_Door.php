@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Tests\Objects;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property;
 
 /**
  * A vehicle door
@@ -33,37 +34,28 @@ class Vehicle_Door
 	//----------------------------------------------------------------------------------------- $code
 	/**
 	 * @length 6
-	 * @var string
 	 */
 	public string $code = '';
 
 	//--------------------------------------------------------------------------------------- $pieces
 	/**
-	 * @link Collection
 	 * @var Vehicle_Door_Piece[]
 	 */
+	#[Property\Component]
 	public array $pieces;
 
 	//----------------------------------------------------------------------------------------- $side
 	/**
 	 * @values self::const
-	 * @var string
 	 * @warning sideNotTrunk
 	 */
 	public string $side;
 
 	//-------------------------------------------------------------------------------------- $vehicle
-	/**
-	 * @composite
-	 * @link Object
-	 * @var Vehicle
-	 */
+	#[Property\Composite]
 	public Vehicle $vehicle;
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return Loc::tr($this->side);

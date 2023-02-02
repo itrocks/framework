@@ -7,6 +7,7 @@ use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
@@ -56,7 +57,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 				$type_name     = $property->getType()->getElementTypeAsString();
 				trigger_error(
 					"Can't guess @foreign for " . $class_name . '::' . $property_name . ' : '
-					. 'please set @composite on one (and one only) ' . $type_name . ' property of type '
+					. 'please set #Composite on one (and one only) ' . $type_name . ' property of type '
 					. $class_name . ' object, or force the ' . $class_name . '::' . $property_name
 					. ' @foreign property name. Possibles properties are ' . join(', ', $possibles),
 					E_USER_WARNING
@@ -179,8 +180,8 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 
 	//---------------------------------------------------------------------------- reduceToComposites
 	/**
-	 * If multiple properties (more than 1) and one (or more) of them are @composite, reduce the list
-	 * to the @composite properties. Else returns $properties without any change.
+	 * If multiple properties (more than 1) and one (or more) of them are #Composite, reduce the list
+	 * to the #Composite properties. Else returns $properties without any change.
 	 *
 	 * @param $properties Reflection_Property[]
 	 * @return Reflection_Property[]
@@ -192,7 +193,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 		}
 		$composite_properties = [];
 		foreach ($properties as $property) {
-			if ($property->getAnnotation('composite')->value) {
+			if (Composite::of($property)?->value) {
 				$composite_properties[$property->getName()] = $property;
 			}
 		}

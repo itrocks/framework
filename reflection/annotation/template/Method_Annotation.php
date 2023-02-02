@@ -23,7 +23,7 @@ use ReflectionMethod;
  * - "Outside_Class_Name::methodName()" to call Another\Namespace\Outside_Class_Name::methodName()
  *   needs a use clause to be defined like this : "use Another\Namespace\Outside_Class_Name;"
  *
- * Used by Property\Default_Annotation, Property\Getter_Annotation, Property\Setter_Annotation
+ * Used by Property\Default_Annotation, #Getter, Property\Setter_Annotation
  */
 class Method_Annotation extends Annotation implements Reflection_Context_Annotation
 {

@@ -7,7 +7,8 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Source;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
+use ITRocks\Framework\Reflection\Attribute\Class_\Implement;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Namespaces;
 
@@ -64,9 +65,9 @@ class Class_Builder
 			$class                     = Reflection_Class::of($interface_trait);
 			$classes[$interface_trait] = $class;
 			if ($class->isTrait()) {
-				$extends_attributes = Extends_::of($class);
-				foreach ($extends_attributes as $extends_attribute) {
-					foreach ($extends_attribute->extends as $extends) {
+				$extend_attributes = Extend::of($class);
+				foreach ($extend_attributes as $extend_attribute) {
+					foreach ($extend_attribute->extends as $extends) {
 						if (Dao::search(
 							['class_name' => $extends, 'declaration' => Dependency::T_TRAIT_DECLARATION],
 							Dependency::class
@@ -104,8 +105,10 @@ class Class_Builder
 			}
 			// Trait\Name::class
 			if ($class->isTrait()) {
-				foreach ($class->getListAnnotation('implements')->values() as $implements) {
-					$interfaces[$implements] = $implements;
+				foreach (Implement::of($class) as $implement_attribute) {
+					foreach ($implement_attribute->implements as $implements) {
+						$interfaces[$implements] = $implements;
+					}
 				}
 				$level = 0;
 				if (isset($traits_extends[$interface_trait])) {

@@ -2,11 +2,12 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Traits\Has_Creation_Date_Time;
 
-#[Store]
+#[Class_\Store]
 class Lock
 {
 	use Has_Creation_Date_Time;
@@ -29,23 +30,15 @@ class Lock
 	const WRITE = 'write';
 
 	//---------------------------------------------------------------------------------------- $count
-	/**
-	 * @store false
-	 * @var integer
-	 */
+	#[Store(false)]
 	public int $count = 1;
 
 	//----------------------------------------------------------------------------------- $identifier
-	/**
-	 * @var integer
-	 */
 	public int $identifier;
 
 	//------------------------------------------------------------------------------ $mysql_thread_id
 	/**
 	 * Mysql thread identifier
-	 *
-	 * @var integer
 	 */
 	public int $mysql_thread_id;
 
@@ -60,15 +53,10 @@ class Lock
 	/**
 	 * PHP running process identifier
 	 * For information / debugging purpose
-	 *
-	 * @var integer
 	 */
 	public int $process_identifier;
 
 	//----------------------------------------------------------------------------------- $table_name
-	/**
-	 * @var string
-	 */
 	public string $table_name;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -111,11 +99,6 @@ class Lock
 	 *
 	 * If a lock entry exists but is not associated to an alive mysql thread id : it is purged and
 	 * considered as non-existent
-	 *
-	 * @param $table_name        string
-	 * @param $record_identifier integer|string
-	 * @param $link              Link|null
-	 * @return ?Lock
 	 */
 	public static function get(
 		string $table_name, int|string $record_identifier, Link $link = null

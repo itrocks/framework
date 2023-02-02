@@ -4,7 +4,7 @@ namespace ITRocks\Framework\Setting\Custom;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Setting\Selected;
@@ -21,23 +21,17 @@ abstract class Set
 	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * The name of the class which list settings apply
-	 *
-	 * @var string
 	 */
 	public string $class_name;
 
 	//-------------------------------------------------------------------------------------- $setting
 	/**
-	 * @store false Setting\Custom\Set is always saved into a Setting, we must not save it again
-	 * @var ?Setting
+	 * #Store(false) : Setting\Custom\Set is always saved into a Setting, we must not save it again
 	 */
+	#[Store(false)]
 	public ?Setting $setting;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $class_name string|null
-	 * @param $setting    Setting|null
-	 */
 	public function __construct(string $class_name = null, Setting $setting = null)
 	{
 		if (isset($class_name)) {
@@ -87,12 +81,6 @@ abstract class Set
 	}
 
 	//---------------------------------------------------------------------------- currentUserSetting
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name string
-	 * @param $feature    string
-	 * @return Setting\User
-	 */
 	public static function currentUserSetting(string $class_name, string $feature = '') : Setting\User
 	{
 		$class_name = Builder::current()->sourceClassName($class_name);
@@ -107,10 +95,6 @@ abstract class Set
 	}
 
 	//-------------------------------------------------------------------------------------- customId
-	/**
-	 * @param $feature string
-	 * @return string
-	 */
 	protected static function customId(string $feature = '') : string
 	{
 		if (!$feature) {
@@ -125,8 +109,6 @@ abstract class Set
 	//---------------------------------------------------------------------------------------- delete
 	/**
 	 * Delete the Setting\Custom\Set object from the Settings set
-	 *
-	 * @param $feature string
 	 */
 	public function delete(string $feature = '') : void
 	{
@@ -142,10 +124,6 @@ abstract class Set
 	}
 
 	//-------------------------------------------------------------------------------------- getClass
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return Reflection_Class
-	 */
 	public function getClass() : Reflection_Class
 	{
 		/** @noinspection PhpUnhandledExceptionInspection */
@@ -153,9 +131,6 @@ abstract class Set
 	}
 
 	//---------------------------------------------------------------------------------- getClassName
-	/**
-	 * @return string
-	 */
 	public function getClassName() : string
 	{
 		return Builder::className($this->class_name);
@@ -183,9 +158,6 @@ abstract class Set
 	}
 
 	//---------------------------------------------------------------------------- getSourceClassName
-	/**
-	 * @return string
-	 */
 	public function getSourceClassName() : string
 	{
 		// TODO LOWEST remove : this is for unserialize() compatibility with old public $class_name
@@ -197,15 +169,8 @@ abstract class Set
 
 	//------------------------------------------------------------------------------------------ load
 	/**
-	 * Loads a Setting\Custom\Set from the Settings set
-	 *
-	 * If no Setting\Custom\Set named $name is stored, a new one will be returned
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name string
-	 * @param $feature    string
-	 * @param $name       string
-	 * @return static
+	 * Loads a Setting\Custom\Set from the Settings set.
+	 * If no Setting\Custom\Set named $name is stored, a new one will be returned.
 	 */
 	public static function load(string $class_name, string $feature, string $name = '') : static
 	{
@@ -223,8 +188,6 @@ abstract class Set
 	/**
 	 * In all cases : saves the Setting\Custom\Set object for current user and session
 	 * If $save_name is set : saves the Setting\Custom\Set object into the Settings set
-	 *
-	 * @param $save_name string
 	 */
 	public function save(string $save_name = '') : void
 	{
@@ -261,9 +224,6 @@ abstract class Set
 	}
 
 	//---------------------------------------------------------------------------------- setClassName
-	/**
-	 * @param $class_name string
-	 */
 	public function setClassName(string $class_name) : void
 	{
 		$this->class_name = Builder::current()->sourceClassName($class_name);

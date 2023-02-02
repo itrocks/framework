@@ -3,14 +3,14 @@ namespace ITRocks\Framework\Reflection\Annotation\Template;
 
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Implement;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * allOf must read the parent annotations, if they do not have any @feature Feature name
- *
- * @implements Do_Not_Inherit
  */
+#[Implement(Do_Not_Inherit::class)]
 trait Feature_Annotation
 {
 

@@ -26,7 +26,6 @@ class Group
 	/**
 	 * Each link to a feature is stored into the data-link as two strings : its name and path
 	 *
-	 * @link Map
 	 * @var Feature[]
 	 */
 	public array $features;

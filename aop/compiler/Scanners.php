@@ -4,8 +4,8 @@ namespace ITRocks\Framework\AOP\Compiler;
 use ITRocks\Framework\AOP\Weaver\Handler;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\PHP\Reflection_Class;
-use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Tools\Names;
 
 /**
@@ -54,29 +54,8 @@ trait Scanners
 	private function scanForGetters(array &$properties, Reflection_Class $class) : void
 	{
 		foreach ($class->getProperties([]) as $property) {
-			$expr = '%'
-				. '\n\s+\*\s+'               // each line beginning by '* '
-				. '@getter'                  // getter annotation
-				. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
-				. '(\w+)?)?'                 // 2 : method or function name
-				. '%';
-			preg_match($expr, $property->getDocComment(), $match);
-			if ($match) {
-				$advice = [
-					empty($match[1]) ? '$this' : $class->fullClassName($match[1]),
-					empty($match[2]) ? Names::propertyToMethod($property->name, 'get') : $match[2]
-				];
-				$properties[$property->name][] = [Handler::READ, $advice];
-			}
-		}
-		$overrides = $this->scanForOverrides($class->getDocComment([]), ['getter']);
-		foreach ($overrides as $match) {
-			$advice = [
-				empty($match['class_name']) ? '$this' : $match['class_name'],
-				empty($match['method_name'])
-					? Names::propertyToMethod($match['property_name'], 'get') : $match['method_name']
-			];
-			$properties[$match['property_name']][] = [Handler::READ, $advice];
+			if (!($getter = $property->getAnnotation(Getter::class))) continue;
+			$properties[$property->name][] = [Handler::READ, $getter->value];
 		}
 	}
 
@@ -120,61 +99,48 @@ trait Scanners
 
 	//------------------------------------------------------------------------------ scanForOverrides
 	/**
-	 * @param $documentation string
+	 * @param $documentation string @values default, link, replaces
 	 * @param $annotations   string[]
 	 * @param $disable       array
 	 * @return array
 	 */
-	private function scanForOverrides(
-		string $documentation,
-		array $annotations = [
-			Getter_Annotation::ANNOTATION, Link_Annotation::ANNOTATION, 'replaces', 'setter'
-		],
-		array $disable = []
-	) : array
+	private function scanForOverrides(string $documentation, array $annotations, array $disable = [])
+		: array
 	{
+		if (!str_contains($documentation, '@override')) return [];
 		$overrides = [];
-		if (str_contains($documentation, '@override')) {
-			$expr = '%'
-				. '\n\s+\*\s+'               // each line beginning by '* '
-				. '@override\s+'             // override annotation
-				. '(\w+)\s+'                 // 1 : property name
-				. '(?:'                      // begin annotations loop
-				. '(?:@.*?\s+)?'             // others overridden annotations
-				. '@annotation'              // overridden annotation
-				. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
-				. '(\w*)?)?'                 // 3 : method or function name, or empty value
-				. ')+'                       // end annotations loop
-				. '%';
-			foreach ($annotations as $annotation) {
-				preg_match_all(
-					str_replace('@annotation', AT . $annotation, $expr), $documentation, $matches
-				);
-				if ($matches[1]) {
-					foreach ($matches[1] as $i => $match) {
-						if (($annotation !== Link_Annotation::ANNOTATION) || !isset($disable[$match])) {
-							if ($annotation === Getter_Annotation::ANNOTATION) {
-								$disable[$match] = true;
-							}
-							$type     = ($annotation === 'setter') ? Handler::WRITE : Handler::READ;
-							$override = [
-								'class_name'    => $matches[2][$i],
-								'method_name'   => $matches[3][$i],
-								'property_name' => $matches[1][$i],
-								'type'          => $type
-							];
-							if (!$override['class_name']) {
-								$override['class_name'] = 'static';
-							}
-							if (!$override['method_name']) {
-								$override['method_name'] = ($annotation === 'setter')
-									? Names::propertyToMethod('set' . '_' . $override['property_name'])
-									: Names::propertyToMethod('get' . '_' . $override['property_name']);
-							}
-							$overrides[] = $override;
-						}
-					}
+		$expr      = '%'
+			. '\n\s+\*\s+'               // each line beginning by '* '
+			. '@override\s+'             // override annotation
+			. '(\w+)\s+'                 // 1 : property name
+			. '(?:'                      // begin annotations loop
+			. '(?:@.*?\s+)?'             // others overridden annotations
+			. '@annotation'              // overridden annotation
+			. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
+			. '(\w*)?)?'                 // 3 : method or function name, or empty value
+			. ')+'                       // end annotations loop
+			. '%';
+		foreach ($annotations as $annotation) {
+			preg_match_all(str_replace('@annotation', AT . $annotation, $expr), $documentation, $matches);
+			if (!$matches[1]) continue;
+			foreach ($matches[1] as $i => $match) {
+				if (isset($disable[$match])) continue;
+				$type     = Handler::READ;
+				$override = [
+					'class_name'    => $matches[2][$i],
+					'method_name'   => $matches[3][$i],
+					'property_name' => $matches[1][$i],
+					'type'          => $type
+				];
+				if (!$override['class_name']) {
+					$override['class_name'] = 'static';
 				}
+				if (!$override['method_name']) {
+					$override['method_name'] = Names::propertyToMethod(
+						'get' . '_' . $override['property_name']
+					);
+				}
+				$overrides[] = $override;
 			}
 		}
 		return $overrides;
@@ -231,28 +197,8 @@ trait Scanners
 	private function scanForSetters(array &$properties, Reflection_Class $class) : void
 	{
 		foreach ($class->getProperties([]) as $property) {
-			$expr = '%'
-				. '\n\s+\*\s+'               // each line beginning by '* '
-				. '@setter'                  // setter annotation
-				. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
-				. '(\w+)?)?'                 // 2 : method or function name
-				. '%';
-			preg_match($expr, $property->getDocComment(), $match);
-			if ($match) {
-				$advice = [
-					empty($match[1]) ? '$this' : $class->source->fullClassName($match[1]),
-					empty($match[2]) ? Names::propertyToMethod($property->name, 'set') : $match[2]
-				];
-				$properties[$property->name][] = [Handler::WRITE, $advice];
-			}
-		}
-		foreach ($this->scanForOverrides($class->getDocComment([]), ['setter']) as $match) {
-			$advice = [
-				empty($match['class_name']) ? '$this' : $match['class_name'],
-				empty($match['method_name'])
-					? Names::propertyToMethod($match['property_name'], 'set') : $match['method_name']
-			];
-			$properties[$match['property_name']][] = [Handler::WRITE, $advice];
+			if (!($setter = $property->getAttribute(Setter::class))) continue;
+			$properties[$property->name][] = [Handler::WRITE, $setter->callable];
 		}
 	}
 

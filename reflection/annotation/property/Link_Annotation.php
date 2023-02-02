@@ -5,6 +5,8 @@ use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Has_Is;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property;
+use ITRocks\Framework\Reflection\Attribute\Property\All;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
@@ -35,7 +37,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 		if (
 			empty($value)
 			&& $property->getType()->isClass()
-			&& !Store_Annotation::of($property)->isFalse()
+			&& !Property\Store::of($property)->isFalse()
 			&& Store::of($property->getFinalClass())->value
 		) {
 			$value = $this->guessValue($property);
@@ -54,9 +56,9 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 	 * Guess value for link using the type of the property (var)
 	 * - property is a Date_Time (or a child class) : link will be 'DateTime'
 	 * - property is a single object : link will be 'Object'
-	 * - property is an array of class, and has @all : link will be 'All'
-	 * - property is an array of Component, or has @component : link will be 'Collection'
-	 * - property is an array of class, and has no @component : link will be 'Map'
+	 * - property is an array of class, and has #All : link will be 'All'
+	 * - property is an array of Component, or has #Component : link will be 'Collection'
+	 * - property is an array of class, and has no #Component : link will be 'Map'
 	 *
 	 * Notice : 'link' and 'var' are to be considered as 'property annotation link' and
 	 * 'property annotation var' here.
@@ -67,7 +69,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 	private function guessValue(Reflection_Property $property) : string
 	{
 		if ($property->getType()->isMultiple()) {
-			if ($property->getAnnotation('all')->value) {
+			if (All::of($property)?->value) {
 				$value = self::ALL;
 			}
 			elseif ($property->getAnnotation('component')->value) {

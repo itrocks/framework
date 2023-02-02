@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Tools;
 
 use Iterator;
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -173,7 +173,7 @@ class Set implements Iterator
 		/** @noinspection PhpUnhandledExceptionInspection trait $class_name exists tested */
 		elseif (
 			trait_exists($class_name)
-			&& ($extends_classes = Extends_::oneOf(new Reflection_Class($class_name))->extends)
+			&& ($extends_classes = Extend::oneOf(new Reflection_Class($class_name))->extends)
 		) {
 			$extends_class = reset($extends_classes);
 			return new $extends_class($elements);

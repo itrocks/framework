@@ -17,10 +17,10 @@ use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql;
@@ -171,7 +171,7 @@ class Write extends Data_Link\Write
 		}
 		$this->link->begin();
 		if (
-			Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])
+			Null_Object::isNull($this->object, [Store::class, 'storedPropertiesOnly'])
 			&& !($this->object instanceof Has_History)
 		) {
 			$this->link->disconnect($this->object);
@@ -243,7 +243,7 @@ class Write extends Data_Link\Write
 			$class
 			// TODO This will not work with objects containing properties with non-null default
 			&& !Null_Object::isNull($this->object, function($properties) use ($class) {
-				return Store_Annotation::storedPropertiesOnly(
+				return Store::storedPropertiesOnly(
 					Reflection_Property::filter($properties, $class->name)
 				);
 			})

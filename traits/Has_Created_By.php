@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\User;
 
 /**
@@ -9,15 +8,12 @@ use ITRocks\Framework\User;
  *
  * @before_write setCreatedBy
  */
-#[Store]
 trait Has_Created_By
 {
 
 	//----------------------------------------------------------------------------------- $created_by
 	/**
-	 * @link Object
 	 * @user invisible_edit, invisible_output, readonly
-	 * @var ?User
 	 */
 	public ?User $created_by;
 

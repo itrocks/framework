@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Tests\Conditions;
 
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation\Tests\Conditions;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 
 /**
  * Conditions in a collection
@@ -13,11 +14,7 @@ class Conditions_Collection
 	use Conditions_Trait;
 
 	//----------------------------------------------------------------------------------- $conditions
-	/**
-	 * @composite
-	 * @link Object
-	 * @var Conditions
-	 */
+	#[Composite]
 	public Conditions $conditions;
 
 }

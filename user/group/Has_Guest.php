@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\User\Group;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\User\Group;
 
 /**
  * @feature Select an access group for guest users
  */
-#[Extends_(Group::class)]
+#[Extend(Group::class)]
 trait Has_Guest
 {
 

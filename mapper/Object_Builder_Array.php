@@ -51,7 +51,7 @@ class Object_Builder_Array
 
 	//------------------------------------------------------------------------------------ $composite
 	/**
-	 * Store composite object to attach the @composite property of a Component built object
+	 * Store composite object to attach the #Composite property of a Component built object
 	 *
 	 * @var object|null
 	 */
@@ -413,7 +413,7 @@ class Object_Builder_Array
 	 * @param $object        ?object the value of the object before build (it may be null if no object)
 	 * @param $array         array  the values of the properties to be replaced into the object
 	 * @param $null_if_empty boolean
-	 * @param $composite     ?object The composite object (set it only if property is a @component)
+	 * @param $composite     ?object The composite object (set it only if property is a #Component)
 	 * @return ?object
 	 * @throws User_Error_Exception
 	 */

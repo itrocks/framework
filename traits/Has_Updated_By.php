@@ -16,9 +16,7 @@ trait Has_Updated_By
 
 	//----------------------------------------------------------------------------------- $updated_by
 	/**
-	 * @link Object
 	 * @user invisible_edit, invisible_output, readonly
-	 * @var ?User
 	 */
 	public ?User $updated_by;
 

@@ -8,7 +8,9 @@ use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Logger\Entry\Data;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
@@ -23,7 +25,7 @@ use ITRocks\Framework\User;
  * @representative start, uri
  * @sort -start, uri
  */
-#[Store('logs')]
+#[Class_\Store('logs')]
 class Entry implements Validate\Except
 {
 
@@ -39,11 +41,9 @@ class Entry implements Validate\Except
 
 	//----------------------------------------------------------------------------------------- $data
 	/**
-	 * @component
 	 * @integrated alias
-	 * @link Object
-	 * @var ?Data
 	 */
+	#[Component]
 	public ?Data $data;
 
 	//------------------------------------------------------------------------------------- $duration
@@ -51,8 +51,6 @@ class Entry implements Validate\Except
 	 * Until stop() is not called, $duration contains the start microtime.
 	 * After stop() is called, it contains the number of seconds between start and stop, with a
 	 * precision near to the microsecond.
-	 *
-	 * @var float
 	 */
 	public float $duration = .0;
 
@@ -60,10 +58,8 @@ class Entry implements Validate\Except
 	/**
 	 * This is the microtime when the script starts.
 	 * Used to calculate duration on resume() and stop()
-	 *
-	 * @store false
-	 * @var float
 	 */
+	#[Store(false)]
 	protected float $duration_start;
 
 	//--------------------------------------------------------------------------------- $memory_usage
@@ -71,137 +67,112 @@ class Entry implements Validate\Except
 	 * Memory peak usage in MB
 	 *
 	 * @max_length 7
-	 * @var integer
 	 */
 	public int $memory_usage;
 
 	//------------------------------------------------------------------------------ $mysql_thread_id
-	/**
-	 * @var integer
-	 */
 	public int $mysql_thread_id;
 
 	//----------------------------------------------------------------------------------- $process_id
-	/**
-	 * @var integer
-	 */
 	public int $process_id;
 
 	//----------------------------------------------------------------------------------- $session_id
-	/**
-	 * @var string
-	 */
 	public string $session_id;
 
 	//---------------------------------------------------------------------------------------- $start
 	/**
-	 * @link DateTime
 	 * @show_seconds
-	 * @var Date_Time|string
 	 */
 	public Date_Time|string $start;
 
 	//----------------------------------------------------------------------------------------- $stop
 	/**
-	 * @link DateTime
 	 * @show_seconds
-	 * @var Date_Time|string
 	 */
 	public Date_Time|string $stop;
 
 	//------------------------------------------------------------------------------------------ $uri
 	/**
 	 * @max_length 255
-	 * @var string
 	 */
 	public string $uri;
 
 	//----------------------------------------------------------------------------------------- $user
-	/**
-	 * @link Object
-	 * @var ?User
-	 */
 	public ?User $user;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * The constructor initialises logged information for a call on script beginning.
 	 *
-	 * @param $uri       ?string
-	 * @param $arguments ?array
-	 * @param $form      ?array
-	 * @param $files     ?array[]
+	 * @param $uri       string|null
+	 * @param $arguments array|null
+	 * @param $form      array|null
+	 * @param $files     array[]|null
 	 */
 	public function __construct(
 		string $uri = null, array $arguments = null, array $form = null, array $files = null
 	) {
-		if (isset($uri)) {
-			/** @noinspection PhpTypedPropertyMightBeUninitializedInspection @link DateTime */
-			if ($this->start->isEmpty()) {
-				$this->duration_start = microtime(true);
-				$this->start = new Date_Time();
+		if (!isset($uri)) {
+			return;
+		}
+		/** @noinspection PhpTypedPropertyMightBeUninitializedInspection @link DateTime */
+		if ($this->start->isEmpty()) {
+			$this->duration_start = microtime(true);
+			$this->start = new Date_Time();
+		}
+		if (!isset($this->process_id)) {
+			$this->process_id = getmypid();
+		}
+		if (!isset($this->mysql_thread_id)) {
+			$dao = Dao::current();
+			if ($dao instanceof Link) {
+				$this->mysql_thread_id = $dao->getConnection()->thread_id;
 			}
-			if (!isset($this->process_id)) {
-				$this->process_id = getmypid();
-			}
-			if (!isset($this->mysql_thread_id)) {
-				$dao = Dao::current();
-				if ($dao instanceof Link) {
-					$this->mysql_thread_id = $dao->getConnection()->thread_id;
-				}
-			}
-			if (!isset($this->session_id)) {
-				$this->session_id = session_id();
-			}
-			if (!isset($this->uri)) {
-				$this->uri = $uri;
-			}
-			if (
-				($arguments || $form || $files || isset($_SERVER['HTTP_X_REQUEST_ID']))
-				&& !isset($this->data)
-			) {
-				$this->data = new Data(
-					$arguments,
-					$form,
-					$files,
-					$_SERVER['HTTP_X_REQUEST_ID'] ?? null
-				);
-			}
-			if (!isset($this->memory_usage)) {
-				$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);
-			}
+		}
+		if (!isset($this->session_id)) {
+			$this->session_id = session_id();
+		}
+		if (!isset($this->uri)) {
+			$this->uri = $uri;
+		}
+		if (
+			($arguments || $form || $files || isset($_SERVER['HTTP_X_REQUEST_ID']))
+			&& !isset($this->data)
+		) {
+			$this->data = new Data(
+				$arguments,
+				$form,
+				$files,
+				$_SERVER['HTTP_X_REQUEST_ID'] ?? null
+			);
+		}
+		if (!isset($this->memory_usage)) {
+			$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);
+		}
 
-			$this->user = User::current();
-			if (!Dao::getObjectIdentifier($this->user)) {
-				$this->user = null;
-			}
-			if (!$this->user && ($_SERVER['REMOTE_ADDR'] === 'console')) {
-				// check grandparent process is CRON (parent is a shell process)
-				$process = explode(
-					SP, exec('ps -p $(ps -o ppid= -p ' . posix_getppid() . ') -o command | tail -1')
-				)[0];
-				$this->user = Dao::read(
-					strcasecmp($process, '/usr/sbin/CRON') ? self::CONSOLE_USER : self::CRON_USER,
-					User::class
-				);
-			}
+		$this->user = User::current();
+		if (!Dao::getObjectIdentifier($this->user)) {
+			$this->user = null;
+		}
+		if (!$this->user && ($_SERVER['REMOTE_ADDR'] === 'console')) {
+			// check grandparent process is CRON (parent is a shell process)
+			$process = explode(
+				SP, exec('ps -p $(ps -o ppid= -p ' . posix_getppid() . ') -o command | tail -1')
+			)[0];
+			$this->user = Dao::read(
+				strcasecmp($process, '/usr/sbin/CRON') ? self::CONSOLE_USER : self::CRON_USER,
+				User::class
+			);
 		}
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return trim(Loc::dateToLocale($this->start) . SP . $this->uri);
 	}
 
 	//----------------------------------------------------------------------------------- rawPostData
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $data mixed
-	 */
 	public function rawPostData(mixed $data) : void
 	{
 		if (!$data) {
@@ -228,7 +199,7 @@ class Entry implements Validate\Except
 	{
 		$this->duration     = microtime(true) - $this->duration_start;
 		$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);
-		$this->stop = new Date_Time();
+		$this->stop         = new Date_Time();
 	}
 
 }

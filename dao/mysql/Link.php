@@ -13,9 +13,9 @@ use ITRocks\Framework\Mapper\Abstract_Class;
 use ITRocks\Framework\Reflection\Access;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -439,8 +439,8 @@ class Link extends Dao\Sql\Link
 		if (is_object($value)) {
 			$id = $this->getObjectIdentifier($value, 'id');
 			/** @noinspection PhpUnhandledExceptionInspection is_object */
-			$properties = (new Reflection_Class($value))->getAnnotedProperties(
-				Store_Annotation::ANNOTATION, Store_Annotation::FALSE, [Access::PUBLIC]
+			$properties = (new Reflection_Class($value))->getAttributeProperties(
+				new Store(false), [Access::PUBLIC]
 			);
 			if ($properties) {
 				$value = clone $value;
@@ -767,7 +767,7 @@ class Link extends Dao\Sql\Link
 	{
 		$properties = $class->getProperties([T_EXTENDS, T_USE]);
 		foreach ($properties as $key => $property) {
-			if (!Store_Annotation::of($property)->isJson()) {
+			if (!Store::of($property)->isJson()) {
 				$type = $property->getType();
 				if (
 					$property->isStatic()
@@ -870,7 +870,7 @@ class Link extends Dao\Sql\Link
 					$this->prepared_fetch[$property->name][] = $dao;
 				}
 			}
-			if (Store_Annotation::of($property)->isGz()) {
+			if (Store::of($property)->isGz()) {
 				$this->prepared_fetch[$property->name][] = self::GZINFLATE;
 			}
 		}

@@ -19,43 +19,29 @@ class Item
 
 	//-------------------------------------------------------------------------------- $cross_selling
 	/**
-	 * @link Map
 	 * @var Item[]
 	 */
 	public array $cross_selling;
 
 	//---------------------------------------------------------------------------------------- $lines
 	/**
-	 * @link Map
 	 * @var Order_Line[]
 	 */
 	public array $lines;
 
 	//-------------------------------------------------------------------------------- $main_category
-	/**
-	 * @link Object
-	 * @var ?Category
-	 */
 	public ?Category $main_category;
 
 	//---------------------------------------------------------------------------------------- $model
-	/**
-	 * @link Object
-	 * @var ?Item
-	 */
 	public ?Item $model;
 
 	//------------------------------------------------------------------------- $secondary_categories
 	/**
-	 * @link Map
 	 * @var Category[]
 	 */
 	public array $secondary_categories;
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->code;

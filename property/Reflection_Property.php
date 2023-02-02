@@ -5,7 +5,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Names;
 use ReflectionException;
@@ -120,21 +120,20 @@ class Reflection_Property extends Reflection\Reflection_Property
 	 * Returns true if the property is expandable into the select properties tree
 	 *
 	 * Expandable properties :
-	 * - have no @store false : we do not know how to read these objects sub-properties data for lists
+	 * - have no #Store(false) : we do not know how to read these objects sub-properties data for lists
 	 * - have not basic or stringable types
 	 *
-	 * TODO NORMAL should deal with @store and stringable : we miss them
+	 * TODO NORMAL should deal with #Store and stringable : we miss them
 	 *
 	 * @return string can be dealt-with as if it is a boolean @values expandable,
 	 */
 	public function isExpandable() : string
 	{
-		$annotation = Store_Annotation::of($this);
-		$type       = $this->getType();
+		$type = $this->getType();
 		if (static::$all_expandable) {
 			return $type->isBasic() ? '' : 'expandable';
 		}
-		return ($annotation->isString() || $type->isBasic() || $type->isStringable())
+		return (Store::of($this)->isString() || $type->isBasic() || $type->isStringable())
 			? '' : 'expandable';
 	}
 

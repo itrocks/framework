@@ -3,9 +3,9 @@ namespace ITRocks\Framework\Sql;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ReflectionClass;
@@ -151,7 +151,7 @@ abstract class Builder
 				$property
 				&& $property->getType()->isMultipleString()
 				&& !Values_Annotation::of($property)->value
-				&& !Store_Annotation::of($property)->isString()
+				&& !Store::of($property)->isString()
 			) {
 				$value = join(LF, $value);
 			}

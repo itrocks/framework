@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Tests\Replaces;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+
 /**
  * Parent method @replaces test
  */
@@ -8,23 +10,14 @@ class Parent_Method
 {
 
 	//------------------------------------------------------------------------------ $replaced_object
-	/**
-	 * @getter getReplacedObject
-	 * @var Parent_Class
-	 */
+	#[Getter('getReplacedObject')]
 	public Parent_Class $replaced_object;
 
 	//------------------------------------------------------------------------------ $replaced_string
-	/**
-	 * @getter getReplacedString
-	 * @var string
-	 */
+	#[Getter('getReplacedString')]
 	public string $replaced_string;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * constructor
-	 */
 	public function __construct()
 	{
 		$this->replaced_object = new Parent_Class();
@@ -32,27 +25,18 @@ class Parent_Method
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->replaced_string . DOT . $this->replaced_object->replaced;
 	}
 
 	//----------------------------------------------------------------------------- getReplacedObject
-	/**
-	 * @return Parent_Class
-	 */
 	public function getReplacedObject() : Parent_Class
 	{
 		return $this->replaced_object;
 	}
 
 	//----------------------------------------------------------------------------- getReplacedString
-	/**
-	 * @return string
-	 */
 	public function getReplacedString() : string
 	{
 		return $this->replaced_string . '.get';

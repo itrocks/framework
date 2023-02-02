@@ -13,29 +13,22 @@ class Category
 	use Has_Name;
 
 	//-------------------------------------------------------------------------- $main_super_category
-	/**
-	 * @link Object
-	 * @var ?Category
-	 */
 	public ?Category $main_super_category;
 
 	//---------------------------------------------------------------------------------------- $shops
 	/**
-	 * @link Map
 	 * @var Shop[]
 	 */
 	public array $shops;
 
 	//------------------------------------------------------------------------------- $sub_categories
 	/**
-	 * @link Map
 	 * @var Category[]
 	 */
 	public array $sub_categories;
 
 	//----------------------------------------------------------------------------- $super_categories
 	/**
-	 * @link Map
 	 * @var Category[]
 	 */
 	public array $super_categories;

@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Dao\Option\Test;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -9,30 +11,19 @@ use ITRocks\Framework\Tools\Date_Time;
 class Simple_Object
 {
 
-	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
-	public string $name;
-
 	//----------------------------------------------------------------------------------------- $date
-	/**
-	 * @var Date_Time
-	 */
 	public Date_Time $date;
 
+	//----------------------------------------------------------------------------------------- $name
+	public string $name;
+
 	//----------------------------------------------------------------------------------- $sub_object
-	/**
-	 * @getter
-	 * @store false
-	 * @var object
-	 */
+	#[Getter, Store(false)]
 	public object $sub_object;
 
 	//---------------------------------------------------------------------------------- getSubObject
 	/**
-	 * @noinspection PhpUnused @getter
-	 * @return object
+	 * @noinspection PhpUnused #Getter
 	 */
 	public function getSubObject() : object
 	{

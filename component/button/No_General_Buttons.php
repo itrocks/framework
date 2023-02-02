@@ -2,11 +2,10 @@
 namespace ITRocks\Framework\Component\Button;
 
 use ITRocks\Framework\Component\Button;
+use ITRocks\Framework\Reflection\Attribute\Class_\Implement;
 use ITRocks\Framework\Setting;
 
-/**
- * @implements Has_General_Buttons
- */
+#[Implement(Has_General_Buttons::class)]
 trait No_General_Buttons
 {
 

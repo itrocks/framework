@@ -25,7 +25,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Install_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Menu_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Plugin_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Uninstall_Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Updater\Application_Updater;
@@ -248,7 +248,7 @@ class Installer
 				/** @noinspection PhpUnhandledExceptionInspection Must be valid */
 				$class                = new Reflection_Class($class_name);
 				$interface_trait_name = Builder::current()->sourceClassName(reset(
-					Extends_::oneNotOf($class, Extends_::STRICT)->extends
+					Extend::oneNotOf($class, Extend::STRICT)->extends
 				));
 				$class_name = $plugin_class->isClass() ? $plugin_class->name : $interface_trait_name;
 				$slice = 0;

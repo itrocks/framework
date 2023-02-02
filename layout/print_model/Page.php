@@ -3,16 +3,18 @@ namespace ITRocks\Framework\Layout\Print_Model;
 
 use ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\Layout\Print_Model;
+use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 
 /**
  * Print model page
  *
- * @override layout @getter
  * @override model @var Print_Model
  * @override ordering @max_length 2
  * @property Print_Model model
  */
+#[Override('layout', new Getter('getLayout'))]
 #[Store('print_model_pages')]
 class Page extends Model\Page
 {

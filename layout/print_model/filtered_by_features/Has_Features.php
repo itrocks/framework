@@ -7,21 +7,20 @@ use ITRocks\Framework\Dao\Option\Having;
 use ITRocks\Framework\Layout\Print_Model;
 use ITRocks\Framework\RAD\Feature;
 use ITRocks\Framework\RAD\Feature\Status;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 
 /**
  * Your print model are filtered by features
  *
  * @filter filterByFeatures
  */
-#[Extends_(Print_Model::class)]
+#[Extend(Print_Model::class)]
 trait Has_Features
 {
 
 	//------------------------------------------------------------------------------------- $features
 	/**
 	 * @feature configureFilters Configure print model filters by feature @user
-	 * @link Map
 	 * @user invisible
 	 * @var Feature[]
 	 */

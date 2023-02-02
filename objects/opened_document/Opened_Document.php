@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Objects;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\User;
@@ -11,6 +12,7 @@ use ITRocks\Framework\User;
 /**
  * Opened documents log
  */
+#[Store]
 class Opened_Document
 {
 
@@ -22,35 +24,18 @@ class Opened_Document
 	const DELAY = 10;
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
 	public string $class_name;
 
 	//----------------------------------------------------------------------------------- $identifier
-	/**
-	 * @var integer
-	 */
 	public int $identifier;
 
 	//----------------------------------------------------------------------------------------- $ping
-	/**
-	 * @link DateTime
-	 * @var Date_Time|string
-	 */
 	public Date_Time|string $ping;
 
 	//----------------------------------------------------------------------------------------- $user
-	/**
-	 * @link Object
-	 * @var User
-	 */
 	public User $user;
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->class_name
@@ -113,9 +98,6 @@ class Opened_Document
 	//---------------------------------------------------------------------------------- openedObject
 	/**
 	 * Returns an Opened_Document object if the object is opened
-	 *
-	 * @param $object object
-	 * @return ?static
 	 */
 	public static function openedObject(object $object) : ?static
 	{

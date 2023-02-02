@@ -11,10 +11,10 @@ use ITRocks\Framework\PHP\Compiler;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -108,7 +108,7 @@ class Select_Test extends Test
 				$property->isStatic()
 				|| ($type_string === 'object')
 				|| ($class && $class->isAbstract())
-				|| Store_Annotation::of($property)->isFalse()
+				|| Property\Store::of($property)->isFalse()
 			) {
 				unset($properties[$property->name]);
 			}
@@ -121,7 +121,7 @@ class Select_Test extends Test
 					$type->isClass()
 					&& ($type_string !== 'object')
 					&& Link_Annotation::of($property)->value
-					&& !Store_Annotation::of($property)->value
+					&& !Property\Store::of($property)->isString()
 				) {
 					$sub_class = new Reflection_Class($type_string);
 					foreach ($this->propertyNames($sub_class, $depth - 1) as $sub_property_name) {

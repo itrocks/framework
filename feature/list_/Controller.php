@@ -32,20 +32,20 @@ use ITRocks\Framework\Feature\Output;
 use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Reflection\Type;
@@ -155,7 +155,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				&& !$link_annotation->isCollection()
 				&& !$link_annotation->isMap()
 				&& (
-					Getter_Annotation::of($property)->value
+					Getter::of($property)->callable
 					|| ($user_getter = $property->getAnnotation('user_getter')->value)
 				)
 			) {
@@ -168,7 +168,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				$object = $row->id();
 				// Optimize memory usage : detach object from the List_Row
 				if (!is_object($object)){
-					$object = Getter::getObject($object, $row->getClassName());
+					$object = Mapper\Getter::getObject($object, $row->getClassName());
 				}
 				foreach (
 					$properties_with_getter as $property_path => [$property, $user_getter, $translate]
@@ -1119,7 +1119,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				continue;
 			}
 			$property_type = $property->getType();
-			if (!$property_type->isClass() || Store_Annotation::of($property)->isString()) {
+			if (!$property_type->isClass() || Store::of($property)->isString()) {
 				continue;
 			}
 			$class = $property_type->asReflectionClass();
@@ -1193,7 +1193,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		if ($value === '') {
 			return $property;
 		}
-		if ($property->getType()->isClass() && !Store_Annotation::of($property)->value) {
+		if ($property->getType()->isClass() && !Store::of($property)->isString()) {
 			$value = Dao::read($value, $property->getType()->asString());
 		}
 		/** @noinspection PhpUnhandledExceptionInspection valid $property */

@@ -4,7 +4,7 @@ namespace ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -41,7 +41,7 @@ class Implicit implements Installable
 			$class = new Reflection_Class($class);
 		}
 		$this->class = $class;
-		if ($class->isTrait() && Extends_::oneNotOf($class, Extends_::STRICT)->extends) {
+		if ($class->isTrait() && Extend::oneNotOf($class, Extend::STRICT)->extends) {
 			$this->type = T_TRAIT;
 		}
 		else {
@@ -85,9 +85,9 @@ class Implicit implements Installable
 	 */
 	protected function installTrait(Installer $installer) : void
 	{
-		$extends_attributes = Extends_::notOf($this->class, Extends_::STRICT);
-		foreach ($extends_attributes as $extends_attribute) {
-			foreach ($extends_attribute->extends as $extends) {
+		$extend_attributes = Extend::notOf($this->class, Extend::STRICT);
+		foreach ($extend_attributes as $extend_attribute) {
+			foreach ($extend_attribute->extends as $extends) {
 				$installer->addToClass(Builder::current()->sourceClassName($extends), $this->class->name);
 			}
 		}

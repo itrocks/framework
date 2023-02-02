@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Feature\Import;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Feature\Import\Settings\Import_Preview;
 use ITRocks\Framework\Feature\Import\Settings\Import_Settings;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
@@ -22,31 +23,16 @@ class Import_Worksheet
 	public array $errors;
 
 	//----------------------------------------------------------------------------------------- $file
-	/**
-	 * @var File
-	 */
 	public File $file;
 
 	//-------------------------------------------------------------------------------------- $preview
-	/**
-	 * @getter
-	 * @var Import_Preview
-	 */
+	#[Getter('getPreview')]
 	public Import_Preview $preview;
 
 	//------------------------------------------------------------------------------------- $settings
-	/**
-	 * @var Import_Settings
-	 */
 	public Import_Settings $settings;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $name     string|null
-	 * @param $settings Import_Settings|null
-	 * @param $file     File|null
-	 * @param $preview  Import_Preview|null
-	 */
 	public function __construct(
 		string $name = null, Import_Settings $settings = null, File $file = null,
 		Import_Preview $preview = null
@@ -59,8 +45,7 @@ class Import_Worksheet
 
 	//------------------------------------------------------------------------------------ getPreview
 	/**
-	 * @noinspection PhpUnused @getter
-	 * @return Import_Preview
+	 * @noinspection PhpUnused #Getter
 	 */
 	protected function getPreview() : Import_Preview
 	{

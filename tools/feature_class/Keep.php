@@ -2,7 +2,8 @@
 namespace ITRocks\Framework\Tools\Feature_Class;
 
 use AllowDynamicProperties;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Tools\Feature_Class;
 
 /**
@@ -10,16 +11,13 @@ use ITRocks\Framework\Tools\Feature_Class;
  *
  * @todo Remove #AllowDynamicProperties where $id will be general to all #Store classes
  */
+#[Class_\Store(false)]
 #[AllowDynamicProperties]
-#[Store(false)]
 class Keep extends Feature_Class
 {
 
 	//----------------------------------------------------------------------------------------- $keep
-	/**
-	 * @store false
-	 * @var boolean
-	 */
+	#[Store(false)]
 	public bool $keep = false;
 
 }

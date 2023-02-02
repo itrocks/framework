@@ -12,8 +12,6 @@ trait Has_Validity_End_Date
 	//---------------------------------------------------------------------------- $validity_end_date
 	/**
 	 * @default Date_Time::max
-	 * @link DateTime
-	 * @var Date_Time|string
 	 */
 	public Date_Time|string $validity_end_date;
 

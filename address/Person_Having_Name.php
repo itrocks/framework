@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\Address;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * Base trait for traits on Person applied on classes having Has_Name
  */
-#[Extends_(Has_Name::class)]
+#[Extend(Has_Name::class)]
 trait Person_Having_Name
 {
 	use Person;

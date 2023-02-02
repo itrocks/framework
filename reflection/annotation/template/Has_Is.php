@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Reflection\Annotation\Template;
 
 use ITRocks\Framework\Reflection\Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 
 /**
  * Has is() for annotations which values are delimited (constants)
  */
-#[Extends_(Annotation::class)]
+#[Extend(Annotation::class)]
 trait Has_Is
 {
 

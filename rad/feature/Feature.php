@@ -26,14 +26,12 @@ class Feature
 	//----------------------------------------------------------------------- $application_class_name
 	/**
 	 * @user invisible
-	 * @var string
 	 */
 	public string $application_class_name;
 
 	//--------------------------------------------------------------------------------------- $bridge
 	/**
 	 * @user invisible
-	 * @var boolean
 	 */
 	public bool $bridge;
 
@@ -42,21 +40,15 @@ class Feature
 	 * @max_length 64000
 	 * @multiline
 	 * @translate common
-	 * @var string
 	 */
 	public string $description;
 
 	//--------------------------------------------------------------------------------------- $module
-	/**
-	 * @link Object
-	 * @var ?Module
-	 */
 	public ?Module $module;
 
 	//---------------------------------------------------------------------------- $plugin_class_name
 	/**
 	 * @user invisible
-	 * @var string
 	 */
 	public string $plugin_class_name;
 
@@ -64,13 +56,11 @@ class Feature
 	/**
 	 * @user readonly
 	 * @values Status::const
-	 * @var string
 	 */
 	public string $status = Status::AVAILABLE;
 
 	//----------------------------------------------------------------------------------------- $tags
 	/**
-	 * @link Map
 	 * @var Tag[]
 	 */
 	public array $tags;
@@ -79,7 +69,6 @@ class Feature
 	/**
 	 * @mandatory
 	 * @translate common
-	 * @var string
 	 */
 	public string $title;
 
@@ -95,9 +84,6 @@ class Feature
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->title ? Loc::tr($this->title) : '';

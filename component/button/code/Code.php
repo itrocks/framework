@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Button\Code\Command\Parser;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Tools\Stringable;
 
 /**
@@ -16,24 +17,21 @@ class Code implements Stringable
 	//-------------------------------------------------------------------------------------- $feature
 	/**
 	 * @user invisible
-	 * @var string
 	 */
 	public string $feature;
 
 	//--------------------------------------------------------------------------------------- $source
 	/**
-	 * @alias source_code
 	 * @max_length 60000
 	 * @multiline
-	 * @var string
 	 */
+	#[Alias('source_code')]
 	public string $source;
 
 	//----------------------------------------------------------------------------------------- $when
 	/**
 	 * @user invisible
 	 * @values after, before
-	 * @var string
 	 */
 	public string $when;
 
@@ -51,9 +49,6 @@ class Code implements Stringable
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->source;
@@ -79,12 +74,7 @@ class Code implements Stringable
 	}
 
 	//------------------------------------------------------------------------------------ fromString
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $string string
-	 * @return ?static
-	 */
-	public static function fromString(string $string) : ?static
+	public static function fromString(string $string) : static
 	{
 		/** @noinspection PhpUnhandledExceptionInspection static */
 		return Builder::create(static::class, [$string]);

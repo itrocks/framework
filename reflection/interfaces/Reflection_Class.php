@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection\Interfaces;
 
+use ITRocks\Framework\Reflection\Reflection_Attribute;
 use ReflectionException;
 
 /**
@@ -17,6 +18,18 @@ interface Reflection_Class extends Reflection
 	 * @return string The name of the class
 	 */
 	public function __toString() : string;
+
+	//--------------------------------------------------------------------------------- getAttributes
+	/**
+	 * @param $name  ?string
+	 * @param $flags integer
+	 * @param $final Reflection|Reflection_Class|null
+	 * @param $class Reflection_Class|null
+	 * @return Reflection_Attribute[]
+	 */
+	public function getAttributes(?string $name, int $flags = 0,
+		Reflection|Reflection_Class $final = null, Reflection_Class $class = null
+	) : array;
 
 	//----------------------------------------------------------------------------------- getConstant
 	/**

@@ -6,9 +6,9 @@ use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Translation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -193,7 +193,7 @@ class Columns implements With_Build_Column
 							!$property->isStatic()
 							&& isset($column_names[$property->name])
 							&& !isset($already[$property->name])
-							&& !Store_Annotation::of($property)->isFalse()
+							&& !Store::of($property)->isFalse()
 						) {
 							if (!$sql_columns) {
 								$sql_columns .= $join->foreign_alias . '.id, ';
@@ -224,7 +224,7 @@ class Columns implements With_Build_Column
 
 				foreach ($column_names as $property_name => $column_name) {
 					$property = $properties[$property_name];
-					if (!isset($already[$property_name]) && !Store_Annotation::of($property)->isFalse()) {
+					if (!isset($already[$property_name]) && !Store::of($property)->isFalse()) {
 						$already[$property_name] = true;
 						$type                    = $property->getType();
 						$id                      = ($type->isClass() && !$type->isDateTime()) ? 'id_' : '';
@@ -314,7 +314,7 @@ class Columns implements With_Build_Column
 		$column_name = Sql\Builder::buildColumnName($property);
 		if ($column_name) {
 			$first_property ? ($first_property = false) : ($sql = ', ');
-			if (str_starts_with($column_name, 'id_') && Store_Annotation::of($property)->isString()) {
+			if (str_starts_with($column_name, 'id_') && Store::of($property)->isString()) {
 				$column_name = substr($column_name, 3);
 			}
 			$type = $property->getType();
@@ -357,7 +357,7 @@ class Columns implements With_Build_Column
 		if ($this->expand_objects) {
 			$properties = $this->joins->getProperties($path);
 			$properties = Replaces_Annotations::removeReplacedProperties($properties);
-			$properties = Store_Annotation::storedPropertiesOnly($properties);
+			$properties = Store::storedPropertiesOnly($properties);
 			/** @var $properties Reflection_Property[] */
 			foreach ($properties as $property) {
 				$sql_columns .= $this->buildObjectColumn(

@@ -7,6 +7,8 @@ use ITRocks\Framework\Locale\Language;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Translation\Data;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
@@ -16,38 +18,26 @@ class Set
 {
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
 	public string $class_name;
 
 	//------------------------------------------------------------------------------------- $elements
 	/**
-	 * @getter
 	 * @var Data[]
 	 */
+	#[Getter('getElements')]
 	public array $elements;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * @class class_name
-	 * @setter
-	 * @var object
 	 */
+	#[Setter('setObject')]
 	public object $object;
 
 	//-------------------------------------------------------------------------------- $property_name
-	/**
-	 * @var string
-	 */
 	public string $property_name;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $object        object|null
-	 * @param $property_name string|null
-	 * @param $elements      Data[]|null
-	 */
 	public function __construct(
 		object $object = null, string $property_name = null, array $elements = null
 	) {
@@ -63,9 +53,6 @@ class Set
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return trim($this->object . SP . Names::propertyToDisplay($this->property_name))
@@ -105,9 +92,6 @@ class Set
 	}
 
 	//------------------------------------------------------------------------------------- setObject
-	/**
-	 * @param $value object
-	 */
 	protected function setObject(object $value) : void
 	{
 		$this->class_name = Builder::current()->sourceClassName(get_class($value));
@@ -115,30 +99,24 @@ class Set
 	}
 
 	//------------------------------------------------------------------------------------- translate
-	/**
-	 * @param $property Reflection_Property
-	 * @param $value    string
-	 * @param $language string|null
-	 * @return string
-	 */
 	public function translate(
 		Reflection_Property $property, string $value, string $language = null
 	) : string
 	{
 		// pre-requisite : a property value containing the context object
-		if (($property instanceof Reflection_Property_Value) && !$property->finalValue()) {
-			$translation = Dao::searchOne(
-				[
-					'class_name'    => Builder::current()->sourceClassName($property->getFinalClassName()),
-					'object'        => $property->getObject(),
-					'property_name' => $property->name,
-					'language.code' => $language ?: Loc::language()
-				],
-				Data::class
-			);
-			return $translation?->translation ?: $value;
+		if (!($property instanceof Reflection_Property_Value) || $property->finalValue()) {
+			return $value;
 		}
-		return $value;
+		$translation = Dao::searchOne(
+			[
+				'class_name'    => Builder::current()->sourceClassName($property->getFinalClassName()),
+				'object'        => $property->getObject(),
+				'property_name' => $property->name,
+				'language.code' => $language ?: Loc::language()
+			],
+			Data::class
+		);
+		return $translation?->translation ?: $value;
 	}
 
 }

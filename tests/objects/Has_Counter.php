@@ -3,20 +3,17 @@ namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 
 /**
  * For any class that has counter
- * Conception to extends Document, for testing use
+ * Conception to extend Document, for testing use
  */
-#[Extends_(Document::class)]
+#[Extend(Document::class)]
 trait Has_Counter
 {
 
 	//------------------------------------------------------------------------------------ setCounter
-	/**
-	 * @param $counter integer
-	 */
 	abstract public function setCounter(int $counter) : void;
 
 	//------------------------------------------------------------------------------------- setNumber

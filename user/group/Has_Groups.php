@@ -21,7 +21,6 @@ trait Has_Groups
 
 	//--------------------------------------------------------------------------------------- $groups
 	/**
-	 * @link Map
 	 * @var Group[]
 	 */
 	public array $groups;

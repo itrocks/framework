@@ -3,7 +3,8 @@ namespace ITRocks\Framework\SSO;
 
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\User;
 
 /**
@@ -12,7 +13,7 @@ use ITRocks\Framework\User;
  * @representative action, login, request_time_float
  * @validate validateAuthentication
  */
-#[Store]
+#[Class_\Store]
 class Authentication
 {
 
@@ -23,86 +24,44 @@ class Authentication
 	//--------------------------------------------------------------------------------------- $action
 	/**
 	 * @values self::const
-	 * @var string
 	 */
 	public string $action;
 
 	//---------------------------------------------------------------------------------------- $https
-	/**
-	 * @var boolean
-	 */
 	public bool $https;
 
 	//---------------------------------------------------------------------------------------- $login
-	/**
-	 * @var string
-	 */
 	public string $login;
 
 	//-------------------------------------------------------------------------------------- $referer
-	/**
-	 * @var string
-	 */
 	public string $referer;
 
 	//------------------------------------------------------------------------------- $remote_address
-	/**
-	 * @var string
-	 */
 	public string $remote_address;
 
 	//---------------------------------------------------------------------------------- $remote_host
-	/**
-	 * @var string
-	 */
 	public string $remote_host;
 
 	//---------------------------------------------------------------------------------- $remote_port
-	/**
-	 * @var string
-	 */
 	public string $remote_port;
 
 	//--------------------------------------------------------------------------- $request_time_float
-	/**
-	 * @var float
-	 */
 	public float $request_time_float;
 
 	//----------------------------------------------------------------------------------- $session_id
-	/**
-	 * @var string
-	 */
 	public string $session_id;
 
 	//---------------------------------------------------------------------------------------- $token
-	/**
-	 * @var string
-	 */
 	public string $token = '';
 
 	//----------------------------------------------------------------------------------------- $user
-	/**
-	 * @link Object
-	 * @store string
-	 * @var User
-	 */
+	#[Store(Store::STRING)]
 	public User $user;
 
 	//----------------------------------------------------------------------------------- $user_agent
-	/**
-	 * @var string
-	 */
 	public string $user_agent;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * Constructor
-	 *
-	 * @param $login  string
-	 * @param $action string
-	 * @param $token  string
-	 */
 	public function __construct(string $login = '', string $action = '', string $token = '')
 	{
 		if (!$login) {
@@ -125,18 +84,12 @@ class Authentication
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->action = $this->login . SP . $this->action . AT . $this->request_time_float;
 	}
 
 	//------------------------------------------------------------------------ validateAuthentication
-	/**
-	 * @return boolean
-	 */
 	public function validateAuthentication() : bool
 	{
 		return $this->action && $this->login;

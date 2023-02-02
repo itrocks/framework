@@ -79,6 +79,12 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 		$this->visibility  = $visibility;
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	public function __toString() : string
+	{
+		return $this->getFinalClassName() . '::$' . $this->getName();
+	}
+
 	//----------------------------------------------------------------------------- getDeclaringClass
 	/**
 	 * Gets the declaring class for the reflected property.

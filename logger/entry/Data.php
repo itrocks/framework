@@ -6,12 +6,12 @@ use ITRocks\Framework\Logger\Entry;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Attribute\Class_\Set;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 
 /**
  * Logger entry data
  */
-#[Store]
-#[Set('Logs_Data')]
+#[Set('Logs_Data'), Store]
 class Data implements Validate\Except
 {
 	use Component;
@@ -19,36 +19,26 @@ class Data implements Validate\Except
 	//------------------------------------------------------------------------------------ $arguments
 	/**
 	 * @max_length 65000
-	 * @var string
 	 */
 	public string $arguments = '';
 
 	//---------------------------------------------------------------------------------------- $entry
-	/**
-	 * @composite
-	 * @link Object
-	 * @var Entry
-	 */
+	#[Composite]
 	public Entry $entry;
 
 	//---------------------------------------------------------------------------------------- $files
 	/**
 	 * @max_length 65000
-	 * @var string
 	 */
 	public string $files = '';
 
 	//----------------------------------------------------------------------------------------- $form
 	/**
 	 * @max_length 1000000
-	 * @var string
 	 */
 	public string $form = '';
 
 	//--------------------------------------------------------------------------- $request_identifier
-	/**
-	 * @var string
-	 */
 	public string $request_identifier = '';
 
 	//----------------------------------------------------------------------------------- __construct
@@ -92,10 +82,6 @@ class Data implements Validate\Except
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection */
@@ -103,20 +89,12 @@ class Data implements Validate\Except
 	}
 
 	//----------------------------------------------------------------------------------- rawFormData
-	/**
-	 * @param $data mixed
-	 */
 	public function rawFormData(mixed $data) : void
 	{
 		$this->form = $this->serialize(['RAW' => $data]);
 	}
 
 	//------------------------------------------------------------------------------------- serialize
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $value array
-	 * @return string
-	 */
 	private function serialize(array $value) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection */

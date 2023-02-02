@@ -5,9 +5,13 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Layout\Model\Page;
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Property\Reflection_Property;
+use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Feature_Class;
 use ITRocks\Framework\Tools\Names;
@@ -18,9 +22,9 @@ use ReflectionException;
 /**
  * A print model gives the way to print an object of a given class
  *
- * @override name @getter
  * @representative document.name, name
  */
+#[Override('name', new Getter('getName'))]
 #[Store]
 abstract class Model
 {
@@ -29,35 +33,29 @@ abstract class Model
 	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * @mandatory
-	 * @setter
 	 * @user invisible
-	 * @var string
 	 */
+	#[Setter]
 	public string $class_name = '';
 
 	//------------------------------------------------------------------------------------- $document
 	/**
-	 * @link Object
-	 * @setter
 	 * @user readonly
-	 * @var ?Feature_Class
 	 */
+	#[Setter]
 	public ?Feature_Class $document;
 
 	//---------------------------------------------------------------------------------------- $pages
 	/**
-	 * @getter
-	 * @link Collection
 	 * @mandatory
 	 * @user hide_edit, hide_output
 	 * @var Page[]
 	 */
+	#[Component]
+	#[Getter]
 	public array $pages;
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		$document_name = $this->document
@@ -69,7 +67,6 @@ abstract class Model
 	//--------------------------------------------------------------------------------- classNamePath
 	/**
 	 * @noinspection PhpUnused output.html
-	 * @return string
 	 */
 	public function classNamePath() : string
 	{
@@ -78,7 +75,6 @@ abstract class Model
 
 	//-------------------------------------------------------------------------------------- getClass
 	/**
-	 * @return Reflection_Class
 	 * @throws ReflectionException
 	 */
 	public function getClass() : Reflection_Class
@@ -87,9 +83,6 @@ abstract class Model
 	}
 
 	//--------------------------------------------------------------------------------------- getName
-	/**
-	 * @return string
-	 */
 	protected function getName() : string
 	{
 		if (!$this->name && $this->document) {
@@ -114,7 +107,7 @@ abstract class Model
 		$property    = new Reflection_Property($this, 'pages');
 		$page_class  = $property->getType()->getElementTypeAsString();
 		/** @noinspection PhpParamsInspection valid params given to Page::sort() */
-		$this->pages = Page::sort(Getter::getCollection($pages, $page_class, $this, 'pages'));
+		$this->pages = Page::sort(Mapper\Getter::getCollection($pages, $page_class, $this, 'pages'));
 		return $this->pages;
 	}
 
@@ -122,7 +115,6 @@ abstract class Model
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $position string @values $pages::const
-	 * @return Page
 	 */
 	public function newPage(string $position) : Page
 	{
@@ -135,24 +127,24 @@ abstract class Model
 
 	//---------------------------------------------------------------------------------- setClassName
 	/**
-	 * @noinspection PhpUnused @setter
-	 * @param $value string
+	 * @noinspection PhpUnused #Setter
 	 */
 	protected function setClassName(string $value) : void
 	{
-		if ($this->class_name = $value) {
-			$this->document = Dao::searchOne(['class_name' => $this->class_name], Feature_Class::class);
-			if (!$this->document) {
-				$this->document = new Feature_Class($this->class_name);
-				Dao::write($this->document);
-			}
+		if (!($this->class_name = $value)) {
+			return;
 		}
+		$this->document = Dao::searchOne(['class_name' => $this->class_name], Feature_Class::class);
+		if ($this->document) {
+			return;
+		}
+		$this->document = new Feature_Class($this->class_name);
+		Dao::write($this->document);
 	}
 
 	//----------------------------------------------------------------------------------- setDocument
 	/**
-	 * @noinspection PhpUnused @setter
-	 * @param $value Feature_Class|null
+	 * @noinspection PhpUnused #Setter
 	 */
 	protected function setDocument(Feature_Class $value = null) : void
 	{

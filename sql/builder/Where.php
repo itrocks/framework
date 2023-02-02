@@ -10,9 +10,9 @@ use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Sql\Link;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -309,7 +309,7 @@ class Where implements With_Build_Column
 				if (
 					$property
 					&& (Link_Annotation::of($property)->is($id_links))
-					&& !(Store_Annotation::of($property)->is(Store_Annotation::STRING))
+					&& !Store::of($property)->isString()
 				) {
 					$prefix = 'id_';
 				}

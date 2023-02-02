@@ -73,20 +73,20 @@ class Reflection_Class extends ReflectionClass
 		return [$this->name, AT];
 	}
 
-	//-------------------------------------------------------------------------- getAnnotedProperties
+	//------------------------------------------------------------------------ getAttributeProperties
 	/**
-	 * Gets all properties which annotation has given value (or are not empty, if value is not set)
+	 * Gets all properties which attribute has a given value
 	 *
-	 * @param $annotation_name  string
-	 * @param $annotation_value mixed
-	 * @param $flags            string[] private, protected, static, or public=visible=empty
+	 * @param $attribute Attribute
+	 * @param $flags     string[] private, protected, static, or public=visible=empty
 	 * @return Reflection_Property[]
 	 */
-	public function getAnnotedProperties(
-		string $annotation_name, mixed $annotation_value = null,
-		array $flags = [Access::PRIVATE, Access::PROTECTED, Access::STATIC]
+	public function getAttributeProperties(
+		Attribute $attribute, array $flags = [Access::PRIVATE, Access::PROTECTED, Access::STATIC]
 	) : array
 	{
+		$attribute_name    = get_class($attribute);
+		$attribute_value   = strval($attribute);
 		$include_private   = in_array(Access::PRIVATE,   $flags);
 		$include_protected = in_array(Access::PROTECTED, $flags);
 		$include_static    = in_array(Access::STATIC,    $flags);
@@ -100,40 +100,11 @@ class Reflection_Class extends ReflectionClass
 			) {
 				continue;
 			}
-			$annotation = $property->getAnnotation($annotation_name);
-			if (
-				(isset($annotation_value) && ($annotation->value === $annotation_value))
-				|| (!isset($annotation_value) && !empty($annotation->value))
-			) {
+			if (!strcmp($attribute_value, $property->getAttribute($attribute_name))) {
 				$properties[$property->name] = $property;
 			}
 		}
 		return $properties;
-	}
-
-	//---------------------------------------------------------------------------- getAnnotedProperty
-	/**
-	 * Gets higher level property which annotation has given value (or is not empty, if value is not
-	 * set)
-	 *
-	 * @param $annotation_name  string
-	 * @param $annotation_value mixed
-	 * @return ?Reflection_Property
-	 */
-	public function getAnnotedProperty(string $annotation_name, mixed $annotation_value = null)
-		: ?Reflection_Property
-	{
-		foreach (array_reverse($this->getProperties([T_EXTENDS, T_USE])) as $property) {
-			/** @var $property Reflection_Property */
-			$annotation = $property->getAnnotation($annotation_name);
-			if (
-				(isset($annotation_value) && ($annotation->value === $annotation_value))
-				|| (!isset($annotation_value) && !empty($annotation->value))
-			) {
-				return $property;
-			}
-		}
-		return null;
 	}
 
 	//---------------------------------------------------------------------------------- getConstants
@@ -466,7 +437,7 @@ class Reflection_Class extends ReflectionClass
 	 * If you set self::T_SORT properties will be sorted by (@)display_order class annotation
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection $property from parent::getProperties()
-	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $flags @TODO Proxify ?
+	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $flags @TODO proxify ?
 	 * @param $flags       integer[]|string[] Restriction. T_USE has no effect (always applied).
 	 *                     flags @default [T_EXTENDS, T_USE] @values T_EXTENDS, T_USE, self::T_SORT
 	 * @param $final_class ?string force the final class to this name (mostly for internal use)
@@ -541,7 +512,7 @@ class Reflection_Class extends ReflectionClass
 	 * Only a property visible for current class can be retrieved, not the privates ones from parent
 	 * classes or traits.
 	 *
-	 * @param $name string The name of the property to get, or a property.path
+	 * @param $name string The 'name' of the property to get, or a 'property.path'
 	 * @return Reflection_Property
 	 * @throws ReflectionException
 	 */

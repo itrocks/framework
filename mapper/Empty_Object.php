@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Mapper;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Can_Be_Empty;
@@ -56,7 +57,7 @@ abstract class Empty_Object
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object          object
-	 * @param $check_composite boolean if true, check if @composite properties are empty too
+	 * @param $check_composite boolean if true, check if #Composite properties are empty too
 	 * @return boolean
 	 */
 	public static function isEmpty(object $object, bool $check_composite = false) : bool
@@ -70,7 +71,7 @@ abstract class Empty_Object
 			$class   = new Reflection_Class($object);
 			$default = get_class_vars($class->name);
 			foreach ($class->getProperties() as $property) {
-				$is_composite = $property->getAnnotation('composite')->value
+				$is_composite = Composite::of($property)?->value
 					|| $property->getAnnotation('link_composite')->value;
 				if (
 					!$property->isStatic()

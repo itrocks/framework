@@ -5,6 +5,7 @@ use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -40,7 +41,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 *
 	 * Before : contains data to help to get them :
 	 * - if a string : contains the properties names, separated by spaces
-	 * - if a Reflection_Class : this will be the class to be scanned for @composite properties
+	 * - if a Reflection_Class : this will be the class to be scanned for #Composite properties
 	 *
 	 * This is for optimization purpose : no calculation will be done if you don't need this data
 	 *
@@ -120,9 +121,9 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 
 	//---------------------------------------------------------------------- setLinkPropertiesByClass
 	/**
-	 * Scan @link class for @composite properties, which are the link properties
+	 * Scan @link class for #Composite properties, which are the link properties
 	 *
-	 * Do not get @composite properties from parent classes : only the higher class containing
+	 * Do not get #Composite properties from parent classes : only the higher class containing
 	 * composite properties match them to link properties.
 	 *
 	 * @param $class Reflection_Class
@@ -136,7 +137,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 			// if properties names are not set : get explicit composite properties names
 			foreach ($class->getProperties([T_USE]) as $property) {
 				if (
-					$property->getAnnotation('composite')->value
+					Composite::of($property)?->value
 					|| $property->getAnnotation('link_composite')->value
 				) {
 					$this->link_properties[$property->getName()] = $property;

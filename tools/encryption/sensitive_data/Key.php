@@ -20,7 +20,6 @@ class Key
 	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * @mandatory
-	 * @var string
 	 */
 	public string $class_name;
 
@@ -28,31 +27,19 @@ class Key
 	/**
 	 * If null, all sensitive data into the class will be accessible or not for one user
 	 * If set, each property can be associated to different users
-	 *
-	 * @null
-	 * @var string
 	 */
-	public string $property_name;
+	public ?string $property_name;
 
 	//--------------------------------------------------------------------------------------- $secret
 	/**
 	 * @max_length 10000
-	 * @var string
 	 */
 	public string $secret;
 
 	//----------------------------------------------------------------------------------------- $user
-	/**
-	 * @link Object
-	 * @mandatory
-	 * @var User
-	 */
 	public User $user;
 
 	//------------------------------------------------------------------------------------- getSecret
-	/**
-	 * @return ?string
-	 */
 	public function getSecret() : ?string
 	{
 		if (!isset($_POST['password'])) {
@@ -69,10 +56,6 @@ class Key
 	}
 
 	//------------------------------------------------------------------------------------- setSecret
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $secret string
-	 */
 	public function setSecret(string $secret) : void
 	{
 		if (!isset($_POST['password'])) {

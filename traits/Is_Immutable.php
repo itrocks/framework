@@ -6,9 +6,8 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
@@ -47,7 +46,7 @@ trait Is_Immutable
 			/** @noinspection PhpUnhandledExceptionInspection $property from $this and accessible */
 			if (
 				!$property->isStatic()
-				&& !Store_Annotation::of($property)->isFalse()
+				&& !Store::of($property)->isFalse()
 				&& $property->getAnnotation('immutable')->value
 				&& !is_null($value = $property->getValue($this))
 			) {

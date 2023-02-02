@@ -25,23 +25,18 @@ class Action
 	//--------------------------------------------------------------------------------------- $action
 	/**
 	 * @max_length 50000
-	 * @var string
 	 */
 	public string $action = '';
 
 	//-------------------------------------------------------------------------------------- $as_user
 	/**
 	 * @conditions keep_user=false
-	 * @link Object
-	 * @var ?User
 	 */
 	public ?User $as_user;
 
 	//------------------------------------------------------------------------------------ $keep_user
 	/**
 	 * Execute using the user that triggered the action
-	 *
-	 * @var boolean
 	 */
 	public bool $keep_user = false;
 
@@ -49,9 +44,7 @@ class Action
 	/**
 	 * Last execution time
 	 *
-	 * @link DateTime
 	 * @user readonly
-	 * @var Date_Time|string
 	 */
 	public Date_Time|string $last;
 
@@ -59,54 +52,36 @@ class Action
 	/**
 	 * Next scheduled time, if this is a scheduled action
 	 *
-	 * @link DateTime
 	 * @user readonly
-	 * @var Date_Time|string
 	 */
 	public Date_Time|string $next;
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
-	 * @link Object
 	 * @user invisible
-	 * @var ?Action
 	 */
 	public ?Action $parent;
 
 	//--------------------------------------------------------------------------- $request_identifier
 	/**
 	 * This identifier, if set, matches Logger\Entry\Data::$request_identifier
-	 *
-	 * @var string
 	 */
 	public string $request_identifier = '';
 
 	//--------------------------------------------------------------------------------------- $status
 	/**
 	 * @values Status::const
-	 * @var string
 	 */
 	public string $status = Status::PENDING;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $action string|null
-	 * @param $next   Date_Time|null
-	 */
 	public function __construct(string $action = null, Date_Time $next = null)
 	{
-		if (isset($action)) {
-			$this->action = $action;
-		}
-		if (isset($next)) {
-			$this->next = $next;
-		}
+		if (isset($action)) $this->action = $action;
+		if (isset($next))   $this->next   = $next;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->action;
@@ -187,9 +162,6 @@ class Action
 	}
 
 	//----------------------------------------------------------------------------------- getLogEntry
-	/**
-	 * @return Entry
-	 */
 	public function getLogEntry() : Entry
 	{
 		return Dao::searchOne(['data.request_identifier' => $this->request_identifier], Entry::class);

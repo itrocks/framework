@@ -9,7 +9,10 @@ use ITRocks\Framework\Email\Output\Has_Output_Properties;
 use ITRocks\Framework\Email\Recipient;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Search_Object;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Property\Alias;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -26,22 +29,19 @@ use ITRocks\Framework\Tools\Date_Time;
  * @feature send
  * @representative date, from, to, subject
  */
-#[Store]
+#[Class_\Store]
 class Email
 {
 	use Has_Output_Properties;
 
 	//-------------------------------------------------------------------------------------- $account
 	/**
-	 * @link Object
 	 * @user hide_empty
-	 * @var ?Account
 	 */
 	public ?Account $account = null;
 
 	//---------------------------------------------------------------------------------- $attachments
 	/**
-	 * @link Map
 	 * @user hide_empty
 	 * @var Attachment[]
 	 */
@@ -49,12 +49,11 @@ class Email
 
 	//-------------------------------------------------------------------------------- $blind_copy_to
 	/**
-	 * @alias bcc
-	 * @link Map
 	 * @set_store_name emails_recipients_blind_copy_to
 	 * @user hide_empty
 	 * @var Recipient[]
 	 */
+	#[Alias('bcc')]
 	public array $blind_copy_to = [];
 
 	//-------------------------------------------------------------------------------------- $content
@@ -63,97 +62,80 @@ class Email
 	 * @editor quill simple
 	 * @max_length 10000000
 	 * @multiline
-	 * @store gz
-	 * @var string
 	 */
+	#[Store(Store::GZ)]
 	public string $content = '';
 
 	//-------------------------------------------------------------------------------------- $copy_to
 	/**
-	 * @alias cc
-	 * @link Map
 	 * @set_store_name emails_recipients_copy_to
 	 * @user hide_empty
 	 * @var Recipient[]
 	 */
+	#[Alias('cc')]
 	public array $copy_to = [];
 
 	//----------------------------------------------------------------------------------------- $date
 	/**
 	 * @default Date_Time::now
-	 * @link DateTime
 	 * @see Date_Time::now
-	 * @var Date_Time|string
 	 */
 	public Date_Time|string $date;
 
 	//----------------------------------------------------------------------------------------- $from
 	/**
-	 * @link Object
 	 * @user invisible_edit
-	 * @var ?Recipient
 	 */
 	public ?Recipient $from;
 
 	//-------------------------------------------------------------------------------------- $headers
 	/**
-	 * @getter
 	 * @null
-	 * @store json
 	 * @user invisible
 	 * @var string|string[]
 	 */
+	#[Getter]
+	#[Store(Store::JSON)]
 	public array|string $headers = [];
 
 	//--------------------------------------------------------------------------------- $receive_date
 	/**
-	 * @link DateTime
 	 * @user hide_empty
-	 * @var Date_Time|string
 	 */
 	public Date_Time|string $receive_date;
 
 	//------------------------------------------------------------------------------------- $reply_to
 	/**
-	 * @link Object
 	 * @user hide_empty
-	 * @var ?Recipient
 	 */
 	public ?Recipient $reply_to = null;
 
 	//---------------------------------------------------------------------------------- $return_path
 	/**
-	 * @link Object
 	 * @user hide_empty
-	 * @var ?Recipient
 	 */
 	public ?Recipient $return_path = null;
 
 	//------------------------------------------------------------------------------------ $send_date
 	/**
-	 * @link DateTime
 	 * @user hide_empty
-	 * @var Date_Time|string
 	 */
 	public Date_Time|string $send_date;
 
 	//--------------------------------------------------------------------------------- $send_message
 	/**
 	 * @user hide_empty, readonly
-	 * @var string
 	 */
 	public string $send_message = '';
 
 	//-------------------------------------------------------------------------------------- $subject
 	/**
 	 * @data focus
-	 * @var string
 	 */
 	public string $subject = '';
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
-	 * @link Map
 	 * @set_store_name emails_recipients_to
 	 * @user hide_empty
 	 * @var Recipient[]
@@ -166,14 +148,10 @@ class Email
 	 * received / sent
 	 *
 	 * @user hide_empty, readonly
-	 * @var string
 	 */
 	public string $uidl = '';
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->subject;
@@ -195,20 +173,12 @@ class Email
 	}
 
 	//---------------------------------------------------------------------------------- encodeHeader
-	/**
-	 * @param $text string
-	 * @return string
-	 */
 	protected function encodeHeader(string $text) : string
 	{
 		return mb_encode_mimeheader($text, 'utf-8', 'Q');
 	}
 
 	//------------------------------------------------------------------------------- encodeRecipient
-	/**
-	 * @param $recipient Recipient
-	 * @return string
-	 */
 	protected function encodeRecipient(Recipient $recipient) : string
 	{
 		if ($recipient->name) {
@@ -220,7 +190,7 @@ class Email
 
 	//------------------------------------------------------------------------------------ getHeaders
 	/**
-	 * store json is not enough to decode the json string and change it into an array
+	 * Store json is not enough to decode the json string and change it into an array.
 	 *
 	 * @return string[]
 	 */
@@ -279,9 +249,6 @@ class Email
 	}
 
 	//------------------------------------------------------------------------------ getHeadersString
-	/**
-	 * @return string
-	 */
 	public function getHeadersString() : string
 	{
 		$headers = [];
@@ -384,9 +351,6 @@ class Email
 	 * This is a simple rewrite. Mysql\Link does all the work (inflate-deflate) !
 	 *
 	 * Call this update script using http://itrocks/sfkgroup/ITRocks/Framework/Email/update
-	 *
-	 * @param $parameters Parameters
-	 * @return string
 	 */
 	public function update(Parameters $parameters) : string
 	{

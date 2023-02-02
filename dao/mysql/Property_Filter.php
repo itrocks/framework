@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
@@ -31,25 +31,10 @@ trait Property_Filter
 		$type = $property->getType();
 		return
 			!in_array($property->name, $this->excluded_properties, true)
-			&& (
-				$type->isMultipleString()
-				|| !$type->isMultiple()
-				|| in_array(
-					Store_Annotation::of($property)->value,
-					[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING],
-					true
-				)
-			)
 			&& !$property->isStatic()
-			&& (
-				!$property->getAnnotation('component')->value
-				|| in_array(
-					Store_Annotation::of($property)->value,
-					[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING],
-					true
-				)
-			)
-			&& !Store_Annotation::of($property)->isFalse();
+			&& !($store = Store::of($property))->isFalse()
+			&& ($store->isString() || $type->isMultipleString() || !$type->isMultiple())
+			&& ($store->isString() || !$property->getAnnotation('component')->value);
 	}
 
 }

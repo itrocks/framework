@@ -3,12 +3,12 @@ namespace ITRocks\Framework\Reflection\Attribute\Template;
 
 trait Has_Boolean_Value
 {
-	
+
 	//---------------------------------------------------------------------------------------- $value
-	public ?bool $value = null;
+	public bool $value;
 
 	//----------------------------------------------------------------------------------- __construct
-	public function __construct(bool|null $value = true)
+	public function __construct(bool $value = true)
 	{
 		$this->value = $value;
 	}
@@ -16,13 +16,13 @@ trait Has_Boolean_Value
 	//------------------------------------------------------------------------------------ __toString
 	public function __toString() : string
 	{
-		return isset($this->value) ? ($this->value ? '1' : '0') : '';
+		return $this->value ? '1' : '0';
 	}
 
 	//--------------------------------------------------------------------------- getDefaultArguments
 	public static function getDefaultArguments() : array
 	{
-		return [null];
+		return [false];
 	}
 
 }

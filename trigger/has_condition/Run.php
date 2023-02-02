@@ -4,10 +4,13 @@ namespace ITRocks\Framework\Trigger\Has_Condition;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Component;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Traits\Date_Logged;
 
-#[Store]
+#[Class_\Store]
 abstract class Run
 {
 	use Component;
@@ -57,38 +60,23 @@ abstract class Run
 	const RUNNING = 'running';
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
 	public string $class_name = '';
 
 	//----------------------------------------------------------------------------------- $identifier
-	/**
-	 * @var ?integer
-	 */
 	public ?int $identifier = null;
 
 	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * @getter
-	 * @setter
-	 * @store false
-	 * @var ?object
-	 */
+	#[Getter('getObject'), Setter('setObject'), Store(false)]
 	public ?object $object;
 
 	//----------------------------------------------------------------------------------------- $step
 	/**
 	 * @ordered_values
 	 * @values before, after, pending, running, complete
-	 * @var string
 	 */
 	public string $step;
 
 	//------------------------------------------------------------------------------------- getObject
-	/**
-	 * @return ?object
-	 */
 	protected function getObject() : ?object
 	{
 		return ($this->class_name && $this->identifier)
@@ -98,8 +86,7 @@ abstract class Run
 
 	//------------------------------------------------------------------------------------- setObject
 	/**
-	 * @noinspection PhpUnused @setter
-	 * @param $object ?object
+	 * @noinspection PhpUnused #Setter
 	 */
 	protected function setObject(?object $object) : void
 	{

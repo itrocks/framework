@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User\Group;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Tools\Names;
 
 /**
@@ -30,8 +31,6 @@ class Yaml
 	//----------------------------------------------------------------------------------------- $data
 	/**
 	 * The yaml data, stored as an array
-	 *
-	 * @var array
 	 */
 	private array $data;
 
@@ -42,18 +41,11 @@ class Yaml
 	 * - string : a file was found by fileMatches()
 	 * - true   : the file is implicit (then a default raw content has been set)
 	 * - false  : there is no file nor implicit configuration for this path
-	 *
-	 * @store false
-	 * @var bool|string|null
 	 */
+	#[Store(false)]
 	public bool|string|null $filename;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * Yaml file constructor
-	 *
-	 * @param $filename string|null
-	 */
 	public function __construct(string $filename = null)
 	{
 		if (isset($filename)) {
@@ -66,9 +58,6 @@ class Yaml
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return yaml_emit($this->data);
@@ -77,9 +66,6 @@ class Yaml
 	//------------------------------------------------------------------------------------ addFeature
 	/**
 	 * Adds a low-level feature
-	 *
-	 * @param $feature string
-	 * @param $options array
 	 */
 	public function addFeature(string $feature, array $options = []) : void
 	{
@@ -87,13 +73,14 @@ class Yaml
 			$this->data[self::FEATURES] = [];
 		}
 		$features_data =& $this->data[self::FEATURES];
-		if (!isset($features_data[$feature]) && !in_array($feature, $features_data)) {
-			if ($options) {
-				$features_data[$feature] = $options;
-			}
-			else {
-				$features_data[] = $feature;
-			}
+		if (isset($features_data[$feature]) || in_array($feature, $features_data)) {
+			return;
+		}
+		if ($options) {
+			$features_data[$feature] = $options;
+		}
+		else {
+			$features_data[] = $feature;
 		}
 	}
 
@@ -240,7 +227,6 @@ class Yaml
 	 * @example
 	 * a/full/path/class_name/feature.yaml -> a/full/path/class_name/feature
 	 * a/full/path/Class_Name_feature.yaml -> a/full/path/Class_Name/feature
-	 * @return string
 	 */
 	private function getFilenamePath() : string
 	{
@@ -279,8 +265,6 @@ class Yaml
 	//--------------------------------------------------------------------------------------- getName
 	/**
 	 * Gets the atomic end-user feature name stored into the yaml file
-	 *
-	 * @return ?string
 	 */
 	public function getName() : ?string
 	{
@@ -290,19 +274,15 @@ class Yaml
 	//--------------------------------------------------------------------------------------- getPath
 	/**
 	 * Gets the full path of the feature stored into the file, or using the name of the file
-	 *
-	 * @return string
 	 */
 	private function getPath() : string
 	{
-		if (isset($this->data[self::PATH])) {
-			$path = $this->data[self::PATH];
-			if (!str_contains($path, SL)) {
-				$path = lLastParse($this->getFilenamePath(), SL) . SL . $path;
-			}
+		if (!isset($this->data[self::PATH])) {
+			return $this->getFilenamePath();
 		}
-		else {
-			$path = $this->getFilenamePath();
+		$path = $this->data[self::PATH];
+		if (!str_contains($path, SL)) {
+			return lLastParse($this->getFilenamePath(), SL) . SL . $path;
 		}
 		return $path;
 	}

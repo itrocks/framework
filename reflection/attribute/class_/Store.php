@@ -56,8 +56,8 @@ class Store extends Class_
 	//--------------------------------------------------------------------------------------- extends
 	protected function extends(Reflection_Class $class) : void
 	{
-		foreach (Extends_::of($class) as $extends_attribute) {
-			foreach ($extends_attribute->extends as $extends) {
+		foreach (Extend::of($class) as $extend_attribute) {
+			foreach ($extend_attribute->extends as $extends) {
 				$reflection_class = get_class($class);
 				$store_extends    = static::of($reflection_class::of($extends));
 				if ($value = $store_extends->value) {

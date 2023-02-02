@@ -4,9 +4,9 @@ namespace ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Namespaces;
@@ -85,10 +85,7 @@ class Table_Builder_Class
 					if ($type->isClass() && $type->isAbstractClass()) {
 						$table->addColumn(Column::buildClassProperty($property));
 					}
-					if (
-						Link_Annotation::of($property)->isObject()
-						&& !Store_Annotation::of($property)->value
-					) {
+					if (Link_Annotation::of($property)->isObject() && !Store::of($property)->isString()) {
 						$class_name                              = $type->asString();
 						$this->dependencies_context[$class_name] = $class_name;
 						if (!$type->isAbstractClass()) {

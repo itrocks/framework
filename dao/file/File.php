@@ -8,6 +8,9 @@ use ITRocks\Framework\Dao\File\Session_File;
 use ITRocks\Framework\Dao\File\Spreadsheet_File;
 use ITRocks\Framework\Dao\File\Type;
 use ITRocks\Framework\Dao\File\Type_Builder;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Files;
@@ -19,51 +22,37 @@ use ITRocks\Framework\View;
  *
  * @before_write getContent
  */
+#[Store]
 class File
 {
 	use Has_Name;
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
+	 * Null if the file does not exist (no content)
+	 *
 	 * @binary
-	 * @getter
 	 * @impacts hash, updated_on
 	 * @max_length 4000000000
-	 * @setter
-	 * @var ?string Null if the file does not exist (no content)
 	 */
+	#[Getter, Setter]
 	public ?string $content = null;
 
 	//----------------------------------------------------------------------------------------- $hash
-	/**
-	 * @getter
-	 * @var string
-	 */
+	#[Getter]
 	public string $hash = '';
 
 	//-------------------------------------------------------------------------- $temporary_file_name
 	/**
 	 * Temporary file name where the file is stored, used to get content into $content only if needed
-	 *
-	 * @getter
-	 * @setter
-	 * @var string
 	 */
+	#[Getter, Setter]
 	public string $temporary_file_name = '';
 
 	//----------------------------------------------------------------------------------- $updated_on
-	/**
-	 * @link DateTime
-	 * @mandatory
-	 * @var Date_Time|string
-	 */
 	public Date_Time|string $updated_on;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $temporary_file_name string|null
-	 */
 	public function __construct(string $temporary_file_name = null)
 	{
 		if (isset($temporary_file_name)) {
@@ -90,8 +79,6 @@ class File
 	//------------------------------------------------------------------------------------ getContent
 	/**
 	 * Gets $this->content, or load it from temporary file name if not set
-	 *
-	 * @return ?string
 	 */
 	public function getContent() : ?string
 	{
@@ -117,8 +104,7 @@ class File
 	/**
 	 * Gets $hash, or calculate it from content if not set
 	 *
-	 * @noinspection PhpUnused @getter
-	 * @return string
+	 * @noinspection PhpUnused #Getter
 	 */
 	protected function getHash() : string
 	{
@@ -133,8 +119,7 @@ class File
 	 * Gets temporary file name, or write content into a temporary file name and get this name if not
 	 * set or file does not exist
 	 *
-	 * @noinspection PhpUnused @getter
-	 * @return string
+	 * @noinspection PhpUnused #Getter
 	 */
 	protected function getTemporaryFileName() : string
 	{
@@ -153,9 +138,6 @@ class File
 	}
 
 	//--------------------------------------------------------------------------------------- getType
-	/**
-	 * @return Type
-	 */
 	public function getType() : Type
 	{
 		return Type_Builder::build($this->name);
@@ -187,9 +169,6 @@ class File
 	}
 
 	//-------------------------------------------------------------------------------------- nameHash
-	/**
-	 * @return string
-	 */
 	public function nameHash() : string
 	{
 		return hash('sha512', $this->name ?: $this->temporary_file_name ?: '');
@@ -201,9 +180,7 @@ class File
 	 * - image : the link to the image, with the given size
 	 * - another file type : the link to the file type icon
 	 *
-	 * @noinspection PhpUnused @getter
-	 * @param $size integer
-	 * @return string
+	 * @noinspection PhpUnused #Getter
 	 */
 	public function previewLink(int $size = 22) : string
 	{
@@ -225,9 +202,6 @@ class File
 	}
 
 	//------------------------------------------------------------------------------------ setContent
-	/**
-	 * @param $content ?string
-	 */
 	protected function setContent(?string $content) : void
 	{
 		$old_hash      = $this->hash;
@@ -241,8 +215,7 @@ class File
 
 	//-------------------------------------------------------------------------- setTemporaryFileName
 	/**
-	 * @noinspection PhpUnused @getter
-	 * @param $temporary_file_name string
+	 * @noinspection PhpUnused #Getter
 	 */
 	protected function setTemporaryFileName(string $temporary_file_name) : void
 	{
@@ -253,9 +226,6 @@ class File
 	}
 
 	//------------------------------------------------------------------------------------------ size
-	/**
-	 * @return integer
-	 */
 	public function size() : int
 	{
 		return filesize($this->temporary_file_name);

@@ -16,22 +16,17 @@ class Account
 
 	//--------------------------------------------------------------------------------- $pop_accounts
 	/**
-	 * @link Map
 	 * @var Pop_Account[]
 	 */
 	public array $pop_accounts;
 
 	//-------------------------------------------------------------------------------- $smtp_accounts
 	/**
-	 * @link Map
 	 * @var Smtp_Account[]
 	 */
 	public array $smtp_accounts;
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return str_replace(['<', '>'], '', $this->name) . ' <' . $this->email . '>';

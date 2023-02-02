@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Reflection\Annotation\Class_\Tests;
 
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tests\Objects\A_Trait;
@@ -41,7 +41,7 @@ class Class_Test extends Test
 	 */
 	public function testExtendsEmptyParentExtends() : void
 	{
-		$extends = Extends_::of(new Reflection_Class(Quote::class));
+		$extends = Extend::of(new Reflection_Class(Quote::class));
 		$values  = [];
 		foreach ($extends as $extend) {
 			$values[] = $extend->extends;
@@ -56,7 +56,7 @@ class Class_Test extends Test
 	 */
 	public function testExtendsExtendsParentExtends() : void
 	{
-		$extends = Extends_::of(new Reflection_Class(A_Trait::class));
+		$extends = Extend::of(new Reflection_Class(A_Trait::class));
 		$values  = [];
 		foreach ($extends as $extend) {
 			$values[] = $extend->extends;
@@ -71,7 +71,7 @@ class Class_Test extends Test
 	 */
 	public function testExtendsExtendsWithoutParent() : void
 	{
-		$extends = Extends_::of(new Reflection_Class(Has_Counter::class));
+		$extends = Extend::of(new Reflection_Class(Has_Counter::class));
 		$values  = [];
 		foreach ($extends as $extend) {
 			$values[] = $extend->extends;

@@ -3,12 +3,12 @@ namespace ITRocks\Framework\Layout\Print_Model\Status;
 
 use ITRocks\Framework\Layout\Print_Model;
 use ITRocks\Framework\Layout\Print_Model\Status;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 
 /**
  * @before_update setStatusToCustom
  */
-#[Extends_(Print_Model::class)]
+#[Extend(Print_Model::class)]
 trait Has
 {
 

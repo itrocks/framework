@@ -57,7 +57,7 @@ class Post
 			foreach (Dao::readAll($class_name) as $object) {
 				foreach ($properties as $property_name => $install) {
 					if ($install === 'calculate') {
-						/** @noinspection PhpExpressionResultUnusedInspection force call of @getter */
+						/** @noinspection PhpExpressionResultUnusedInspection force call of #Getter */
 						$object->$property_name;
 					}
 				}

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Traits\Identifier;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Traits\Identifier;
 
 /**
@@ -10,14 +11,11 @@ use ITRocks\Framework\Traits\Identifier;
  *
  * @before_write uniqueIdentifier
  */
+#[Store]
 trait Has_Identifier
 {
 
 	//----------------------------------------------------------------------------------- $identifier
-	/**
-	 * @link Object
-	 * @var ?Identifier
-	 */
 	public ?Identifier $identifier;
 
 	//------------------------------------------------------------------------------ uniqueIdentifier

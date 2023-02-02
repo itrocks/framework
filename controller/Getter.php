@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Controller;
 
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tools\Names;
@@ -443,9 +443,9 @@ abstract class Getter
 			if (class_exists($class_name)) {
 				/** @noinspection PhpUnhandledExceptionInspection class exists */
 				$reflection_class = new Reflection_Class(Builder::className($class_name));
-				$extends_attributes = Extends_::of($reflection_class);
-				foreach ($extends_attributes as $extends_attribute) {
-					foreach ($extends_attribute->extends as $extends) {
+				$extend_attributes = Extend::of($reflection_class);
+				foreach ($extend_attributes as $extend_attribute) {
+					foreach ($extend_attribute->extends as $extends) {
 						$classes[$extends] = self::classNameWithoutVendorProject($extends);
 					}
 				}

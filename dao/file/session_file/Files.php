@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Dao\File\Session_File;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 
 /**
  * Temporary files collection, stored into session
@@ -17,15 +18,12 @@ class Files
 
 	//---------------------------------------------------------------------------------------- $files
 	/**
-	 * @link Collection
 	 * @var File[]
 	 */
+	#[Component]
 	public array $files;
 
 	//----------------------------------------------------------------------------------- __serialize
-	/**
-	 * @return array
-	 */
 	public function __serialize() : array
 	{
 		$serialized = [];
@@ -36,10 +34,6 @@ class Files
 	}
 
 	//--------------------------------------------------------------------------------- __unserialize
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $serialized array
-	 */
 	public function __unserialize(array $serialized) : void
 	{
 		$this->files = [];
@@ -55,9 +49,6 @@ class Files
 	//--------------------------------------------------------------------------------- addAndGetLink
 	/**
 	 * Adds a file and gets a link to this file
-	 *
-	 * @param $file File
-	 * @return string
 	 */
 	public function addAndGetLink(File $file) : string
 	{

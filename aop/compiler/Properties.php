@@ -6,6 +6,9 @@ use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Method;
 use ITRocks\Framework\PHP\Reflection_Source;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\All;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 
 /**
  * Aspect weaver properties compiler
@@ -251,14 +254,12 @@ class Properties
 			else {
 				// TODO this check only getters, links and setters. This should check AOP links too.
 				foreach ($parent_class->getProperties([T_EXTENDS, T_USE]) as $property) {
-					$expr = '%'
-						. '\n\s+\*\s+'               // each line beginning by '* '
-						. '@(all|getter|link|setter)'    // 1 : AOP annotation
-						. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
-						. '(\w+)?)?'                 // 3 : method or function name
-						. '%';
-					preg_match($expr, $property->getDocComment(), $match);
-					if ($match || Link_Annotation::of($property)->value) {
+					if (
+						$property->getAttribute(All::class)
+						|| $property->getAttribute(Getter::class)
+						|| $property->getAttribute(Setter::class)
+						|| Link_Annotation::of($property)->value
+					) {
 						$parent_code = '
 
 		if (method_exists(get_parent_class($this), \'__aop\')) parent::__aop(false);';
@@ -930,31 +931,18 @@ class Properties
 			&& ($this->class->type === T_CLASS)
 			&& ($parent = $this->class->getParentClass())
 		) {
-			$annotation = ($method_name === '__get') ? '(all|getter|link)' : 'setter';
+			$attributes = ($method_name === '__get') ? [All::class, Getter::class] : [Setter::class];
 			$type       = ($method_name === '__get') ? Handler::READ : Handler::WRITE;
-			$overrides  = [];
-			foreach ($this->scanForOverrides(
-				$parent->getDocComment([T_EXTENDS, T_USE]), [substr($method_name, 2) . 'ter']
-			) as $override) {
-				$overrides[$override['property_name']] = true;
-			}
 			foreach ($parent->getProperties([T_EXTENDS, T_USE], $parent) as $property) {
-				if (!isset($advices[$property->name]['implements'][$type])) {
-					$expr = '%'
-						. '\n\s+\*\s+'               // each line beginning with '* '
-						. AT . $annotation           // 1 : AOP annotation
-						. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
-						. '(\w+)?)?'                 // 3 : method or function name
-						. '%';
-					preg_match($expr, $property->getDocComment(), $match);
-					if (
-						$match
-						|| isset($overrides[$property->name])
-						|| Link_Annotation::of($property)->value
-					) {
-						$cases[$property->name] = LF . TAB . TAB . TAB . 'case ' . Q . $property->name . Q . ':';
-					}
+				if (isset($advices[$property->name]['implements'][$type])) continue;
+				$apply = ($method_name === '__get') && Link_Annotation::of($property)->value;
+				if (!$apply) foreach (array_keys($property->getAttributes()) as $attribute_name) {
+					if (!in_array($attribute_name, $attributes)) continue;
+					$apply = true;
+					break;
 				}
+				if ($apply) continue;
+				$cases[$property->name] = LF . TAB . TAB . TAB . 'case ' . Q . $property->name . Q . ':';
 			}
 			if ($cases) {
 				$parameters = '$property_name';

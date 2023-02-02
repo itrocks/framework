@@ -7,7 +7,7 @@ use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\PHP\Compiler;
 use ITRocks\Framework\Plugin\Activable;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -315,7 +315,7 @@ class Builder implements Activable
 	 */
 	public static function fromSubArray(array $array) : array|object
 	{
-		if (isset($array[Store_Annotation::JSON_CLASS])) {
+		if (isset($array[Store::JSON_CLASS])) {
 			return Getter::schemaDecode($array);
 		}
 		foreach ($array as $key => $value) {

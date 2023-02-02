@@ -2,11 +2,10 @@
 namespace ITRocks\Framework\Component\Button;
 
 use ITRocks\Framework\Component\Button;
+use ITRocks\Framework\Reflection\Attribute\Class_\Implement;
 use ITRocks\Framework\Setting;
 
-/**
- * @implements Has_Selection_Buttons
- */
+#[Implement(Has_Selection_Buttons::class)]
 trait No_Selection_Buttons
 {
 
@@ -18,7 +17,7 @@ trait No_Selection_Buttons
 	 * @return Button[]
 	 */
 	public function getSelectionButtons(
-		/** @noinspection PhpUnusedParameterInspection @implements */
+		/** @noinspection PhpUnusedParameterInspection #Implement */
 		string $class_name, array $parameters, Setting\Custom\Set $list_settings = null
 	) : array
 	{

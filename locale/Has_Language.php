@@ -10,10 +10,6 @@ trait Has_Language
 {
 
 	//------------------------------------------------------------------------------------- $language
-	/**
-	 * @link Object
-	 * @var ?Language
-	 */
 	public ?Language $language;
 
 }

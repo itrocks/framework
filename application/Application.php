@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -313,9 +313,9 @@ class Application
 			$parents[$parent_class_name] = [];
 		}
 		// 2nd : #Extends attributes
-		$extends_attributes = Extends_::of(new Reflection_Class(static::class));
-		foreach ($extends_attributes as $extends_attribute) {
-			foreach ($extends_attribute->extends as $extends) {
+		$extend_attributes = Extend::of(new Reflection_Class(static::class));
+		foreach ($extend_attributes as $extend_attribute) {
+			foreach ($extend_attribute->extends as $extends) {
 				$parents[$extends] = [];
 			}
 		}

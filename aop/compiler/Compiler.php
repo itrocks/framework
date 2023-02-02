@@ -16,9 +16,11 @@ use ITRocks\Framework\PHP\Done_Compiler;
 use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Source;
-use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extends_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
+use ITRocks\Framework\Reflection\Attribute\Property\All;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Session;
 
@@ -288,102 +290,21 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 		// properties from the class and its direct traits
 		$implemented_properties = $class->getProperties([T_USE]);
 		foreach ($implemented_properties as $property) {
-			$expr = '%'
-				. '\n\s+\*\s+'                // each line beginning by '* '
-				. '@(all|getter|link|setter)' // 1 : AOP annotation
-				. '(?:\s+'                    // class name and method or function name are optional
-				. '(?:([\\\\\w]+)::)?'        // 2 : class name (optional)
-				. '(\w+)'                     // 3 : method or function name
-				. ')?'                        // end of optional block
-				. '%';
-			preg_match_all($expr, $property->getDocComment(), $match);
 			if (
-				!in_array('getter', $match[1])
-				&& !in_array('link', $match[1])
-				&& !in_array('all', $match[1])
-				&& Link_Annotation::of($property)->value
+				$property->getAttribute(Getter::class)
+				|| $property->getAttribute(All::class)
+				|| Link_Annotation::of($property)->value
 			) {
-				$match[1][] = 'link';
+				$properties[$property->name]['implements'][Handler::READ] = true;
 			}
-			foreach ($match[1] as $type) {
-				$type = ($type === 'setter') ? Handler::WRITE : Handler::READ;
-				$properties[$property->name]['implements'][$type] = true;
+			if ($property->getAttribute(Setter::class)) {
+				$properties[$property->name]['implements'][Handler::WRITE] = true;
 			}
 			if ($property->getParent()) {
 				$properties[$property->name]['override'] = true;
 			}
 		}
-		// properties overridden into the class and its direct traits
-		$documentations = $class->getDocComment([T_USE]);
-		$annotations    = [Getter_Annotation::ANNOTATION, Link_Annotation::ANNOTATION, 'setter'];
-		foreach ($this->scanForOverrides($documentations, $annotations) as $match) {
-			$properties[$match['property_name']]['implements'][$match['type']] = true;
-			if (!isset($implemented_properties[$match['property_name']])) {
-				$class_properties = $class->getProperties([T_EXTENDS]);
-				$extends          = $class;
-				while (!isset($class_properties[$match['property_name']])) {
-					$extends_values = Extends_::OneOf($extends)->extends;
-					if (!$extends_values) {
-						break;
-					}
-					$extends          = $extends->source->getOutsideClass(reset($extends_values));
-					$class_properties = $extends->getProperties([T_EXTENDS]);
-				}
-				if (!isset($class_properties[$match['property_name']])) {
-					continue;
-				}
-				$property = $class_properties[$match['property_name']];
-				$property->final_class = $class;
-				if (
-					!str_contains($property->getDocComment(), '@all')
-					&& !str_contains($property->getDocComment(), '@getter')
-					&& !str_contains($property->getDocComment(), '@link')
-					&& !str_contains($property->getDocComment(), '@setter')
-				) {
-					$expr = '%@override\s+' . $match['property_name'] . '\s+.*(@all|@getter|@link|@setter)%';
-					preg_match($expr, $property->class->getDocComment([]), $match2);
-					if ($match2) {
-						$properties[$match['property_name']]['override'] = true;
-					}
-				}
-			}
-		}
 	}
-
-	/**
-	 * @param $methods array
-	 * @param $class   Reflection_Class
-	 */
-	/*
-	private function scanForMethods(array &$methods, Reflection_Class $class)
-	{
-		foreach ($class->getMethods() as $method) {
-			if (!$method->isAbstract() && ($method->class->name === $class->name)) {
-				$expr = '%'
-					. '\n\s+\*\s+'                // each line beginning by '* '
-					. '@(after|around|before)\s+' // 1 : aspect type
-					. '(?:([\\\\\w]+)::)?'        // 2 : optional class name
-					. '(\w+)\s*'                  // 3 : method or function name
-					. '(?:\((\$this)\))?'         // 4 : optional '$this'
-					. '%';
-				preg_match_all($expr, $method->documentation, $match);
-				if ($match) {
-					foreach (array_keys($match[0]) as $key) {
-						$type        = $match[1][$key];
-						$class_name  = $match[2][$key] ?: '$this';
-						$method_name = $match[3][$key];
-						$has_this    = $match[4][$key];
-						$aspect = [$type, [$method->class->name, $method->name]];
-						if ($has_this) {
-							$aspect[] = $has_this;
-						}
-						$methods[$class_name][$method_name] = $aspect;
-					}
-				}
-			}
-		}
-	}
-	*/
 
 	//----------------------------------------------------------------------------- setMainController
 	/**

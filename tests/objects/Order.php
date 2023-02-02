@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property;
 
 /**
  * An order class
@@ -11,41 +12,26 @@ class Order extends Document
 {
 
 	//--------------------------------------------------------------------------------------- $client
-	/**
-	 * Client
-	 *
-	 * @link Object
-	 * @mandatory
-	 * @var Client
-	 */
 	private Client $client;
 
 	//------------------------------------------------------------------------------ $delivery_client
-	/**
-	 * Delivery client
-	 *
-	 * @link Object
-	 * @var ?Client
-	 */
 	private ?Client $delivery_client;
 
 	//---------------------------------------------------------------------------------------- $lines
 	/**
-	 * Lines
-	 *
-	 * @link Collection
 	 * @mandatory
 	 * @var Order_Line[]
 	 */
+	#[Property\Component]
 	private array $lines;
 
 	//------------------------------------------------------------------------------------- $salesmen
 	/**
 	 * Links to salesmen
 	 *
-	 * @(foreign) order Optional, default would have been automatically calculated to 'test_order'
-	 * @(foreignlink) salesman Optional, default would have been automatically calculated to 'test_salesman'
-	 * @link Map
+	 * #Foreign order Optional, default would have been automatically calculated to 'test_order'
+	 * #Foreign_Link salesman Optional, default would have been automatically calculated to 'test_salesman'
+	 *
 	 * @var Salesman[]
 	 */
 	private array $salesmen;

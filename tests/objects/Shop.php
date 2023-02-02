@@ -14,7 +14,6 @@ class Shop
 
 	//----------------------------------------------------------------------------------- $categories
 	/**
-	 * @link Map
 	 * @var Category[]
 	 */
 	public array $categories;

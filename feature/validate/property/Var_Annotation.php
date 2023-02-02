@@ -6,7 +6,7 @@ use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -88,7 +88,7 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 			!($this->property instanceof Reflection_Property)
 			|| !$this->property->isPublic()
 			|| $this->property->isStatic()
-			|| Store_Annotation::of($this->property)->isFalse()
+			|| Store::of($this->property)->isFalse()
 		) {
 			return null;
 		}
@@ -159,8 +159,8 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 					if (
 						// - accepts null if not mandatory
 						(is_null($value) && !Mandatory_Annotation::of($this->property)->value)
-						// - accepts a string if @store allows a string
-						|| (is_string($value) && Store_Annotation::of($this->property)->isString())
+						// - accepts a string if #Store allows a string
+						|| (is_string($value) && Store::of($this->property)->isString())
 						// - accepts an object if is an instance of the class
 						|| is_a($value, $class_name)
 						// - accepts an object if @var object
