@@ -30,9 +30,7 @@ trait Scanner
 					|| (filemtime($file) > filemtime($cache_file))
 					|| str_contains($file, 'repository/Repository')
 				) {
-					if (!$this->refresh) {
-						$this->refresh_files[substr($file, $home_length)] = true;
-					}
+					$this->refresh_files[] = substr($file, $home_length);
 					$this->scanFile($file);
 				}
 			}

@@ -4,6 +4,7 @@ namespace ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\Dependency\Repository\Cache_Path;
 use ITRocks\Framework\PHP\Dependency\Repository\Classify;
 use ITRocks\Framework\PHP\Dependency\Repository\Counters;
+use ITRocks\Framework\PHP\Dependency\Repository\Get_Data;
 use ITRocks\Framework\PHP\Dependency\Repository\Save;
 use ITRocks\Framework\PHP\Dependency\Repository\Scanner;
 
@@ -11,13 +12,14 @@ if (isset($argv[0]) && isset($_SERVER['PHP_SELF']) && ($argv[0] === $_SERVER['PH
 	include __DIR__ . '/Cache_Path.php';
 	include __DIR__ . '/Classify.php';
 	include __DIR__ . '/Counters.php';
+	include __DIR__ . '/Get_Data.php';
 	include __DIR__ . '/Save.php';
 	include __DIR__ . '/Scanner.php';
 }
 
 class Repository
 {
-	use Cache_Path, Classify, Counters, Save, Scanner;
+	use Cache_Path, Classify, Counters, Get_Data, Save, Scanner;
 
 	//----------------------------------------------------------------------------------------- FLAGS
 	public const REFRESH = 2;
@@ -68,7 +70,7 @@ class Repository
 
 	//-------------------------------------------------------------------------------- $refresh_files
 	/** @var string[] */
-	protected array $refresh_files = [];
+	public array $refresh_files = [];
 
 	//------------------------------------------------------------------------------------ $singleton
 	private static self $singleton;
@@ -87,31 +89,6 @@ class Repository
 	public static function get() : static
 	{
 		return static::$singleton ?? (static::$singleton = new static);
-	}
-
-	//------------------------------------------------------------------------------- getFileContents
-	/** @return string[] */
-	public function getFileContents() : array
-	{
-		$files = $this->getFiles();
-		if (count($this->file_contents) === count($files)) {
-			return $this->file_contents;
-		}
-		foreach ($files as $file) {
-			$file = "$this->home/$file";
-			if (!isset($this->file_contents[$file])) {
-				$this->file_contents[$file] = file_get_contents($file);
-			}
-		}
-		return $this->file_contents;
-	}
-
-	//-------------------------------------------------------------------------------------- getFiles
-	/** @return string[] */
-	public function getFiles() : array
-	{
-		return $this->files
-			?: ($this->files = json_decode(file_get_contents($this->cacheFileName('files'))));
 	}
 
 	//------------------------------------------------------------------------------------ runConsole
