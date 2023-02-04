@@ -5,7 +5,7 @@ use ITRocks\Framework\Dao\Func\Call;
 use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Concat;
 use ITRocks\Framework\Dao\Func\Day;
-use itrocks\framework\dao\func\Expressions;
+use ITRocks\Framework\Dao\Func\Expressions;
 use ITRocks\Framework\Dao\Func\Group_By;
 use ITRocks\Framework\Dao\Func\Group_Concat;
 use ITRocks\Framework\Dao\Func\Have_All;

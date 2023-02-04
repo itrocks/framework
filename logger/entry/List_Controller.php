@@ -1,5 +1,5 @@
 <?php
-namespace ITrocks\Framework\Logger\Entry;
+namespace ITRocks\Framework\Logger\Entry;
 
 use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Controller\Feature;
