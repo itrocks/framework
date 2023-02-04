@@ -1,10 +1,10 @@
 <?php
-namespace ITRocks\Framework\Dependency\Repository;
+namespace ITRocks\Framework\PHP\Dependency;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Reflection\Attribute\Class_\Implement;
 
-class Scanner
+class Tokens_Scanner
 {
 
 	protected const BASIC_TYPES        = ['array', 'bool', 'callable', 'false', 'float', 'int', 'null', 'object', 'string', 'true', 'void'];
