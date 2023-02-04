@@ -359,6 +359,7 @@ class Compiler extends Cache
 		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
 
 		$wave = 0;
+		//(new Cache\Compiler)->compile();
 		foreach ($this->compilers as $compilers_stop => $compilers) {
 			$this->text_output->log('Wave ' . ++$wave . ' on ' . count($this->compilers));
 			$this->text_output->log('Compilers : '. join(', ', array_keys($compilers)));

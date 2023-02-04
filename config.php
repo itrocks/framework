@@ -67,6 +67,7 @@ $config['ITRocks/Framework'] = [
 	//------------------------------------------------------------------------------ Priority::NORMAL
 	Priority::NORMAL => [
 		Cleaner::class,
+		//Compiler::class => [],
 		Compiler::class => [
 			1 => [Router::class, Builder\Compiler::class],
 			2 => [Builder\Linked_Classes_Compiler::class],
