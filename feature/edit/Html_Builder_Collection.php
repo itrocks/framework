@@ -186,6 +186,7 @@ class Html_Builder_Collection extends Collection
 				? ($this->pre_path . '[' . $this->property->name . ']')
 				: $this->property->name;
 		}
+		$origin_value = $value;
 		if (
 			($builder = Widget_Annotation::of($property)->value)
 			&& is_a($builder, Property::class, true)
@@ -209,6 +210,10 @@ class Html_Builder_Collection extends Collection
 			$content = $value;
 		}
 		else {
+			$value = Html_Template::ORIGIN;
+		}
+		if ($value === Html_Template::ORIGIN) {
+			$value           = $origin_value;
 			$builder         = (new Html_Builder_Property($property_value, $value, $pre_path . '[]'));
 			$builder->object = $object;
 			$input           = $builder->setTemplate($this->template)->build();
