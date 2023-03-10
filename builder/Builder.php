@@ -44,7 +44,7 @@ class Builder implements Activable
 	 *
 	 * @var array[]
 	 */
-	private array $compositions = [];
+	protected array $compositions = [];
 
 	//-------------------------------------------------------------------------------------- $enabled
 	/**
@@ -66,7 +66,7 @@ class Builder implements Activable
 	 *
 	 * @var array[]|string[]
 	 */
-	private array $replacements = [];
+	protected array $replacements = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -101,7 +101,7 @@ class Builder implements Activable
 	//-------------------------------------------------------------------------------------- activate
 	public function activate() : void
 	{
-		self::current($this);
+		static::current($this);
 	}
 
 	//------------------------------------------------------------------------------------- className
@@ -112,7 +112,7 @@ class Builder implements Activable
 	 */
 	public static function className(string $class_name) : string
 	{
-		return self::current()->replacementClassName($class_name);
+		return static::current()->replacementClassName($class_name);
 	}
 
 	//---------------------------------------------------------------------------------------- create
@@ -126,8 +126,8 @@ class Builder implements Activable
 	public static function create(string $class_name, array $arguments = []) : object
 	{
 		return $arguments
-			? self::current()->newInstanceArgs($class_name, $arguments)
-			: self::current()->newInstance($class_name);
+			? static::current()->newInstanceArgs($class_name, $arguments)
+			: static::current()->newInstance($class_name);
 	}
 
 	//----------------------------------------------------------------------------------- createClone
@@ -148,14 +148,13 @@ class Builder implements Activable
 		bool $same_identifier = true
 	) : object
 	{
-		$class_name        = self::className($class_name);
 		$source_class_name = get_class($object);
-		if (!isset($class_name)) {
-			$class_name = self::className($source_class_name);
-		}
+		$class_name        = isset($class_name)
+			? static::className($class_name)
+			: static::className($source_class_name);
 		if ($class_name !== $source_class_name) {
 			// initialises cloned object
-			$clone = self::create($class_name);
+			$clone = static::create($class_name);
 			$destination_class = new Link_Class($class_name);
 			// deactivate AOP
 			if (isset($clone->_)) {
@@ -267,7 +266,7 @@ class Builder implements Activable
 		string $class_name, array $array, array $constructor_arguments = []
 	) : object
 	{
-		$object = self::create($class_name, $constructor_arguments);
+		$object = static::create($class_name, $constructor_arguments);
 		foreach ($array as $property_name => $value) {
 			if ($property_name === '_') {
 				continue;
@@ -280,14 +279,14 @@ class Builder implements Activable
 				$type     = $property->getType();
 				if ($type->isClass()) {
 					if ($type->isAbstractClass()) {
-						$value = self::fromSubArray($value);
+						$value = static::fromSubArray($value);
 					}
 					else {
 						$property_class_name = $type->getElementTypeAsString();
 						if ($type->isMultiple()) {
 							$is_component = isA($property_class_name, Component::class);
 							foreach ($value as $key => $val) {
-								$element = self::fromArray($property_class_name, $val);
+								$element = static::fromArray($property_class_name, $val);
 								if ($is_component) {
 									/** @var $element Component */
 									$element->setComposite($object);
@@ -296,7 +295,7 @@ class Builder implements Activable
 							}
 						}
 						else {
-							$value = self::fromArray($property_class_name, $value);
+							$value = static::fromArray($property_class_name, $value);
 						}
 					}
 				}
@@ -321,7 +320,7 @@ class Builder implements Activable
 		}
 		foreach ($array as $key => $value) {
 			if (is_array($value)) {
-				$array[$key] = self::fromSubArray($value);
+				$array[$key] = static::fromSubArray($value);
 			}
 		}
 		return $array;
@@ -421,7 +420,7 @@ class Builder implements Activable
 	 * @return class-string<T>
 	 * @template T
 	 */
-	private function replacementClassName(string $class_name) : string
+	protected function replacementClassName(string $class_name) : string
 	{
 		if ($this->enabled) {
 			$result = $this->replacements[$class_name] ?? $class_name;
