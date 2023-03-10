@@ -189,7 +189,7 @@ class Counter
 		$next_value = $counter->next($object);
 		$dao->write(
 			$counter,
-			Dao::getObjectIdentifier($counter) ? Dao::only('last_update', 'last_value') : null
+			Dao::getObjectIdentifier($counter) ? Dao::only('last_update', 'last_value') : []
 		);
 		static::unlock($mutex);
 		$dao->commit();
@@ -287,7 +287,7 @@ class Counter
 	 */
 	public function showIdentifier() : string
 	{
-		$identifier = $this->identifier;
+		$identifier = $this->identifier ?? '';
 		if (!$identifier) {
 			return '';
 		}
