@@ -309,7 +309,7 @@ class Object_Builder_Array
 		if (empty($value)) {
 			$value = $property->getAnnotation('null')->value ? null : 0;
 		}
-		if (isset($object->$real_property_name) && (
+		if ($property->isInitialized($object) && (
 			empty($value)
 			|| !isset($object->$real_property_name->id)
 			|| ($value != $object->$real_property_name->id)

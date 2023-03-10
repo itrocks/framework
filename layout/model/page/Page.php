@@ -44,7 +44,7 @@ abstract class Page
 	 * @max_length 1000000000
 	 * @var string
 	 */
-	public string $layout;
+	public string $layout = '';
 
 	//---------------------------------------------------------------------------------------- $model
 	/**
@@ -62,7 +62,7 @@ abstract class Page
 	 * @user hide_output
 	 * @var string
 	 */
-	public string $ordering;
+	public string $ordering = '';
 
 	//--------------------------------------------------------------------------------- $ratio_height
 	/**
@@ -104,10 +104,10 @@ abstract class Page
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $ordering integer|null ordering number, eg page number (see constants)
+	 * @param $ordering string|null ordering number, eg page number (see constants)
 	 * @param $layout   string|null raw layout of the page
 	 */
-	public function __construct(int $ordering = null, string $layout = null)
+	public function __construct(string $ordering = null, string $layout = null)
 	{
 		if (isset($ordering)) {
 			$this->ordering = $ordering;

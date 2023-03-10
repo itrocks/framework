@@ -34,7 +34,9 @@ class Save_Controller extends Save\Controller
 				if (!$background_data) {
 					continue;
 				}
-				Dao::disconnect($object->pages[$background_key]->background);
+				if ($object->pages[$background_key]->background ?? false) {
+					Dao::disconnect($object->pages[$background_key]->background);
+				}
 			}
 		}
 		return $built_objects;

@@ -107,9 +107,12 @@ abstract class Model
 	 */
 	protected function getPages() : array
 	{
+		if (isset($this->pages)) {
+			return $this->pages;
+		}
 		/** @noinspection PhpUnhandledExceptionInspection get_class of a valid object */
-		$property   = new Reflection_Property($this, 'pages');
-		$page_class = $property->getType()->getElementTypeAsString();
+		$property    = new Reflection_Property($this, 'pages');
+		$page_class  = $property->getType()->getElementTypeAsString();
 		/** @noinspection PhpParamsInspection valid params given to Page::sort() */
 		$this->pages = Page::sort(Getter::getCollection($pages, $page_class, $this, 'pages'));
 		return $this->pages;

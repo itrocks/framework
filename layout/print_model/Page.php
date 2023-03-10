@@ -29,10 +29,10 @@ class Page extends Model\Page
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $ordering integer|null ordering number, eg page number (see constants)
-	 * @param $layout   string|null  raw layout of the page
+	 * @param $ordering string|null ordering number, eg page number (see constants)
+	 * @param $layout   string|null raw layout of the page
 	 */
-	public function __construct(int $ordering = null, string $layout = null)
+	public function __construct(string $ordering = null, string $layout = null)
 	{
 		$this->ratio_height = 297;
 		$this->ratio_width  = 210;
