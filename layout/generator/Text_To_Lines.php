@@ -39,8 +39,8 @@ class Text_To_Lines implements Registerable
 				if (str_replace(['=', SP], '', $element->text)) {
 					continue;
 				}
-				$elements[$key] = $this->toHorizontalLine($element, -.3);
-				$elements[]     = $this->toHorizontalLine($element, .3);
+				$elements[$key] = $this->toHorizontalLine($element, -.4);
+				$elements[]     = $this->toHorizontalLine($element, .4);
 			}
 			// --... => simple-line
 			if (str_starts_with(ltrim($element->text), '--')) {
@@ -73,10 +73,10 @@ class Text_To_Lines implements Registerable
 	//------------------------------------------------------------------------------ toHorizontalLine
 	/**
 	 * @param $element        Element
-	 * @param $vertical_shift integer
+	 * @param $vertical_shift float
 	 * @return Element
 	 */
-	public function toHorizontalLine(Element $element, int $vertical_shift = 0) : Element
+	public function toHorizontalLine(Element $element, float $vertical_shift = .0) : Element
 	{
 		$line = new Horizontal_Line($element->page);
 		$line->group     = $element->group;

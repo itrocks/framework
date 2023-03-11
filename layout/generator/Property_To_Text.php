@@ -187,7 +187,7 @@ class Property_To_Text
 					// TODO sub-arrays wont work at all : only one level of array values
 					$next_objects = array_merge($next_objects, $object);
 				}
-				elseif (is_object($object) || strlen($object)) {
+				elseif (is_object($object) || strlen(strval($object))) {
 					$next_objects[$iteration] = $object;
 				}
 				else {
