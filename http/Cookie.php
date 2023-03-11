@@ -55,9 +55,9 @@ class Cookie implements Stringable
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $string string
-	 * @return static
+	 * @return ?static
 	 */
-	public static function fromString(string $string) : static
+	public static function fromString(string $string) : ?static
 	{
 		/** @noinspection PhpUnhandledExceptionInspection static */
 		$cookie = Builder::create(static::class);

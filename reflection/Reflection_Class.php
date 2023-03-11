@@ -56,10 +56,10 @@ class Reflection_Class extends ReflectionClass
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string
-	 * @return static
+	 * @return ?static
 	 * @throws ReflectionException
 	 */
-	public static function fromString(string $string) : static
+	public static function fromString(string $string) : ?static
 	{
 		return new Reflection_Class($string);
 	}

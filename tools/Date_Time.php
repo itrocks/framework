@@ -362,10 +362,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string
-	 * @return static
+	 * @return ?static
 	 * @throws Exception
 	 */
-	public static function fromString(string $string) : static
+	public static function fromString(string $string) : ?static
 	{
 		return static::fromISO($string);
 	}

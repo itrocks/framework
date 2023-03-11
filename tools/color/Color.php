@@ -52,12 +52,12 @@ class Color implements Stringable
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $string string
-	 * @return static
+	 * @return ?static
 	 */
-	public static function fromString(string $string) : static
+	public static function fromString(string $string) : ?static
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class */
-		return Builder::create(static::class, [$string]);
+		return trim($string) ? Builder::create(static::class, [$string]) : null;
 	}
 
 	//--------------------------------------------------------------------------------- getBrightness
