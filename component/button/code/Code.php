@@ -74,7 +74,7 @@ class Code implements Stringable
 	}
 
 	//------------------------------------------------------------------------------------ fromString
-	public static function fromString(string $string) : static
+	public static function fromString(string $string) : ?static
 	{
 		/** @noinspection PhpUnhandledExceptionInspection static */
 		return Builder::create(static::class, [$string]);
