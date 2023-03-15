@@ -20,7 +20,7 @@ class Manager implements IManager
 
 	//------------------------------------------------------------------------------- $configurations
 	/**
-	 * @var array[] key is the plugin class name, value is the raw plugin configuration
+	 * @var array key is the plugin class name, value is the raw plugin configuration
 	 */
 	private array $configurations = [];
 
@@ -269,9 +269,9 @@ class Manager implements IManager
 	//------------------------------------------------------------------------------ getConfiguration
 	/**
 	 * @param $class_name string the plugin class name
-	 * @return ?array the plugin configuration, if set
+	 * @return mixed the plugin configuration, if set
 	 */
-	public function getConfiguration(string $class_name) : ?array
+	public function getConfiguration(string $class_name) : mixed
 	{
 		return $this->configurations[$class_name] ?? null;
 	}
