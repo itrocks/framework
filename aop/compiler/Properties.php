@@ -613,7 +613,7 @@ class Properties
 		return $code . '
 		$id_property_name = \'id_\' . $property_name;
 		if (is_object($value) && isset($value->id)) $this->$id_property_name = $value->id;
-		elseif ((new \ReflectionProperty($this, $id_property_name))->isInitialized()) unset($this->$id_property_name);
+		elseif (property_exists($this, $id_property_name)) unset($this->$id_property_name);
 		$property_name .= \'_\';
 		$this->$property_name = $value;
 	}
