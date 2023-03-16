@@ -396,9 +396,6 @@ class Select
 					$this->i_to_j[$i] = $his_j;
 				}
 			}
-			if (($data_store instanceof List_Data) && str_starts_with($column_name, 'id_')) {
-				$this->column_names[$i] = $column_name = substr($column_name, 3);
-			}
 			if (($column_name[0] !== '@') && !isset($this->columns[$i])) {
 				$this->columns[$i] = $column_name;
 			}
@@ -467,7 +464,7 @@ class Select
 			else {
 				if (!isset($row[$this->columns[$j]])) {
 					// TODO LOW try to get the object from object map to avoid multiple instances
-					$class  = $this->classes[$j];
+					$class = $this->classes[$j];
 					/** @noinspection PhpUnhandledExceptionInspection class must be valid */
 					$object = $class->isAbstract() ? new Abstract_Class : $class->newInstance();
 					$row[$this->columns[$j]] = $object;

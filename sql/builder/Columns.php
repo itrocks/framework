@@ -317,10 +317,12 @@ class Columns implements With_Build_Column
 			if (str_starts_with($column_name, 'id_') && Store_Annotation::of($property)->isString()) {
 				$column_name = substr($column_name, 3);
 			}
+			$type = $property->getType();
+			$id   = ($type->isClass() && !$type->isDateTime()) ? 'id_' : '';
 			$sql .= $foreign_alias . DOT . BQ . $column_name . BQ
 				. (
 					($this->append || !$this->resolve_aliases)
-					? '' : (' AS ' . BQ . $path . ':' . $property->name . BQ)
+					? '' : (' AS ' . BQ . $path . ':' . $id . $property->name . BQ)
 				);
 		}
 		return $sql;
