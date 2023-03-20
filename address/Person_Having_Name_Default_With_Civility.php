@@ -7,6 +7,8 @@ use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * Person_Having_Name setDefaultName prepends civility
+ *
+ * TODO should add @override civility @impacts name @setter setNameComponent to Person_Having_Name
  */
 class Person_Having_Name_Default_With_Civility implements Registerable
 {
