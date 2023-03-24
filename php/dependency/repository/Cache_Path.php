@@ -41,7 +41,7 @@ trait Cache_Path
 			&& !str_contains('"', $home)
 			&& is_dir("$home/cache/dependencies")
 		) {
-			exec('rm -r "'.$home.'/cache/dependencies"');
+			exec('rm -rf "'.$home.'/cache/dependencies"');
 			clearstatcache(true);
 		}
 		if (!is_dir("$home/cache"))              mkdir("$home/cache");

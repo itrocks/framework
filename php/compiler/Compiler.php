@@ -144,8 +144,8 @@ class Compiler extends Cache
 	 */
 	public function __construct(mixed $configuration = [])
 	{
-		$this->full        = isset($_GET['Z']);
-		$this->text_output = new Text_Output(!isset($_POST['verbose']));
+		$this->full                  = isset($_GET['Z']);
+		$this->text_output           = new Text_Output(!isset($_POST['verbose']));
 
 		foreach ($configuration as $wave_number => $compilers) {
 			foreach ($compilers as $class_name) {
@@ -353,6 +353,8 @@ class Compiler extends Cache
 		upgradeTimeLimit(900);
 		clearstatcache();
 		$cache_dir = self::getCacheDir();
+
+		(new Cache\Compiler)->compile();
 
 		$this->removeOldDependencies();
 
