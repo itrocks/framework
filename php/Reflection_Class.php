@@ -1096,6 +1096,97 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		. '%';
 	}
 
+	//-------------------------------------------------------------------------------- scanAttributes
+	/**
+	 * @return Reflection_Attribute[]
+	 */
+	private function scanAttributes(array $token) : array
+	{
+		$attributes = [];
+		$attribute  = new Reflection_Attribute(
+			$this->fullClassName($this->scanClassName()), $this, $this, $this
+		);
+		$attribute->line = $token_line = $token[2];
+		$argument_text   = '';
+		$bracket_depth   = 0;
+		$square_depth    = 1;
+
+		while (true) {
+
+			$token = $this->tokens[$this->token_key];
+			if (is_array($token)) {
+				$token_line = $token[2];
+			}
+			switch ($token[0]) {
+				case '(':
+					if ($bracket_depth) {
+						$argument_text .= '(';
+					}
+					$bracket_depth ++;
+					break;
+				case ')':
+					$bracket_depth --;
+					if ($bracket_depth) {
+						$argument_text .= ')';
+					}
+					elseif (strlen($argument_text)) {
+						$attribute->addArgument($argument_text);
+						$argument_text = '';
+					}
+					break;
+				case '[':
+					$argument_text .= '[';
+					$square_depth  ++;
+					break;
+				case ']':
+					$square_depth --;
+					if ($square_depth) {
+						$argument_text .= ']';
+					}
+					else {
+						$attributes[] = $attribute;
+						break 2;
+					}
+					break;
+				case ',':
+					if (!$bracket_depth) {
+						$attributes[] = $attribute;
+						$attribute          = new Reflection_Attribute(
+							$this->fullClassName($this->scanClassName()), $this, $this, $this
+						);
+						$this->token_key --;
+						$attribute->line = $token_line;
+					}
+					elseif ($bracket_depth === 1) {
+						$attribute->addArgument($argument_text);
+						$argument_text = '';
+					}
+					else {
+						$argument_text .= ',';
+					}
+					break;
+				case T_NEW:
+					$argument_text   .= 'new ' . BS . $this->fullClassName($this->scanClassName());
+					$this->token_key --;
+					break;
+				case T_PAAMAYIM_NEKUDOTAYIM:
+					$token_key = $this->token_key;
+					while (in_array($this->tokens[--$this->token_key][0], CLASS_NAME_TOKENS, true)) { }
+					$class_name    = ($token_key > $this->token_key) ? $this->scanClassName() : '';
+					$argument_text = substr($argument_text, 0, -strlen($class_name))
+						. BS . $this->fullClassName($class_name)
+						. '::';
+					break;
+				default:
+					$argument_text .= (is_array($token) ? $token[1] : $token);
+			}
+
+			$this->token_key ++;
+		}
+
+		return $attributes;
+	}
+
 	//-------------------------------------------------------------------------- scanUntilClassBegins
 	/**
 	 * Scan tokens until the class begins
@@ -1157,6 +1248,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		$this->short_trait_names = [];
 		$this->traits            = [];
 
+		$attributes       = [];
 		$depth            = 0;
 		$this->stop       = null;
 		$type             = '';
@@ -1212,6 +1304,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 					}
 					break;
 
+				case T_ATTRIBUTE:
+					$attributes = array_merge($attributes, $this->scanAttributes($token));
+					break;
+
 				case T_PRIVATE:
 				case T_PROTECTED:
 				case T_PUBLIC:
@@ -1231,8 +1327,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 							$property_name,
 							$this->tokens[$visibility_token][2],
 							$visibility_token,
-							($visibility === T_VAR) ? T_PUBLIC : $visibility
+							($visibility === T_VAR) ? T_PUBLIC : $visibility,
+							$attributes
 						);
+						$attributes     = [];
 						$property->type = trim(substr($type, 0, -strlen($token[1])));
 						$this->properties[$property_name] = $property;
 					}
@@ -1248,9 +1346,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 						while ($this->tokens[++$this->token_key][0] !== T_STRING);
 						$token = $this->tokens[$this->token_key];
 						$this->methods[$token[1]] = new Reflection_Method(
-							$this, $token[1], $line, $token_key, $visibility_token ?: T_PUBLIC
+							$this, $token[1], $line, $token_key, $visibility_token ?: T_PUBLIC, $attributes
 						);
-						$type = '';
+						$attributes       = [];
+						$type             = '';
 						$visibility_token = null;
 					}
 					break;
@@ -1310,124 +1409,53 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (!$this->tokens) return;
 		$token = $this->tokens[$this->token_key = 0];
 
-		$attribute                = null;
-		$attribute_argument       = '';
-		$attribute_argument_build = false;
-		$attribute_class_name     = '';
-		$attribute_depth          = 0;
-		$this->attributes         = [];
-		$this->namespace          = '';
-		$this->use                = [];
+		$this->attributes = [];
+		$this->namespace  = '';
+		$this->use        = [];
 		do {
 
 			$this->doc_comment = '';
 			$this->is_abstract = false;
 			$this->is_final    = false;
 
-			while (
-				$attribute_depth
-				|| !is_array($token)
-				|| !in_array($token[0], [T_CLASS, T_INTERFACE, T_TRAIT], true)
-			) {
-				if (is_array($token)) {
-					switch ($token[0]) {
-
-						case T_NAMESPACE:
-							$this->namespace = $this->scanClassName();
-							$this->use = [];
-							break;
-
-						case T_USE:
-							foreach ($this->scanClassNames() as $used => $line) {
-								$this->use[$used] = $used;
-							}
-							break;
-
-						case T_DOC_COMMENT:
-							$this->doc_comment .= $token[1];
-							break;
-
-						case T_ATTRIBUTE:
-							$attribute = new Reflection_Attribute(
-								$this->fullClassName($this->scanClassName()), $this, $this, $this
-							);
-							$attribute->line = $token[2];
-							$this->token_key --;
-							break;
-
-						case T_ABSTRACT:
-							$this->is_abstract = true;
-							break;
-
-						case T_FINAL:
-							$this->is_final = true;
-							break;
-
-						case T_NEW:
-							if ($attribute_argument_build && $attribute_depth) {
-								$attribute_argument .= BS . $this->fullClassName($this->scanClassName());
-								$this->token_key    --;
-							}
-							break;
-
-						case T_PAAMAYIM_NEKUDOTAYIM:
-							if ($attribute_class_name && $attribute_depth) {
-								$attribute_argument  .= BS . $this->fullClassName($attribute_class_name) . $token[1];
-								$attribute_class_name = '';
-							}
-							break;
-
-						default:
-							if ($attribute_depth) {
-								if (in_array($token[0], CLASS_NAME_TOKENS, true)) {
-									$attribute_class_name .= $token[1];
-								}
-								else {
-									$attribute_argument      .= $token[1];
-									$attribute_argument_build = true;
-									$attribute_class_name     = '';
-								}
-							}
-							elseif (!in_array($token[0], [T_COMMENT, T_WHITESPACE], true)) {
-								$this->doc_comment = '';
-							}
-					}
-				}
-				elseif ($attribute) {
-					if ($token === '(') {
-						$attribute_depth ++;
-					}
-					elseif ($token === ')') {
-						$attribute_depth --;
-					}
-					elseif (($token === ',') && $attribute_depth) {
-						if ($attribute_argument_build) {
-							$attribute->addArgument($attribute_argument);
-							$attribute_argument_build = false;
-							$attribute_argument       = '';
-						}
-					}
-					elseif (in_array($token, [',', ']'], true) && !$attribute_depth) {
-						if ($attribute_argument_build) {
-							$attribute->addArgument($attribute_argument);
-							$attribute_argument_build = false;
-							$attribute_argument       = '';
-						}
-						$this->attributes[] = $attribute;
-						if ($token === ',') {
-							$attribute = new Reflection_Attribute(
-								$this->fullClassName($this->scanClassName()), $this, $this, $this
-							);
-							$attribute->line = $this->line;
-							$this->token_key --;
-						}
-						else {
-							$attribute = null;
-						}
-					}
-				}
-				else {
+			while (!is_array($token) || !in_array($token[0], [T_CLASS, T_INTERFACE, T_TRAIT], true)) {
+				if (!is_array($token)) {
 					$this->doc_comment = '';
+				}
+				else switch ($token[0]) {
+
+					case T_NAMESPACE:
+						$this->namespace = $this->scanClassName();
+						$this->use = [];
+						break;
+
+					case T_USE:
+						foreach ($this->scanClassNames() as $used => $line) {
+							$this->use[$used] = $used;
+						}
+						break;
+
+					case T_DOC_COMMENT:
+						$this->doc_comment .= $token[1];
+						break;
+
+					case T_ATTRIBUTE:
+						$this->attributes = array_merge($this->attributes, $this->scanAttributes($token));
+						break;
+
+					case T_ABSTRACT:
+						$this->is_abstract = true;
+						break;
+
+					case T_FINAL:
+						$this->is_final = true;
+						break;
+
+					default:
+						if (!in_array($token[0], [T_COMMENT, T_WHITESPACE], true)) {
+							$this->doc_comment = '';
+						}
+
 				}
 				$token = $this->tokens[++$this->token_key];
 			}

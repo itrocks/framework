@@ -13,6 +13,12 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 {
 	use Annoted;
 
+	//----------------------------------------------------------------------------------- $attributes
+	/**
+	 * @var Reflection_Attribute[]
+	 */
+	private array $attributes;
+
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * @var $class Reflection_Class
@@ -116,10 +122,13 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 * @param $line       integer
 	 * @param $token_key  integer
 	 * @param $visibility integer
+	 * @param $attributes Reflection_Attribute[]
 	 */
 	public function __construct(
-		Reflection_Class $class, string $name, int $line, int $token_key, int $visibility
+		Reflection_Class $class, string $name, int $line, int $token_key, int $visibility,
+		array $attributes
 	) {
+		$this->attributes = $attributes;
 		$this->class      = $class;
 		$this->line       = $line;
 		$this->name       = $name;
