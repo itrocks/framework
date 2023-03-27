@@ -8,6 +8,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Link_Same_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -518,7 +519,7 @@ class Joins
 						}
 					}
 				}
-				if ($foreign_type->isMultiple() || $master_property->getAnnotation('component')->value) {
+				if ($foreign_type->isMultiple() || Component::of($master_property)?->value) {
 					$foreign_class_name    = $foreign_type->getElementTypeAsString();
 					$foreign_property_name = Foreign_Annotation::of($master_property)->value;
 					if (

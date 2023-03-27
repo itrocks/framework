@@ -17,6 +17,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property_Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
@@ -668,7 +669,7 @@ class Reflection_Property extends ReflectionProperty
 	public function isComponent() : bool
 	{
 		return $this->getType()->isClass()
-			&& ($this->getAnnotation('component')->value || Link_Annotation::of($this)->isCollection());
+			&& (Component::of($this)?->value || Link_Annotation::of($this)->isCollection());
 	}
 
 	//------------------------------------------------------------------------- isComponentObjectHtml

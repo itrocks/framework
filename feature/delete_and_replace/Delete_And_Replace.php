@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -56,7 +57,7 @@ class Delete_And_Replace implements Plugin
 		foreach ((new Reflection_Class($replaced))->getProperties() as $property) {
 			/** @noinspection PhpUnhandledExceptionInspection */
 			if (
-				$property->getAnnotation('component')->value
+				Component::of($property)?->value
 				&& !$property->getType()->isMultiple()
 				&& ($component = $property->getValue($replaced))
 			) {

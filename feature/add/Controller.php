@@ -11,6 +11,7 @@ use ITRocks\Framework\Feature\Edit;
 use ITRocks\Framework\Feature\Output_Setting;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting;
@@ -91,7 +92,7 @@ class Controller extends Edit\Controller
 		foreach ($properties as $property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property->getValue($object) */
 			if (
-				$property->getAnnotation('component')->value
+				Component::of($property)?->value
 				&& Mandatory_Annotation::of($property)->value
 				&& ($type = $property->getType())->isSingleClass()
 				&& !$property->getValue($object)

@@ -100,7 +100,7 @@ class Reflection_Class extends ReflectionClass
 			) {
 				continue;
 			}
-			if (!strcmp($attribute_value, $property->getAttribute($attribute_name))) {
+			if (!strcmp($attribute_value, strval($property->getAttribute($attribute_name)))) {
 				$properties[$property->name] = $property;
 			}
 		}

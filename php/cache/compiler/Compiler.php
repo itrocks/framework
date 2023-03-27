@@ -29,7 +29,7 @@ class Compiler
 		foreach ($this->repository->refresh_files as $file_name) {
 			foreach ($this->repository->fileClasses($file_name) as $class_name) {
 				if (in_array($class_name, $joinpoint_classes)) {
-					echo "Apply AOP on $class_name<br>";
+					//echo "Apply AOP on $class_name<br>";
 				}
 			}
 		}

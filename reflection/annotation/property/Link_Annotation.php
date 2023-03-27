@@ -7,6 +7,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Property\All;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
@@ -72,7 +73,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 			if (All::of($property)?->value) {
 				$value = self::ALL;
 			}
-			elseif ($property->getAnnotation('component')->value) {
+			elseif (Component::of($property)?->value) {
 				$value = self::COLLECTION;
 			}
 			else {

@@ -11,6 +11,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
+use ITRocks\Framework\Reflection\Attribute;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -507,7 +508,7 @@ class Object_Builder_Array
 				// object
 				if ($link->isObject()) {
 					$class_name       = $type->asString();
-					$composite_object = $property->getAnnotation('component')->value ? $object : null;
+					$composite_object = Attribute\Property\Component::of($property)?->value ? $object : null;
 					try {
 						/** @noinspection PhpUnhandledExceptionInspection $property of $object */
 						$sub_object = $property->getValue($object);

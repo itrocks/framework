@@ -7,6 +7,7 @@ use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
@@ -144,7 +145,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 				$foreign_type->isClass()
 				&& $foreign_type->isInstanceOf($property->getDeclaringClass())
 				&& (
-					$property->getAnnotation('component')->value
+					Component::of($property)?->value
 					|| ($foreign_type->isMultiple() && Link_Annotation::of($foreign_property)->isCollection())
 				)
 			) {

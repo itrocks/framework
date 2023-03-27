@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -34,7 +35,7 @@ trait Property_Filter
 			&& !$property->isStatic()
 			&& !($store = Store::of($property))->isFalse()
 			&& ($store->isString() || $type->isMultipleString() || !$type->isMultiple())
-			&& ($store->isString() || !$property->getAnnotation('component')->value);
+			&& ($store->isString() || !Component::of($property)?->value);
 	}
 
 }

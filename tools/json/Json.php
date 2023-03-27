@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Tools;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -94,8 +95,7 @@ class Json
 	 */
 	protected function isBrowsableProperty(Reflection_Property $property) : bool
 	{
-		return $property->getAnnotation('component')->value
-			|| Link_Annotation::of($property)->isCollection();
+		return Component::of($property)?->value || Link_Annotation::of($property)->isCollection();
 	}
 
 	//------------------------------------------------------------------ notBrowsableObjectToStdClass
@@ -203,7 +203,7 @@ class Json
 	 * @param $property Reflection_Property
 	 * @return boolean
 	 */
-	public function shouldExportProperty(Reflection_Property $property)
+	public function shouldExportProperty(Reflection_Property $property) : bool
 	{
 		return $property->isVisible()
 			&& $property->isPublic()

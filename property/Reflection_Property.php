@@ -5,6 +5,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Names;
@@ -82,7 +83,7 @@ class Reflection_Property extends Reflection\Reflection_Property
 	public function autoExpand() : string
 	{
 		return (
-			$this->getAnnotation('component')->value
+			Component::of($this)?->value
 			|| $this->getAnnotation('expand')->value
 			|| Integrated_Annotation::of($this)->value
 			|| Link_Annotation::of($this)->isCollection()

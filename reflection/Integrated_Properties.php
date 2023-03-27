@@ -6,6 +6,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ReflectionException;
@@ -51,7 +52,7 @@ class Integrated_Properties
 		if (!($value = $property->getValue($this->object))) {
 			/** @noinspection PhpUnhandledExceptionInspection property type must be valid */
 			$value = Builder::create($property->getType()->asString());
-			if ($property->getAnnotation('component')->value && isA($value, Component::class)) {
+			if (Property\Component::of($property)?->value && isA($value, Component::class)) {
 				// TODO HIGHEST The composite is not $this->object, but the $value's parent. Test needed
 				/** @var $value Component */
 				$value->setComposite($this->object);
@@ -205,7 +206,7 @@ class Integrated_Properties
 			if (
 				$sub_property->isPublic()
 				&& !$sub_property->isStatic()
-				&& (!$property->getAnnotation('component')->value || !Composite::of($sub_property)?->value)
+				&& (!Property\Component::of($property)?->value || !Composite::of($sub_property)?->value)
 			) {
 				$expand_properties[$property->path . DOT . $sub_property_name] = $sub_property;
 			}

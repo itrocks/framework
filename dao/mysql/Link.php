@@ -15,6 +15,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -772,7 +773,7 @@ class Link extends Dao\Sql\Link
 				if (
 					$property->isStatic()
 					|| ($type->isMultiple() && !$type->getElementType()->isBasic())
-					|| $property->getAnnotation('component')->value
+					|| Component::of($property)?->value
 				) {
 					unset($properties[$key]);
 				}

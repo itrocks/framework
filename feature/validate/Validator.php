@@ -28,6 +28,7 @@ use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Attribute;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -622,7 +623,7 @@ class Validator implements Registerable
 				$object, $property->getAnnotations()
 			));
 			if (
-				$property->getAnnotation('component')->value
+				Attribute\Property\Component::of($property)?->value
 				|| Link_Annotation::of($property)->isCollection()
 				|| (
 					Integrated_Annotation::of($property)->value

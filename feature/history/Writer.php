@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 use ITRocks\Framework\Feature\History;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Stringable;
@@ -93,7 +94,7 @@ abstract class Writer
 		foreach ($class->getProperties() as $property) {
 			$type = $property->getType();
 			if (
-				!($type->isSingleClass() && $property->getAnnotation('component')->value)
+				!($type->isSingleClass() && Component::of($property)?->value)
 				&& !Store::of($property)->isFalse()
 				&& !$property->getType()->isInstanceOf(History::class)
 			) {

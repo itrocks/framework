@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -41,7 +42,7 @@ abstract class Identifier_Map extends Data_Link
 			$property_name   = $property->name;
 			$link_annotation = Link_Annotation::of($property);
 			if (
-				($link_annotation->isCollection() || $property->getAnnotation('component')->value)
+				($link_annotation->isCollection() || Component::of($property)?->value)
 				&& !empty($object->$property_name)
 				&& !is_a(Widget_Annotation::of($property)->value, Collection_As_Map::class, true)
 			) {

@@ -11,6 +11,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
@@ -229,10 +230,7 @@ class Object_To_Write_Array
 					$this->array[$column_name] = $value;
 				}
 				// write object
-				elseif (
-					Link_Annotation::of($property)->isObject()
-					&& $property->getAnnotation('component')->value
-				) {
+				elseif (Link_Annotation::of($property)->isObject() && Component::of($property)?->value) {
 					$this->objects[] = [$property, $value];
 				}
 			}

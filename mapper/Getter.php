@@ -8,6 +8,7 @@ use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -349,7 +350,7 @@ abstract class Getter
 			/** @noinspection PhpUnhandledExceptionInspection get_class and need valid property */
 			$property = new Reflection_Property($object, $property_name);
 		}
-		if ($property && $property->getAnnotation('component')->value) {
+		if ($property && Property\Component::of($property)?->value) {
 			$foreign_property_name = Foreign_Annotation::of($property)->value;
 			if ($foreign_property_name && Dao::getObjectIdentifier($object)) {
 				$stored = Dao::searchOne(

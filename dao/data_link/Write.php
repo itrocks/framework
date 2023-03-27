@@ -2,9 +2,10 @@
 namespace ITRocks\Framework\Dao\Data_Link;
 
 use ITRocks\Framework\Dao\Option;
-use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -129,12 +130,12 @@ abstract class Write
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($object))->getProperties() as $property) {
 			if (
-				!$property->getAnnotation('component')->value
+				!Component::of($property)?->value
 				&& !Link_Annotation::of($property)->isCollection()
 			) {
 				continue;
 			}
-			/** @var $value Component */
+			/** @var $value Mapper\Component */
 			if ($property->getType()->isMultiple()) {
 				/** @noinspection PhpUnhandledExceptionInspection */
 				foreach ($property->getValue($object) as $value) {

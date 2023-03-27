@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -49,10 +50,7 @@ abstract class Builder
 			: (
 				(
 					$type->isMultiple()
-					|| (
-						$property->getAnnotation('component')->value
-						&& Link_Annotation::of($property)->isObject()
-					)
+					|| (Component::of($property)?->value && Link_Annotation::of($property)->isObject())
 				)
 				? null
 				: ('id_' . Store_Name_Annotation::of($property)->value)
