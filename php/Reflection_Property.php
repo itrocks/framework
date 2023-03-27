@@ -6,7 +6,6 @@ use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property_Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Type;
-use ReflectionException;
 
 /**
  * The same as PHP's ReflectionProperty, but working with PHP source, without loading the class
@@ -46,17 +45,8 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	//----------------------------------------------------------------------------------------- $name
 	public string $name;
 
-	//-------------------------------------------------------------------------- $overridden_property
-	/**
-	 * Only if the property is declared into a parent class as well as into the child class.
-	 * If not, this will be false.
-	 *
-	 * @var ?Reflection_Property
-	 */
-	private ?Reflection_Property $overridden_property;
-
 	//--------------------------------------------------------------------------------------- $parent
-	protected Interfaces\Reflection_Property|bool|null $parent;
+	protected ?Interfaces\Reflection_Property $parent;
 
 	//------------------------------------------------------------------------------------ $token_key
 	/**
@@ -242,44 +232,28 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 		return $this->name;
 	}
 
-	//------------------------------------------------------------------------- getOverriddenProperty
-	/**
-	 * Gets the parent property overridden by the current one from the parent class
-	 */
-	public function getOverriddenProperty() : ?Reflection_Property
-	{
-		if (!isInitialized($this, 'overridden_property')) {
-			$parent = $this->getDeclaringClass()->getParentClass();
-			try {
-				$this->overridden_property = $parent?->getProperty($this->name);
-			}
-			catch (ReflectionException) {
-				$this->overridden_property = null;
-			}
-		}
-		return $this->overridden_property;
-	}
-
 	//------------------------------------------------------------------------------------- getParent
 	public function getParent() : ?Interfaces\Reflection_Property
 	{
-		if (!isset($this->parent)) {
-			$this->parent = false;
-			$parent_class = $this->class->getParentClass();
-			if ($parent_class) {
-				$properties = $parent_class->getProperties([]);
-				if (!isset($properties[$this->name])) {
-					$properties = $parent_class->getProperties([T_USE]);
-					if (!isset($properties[$this->name])) {
-						$properties = $parent_class->getProperties([T_EXTENDS]);
-					}
-				}
-				if (isset($properties[$this->name])) {
-					$this->parent = $properties[$this->name];
-				}
+		if (isInitialized($this, 'parent')) {
+			return $this->parent;
+		}
+		$this->parent = null;
+		$parent_class = $this->class->getParentClass();
+		if (!$parent_class) {
+			return $this->parent;
+		}
+		$properties = $parent_class->getProperties([]);
+		if (!isset($properties[$this->name])) {
+			$properties = $parent_class->getProperties([T_USE]);
+			if (!isset($properties[$this->name])) {
+				$properties = $parent_class->getProperties([T_EXTENDS]);
 			}
 		}
-		return $this->parent ?: null;
+		if (isset($properties[$this->name])) {
+			$this->parent = $properties[$this->name];
+		}
+		return $this->parent;
 	}
 
 	//---------------------------------------------------------------------------------- getRootClass

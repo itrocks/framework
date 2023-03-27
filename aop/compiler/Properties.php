@@ -255,9 +255,9 @@ class Properties
 				// TODO this check only getters, links and setters. This should check AOP links too.
 				foreach ($parent_class->getProperties([T_EXTENDS, T_USE]) as $property) {
 					if (
-						$property->getAttribute(All::class)
-						|| $property->getAttribute(Getter::class)
-						|| $property->getAttribute(Setter::class)
+						Getter::of($property)->callable
+						|| Setter::of($property)
+						|| All::of($property)?->value
 						|| Link_Annotation::of($property)->value
 					) {
 						$parent_code = '

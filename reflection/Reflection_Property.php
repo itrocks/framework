@@ -84,14 +84,14 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public string $final_class;
 
-	//-------------------------------------------------------------------------- $overridden_property
+	//--------------------------------------------------------------------------------------- $parent
 	/**
 	 * Only if the property is declared into a parent class as well as into the child class.
 	 * If not, this will be false.
 	 *
 	 * @var ?Reflection_Property
 	 */
-	private ?Reflection_Property $overridden_property;
+	private ?Reflection_Property $parent;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -360,7 +360,7 @@ class Reflection_Property extends ReflectionProperty
 	public function getDocComment(array|null $flags = [T_USE], bool $cache = true) : string
 	{
 		if (!isset($this->doc_comment) || !$cache) {
-			$overridden_property  = $this->getOverriddenProperty();
+			$overridden_property  = $this->getParent();
 			$declaring_trait_name = $this->getDeclaringTrait()->name;
 			$doc_comment          =
 				$this->getOverrideDocComment()
@@ -437,26 +437,6 @@ class Reflection_Property extends ReflectionProperty
 		return str_contains($this->path, DOT) ? new static($this->final_class, $this->name) : $this;
 	}
 
-	//------------------------------------------------------------------------- getOverriddenProperty
-	/**
-	 * Gets the parent property overridden by the current one from the parent class
-	 *
-	 * @return ?Reflection_Property
-	 */
-	public function getOverriddenProperty() : ?Reflection_Property
-	{
-		if (!isInitialized($this, 'overridden_property')) {
-			$parent = $this->getDeclaringClass()->getParentClass();
-			try {
-				$this->overridden_property = $parent?->getProperty($this->name);
-			}
-			catch (ReflectionException) {
-				$this->overridden_property = null;
-			}
-		}
-		return $this->overridden_property;
-	}
-
 	//------------------------------------------------------------------------- getOverrideDocComment
 	/**
 	 * Gets the class override property doc comment that overrides the original property doc comment
@@ -511,6 +491,27 @@ class Reflection_Property extends ReflectionProperty
 			}
 		}
 		return $comment;
+	}
+
+	//------------------------------------------------------------------------------------- getParent
+	/**
+	 * Gets the parent property overridden by the current one from the parent class
+	 *
+	 * @return ?Interfaces\Reflection_Property
+	 */
+	public function getParent() : ?Interfaces\Reflection_Property
+	{
+		if (isInitialized($this, 'overridden_property')) {
+			return $this->parent;
+		}
+		$parent_class = $this->getDeclaringClass()->getParentClass();
+		try {
+			$this->parent = $parent_class?->getProperty($this->name);
+		}
+		catch (ReflectionException) {
+			$this->parent = null;
+		}
+		return $this->parent;
 	}
 
 	//----------------------------------------------------------------------------- getParentProperty

@@ -95,15 +95,19 @@ class Reflection_Attribute
 	}
 
 	//--------------------------------------------------------------------------------- getFinalClass
-	public function getFinalClass() : ?Interfaces\Reflection_Class
+	public function getFinalClass() : Interfaces\Reflection_Class
 	{
-		return ($this->final instanceof Interfaces\Reflection_Class) ? $this->final : null;
+		return ($this->final instanceof Interfaces\Reflection_Class)
+			? $this->final
+			: $this->final->getFinalClass();
 	}
 
 	//------------------------------------------------------------------------------ getFinalProperty
 	public function getFinalProperty() : ?Reflection_Property
 	{
-		return ($this->final instanceof Reflection_Property) ? $this->final : null;
+		return ($this->final instanceof Reflection_Property)
+			? $this->final
+			: null;
 	}
 
 	//--------------------------------------------------------------------------------------- getName

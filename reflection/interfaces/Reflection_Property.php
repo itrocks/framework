@@ -51,6 +51,9 @@ interface Reflection_Property extends Reflection_Class_Component
 	 */
 	public function getFinalClassName() : string;
 
+	//------------------------------------------------------------------------------------- getParent
+	public function getParent() : ?Reflection_Property;
+
 	//---------------------------------------------------------------------------------- getRootClass
 	/**
 	 * @return Reflection_Class

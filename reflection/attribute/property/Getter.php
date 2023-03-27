@@ -41,7 +41,7 @@ class Getter extends Property implements Has_Get_Default_Arguments, Has_Set_Fina
 	 */
 	public function setFinal(Reflection|Reflection_Property $reflection) : void
 	{
-		if ($this->callable[1] === static::LINK) {
+		if (($this->callable[1] ?? false) === static::LINK) {
 			$link           = Link_Annotation::of($reflection)->value;
 			$this->callable = $link ? [Mapper\Getter::class, 'get' . $link] : [];
 			return;

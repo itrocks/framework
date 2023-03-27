@@ -63,12 +63,10 @@ class User_Change extends Property implements Has_Set_Final
 	}
 
 	//-------------------------------------------------------------------------------------- setFinal
-	public function setFinal(Reflection $reflection) : void
+	public function setFinal(Reflection|Reflection_Property $reflection) : void
 	{
 		if (reset($this->change_feature)) return;
-		$this->change_feature[key($this->change_feature)] = ($reflection instanceof Reflection_Property)
-			? $reflection->getFinalClassName()
-			: $reflection->getName();
+		$this->change_feature[key($this->change_feature)] = $reflection->getFinalClassName();
 	}
 
 }

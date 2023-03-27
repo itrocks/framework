@@ -80,6 +80,10 @@ class Var_Annotation extends Documented_Type_Annotation implements Property_Cont
 			switch ($part) {
 				case 'bool': $part = 'boolean'; break;
 				case 'int':  $part = 'integer'; break;
+				default:
+					if (ctype_upper($part[0]) && ($reflection_property instanceof PHP\Reflection_Property)) {
+						$part = $reflection_property->class->fullClassName($part);
+					}
 			}
 		}
 		return join('|', $value);

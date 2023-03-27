@@ -290,13 +290,13 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 		$implemented_properties = $class->getProperties([T_USE]);
 		foreach ($implemented_properties as $property) {
 			if (
-				$property->getAttribute(Getter::class)
-				|| $property->getAttribute(All::class)
+				Getter::of($property)->callable
+				|| All::of($property)?->value
 				|| Link_Annotation::of($property)->value
 			) {
 				$properties[$property->name]['implements'][Handler::READ] = true;
 			}
-			if ($property->getAttribute(Setter::class)) {
+			if (Setter::of($property)) {
 				$properties[$property->name]['implements'][Handler::WRITE] = true;
 			}
 			if ($property->getParent()) {

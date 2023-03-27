@@ -1151,7 +1151,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				case ',':
 					if (!$bracket_depth) {
 						$attributes[] = $attribute;
-						$attribute          = new Reflection_Attribute(
+						$attribute    = new Reflection_Attribute(
 							$this->fullClassName($this->scanClassName()), $this, $this, $this
 						);
 						$this->token_key --;

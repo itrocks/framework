@@ -40,7 +40,7 @@ trait Property_Has_Attributes
 		if (
 			$this->isAttributeInheritable($name)
 			&& !($attributes && $is_repeatable)
-			&& ($overridden_property = $this->getOverriddenProperty())
+			&& ($overridden_property = $this->getParent())
 		) {
 			$this->mergeAttributes(
 				$attributes, $name, $overridden_property->getAttributes($name, $flags, $final)
@@ -66,23 +66,22 @@ trait Property_Has_Attributes
 		if ($name) {
 			$overrides = array_filter(
 				$overrides,
-				function(Reflection_Attribute $override) use($is_repeatable, $name, &$override_attributes) {
+				function(Reflection_Attribute $override)
+				use($final, $is_repeatable, $name, &$override_attributes) {
 					foreach (array_slice($override->getArguments(), 1) as $attribute) {
-						if (is_a($attribute, $name, true)) {
-							$attribute = new Reflection_Attribute(
-								$attribute,
-								$override->getDeclaringClass(),
-								$override->getFinalClass(),
-								$override->getDeclaringClass(false)
-							);
-							if ($is_repeatable) {
-								$override_attributes[$name][] = $attribute;
-							}
-							elseif (!isset($override_attributes[$name])) {
-								$override_attributes[$name] = $attribute;
-							}
-							return true;
+						if (!is_a($attribute, $name, true)) {
+							continue;
 						}
+						$attribute = new Reflection_Attribute(
+							$attribute, $this, $final ?: $this, $override->getDeclaringClass(false)
+						);
+						if ($is_repeatable) {
+							$override_attributes[$name][] = $attribute;
+						}
+						elseif (!isset($override_attributes[$name])) {
+							$override_attributes[$name] = $attribute;
+						}
+						return true;
 					}
 					return false;
 				}
@@ -93,10 +92,7 @@ trait Property_Has_Attributes
 			foreach ($overrides as $override) {
 				foreach (array_slice($override->getArguments(), 1) as $attribute) {
 					$attribute = new Reflection_Attribute(
-						$attribute,
-						$override->getDeclaringClass(),
-						$override->getFinalClass(),
-						$override->getDeclaringClass(false)
+						$attribute, $this, $final ?: $this, $override->getDeclaringClass(false)
 					);
 					$attribute_name = $attribute->getName();
 					if ($is_repeatable) {

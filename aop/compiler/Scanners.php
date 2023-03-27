@@ -2,9 +2,10 @@
 namespace ITRocks\Framework\AOP\Compiler;
 
 use ITRocks\Framework\AOP\Weaver\Handler;
-use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Mapper;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Tools\Names;
 
@@ -54,8 +55,8 @@ trait Scanners
 	private function scanForGetters(array &$properties, Reflection_Class $class) : void
 	{
 		foreach ($class->getProperties([]) as $property) {
-			if (!($getter = $property->getAnnotation(Getter::class))) continue;
-			$properties[$property->name][] = [Handler::READ, $getter->value];
+			if (!($getter = Getter::of($property)->callable)) continue;
+			$properties[$property->name][] = [Handler::READ, $getter];
 		}
 	}
 
@@ -87,12 +88,12 @@ trait Scanners
 			if (!$link_annotation->value) {
 				continue;
 			}
-			$advice = [Getter::class, 'get' . $link_annotation->value];
+			$advice = [Mapper\Getter::class, 'get' . $link_annotation->value];
 			$properties[$property->name][] = [Handler::READ, $advice];
 		}
 		$annotations = [Link_Annotation::ANNOTATION];
 		foreach ($this->scanForOverrides($class->getDocComment([]), $annotations, $disable) as $match) {
-			$advice = [Getter::class, 'get' . $match['method_name']];
+			$advice = [Mapper\Getter::class, 'get' . $match['method_name']];
 			$properties[$match['property_name']][] = [Handler::READ, $advice];
 		}
 	}
@@ -197,7 +198,7 @@ trait Scanners
 	private function scanForSetters(array &$properties, Reflection_Class $class) : void
 	{
 		foreach ($class->getProperties([]) as $property) {
-			if (!($setter = $property->getAttribute(Setter::class))) continue;
+			if (!($setter = Setter::of($property))) continue;
 			$properties[$property->name][] = [Handler::WRITE, $setter->callable];
 		}
 	}
