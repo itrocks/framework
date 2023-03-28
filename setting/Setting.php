@@ -27,6 +27,7 @@ class Setting implements Validate\Except
 	/**
 	 * @max_length 1000000000
 	 * @notice string must come first, because it is stored as this
+	 * @var string|Custom\Set|null Must force type here : php real type does not take care of ordering
 	 */
 	#[Getter('getValue')]
 	public string|Custom\Set|null $value = null;
