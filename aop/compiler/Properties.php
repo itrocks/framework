@@ -5,6 +5,7 @@ use ITRocks\Framework\AOP\Weaver\Handler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Method;
 use ITRocks\Framework\PHP\Reflection_Source;
+use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\All;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
@@ -55,6 +56,7 @@ class Properties
 	 */
 	public function compile(array $advices) : array
 	{
+		ksort($advices);
 		$this->actions = [];
 		$methods       = [];
 		if ($this->class->type !== T_TRAIT) {
@@ -210,14 +212,29 @@ class Properties
 	 */
 	private function compileAop(array $advices) : string
 	{
-		$parent_code = '';
-		// TODO A little bit radical. Should be filtered or id_ removed and identifier stored into _
-		$properties  = '$id, $' . join('_, $', array_keys($advices)) . '_'
-			. ', $id_' . join(', $id_', array_keys($advices));
+		$parent_code    = '';
+		$aop_properties = '$' . join('_, $', array_keys($advices)) . '_';
+		$id_properties  = [];
+		if (!Class_\Link_Annotation::of($this->class)->value) {
+			$id_properties[] = '$id';
+		}
+		foreach ($this->class->getProperties() as $property) {
+			$property_name = $property->getName();
+			if (
+				isset($advices[$property_name])
+				&& Link_Annotation::of($property)->isObject()
+				&& ($property->getFinalClassName() === $this->class->getName())
+			) {
+				$id_properties[] = '$id_' . $property_name;
+			}
+		}
+		$id_properties = $id_properties ? ("\n\tpublic int   " . join(', ', $id_properties) . ';') : '';
 		$begin_code  = '
-	/** AOP initialization for an object : called by __construct */
+	/** AOP properties */
 	public array $_;
-	public mixed ' . $properties . ';
+	public mixed ' . $aop_properties . ';' . $id_properties . '
+
+	/** AOP initialization for an object : called by __construct */
 	protected function __aop($init = true)
 	{
 		if ($init) $this->_ = [];';

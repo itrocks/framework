@@ -16,7 +16,9 @@ use ITRocks\Framework\PHP\Done_Compiler;
 use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Source;
+use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\All;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
@@ -178,6 +180,16 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 				. TAB . '//' . str_repeat('#', 91) . ' AOP' . LF
 				. join('', $methods_code)
 				. LF . '}' . LF
+			);
+		}
+
+		elseif ($class->getAttributes(Store::class) && !Class_\Link_Annotation::of($class)->value) {
+			$class->source = $class->source->setSource(
+				substr(trim($class->source->getSource()), 0, -1)
+				. TAB . '//' . str_repeat('#', 91) . ' Store' . LF . LF
+				. TAB . '/** Store properties */' . LF
+				. TAB . 'public int $id;' . LF . LF
+				. '}' . LF
 			);
 		}
 
