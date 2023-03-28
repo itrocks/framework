@@ -69,22 +69,6 @@ class Setting implements Validate\Except
 			&& str_ends_with($value, '}')
 		) {
 			$this->value = unserialize($value);
-			// // A patch for retro-compatibility with protected / private $class_name
-			if (!$this->value->getClassName()) {
-				/** @noinspection PhpUnhandledExceptionInspection constant property from valid object */
-				$class_name = new Reflection_Property($this->value, 'class_name');
-				$class_name->setValue(
-					$this->value,
-					Builder::current()->sourceClassName(
-						lParse(rParse(rParse($value, '"class_name";s:'), DQ), DQ)
-					)
-				);
-			}
-			if (is_object($this->value)) {
-				$this->value->setting->code = str_replace(
-					'.data_list', '.list', $this->value->setting->code
-				);
-			}
 		}
 		if (is_object($this->value) && !isset($this->value->setting)) {
 			$this->value->setting = $this;
