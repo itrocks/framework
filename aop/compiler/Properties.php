@@ -941,7 +941,7 @@ class Properties
 					$apply = true;
 					break;
 				}
-				if ($apply) continue;
+				if (!$apply) continue;
 				$cases[$property->name] = LF . TAB . TAB . TAB . 'case ' . Q . $property->name . Q . ':';
 			}
 			if ($cases) {
