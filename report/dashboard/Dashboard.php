@@ -53,7 +53,7 @@ class Dashboard
 		/** @noinspection PhpUnhandledExceptionInspection class */
 		return Session::current()->get(static::class)
 			?: Dao::read(1, static::class)
-			?: Builder::create(static::class, [Loc::tr('main')]);
+			?: Dao::write(Builder::create(static::class, [Loc::tr('main')]));
 	}
 
 	//-------------------------------------------------------------------------------- fullHeightGrid
