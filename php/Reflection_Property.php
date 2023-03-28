@@ -362,18 +362,27 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	//------------------------------------------------------------------------------------ scanBefore
 	private function scanBefore() : void
 	{
-		$this->doc_comment = '';
-		$this->is_static   = false;
-		$tokens            =& $this->class->source->getTokens();
-		$token_key         = $this->token_key;
-		while (is_array($token = $tokens[--$token_key])) {
+		$square_brace_depth = 0;
+		$this->doc_comment  = '';
+		$this->is_static    = false;
+		$tokens             =& $this->class->source->getTokens();
+		$token_key          = $this->token_key;
+		while (is_array($token = $tokens[--$token_key]) || ($token === ']')) {
 			switch ($token[0]) {
 				case T_DOC_COMMENT:
-					$this->doc_comment = $token[1] . $this->doc_comment;
+					if (!$square_brace_depth) {
+						$this->doc_comment = $token[1] . $this->doc_comment;
+					}
 					break;
 				case T_STATIC:
 					$this->is_static = true;
 					break;
+				case ']':
+					$square_brace_depth ++;
+					break;
+				case '[':
+				case T_ATTRIBUTE:
+					$square_brace_depth --;
 			}
 		}
 	}

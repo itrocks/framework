@@ -579,7 +579,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$load_time             = time();
 		$parameters            = $parameters->getObjects();
 		$this->load_more_lines = isset($parameters['last_time']) && isset($parameters['move']);
-		$list_settings = Set::current($class_name);
+		$list_settings         = Set::current($class_name);
 		$list_settings->cleanup();
 		$did_change = $this->applyParametersToListSettings($list_settings, $parameters, $form);
 		$customized_list_settings = $list_settings->getCustomSettings();
