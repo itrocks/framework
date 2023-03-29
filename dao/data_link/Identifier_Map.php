@@ -166,24 +166,25 @@ abstract class Identifier_Map extends Data_Link
 			$id_property_name          = 'id_' . $property_name;
 			$object->$id_property_name = $id;
 		}
-		else {
-			// link class identifiers
-			if ($id && str_contains($id, Link_Class::ID_SEPARATOR)) {
-				foreach (explode(Link_Class::ID_SEPARATOR, $id) as $property) {
-					[$property_name, $id] = explode('=', $property);
-					if (is_numeric($id)) {
-						$id_property_name          = 'id_' . $property_name;
-						$object->$id_property_name = $id;
-					}
-					else {
-						$object->$property_name = $id;
-					}
+		// link class identifiers
+		elseif ($id && str_contains($id, Link_Class::ID_SEPARATOR)) {
+			foreach (explode(Link_Class::ID_SEPARATOR, $id) as $property) {
+				[$property_name, $id] = explode('=', $property);
+				if (is_numeric($id)) {
+					$id_property_name          = 'id_' . $property_name;
+					$object->$id_property_name = $id;
+				}
+				else {
+					$object->$property_name = $id;
 				}
 			}
-			// classic class id
-			else {
-				$object->id = $id;
-			}
+		}
+		// classic class id
+		elseif (isset($id)) {
+			$object->id = $id;
+		}
+		else {
+			unset($object->id);
 		}
 		return $this;
 	}
