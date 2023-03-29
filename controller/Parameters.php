@@ -173,7 +173,7 @@ class Parameters
 			if ($class_name && class_exists($class_name)) {
 				// object parameter
 				$object = intval($this->getRawParameter($parameter_name));
-				$object = Mapper\Getter::getObject($object, $class_name);
+				Mapper\Getter::getObject($object, $class_name);
 				if (empty($object) && intval($this->getRawParameter($parameter_name))) {
 					/** @noinspection PhpUnhandledExceptionInspection Useless for developers */
 					// This exception will be caught by the main controller : not to be managed by others

@@ -359,13 +359,13 @@ abstract class Getter
 			}
 		}
 		elseif (is_object($object) && isset($property_name)) {
-			$id_property_name = 'id_' . $property_name;
-			if (isset($object->$id_property_name)) {
-				$stored = $object->$id_property_name;
-			}
+			$id_property_name       = 'id_' . $property_name;
 			$id_property_name_class = $id_property_name . '_class';
 			if (isset($object->$id_property_name_class) && (new Type($class_name))->isAbstractClass()) {
 				$class_name = $object->$id_property_name_class;
+			}
+			if (isset($object->$id_property_name)) {
+				$stored = Dao::read($object->$id_property_name, $class_name);
 			}
 		}
 		if (isset($stored) && !is_object($stored)) {

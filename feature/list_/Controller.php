@@ -168,7 +168,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				$object = $row->id();
 				// Optimize memory usage : detach object from the List_Row
 				if (!is_object($object)){
-					$object = Mapper\Getter::getObject($object, $row->getClassName());
+					Mapper\Getter::getObject($object, $row->getClassName());
 				}
 				foreach (
 					$properties_with_getter as $property_path => [$property, $user_getter, $translate]
