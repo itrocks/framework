@@ -365,7 +365,11 @@ abstract class Getter
 				$class_name = $object->$id_property_name_class;
 			}
 			if (isset($object->$id_property_name)) {
-				$stored = Dao::read($object->$id_property_name, $class_name);
+				$class_name = Builder::className($class_name);
+				$dao        = isset($property)
+					? Dao::get($property->getAnnotation('dao')->value)
+					: Dao::current();
+				$stored = $dao->read($object->$id_property_name, $class_name);
 			}
 		}
 		if (isset($stored) && !is_object($stored)) {
@@ -394,9 +398,10 @@ abstract class Getter
 			}
 			else {
 				$class_name = Builder::className($class_name);
-				$stored     = isset($property)
-					? Dao::get($property->getAnnotation('dao')->value)->read($stored, $class_name)
-					: Dao::read($stored, $class_name);
+				$dao        = isset($property)
+					? Dao::get($property->getAnnotation('dao')->value)
+					: Dao::current();
+				$stored= $dao->read($stored, $class_name);
 			}
 		}
 		return $stored;
