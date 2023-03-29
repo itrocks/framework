@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Trigger;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Trigger;
 
@@ -9,11 +10,13 @@ use ITRocks\Framework\Trigger;
  *
  * TODO action_per_file : runs an action for each file, without verifying if already running
  *
- * @display_order name, file_path, delete_flag_file, actions
  * @override actions @set_store_name file_trigger_actions @var File\Action[]
  * @property File\Action[] actions
  */
-#[Store('file_triggers')]
+#[
+	Display_Order('name', 'file_path', 'delete_flag_file', 'actions'),
+	Store('file_triggers')
+]
 class File extends Trigger
 {
 

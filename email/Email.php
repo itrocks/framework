@@ -10,6 +10,7 @@ use ITRocks\Framework\Email\Recipient;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
@@ -19,8 +20,6 @@ use ITRocks\Framework\Tools\Date_Time;
  * A ITRocks electronic mail object to get full access to mails without depending on MIME or the else
  *
  * @before_write beforeWrite
- * @display_order account, date, send_date, receive_date, from, to, copy_to, blind_copy_to,
- * reply_to, return_path, headers, send_message, uidl, subject, content, attachments
  * @feature admin
  * @feature edit
  * @feature json
@@ -30,6 +29,10 @@ use ITRocks\Framework\Tools\Date_Time;
  * @representative date, from, to, subject
  */
 #[Class_\Store]
+#[Display_Order(
+	'account', 'date', 'send_date', 'receive_date', 'from', 'to', 'copy_to', 'blind_copy_to',
+	'reply_to', 'return_path', 'headers', 'send_message', 'uidl', 'subject', 'content', 'attachments'
+)]
 class Email
 {
 	use Has_Output_Properties;

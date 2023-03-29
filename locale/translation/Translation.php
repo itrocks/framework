@@ -2,17 +2,18 @@
 namespace ITRocks\Framework\Locale;
 
 use AllowDynamicProperties;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * A translation is the association of the origin programmed text and its translation using a given
  * language
  *
- * @display_order language, text, translation, context
  * @representative language, text, context, translation
  * @todo Remove #AllowDynamicProperties where $id will be general to all #Store classes
  */
 #[AllowDynamicProperties]
+#[Display_Order('language', 'text', 'translation', 'context')]
 #[Store]
 class Translation
 {

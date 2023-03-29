@@ -5,15 +5,15 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Where;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Trigger\Has_Condition\Run;
 
 /**
  * For trigger on data with condition
- *
- * @display_order class_name, before_condition, after_condition
  */
+#[Display_Order('class_name', 'before_condition', 'after_condition')]
 trait Has_Condition
 {
 

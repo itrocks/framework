@@ -7,6 +7,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\RAD\Feature\Module;
 use ITRocks\Framework\RAD\Feature\Status;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
@@ -15,11 +16,10 @@ use ITRocks\Framework\Tools\Namespaces;
  * Final user installable feature
  *
  * @after_read initModule
- * @display_order title, module, description, status, tags
  * @list title, status
  * @representative title
  */
-#[Store('rad_features')]
+#[Display_Order('title', 'module', 'description', 'status', 'tags'), Store('rad_features')]
 class Feature
 {
 

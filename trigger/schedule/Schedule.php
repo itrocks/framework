@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Trigger;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Comparator;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Tools\Date_Time;
@@ -14,11 +15,13 @@ use ITRocks\Framework\Trigger\Schedule\Hour_Range;
  * A schedule trigger calculates if the action must be run from time factors
  *
  * @after_write calculateActionsNextLaunchDateTime
- * @display_order name, hours, days_of_month, months, years, days_of_weeks
  * @override actions @set_store_name trigger_schedule_actions @var Schedule\Action[]
  * @property Schedule\Action[] actions
  */
-#[Store('trigger_schedules')]
+#[
+	Display_Order('name', 'hours', 'days_of_month', 'months', 'years', 'days_of_weeks'),
+	Store('trigger_schedules')
+]
 class Schedule extends Trigger
 {
 

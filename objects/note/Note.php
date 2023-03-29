@@ -1,17 +1,17 @@
 <?php
 namespace ITRocks\Framework\Objects;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
- * @display_order text, title, date, object
  * @feature
  * @feature summaryEdit
  * @feature summaryOutput
  * @sort -date, title
  */
-#[Store]
+#[Display_Order('text', 'title', 'date', 'object'), Store]
 class Note
 {
 

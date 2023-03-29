@@ -370,12 +370,6 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@deprecated' => Boolean_Annotation::class,
 
 	/**
-	 * @display_order property_name, another_property
-	 * Declares property names' display order
-	 */
-	Parser::T_PROPERTY . '@display_order' => List_Annotation::class,
-
-	/**
 	 * @duplicate [true]
 	 * Identifies a property which value should be duplicated by the duplicate feature (default yes)
 	 */

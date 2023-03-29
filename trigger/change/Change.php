@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Trigger;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Trigger;
 use ITRocks\Framework\Trigger\Change\Plugin;
@@ -10,13 +11,15 @@ use ITRocks\Framework\Trigger\Change\Plugin;
  *
  * @after_write resetPluginCache
  * @before_delete resetPluginCache
- * @display_order name, class_name, before_condition, after_condition, actions
  * @override actions @set_store_name change_trigger_actions @var Change\Action[]
  * @override running @var Change\Run[]
  * @property Change\Action[] actions
  * @property Change\Run[]    running
  */
-#[Store('change_triggers')]
+#[
+	Display_Order('name', 'class_name', 'before_condition', 'after_condition', 'actions'),
+	Store('change_triggers')
+]
 class Change extends Trigger
 {
 	use Has_Condition;

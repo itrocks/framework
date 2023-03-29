@@ -2,10 +2,9 @@
 namespace ITRocks\Framework\Reflection;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
-use ITRocks\Framework\Reflection\Annotation\Class_\Display_Order_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Stringable;
@@ -609,43 +608,39 @@ class Reflection_Class extends ReflectionClass
 
 	//-------------------------------------------------------------------------------- sortProperties
 	/**
-	 * Sort the properties list from @display_order class annotation(s)
+	 * Sort the properties list from #[Display_Order] class attribute(s)
 	 *
 	 * @param $properties     Reflection_Property[] key is the name of the property
-	 * @param $display_orders List_Annotation[]|string[][] additional display order annotations
+	 * @param $display_orders Display_Order[]|string[][] additional display order attributes
 	 * @return Reflection_Property[] key is the name of the property
 	 */
 	public function sortProperties(array $properties, array $display_orders = []) : array
 	{
-		/** @var $annotations Display_Order_Annotation[] */
-		$annotations = array_merge(
-			$display_orders,
-			$this->getListAnnotations(Display_Order_Annotation::ANNOTATION)
-		);
-		if ($annotations) {
-			$lists = [];
-			foreach ($annotations as $annotation) {
-				if (is_array($annotation) && $annotation) {
-					$lists[] = $annotation;
-				}
-				elseif ($annotation->value) {
-					$lists[] = $annotation->value;
-				}
-			}
-			$sorted_properties = [];
-			foreach ((new Value_Lists($lists))->assembly() as $property_name) {
-				if (isset($properties[$property_name])) {
-					$sorted_properties[$property_name] = $properties[$property_name];
-				}
-			}
-			foreach ($properties as $property_name => $property) {
-				if (!isset($sorted_properties[$property_name])) {
-					$sorted_properties[$property_name] = $property;
-				}
-			}
-			return $sorted_properties;
+		$attributes = array_merge($display_orders, Display_Order::of($this));
+		if (!$attributes) {
+			return $properties;
 		}
-		return $properties;
+		$lists = [];
+		foreach ($attributes as $attribute) {
+			if (is_array($attribute) && $attribute) {
+				$lists[] = $attribute;
+			}
+			elseif ($attribute->values) {
+				$lists[] = $attribute->values;
+			}
+		}
+		$sorted_properties = [];
+		foreach ((new Value_Lists($lists))->assembly() as $property_name) {
+			if (isset($properties[$property_name])) {
+				$sorted_properties[$property_name] = $properties[$property_name];
+			}
+		}
+		foreach ($properties as $property_name => $property) {
+			if (!isset($sorted_properties[$property_name])) {
+				$sorted_properties[$property_name] = $property;
+			}
+		}
+		return $sorted_properties;
 	}
 
 }

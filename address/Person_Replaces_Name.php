@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Address;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 
@@ -9,12 +10,12 @@ use ITRocks\Framework\Reflection\Attribute\Property\Setter;
  *
  * Compatible with Person or Person
  *
- * @display_order first_name, last_name, name
  * @override civility   @impacts name
  * @override first_name @impacts name
  * @override last_name  @impacts name
  * @override name       @calculated @user hide_edit, hide_output
  */
+#[Display_Order('first_name', 'last_name', 'name')]
 #[Override('civility',   new Setter('setNameComponent'))]
 #[Override('first_name', new Setter('setNameComponent'))]
 #[Override('last_name',  new Setter('setNameComponent'))]

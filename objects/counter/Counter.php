@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
@@ -18,13 +19,12 @@ use ReflectionException;
  *
  * It deals with application-side locking in order that the next number has no jumps nor replicates
  *
- * @display_order identifier, last_update, last_value, format
  * @feature Expert incremental counters configuration
  * @feature_menu Administration
  * @list identifier, last_value, last_update, format
  * @representative identifier
  */
-#[Store]
+#[Display_Order('identifier', 'last_update', 'last_value', 'format'), Store]
 class Counter
 {
 
