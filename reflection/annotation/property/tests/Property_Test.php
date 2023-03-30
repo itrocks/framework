@@ -6,10 +6,12 @@ use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\Tools\Date_Time;
+use ReflectionException;
 
 /**
  * Property annotations unit tests
@@ -18,9 +20,6 @@ class Property_Test extends Test
 {
 
 	//-------------------------------------------------------------------------------------- $subject
-	/**
-	 * @var Test_Object
-	 */
 	private Test_Object $subject;
 
 	//--------------------------------------------------------- providerIntegratedAnnotationConstruct
@@ -70,9 +69,7 @@ class Property_Test extends Test
 	}
 
 	//------------------------------------------------------------------------- testDefaultAnnotation
-	/**
-	 * Test default annotation
-	 */
+	/** Test default annotation */
 	public function testDefaultAnnotation() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constants */
@@ -81,9 +78,7 @@ class Property_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------- testDefaultSimple
-	/**
-	 * Test @default annotation into the simplest context : no AOP
-	 */
+	/** Test @default annotation into the simplest context : no AOP */
 	public function testDefaultSimple() : void
 	{
 		$robert = new Default_Simple();
@@ -131,9 +126,7 @@ class Property_Test extends Test
 	}
 
 	//--------------------------------------------------------------------- testGetterAnnotationCases
-	/**
-	 * Test property #Getter cases of uses
-	 */
+	/** Test property #Getter cases of uses */
 	public function testGetterAnnotationCases() : void
 	{
 		$this->subject->getter_simple = 'a value for simple';
@@ -146,6 +139,8 @@ class Property_Test extends Test
 	//----------------------------------------------------------------------- testGetterAnnotationSet
 	/**
 	 * Test property #Getter : setting annotation value
+	 *
+	 * @throws ReflectionException
 	 */
 	public function testGetterAnnotationSet() : void
 	{
@@ -153,29 +148,28 @@ class Property_Test extends Test
 		$property = new Reflection_Property($this->subject, 'collection_property');
 
 		// #Getter methodName
+		$getter = new Getter('testGetterAnnotation');
+		$getter->setFinal($property);
 		static::assertEquals(
 			get_class($this->subject) . '::testGetterAnnotation',
-			(new Getter('testGetterAnnotation', $property))->callable,
+			$getter->callable,
 			'methodName'
 		);
 		// #Getter Local_Class_Name::methodName
+		$getter = new Getter([User_Annotation::class, 'has']);
+		$getter->setFinal($property);
 		static::assertEquals(
 			User_Annotation::class . '::has',
-			(new Getter('User_Annotation::has', $property))->callable,
+			$getter->callable,
 			'Local_Class_Name::methodName'
 		);
 		// #Getter Distant\Class\Full\Path::methodName
+		$getter = new Getter([Annoted::class, 'has']);
+		$getter->setFinal($property);
 		static::assertEquals(
 			Annoted::class . '::has',
-			(new Getter(BS . Annoted::class . '::has', $property))->callable,
+			$getter->callable,
 			'Distant\Class\Full\Path\Class_Name::methodName'
-		);
-		// use Distant\Class\Full\Path\Class_Name
-		// #Getter Class_Name::methodName
-		static::assertEquals(
-			Annoted::class . '::has',
-			(new Getter('Annoted::has', $property))->callable,
-			'use Class_Name::methodName'
 		);
 		// default value for getter when there is a @link annotation
 		static::assertEquals(
@@ -202,9 +196,7 @@ class Property_Test extends Test
 	}
 
 	//--------------------------------------------------------------------- testSetterAnnotationCases
-	/**
-	 * Test property #Setter cases of uses
-	 */
+	/** Test property #Setter cases of uses */
 	public function testSetterAnnotationCases() : void
 	{
 		$this->subject->setter_simple = 'a value for simple';
@@ -215,17 +207,14 @@ class Property_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------- testWithValues
-	/**
-	 * Test annotation with multi-lines values
-	 */
+	/** Test annotation with multi-lines values */
 	public function testWithValues() : void
 	{
 		$this->subject->with_values = 'a_value';
 		/** @noinspection PhpUnhandledExceptionInspection valid object and constant property */
 		static::assertEquals(
 			['a_value', 'another_value', 'third_value', 'fourth_value'],
-			(new Reflection_Property($this->subject, 'with_values'))
-				->getListAnnotation('values')->values()
+			Values::of(new Reflection_Property($this->subject, 'with_values'))?->values
 		);
 	}
 

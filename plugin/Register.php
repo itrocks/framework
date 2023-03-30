@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Plugin;
 use ITRocks\Framework\AOP\Weaver\IWeaver;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 
 /**
  * Plugin register structure
@@ -12,46 +13,28 @@ class Register
 {
 
 	//------------------------------------------------------------------------------------------ $aop
-	/**
-	 * @var IWeaver
-	 */
 	public IWeaver $aop;
 
 	//-------------------------------------------------------------------------------- $configuration
-	/**
-	 * @impacts get
-	 */
+	/** @impacts get */
 	#[Getter('getConfiguration'), Setter('setConfiguration')]
 	public array|string $configuration;
 
 	//------------------------------------------------------------------------------------------ $get
-	/**
-	 * @var boolean
-	 */
 	private bool $get;
 
 	//---------------------------------------------------------------------------------------- $level
-	/**
-	 * @values core, highest, higher, high, normal, low, lower, lowest
-	 * @var string
-	 */
+	#[Values('core, highest, higher, high, normal, low, lower, lowest')]
 	public string $level;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $configuration array|string|null
-	 * @param $aop           IWeaver|null
-	 */
-	public function __construct(mixed $configuration = null, IWeaver $aop = null)
+	public function __construct(array|string $configuration = null, IWeaver $aop = null)
 	{
 		if (isset($aop))           $this->aop           = $aop;
 		if (isset($configuration)) $this->configuration = $configuration;
 	}
 
 	//------------------------------------------------------------------------------ getConfiguration
-	/**
-	 * @return array|string
-	 */
 	protected function getConfiguration() : array|string
 	{
 		if ($this->get) {
@@ -74,7 +57,7 @@ class Register
 	/**
 	 * Defines an annotation class, linked to an annotation
 	 *
-	 * @param $context          string Parser::T_CLASS, Parser::T_METHOD, Parser::T_PROPERTY
+	 * @param $context          string @values Parser::T_CLASS, Parser::T_METHOD, Parser::T_PROPERTY
 	 * @param $annotation_name  string
 	 * @param $annotation_class string
 	 */
@@ -98,9 +81,6 @@ class Register
 	}
 
 	//------------------------------------------------------------------------------ setConfiguration
-	/**
-	 * @param $configuration array|string
-	 */
 	protected function setConfiguration(array|string $configuration) : void
 	{
 		$this->configuration = $configuration;

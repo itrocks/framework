@@ -7,6 +7,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Interfaces;
 
 /**
@@ -20,7 +21,7 @@ class Test_Object
 
 	//--------------------------------------------------------------------------------- KEEP_THIS_USE
 	/**
-	 * Keep use ITRocks\Framework\Reflection\Annotation\Annoted;
+	 * Keep using ITRocks\Framework\Reflection\Annotation\Annoted;
 	 *
 	 * @see Tests.php#testGetterAnnotationSet
 	 */
@@ -62,11 +63,7 @@ class Test_Object
 	public string $setter_static;
 
 	//---------------------------------------------------------------------------------- $with_values
-	/**
-	 * @values a_value, another_value,
-	 *         third_value,
-	 *         fourth_value
-	 */
+	#[Values('a_value, another_value, third_value, fourth_value')]
 	public string $with_values;
 
 	//----------------------------------------------------------------------- getDefaultPropertyValue
@@ -81,36 +78,28 @@ class Test_Object
 	}
 
 	//------------------------------------------------------------------------------------- getSimple
-	/**
-	 * @noinspection PhpUnused #Getter
-	 */
+	/** @noinspection PhpUnused #Getter */
 	public function getSimple() : string
 	{
 		return $this->getter_simple . ' with getter simple';
 	}
 
 	//------------------------------------------------------------------------------------- getStatic
-	/**
-	 * @noinspection PhpUnused #Getter
-	 */
+	/** @noinspection PhpUnused #Getter */
 	public static function getStatic(string $value) : string
 	{
 		return $value . ' with getter static';
 	}
 
 	//------------------------------------------------------------------------------------- setSimple
-	/**
-	 * @noinspection PhpUnused #Setter
-	 */
+	/** @noinspection PhpUnused #Setter */
 	public function setSimple(string $setter_simple) : void
 	{
 		$this->setter_simple = $setter_simple . ' with setter simple';
 	}
 
 	//------------------------------------------------------------------------------------- setStatic
-	/**
-	 * @noinspection PhpUnused #Setter
-	 */
+	/** @noinspection PhpUnused #Setter */
 	public static function setStatic(string $value) : string
 	{
 		return $value . ' with setter static';

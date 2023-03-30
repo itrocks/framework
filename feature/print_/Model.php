@@ -7,6 +7,7 @@ use ITRocks\Framework\Feature\Export\PDF;
 use ITRocks\Framework\Layout\Generator;
 use ITRocks\Framework\Layout\PDF\Exporter;
 use ITRocks\Framework\Layout\Print_Model;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Names;
 use TCPDF;
 
@@ -17,10 +18,7 @@ class Model extends PDF\Output
 {
 
 	//--------------------------------------------------------------------------------------- $output
-	/**
-	 * @values static::const
-	 * @var string
-	 */
+	#[Values(self::class)]
 	public string $output = self::INLINE;
 
 	//---------------------------------------------------------------------------------------- append
@@ -64,9 +62,6 @@ class Model extends PDF\Output
 	}
 
 	//---------------------------------------------------------------------------------------- newPdf
-	/**
-	 * @return PDF|TCPDF
-	 */
 	protected function newPdf() : PDF|TCPDF
 	{
 		/** @var $pdf PDF|TCPDF */

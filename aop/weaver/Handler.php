@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\AOP\Weaver;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
+
 /**
  * The Aop handler
  */
@@ -15,9 +17,6 @@ class Handler implements IHandler
 	const WRITE  = 'write';
 
 	//---------------------------------------------------------------------------------------- $index
-	/**
-	 * @var integer
-	 */
 	public int $index;
 
 	//------------------------------------------------------------------------------------ $joinpoint
@@ -27,10 +26,7 @@ class Handler implements IHandler
 	public array|string $joinpoint;
 
 	//----------------------------------------------------------------------------------------- $type
-	/**
-	 * @values self::const
-	 * @var string
-	 */
+	#[Values(self::class)]
 	public string $type;
 
 	//----------------------------------------------------------------------------------- __construct

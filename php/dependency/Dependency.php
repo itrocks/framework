@@ -9,6 +9,7 @@ use ITRocks\Framework\Dao\Option\Group_By;
 use ITRocks\Framework\PHP\Dependency\Cache;
 use ITRocks\Framework\PHP\Dependency\Declaration;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ReflectionException;
@@ -49,40 +50,27 @@ class Dependency
 	const T_TRAIT_DECLARATION     = 'trait';
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * Name of the class that has a dependency
-	 */
+	/** Name of the class that has a dependency */
 	public ?string $class_name = null;
 
 	//---------------------------------------------------------------------------------- $declaration
-	/**
-	 * @see Declaration
-	 * @values Declaration::const
-	 */
+	#[Values(self::class)]
 	public ?string $declaration = null;
 
 	//----------------------------------------------------------------------------- $dependency_class
-	/**
-	 * @var string[]
-	 */
+	/** @var string[] */
 	static array $dependency_class = [];
 
 	//------------------------------------------------------------------------------ $dependency_name
-	/**
-	 * Dependency class name
-	 */
+	/** Dependency class name */
 	public string $dependency_name;
 
 	//------------------------------------------------------------------------------------ $file_name
-	/**
-	 * The file name where the class is stored
-	 */
+	/** The file name where the class is stored */
 	public ?string $file_name;
 
 	//----------------------------------------------------------------------------------------- $line
-	/**
-	 * The line in file where the dependency was parsed
-	 */
+	/** The line in file where the dependency was parsed */
 	public int $line;
 
 	//----------------------------------------------------------------------------------------- $type
@@ -99,10 +87,11 @@ class Dependency
 	 * - 'store' for a #Store_Name into the source code (repository storage name)
 	 * - 'use' for a 'use Dependency_Name' into the class
 	 * - 'var' for a '@var ...' into the source code (property doc comment)
-	 *
-	 * @values bridge_feature, class, compatibility, declaration, extends, feature, implements,
-	 *   namespace_use, new, param, return, set, static, store, use, var
 	 */
+	#[Values(
+		'bridge_feature, class, compatibility, declaration, extends, feature, implements',
+		'namespace_use, new, param, return, set, static, store, use, var'
+	)]
 	public string $type;
 
 	//--------------------------------------------------------------- classesWithPropertiesUsingClass

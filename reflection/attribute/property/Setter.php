@@ -20,9 +20,7 @@ class Setter extends Property implements Has_Set_Final
 	use Has_Default_Callable;
 
 	//-------------------------------------------------------------------------------------- setFinal
-	/**
-	 * @throws ReflectionException
-	 */
+	/** @throws ReflectionException */
 	public function setFinal(Reflection|Reflection_Property $reflection) : void
 	{
 		$this->getDefaultMethod('set', $reflection);

@@ -5,6 +5,7 @@ use ITRocks\Framework\Application;
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Source\Class_Use;
 use ITRocks\Framework\Controller\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -16,34 +17,20 @@ class Source extends File
 {
 
 	//------------------------------------------------------------------------------- $class_abstract
-	/**
-	 * @var boolean
-	 */
 	public bool $class_abstract;
 
 	//-------------------------------------------------------------------------------- $class_extends
-	/**
-	 * @var string
-	 */
 	public string $class_extends;
 
 	//----------------------------------------------------------------------------- $class_implements
-	/**
-	 * @var string[]
-	 */
+	/** @var string[] */
 	public array $class_implements = [];
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
 	public string $class_name;
 
 	//----------------------------------------------------------------------------------- $class_type
-	/**
-	 * @values class, interface, trait
-	 * @var string
-	 */
+	#[Values('class, interface, trait')]
 	public string $class_type;
 
 	//------------------------------------------------------------------------------------ $class_use

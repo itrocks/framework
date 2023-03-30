@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao\Option\Count;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\View\Html\Builder\Collection;
@@ -23,28 +24,16 @@ class Html_Multiple_Limiter implements Registerable
 {
 
 	//---------------------------------------------------------------------------------------- $count
-	/**
-	 * @var Count
-	 */
 	private Count $count;
 
 	//---------------------------------------------------------------------------------- $in_multiple
-	/**
-	 * @values '', 'search', 'build'
-	 * @var string
-	 */
+	#[Values('search, build,')]
 	private string $in_multiple = '';
 
 	//------------------------------------------------------------------------------------- $property
-	/**
-	 * @var Reflection_Property_Value
-	 */
 	private Reflection_Property_Value $property;
 
 	//----------------------------------------------------------------- afterHtmlBuilderMultipleBuild
-	/**
-	 * @param $result Table
-	 */
 	public function afterHtmlBuilderMultipleBuild(Table $result) : void
 	{
 		if ($this->in_multiple !== 'build') {
@@ -79,12 +68,7 @@ class Html_Multiple_Limiter implements Registerable
 	}
 
 	//------------------------------------------------------------- beforeHtmlEditTemplateParseMethod
-	/**
-	 * Activate plugin before HTML method parsing of a Reflection_Property_Value named 'value'
-	 *
-	 * @param $object        object
-	 * @param $property_name string
-	 */
+	/** Activate plugin before HTML method parsing of a Reflection_Property_Value named 'value' */
 	public function beforeHtmlEditTemplateParseMethod(object $object, string $property_name) : void
 	{
 		if (
@@ -123,10 +107,6 @@ class Html_Multiple_Limiter implements Registerable
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	/**
-	 *
-	 * @param $register Register
-	 */
 	public function register(Register $register) : void
 	{
 		$aop = $register->aop;

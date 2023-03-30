@@ -7,8 +7,8 @@ use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Integer;
 use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Date_Time;
@@ -22,12 +22,7 @@ trait Column_Builder_Property
 	//------------------------------------------------------------------------ propertyDefaultToMysql
 	/**
 	 * Gets mysql default value for a property
-	 *
 	 * Must be called only after $column's Null and Type has been set
-	 *
-	 * @param $property Reflection_Property
-	 * @param $column Column
-	 * @return mixed
 	 */
 	private static function propertyDefaultToMysql(
 		Reflection_Property $property, Column $column
@@ -64,7 +59,7 @@ trait Column_Builder_Property
 				else {
 					// if @values, then set with a real value
 					// if no @values, the string [] is stored as text : null default value even if not null
-					$default = Values_Annotation::of($property)->value ? '' : null;
+					$default = Values::of($property)?->values ? '' : null;
 				}
 			}
 		}
@@ -92,10 +87,6 @@ trait Column_Builder_Property
 	}
 
 	//---------------------------------------------------------------------------- propertyKeyToMysql
-	/**
-	 * @param $property Reflection_Property
-	 * @return string
-	 */
 	private static function propertyKeyToMysql(
 		/** @noinspection PhpUnusedParameterInspection */
 		Reflection_Property $property
@@ -106,12 +97,7 @@ trait Column_Builder_Property
 	}
 
 	//--------------------------------------------------------------------------- propertyNameToMysql
-	/**
-	 * Gets the mysql field name for a property
-	 *
-	 * @param $property Reflection_Property
-	 * @return string
-	 */
+	/** Gets the mysql field name for a property */
 	private static function propertyNameToMysql(Reflection_Property $property) : string
 	{
 		$type = $property->getType();
@@ -133,17 +119,12 @@ trait Column_Builder_Property
 	}
 
 	//--------------------------------------------------------------------------- propertyTypeToMysql
-	/**
-	 * Gets mysql expression for a property type
-	 *
-	 * @param $property Reflection_Property
-	 * @return string
-	 */
+	/** Gets mysql expression for a property type */
 	private static function propertyTypeToMysql(Reflection_Property $property) : string
 	{
-		$property_type          = $property->getType();
-		$store_annotation_value = Store::of($property)->isString();
-		if ($property_type->isBasic() || $store_annotation_value) {
+		$property_type    = $property->getType();
+		$store_annotation = Store::of($property);
+		if ($property_type->isBasic() || !$store_annotation->isFalse()) {
 			if ($property_type->isMultipleString()) {
 				$values = self::propertyValues($property);
 				return ($values ? 'set(' . Q . join(Q . ',' . Q, $values) . Q . ')' : 'text')
@@ -168,7 +149,7 @@ trait Column_Builder_Property
 				}
 				else {
 					$values = self::propertyValues($property);
-					if ($values && !$store_annotation_value) {
+					if ($values && !$store_annotation->isFalse()) {
 						if (!isset($values[''])) {
 							$values[''] = '';
 						}
@@ -178,13 +159,13 @@ trait Column_Builder_Property
 					if (!isset($max_length)) {
 						$max_length = 255;
 					}
-					if ($store_annotation_value === Store::GZ) {
+					if ($store_annotation->isGz()) {
 						return static::sqlBlobColumn($max_length);
 					}
 					return static::sqlTextColumn($max_length);
 				}
 			}
-			elseif ($store_annotation_value === Store::JSON) {
+			elseif ($store_annotation->isJson()) {
 				return static::sqlTextColumn($property->getAnnotation('max_length')->value ?: 65535);
 			}
 			switch ($property_type->asString()) {
@@ -216,23 +197,14 @@ trait Column_Builder_Property
 	 */
 	private static function propertyValues(Reflection_Property $property) : array
 	{
-		$values = $property->getListAnnotation('values')->values();
-		if ($values) {
-			foreach ($values as $key => $value) {
-				$values[$key] = str_replace(Q, Q . Q, $value);
-			}
-			return $values;
+		$values = Values::of($property)?->values ?: [];
+		foreach ($values as $key => $value) {
+			$values[$key] = str_replace(Q, Q . Q, $value);
 		}
-		else {
-			return [];
-		}
+		return $values;
 	}
 
 	//--------------------------------------------------------------------------------- sqlBlobColumn
-	/**
-	 * @param $max_length integer
-	 * @return string
-	 */
 	private static function sqlBlobColumn(int $max_length) : string
 	{
 		return ($max_length && ($max_length <= 255)) ? 'tinyblob'   : (
@@ -243,10 +215,6 @@ trait Column_Builder_Property
 	}
 
 	//--------------------------------------------------------------------------------- sqlTextColumn
-	/**
-	 * @param $max_length integer
-	 * @return string
-	 */
 	private static function sqlTextColumn(int $max_length) : string
 	{
 		return (

@@ -14,7 +14,7 @@ use ITRocks\Framework\Dao\Option\Sort;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Map;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -30,23 +30,14 @@ class Controller implements Default_Feature_Controller
 {
 
 	//---------------------------------------------------------------------------------------- $class
-	/**
-	 * @var Reflection_Class
-	 */
 	public Reflection_Class $class;
 
 	//----------------------------------------------------------------------------------- $properties
-	/**
-	 * Cache for $property_names properties
-	 *
-	 * @var Reflection_Property[]
-	 */
+	/** @var Reflection_Property[] Cache for $property_names properties */
 	public array $properties;
 
 	//------------------------------------------------------------------------------- $property_names
-	/**
-	 * @var string[]
-	 */
+	/** @var string[] */
 	public array $property_names = [];
 
 	//-------------------------------------------------------------------------- applyFiltersToSearch
@@ -117,7 +108,6 @@ class Controller implements Default_Feature_Controller
 	protected function buildJson(array|object $objects, string $class_name) : string
 	{
 		if ($this->property_names && $objects) {
-			/** @noinspection PhpDeprecatedStdLibCallInspection is_array */
 			$first_object = is_array($objects) ? reset($objects) : $objects;
 			foreach ($this->property_names as $property_name) {
 				if (property_exists($first_object, $property_name)) {
@@ -141,11 +131,6 @@ class Controller implements Default_Feature_Controller
 	}
 
 	//-------------------------------------------------------------------------------- buildJsonEntry
-	/**
-	 * @param $object      object
-	 * @param $is_abstract boolean
-	 * @return Autocomplete_Entry
-	 */
 	protected function buildJsonEntry(object $object, bool $is_abstract) : Autocomplete_Entry
 	{
 		$identifier = Dao::getObjectIdentifier($object);
@@ -167,15 +152,11 @@ class Controller implements Default_Feature_Controller
 	}
 
 	//------------------------------------------------------------------------------ isMultipleValues
-	/**
-	 * @param $property_path string
-	 * @return boolean
-	 * @throws ReflectionException
-	 */
+	/** @throws ReflectionException */
 	protected function isMultipleValues(string $property_path) : bool
 	{
 		$property = $this->class->getProperty($property_path);
-		return Values_Annotation::of($property)->value && $property->getType()->isMultipleString();
+		return Values::of($property)?->values && $property->getType()->isMultipleString();
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -312,13 +293,7 @@ class Controller implements Default_Feature_Controller
 	}
 
 	//------------------------------------------------------------- searchObjectsForAutoCompleteCombo
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection verified class name
-	 * @param $class_name string
-	 * @param $parameters array
-	 * @return string
-	 * @throws ReflectionException
-	 */
+	/** @throws ReflectionException */
 	protected function searchObjectsForAutoCompleteCombo(string $class_name, array $parameters)
 		: string
 	{

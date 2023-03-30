@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Component\Button\Code\Command;
 
 use ITRocks\Framework\Component\Button\Code\Command;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
 
@@ -72,8 +73,7 @@ class Equals implements Command
 				$object, Names::displayToProperty(Loc::rtr($this->property_name)), $object
 			);
 			// translate value
-			$values = $property_value->getListAnnotation('values')->values();
-			if ($values) {
+			if (Values::of($property_value)?->values) {
 				$value = Names::displayToProperty(Loc::rtr($value));
 			}
 			// compare values

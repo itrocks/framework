@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Dao\Sql;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 
 /**
  * An object representation of a mysql index
@@ -15,16 +16,11 @@ class Index implements Sql\Index
 	const UNIQUE  = 'UNIQUE KEY';
 
 	//----------------------------------------------------------------------------------------- $keys
-	/**
-	 * @var Key[]
-	 */
+	/** @var Key[] */
 	public array $keys;
 
 	//----------------------------------------------------------------------------------------- $type
-	/**
-	 * @values KEY, UNIQUE
-	 * @var string
-	 */
+	#[Values(self::KEY, self::UNIQUE)]
 	public string $type = self::KEY;
 
 	//---------------------------------------------------------------------------------------- addKey

@@ -2,89 +2,50 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\Configuration\Environment;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 
 /**
- * A configuration set : current configuration for the global application configuration, secondary configurations can be worked with
+ * A configuration set : current configuration for the global application configuration,
+ * secondary configurations can be worked with
  */
 class Configuration
 {
 
-	//------------------------------------------------------------------------------------------- APP
-	const APP = 'app';
-
-	//---------------------------------------------------------------------------------------- AUTHOR
-	const AUTHOR = 'author';
-
-	//------------------------------------------------------------------------------------ CLASS_NAME
-	const CLASS_NAME = 'class';
-
-	//---------------------------------------------------------------------------------------- DOMAIN
-	const DOMAIN = 'domain';
-
-	//----------------------------------------------------------------------------------- ENVIRONMENT
-	const ENVIRONMENT = 'environment';
-
-	//----------------------------------------------------------------------------------- EXTENDS_APP
-	const EXTENDS_APP = 'extends';
-
-	//--------------------------------------------------------------------------- TEMPORARY_DIRECTORY
+	//----------------------------------------------------------------------- Configuration CONSTANTS
+	const APP                 = 'app';
+	const AUTHOR              = 'author';
+	const CLASS_NAME          = 'class';
+	const DOMAIN              = 'domain';
+	const ENVIRONMENT         = 'environment';
+	const EXTENDS_APP         = 'extends';
 	const TEMPORARY_DIRECTORY = 'temporary_directory';
 
 	//---------------------------------------------------------------------------- $application_class
-	/**
-	 * Application class name
-	 *
-	 * @var string
-	 */
+	/** Application class name */
 	private string $application_class;
 
 	//--------------------------------------------------------------------------------------- $author
-	/**
-	 * @var string
-	 */
 	private string $author;
 
 	//--------------------------------------------------------------------------------------- $domain
-	/**
-	 * Domain name (optional) e.g. for applications that generate dynamic URL or generic emails
-	 *
-	 * @var string
-	 */
+	/** Domain name (optional) e.g. for applications that generate dynamic URL or generic emails */
 	public string $domain;
 
 	//---------------------------------------------------------------------------------- $environment
-	/**
-	 * @values development, production, test
-	 * @var string
-	 */
+	#[Values('development, production, test')]
 	public string $environment;
 
 	//------------------------------------------------------------------------------------ $file_name
-	/**
-	 * Configuration file name, when configuration was loaded from a file
-	 *
-	 * @var ?string
-	 */
+	/** Configuration file name, when configuration was loaded from a file */
 	public ?string $file_name = null;
 
 	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * Configuration name
-	 *
-	 * @var string
-	 */
 	private string $name;
 
 	//-------------------------------------------------------------------------------------- $plugins
-	/**
-	 * @var array
-	 */
 	private array $plugins;
 
 	//-------------------------------------------------------------------------- $temporary_directory
-	/**
-	 * @var ?string
-	 */
 	public ?string $temporary_directory;
 
 	//----------------------------------------------------------------------------------- __construct

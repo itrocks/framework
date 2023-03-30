@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Layout\Structure\Draw;
 
 use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Element\Has_Init;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 
 /**
  * Horizontal or vertical snap line
@@ -18,16 +19,11 @@ class Snap_Line extends Element implements Has_Init
 	const VERTICAL   = 'vertical';
 
 	//------------------------------------------------------------------------------------ $direction
-	/**
-	 * @values self::const local
-	 * @var string
-	 */
+	#[Values(self::class, Values::LOCAL)]
 	public string $direction;
 
 	//------------------------------------------------------------------------------------------ init
-	/**
-	 * Initialize horizontal or vertical snap line
-	 */
+	/** Initialize horizontal or vertical snap line */
 	public function init() : void
 	{
 		if (!isset($this->left)) {
@@ -45,18 +41,12 @@ class Snap_Line extends Element implements Has_Init
 	}
 
 	//---------------------------------------------------------------------------------- isHorizontal
-	/**
-	 * @return boolean
-	 */
 	public function isHorizontal() : bool
 	{
 		return $this->direction === self::HORIZONTAL;
 	}
 
 	//------------------------------------------------------------------------------------ isVertical
-	/**
-	 * @return boolean
-	 */
 	public function isVertical() : bool
 	{
 		return $this->direction === self::VERTICAL;

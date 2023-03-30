@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Configuration\File\Config;
 
 use ITRocks\Framework;
 use ITRocks\Framework\Configuration\File\Config;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 
 /**
  * Priority block
@@ -13,25 +14,14 @@ class Priority
 {
 
 	//--------------------------------------------------------------------------------------- $config
-	/**
-	 * @var Config
-	 */
 	public Config $config;
 
 	//-------------------------------------------------------------------------------------- $plugins
-	/**
-	 * @var Plugin[]|string[] plugin configuration or free plugin configuration code
-	 */
+	/** @var Plugin[]|string[] plugin configuration or free plugin configuration code */
 	public array $plugins = [];
 
 	//------------------------------------------------------------------------------------- $priority
-	/**
-	 * The priority constant name
-	 *
-	 * @see Framework\Plugin\Priority::const
-	 * @values Framework\Plugin\Priority::const
-	 * @var string
-	 */
+	#[Values(Framework\Plugin\Priority::class)]
 	public string $priority;
 
 	//----------------------------------------------------------------------------------- __construct

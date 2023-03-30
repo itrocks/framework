@@ -5,6 +5,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 
 /**
  * A vehicle door
@@ -32,23 +33,17 @@ class Vehicle_Door
 	const TRUNK = 'trunk';
 
 	//----------------------------------------------------------------------------------------- $code
-	/**
-	 * @length 6
-	 */
+	/** @length 6 */
 	public string $code = '';
 
 	//--------------------------------------------------------------------------------------- $pieces
-	/**
-	 * @var Vehicle_Door_Piece[]
-	 */
+	/** @var Vehicle_Door_Piece[] */
 	#[Property\Component]
 	public array $pieces;
 
 	//----------------------------------------------------------------------------------------- $side
-	/**
-	 * @values self::const
-	 * @warning sideNotTrunk
-	 */
+	/** @warning sideNotTrunk */
+	#[Values(self::class)]
 	public string $side;
 
 	//-------------------------------------------------------------------------------------- $vehicle
@@ -62,10 +57,7 @@ class Vehicle_Door
 	}
 
 	//------------------------------------------------------------------------------------- codeValid
-	/**
-	 * @return string|true
-	 */
-	public function codeValid() : bool|string
+	public function codeValid() : string|true
 	{
 		return ($this->code !== '')
 			? true
@@ -73,10 +65,7 @@ class Vehicle_Door
 	}
 
 	//---------------------------------------------------------------------------------- sideNotTrunk
-	/**
-	 * @return string|true
-	 */
-	public function sideNotTrunk() : bool|string
+	public function sideNotTrunk() : string|true
 	{
 		return ($this->side === self::TRUNK) ? Loc::tr('side should not be trunk') : true;
 	}

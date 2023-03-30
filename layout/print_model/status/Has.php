@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Layout\Print_Model\Status;
 use ITRocks\Framework\Layout\Print_Model;
 use ITRocks\Framework\Layout\Print_Model\Status;
 use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 
 /**
  * @before_update setStatusToCustom
@@ -13,11 +14,8 @@ trait Has
 {
 
 	//--------------------------------------------------------------------------------------- $status
-	/**
-	 * @user readonly
-	 * @values Status::const
-	 * @var string
-	 */
+	/** @user readonly */
+	#[Values(Status::class)]
 	public string $status = Status::CUSTOM;
 
 	//----------------------------------------------------------------------------- setStatusToCustom

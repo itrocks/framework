@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Trigger;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Trigger;
 
 /**
@@ -17,16 +18,10 @@ class Feature extends Trigger
 	use Has_Condition;
 
 	//--------------------------------------------------------------------------------- $feature_name
-	/**
-	 * @var string
-	 */
 	public string $feature_name;
 
 	//----------------------------------------------------------------------------------------- $when
-	/**
-	 * @values after, before
-	 * @var string
-	 */
+	#[Values('after, before')]
 	public string $when;
 
 }

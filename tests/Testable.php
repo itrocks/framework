@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tests;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -19,46 +20,28 @@ abstract class Testable extends TestCase
 	const NONE = 'none';
 
 	//--------------------------------------------------------------------------------- $errors_count
-	/**
-	 * @var integer
-	 */
 	public int $errors_count = 0;
 
 	//--------------------------------------------------------------------------------------- $header
-	/**
-	 * Header content to show if an error comes when $show_when_ok is false
-	 * Reset once shown
-	 *
-	 * @var string
-	 */
+	/** Header content to show if an error comes when $show_when_ok is false. Reset once shown. */
 	public string $header = '';
 
 	//----------------------------------------------------------------------------------------- $show
-	/**
-	 * @values all, errors, none
-	 * @var string
-	 */
+	#[Values('all, errors, none')]
 	public string $show = self::ERRORS;
 
 	//---------------------------------------------------------------------------------- $tests_count
-	/**
-	 * @var integer
-	 */
 	public int $tests_count = 0;
 
 	//----------------------------------------------------------------------------------------- begin
-	/**
-	 * Begin of a unit test class
-	 */
+	/** Begin of a unit test class */
 	public function begin() : void
 	{
 		$this->show('<h3>' . get_class($this) . '</h3>' . LF . '<ul>' . LF);
 	}
 
 	//------------------------------------------------------------------------------------------- end
-	/**
-	 * End of a unit test class
-	 */
+	/** End of a unit test class */
 	public function end() : void
 	{
 		$this->show('</ul>' . LF);
@@ -76,7 +59,6 @@ abstract class Testable extends TestCase
 	 * Start test method log
 	 *
 	 * @deprecated PhpUnit already register method name
-	 * @param $method_name string
 	 */
 	public function method(string $method_name) : void
 	{
@@ -84,9 +66,6 @@ abstract class Testable extends TestCase
 	}
 
 	//------------------------------------------------------------------------------------------ show
-	/**
-	 * @param $show string
-	 */
 	protected function show(string $show) : void
 	{
 		if (($this->show === self::ALL) || ($this->errors_count && ($this->show === self::ERRORS))) {

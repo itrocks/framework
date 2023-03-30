@@ -6,6 +6,7 @@ use ITRocks\Framework\Mapper\Comparator;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Trigger;
 use ITRocks\Framework\Trigger\Action\Status;
@@ -31,18 +32,16 @@ class Schedule extends Trigger
 	];
 
 	//-------------------------------------------------------------------------------- $days_of_month
-	/**
-	 * @user hide_empty
-	 */
+	/** @user hide_empty */
 	public string $days_of_month = '';
 
 	//--------------------------------------------------------------------------------- $days_of_week
 	/**
 	 * @ordered_values
 	 * @user hide_empty
-	 * @values self::DAYS_OF_WEEK
 	 * @var string[]
 	 */
+	#[Values(self::DAYS_OF_WEEK)]
 	public array $days_of_week = [];
 
 	//---------------------------------------------------------------------------------- $hour_ranges
@@ -54,21 +53,15 @@ class Schedule extends Trigger
 	public array $hour_ranges = [];
 
 	//---------------------------------------------------------------------------------------- $hours
-	/**
-	 * @user hide_empty
-	 */
+	/** @user hide_empty */
 	public string $hours = '';
 
 	//--------------------------------------------------------------------------------------- $months
-	/**
-	 * @user hide_empty
-	 */
+	/** @user hide_empty */
 	public string $months = '';
 
 	//---------------------------------------------------------------------------------------- $years
-	/**
-	 * @user hide_empty
-	 */
+	/** @user hide_empty */
 	public string $years = '';
 
 	//------------------------------------------------------------ calculateActionsNextLaunchDateTime

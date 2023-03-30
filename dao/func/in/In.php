@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Feature\List_\Summary_Builder;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Value;
 
@@ -104,7 +105,7 @@ class In implements Negate, Where
 			if (
 				$property
 				&& $property->getType()->isMultipleString()
-				&& $property->getListAnnotation('values')->values()
+				&& Values::of($property)?->values
 			) {
 				$parts = [];
 				foreach($this->values as $value) {

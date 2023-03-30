@@ -12,7 +12,7 @@ use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Words;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Translator;
-use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -307,7 +307,7 @@ class Search_Parameters_Parser
 			// String types with @values : translate
 			case Type::STRING: /** @noinspection PhpMissingBreakStatementInspection */
 			case Type::STRING_ARRAY:
-				$property_values = $property ? Values_Annotation::of($property)->values() : [];
+				$property_values = ($property ? Values::of($property)?->values : null) ?: [];
 				if (
 					$property_values
 					|| ($property && ($property->getAnnotation('translate')->value === 'common'))

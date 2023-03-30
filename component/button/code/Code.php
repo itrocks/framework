@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Button\Code\Command\Parser;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Stringable;
 
 /**
@@ -15,9 +16,7 @@ class Code implements Stringable
 {
 
 	//-------------------------------------------------------------------------------------- $feature
-	/**
-	 * @user invisible
-	 */
+	/** @user invisible */
 	public string $feature;
 
 	//--------------------------------------------------------------------------------------- $source
@@ -29,10 +28,8 @@ class Code implements Stringable
 	public string $source;
 
 	//----------------------------------------------------------------------------------------- $when
-	/**
-	 * @user invisible
-	 * @values after, before
-	 */
+	/** @user invisible */
+	#[Values('after, before')]
 	public string $when;
 
 	//----------------------------------------------------------------------------------- __construct

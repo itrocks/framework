@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Trigger\Schedule;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Trigger\Schedule;
 
 /**
@@ -24,9 +25,7 @@ class Hour_Range
 	public int $frequency = 0;
 
 	//------------------------------------------------------------------------------- $frequency_unit
-	/**
-	 * @values seconds, minutes, hours, days, months, years
-	 */
+	#[Values('seconds, minutes, hours, days, months, years')]
 	public string $frequency_unit = '';
 
 	//----------------------------------------------------------------------------------------- $from

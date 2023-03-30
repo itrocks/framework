@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\Validate;
 
 use ITRocks\Framework\AOP\Joinpoint\Before_Method;
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
@@ -30,6 +31,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -193,7 +195,7 @@ class Validator implements Registerable
 	 * @param $property Reflection_Property
 	 * @return Component
 	 */
-	private function createSubObject(object $object, Reflection_Property $property) : Component
+	private function createSubObject(object $object, Reflection_Property $property) : object
 	{
 		/** @noinspection PhpUnhandledExceptionInspection var annotation values must be valid */
 		$link_class = new Reflection\Reflection_Class($property->getType()->getElementTypeAsString());
@@ -386,10 +388,11 @@ class Validator implements Registerable
 			'signed'     => Property\Signed_Annotation::class,
 			'unique'     => Property\Unique_Annotation::class,
 			'validate'   => Property\Validate_Annotation::class,
-			'values'     => Property\Values_Annotation::class,
 			'var'        => Property\Var_Annotation::class,
 			'warning'    => Property\Warning_Annotation::class,
 		]);
+		$builder = Builder::current();
+		$builder->setReplacement(Values::class, Property\Values::class);
 	}
 
 	//-------------------------------------------------------------------------------------- validate
@@ -428,11 +431,11 @@ class Validator implements Registerable
 	//---------------------------------------------------------------------------- validateAnnotation
 	/**
 	 * @param $object     object
-	 * @param $annotation Reflection\Annotation|Annotation
+	 * @param $annotation Reflection\Annotation|Reflection\Attribute|Annotation
 	 * @return string|true|null @values Result::const
 	 */
 	protected function validateAnnotation(
-		object $object, Reflection\Annotation|Annotation $annotation
+		object $object, Reflection\Annotation|Reflection\Attribute|Annotation $annotation
 	) : bool|string|null
 	{
 		$annotation->object = $object;
@@ -480,6 +483,32 @@ class Validator implements Registerable
 		return $result;
 	}
 
+	//---------------------------------------------------------------------------- validateAttributes
+	/**
+	 * Returns true if the object follows attribute rules
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $object     object
+	 * @param $attributes Reflection\Reflection_Attribute[]
+	 * @return string|true|null @values Result::const
+	 */
+	protected function validateAttributes(object $object, array $attributes) : bool|string|null
+	{
+		$result = true;
+		foreach ($attributes as $attribute) {
+			if (is_array($attribute)) {
+				$result = Result::andResult($result, $this->validateAttributes($object, $attribute));
+			}
+			elseif (isA($attribute->getName(), Annotation::class)) {
+				/** @noinspection PhpUnhandledExceptionInspection Must be valid */
+				$attribute = $attribute->newInstance(true);
+				/** @var $attribute Annotation */
+				$result = Result::andResult($result, $this->validateAnnotation($object, $attribute));
+			}
+		}
+		return $result;
+	}
+	
 	//----------------------------------------------------------------------------- validateComponent
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
@@ -621,6 +650,9 @@ class Validator implements Registerable
 			// otherwise we validate all annotations, and recurse if is component
 			$result = Result::andResult($result, $this->validateAnnotations(
 				$object, $property->getAnnotations()
+			));
+			$result = Result::andResult($result, $this->validateAttributes(
+				$object, $property->getAttributes()
 			));
 			if (
 				Attribute\Property\Component::of($property)?->value

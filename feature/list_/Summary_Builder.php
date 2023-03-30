@@ -2,8 +2,8 @@
 namespace ITRocks\Framework\Feature\List_;
 
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Dao\Func\Where;
 use ITRocks\Framework\Dao\Func\Logical;
+use ITRocks\Framework\Dao\Func\Where;
 use ITRocks\Framework\Dao\Sql\Link;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Date_Format;
@@ -12,10 +12,10 @@ use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
-use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Join\Joins;
 use ITRocks\Framework\Sql\Value;
@@ -41,25 +41,14 @@ class Summary_Builder
 	const SUB_TRANSLATE      = 2;
 
 	//---------------------------------------------------------------------------------------- $joins
-	/**
-	 * @var Joins
-	 */
 	private Joins $joins;
 
 	//------------------------------------------------------------------------------------- $sql_link
-	/**
-	 * Sql data link used for identifiers
-	 *
-	 * @var Link
-	 */
+	/** Sql data link used for identifiers */
 	private Link $sql_link;
 
 	//---------------------------------------------------------------------------------- $where_array
-	/**
-	 * Where array expression, keys are columns names
-	 *
-	 * @var array|Where|null
-	 */
+	/** Where array expression, keys are columns names */
 	private array|Where|null $where_array;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -85,9 +74,6 @@ class Summary_Builder
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->build();
@@ -305,8 +291,7 @@ class Summary_Builder
 			= '/([0-9%_]{4})-([0-9%_]{2})-([0-9%_]{2})(?:\s([0-9%_]{2}):([0-9%_]{2}):([0-9%_]{2}))?/x';
 		$property = $this->getProperty($property_path);
 		// check if we are on a enum field with @values list of values
-		$values = ($property ? $property->getListAnnotation('values')->values() : []);
-		if (count($values)) {
+		if ($property && Values::of($property)?->values) {
 			[$translation_delimiter, $sub_translation_delimiter]
 				= $this->getTranslationDelimiters($translate_flag);
 			return DQ . $translation_delimiter . $sub_translation_delimiter
@@ -337,7 +322,7 @@ class Summary_Builder
 	 * Build SQL WHERE section for a unique value
 	 *
 	 * @param $path   string search property path
-	 * @param $value  mixed search property value
+	 * @param $value  mixed  search property value
 	 * @param $prefix string Prefix for column name
 	 * @return string
 	 */
@@ -349,12 +334,7 @@ class Summary_Builder
 	}
 
 	//----------------------------------------------------------------------------------- getProperty
-	/**
-	 * get the property of a path
-	 *
-	 * @param $path string
-	 * @return ?Reflection_Property
-	 */
+	/** Gets the property of a path */
 	public function getProperty(string $path) : ?Reflection_Property
 	{
 		// old way to do. keep for backward compatibility

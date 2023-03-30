@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Logger\Entry;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Trigger\Action\Status;
@@ -23,21 +24,15 @@ class Action
 {
 
 	//--------------------------------------------------------------------------------------- $action
-	/**
-	 * @max_length 50000
-	 */
+	/** @max_length 50000 */
 	public string $action = '';
 
 	//-------------------------------------------------------------------------------------- $as_user
-	/**
-	 * @conditions keep_user=false
-	 */
+	/** @conditions keep_user=false */
 	public ?User $as_user;
 
 	//------------------------------------------------------------------------------------ $keep_user
-	/**
-	 * Execute using the user that triggered the action
-	 */
+	/** Execute using the user that triggered the action */
 	public bool $keep_user = false;
 
 	//----------------------------------------------------------------------------------------- $last
@@ -57,21 +52,15 @@ class Action
 	public Date_Time|string $next;
 
 	//--------------------------------------------------------------------------------------- $parent
-	/**
-	 * @user invisible
-	 */
+	/** @user invisible */
 	public ?Action $parent;
 
 	//--------------------------------------------------------------------------- $request_identifier
-	/**
-	 * This identifier, if set, matches Logger\Entry\Data::$request_identifier
-	 */
+	/** This identifier, if set, matches Logger\Entry\Data::$request_identifier */
 	public string $request_identifier = '';
 
 	//--------------------------------------------------------------------------------------- $status
-	/**
-	 * @values Status::const
-	 */
+	#[Values(Status::class)]
 	public string $status = Status::PENDING;
 
 	//----------------------------------------------------------------------------------- __construct

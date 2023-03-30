@@ -5,6 +5,7 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\User;
 
 /**
@@ -22,9 +23,7 @@ class Authentication
 	const DISCONNECT   = Feature::F_DISCONNECT;
 
 	//--------------------------------------------------------------------------------------- $action
-	/**
-	 * @values self::const
-	 */
+	#[Values(self::class)]
 	public string $action;
 
 	//---------------------------------------------------------------------------------------- $https

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Sql;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use mysqli;
 
@@ -14,41 +15,23 @@ class Foreign_Key implements Sql\Foreign_Key
 	use Foreign_Key_Builder_Property;
 
 	//----------------------------------------------------------------------------------- $Constraint
-	/**
-	 * @var string
-	 */
 	private string $Constraint;
 
 	//--------------------------------------------------------------------------------------- $Fields
-	/**
-	 * @var string
-	 */
 	private string $Fields;
 
 	//------------------------------------------------------------------------------------ $On_delete
-	/**
-	 * @values CASCADE, NO ACTION, RESTRICT, SET NULL
-	 * @var string
-	 */
+	#[Values('CASCADE, NO ACTION, RESTRICT, SET NULL')]
 	private string $On_delete = 'RESTRICT';
 
 	//------------------------------------------------------------------------------------ $On_update
-	/**
-	 * @values CASCADE, NO ACTION, RESTRICT, SET NULL
-	 * @var string
-	 */
+	#[Values('CASCADE, NO ACTION, RESTRICT, SET NULL')]
 	private string $On_update = 'RESTRICT';
 
 	//----------------------------------------------------------------------------- $Reference_fields
-	/**
-	 * @var string
-	 */
 	private string $Reference_fields;
 
 	//------------------------------------------------------------------------------ $Reference_table
-	/**
-	 * @var string
-	 */
 	private string $Reference_table;
 
 	//------------------------------------------------------------------------------------- buildLink

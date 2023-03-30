@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Sql;
 
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\String_Class;
@@ -34,7 +34,7 @@ abstract class Value
 			isStrictNumeric($value)
 			&& strval($value)[0]
 			&& (!$type || $type->isNumeric() || $type->isClass())
-			&& (!$property || !Values_Annotation::of($property)->value)
+			&& (!$property || !Values::of($property)?->values)
 		) {
 			$string_value = strval($value);
 		}

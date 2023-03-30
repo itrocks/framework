@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Dao\Sql;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 
 /**
  * An object representation of a mysql index key
@@ -10,82 +11,43 @@ class Key implements Sql\Key
 {
 
 	//---------------------------------------------------------------------------------- $Cardinality
-	/**
-	 * @var integer
-	 */
 	private int $Cardinality;
 
 	//------------------------------------------------------------------------------------ $Collation
-	/**
-	 * @var string
-	 */
 	private string $Collation;
 
 	//---------------------------------------------------------------------------------- $Column_name
-	/**
-	 * @var string
-	 */
 	private string $Column_name;
 
 	//-------------------------------------------------------------------------------------- $Comment
-	/**
-	 * @var string
-	 */
 	private string $Comment;
 
 	//-------------------------------------------------------------------------------- $Index_comment
-	/**
-	 * @var string
-	 */
 	private string $Index_comment = '';
 
 	//----------------------------------------------------------------------------------- $Index_type
-	/**
-	 * @values BTREE, FULLTEXT, SPATIAL, UNIQUE,
-	 * @var string
-	 */
+	#[Values('BTREE, FULLTEXT, SPATIAL, UNIQUE,')]
 	private string $Index_type = '';
 
 	//------------------------------------------------------------------------------------- $Key_name
-	/**
-	 * @var string
-	 */
 	private string $Key_name;
 
 	//----------------------------------------------------------------------------------- $Non_unique
-	/**
-	 * @var boolean
-	 */
 	private bool $Non_unique;
 
 	//----------------------------------------------------------------------------------------- $Null
-	/**
-	 * @var boolean
-	 */
 	private bool $Null;
 
 	//--------------------------------------------------------------------------------------- $Packed
-	/**
-	 * @var boolean
-	 */
 	private bool $Packed;
 
 	//--------------------------------------------------------------------------------- $Seq_in_index
-	/**
-	 * @var integer
-	 */
 	private int $Seq_in_index;
 
 	//------------------------------------------------------------------------------------- $Sub_part
-	/**
-	 * @var mixed
-	 */
 	private mixed $Sub_part;
 
 	//---------------------------------------------------------------------------------------- $Table
-	/**
-	 * @var string
-	 */
 	private string $Table;
 
 	//----------------------------------------------------------------------------------- __construct

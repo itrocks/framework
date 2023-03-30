@@ -12,6 +12,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -87,26 +88,16 @@ class Maintainer implements Configurable, Registerable
 	private array $already = [];
 
 	//-------------------------------------------------------------------------- $create_empty_tables
-	/**
-	 * Set this to true if you want empty implicit tables to be created even if it will be empty
-	 *
-	 * @var boolean
-	 */
+	/** Set this to true if you want empty implicit tables to be created even if it will be empty */
 	public bool $create_empty_tables = false;
 
 	//------------------------------------------------------------------------------ $exclude_classes
-	/**
-	 * @var string[] Class names
-	 */
+	/** @var string[] Class names */
 	public array $exclude_classes = [];
 
 	//--------------------------------------------------------------------------------------- $notice
-	/**
-	 * If true notice column differences using error notice
-	 *
-	 * @values self::const local
-	 * @var string
-	 */
+	/** If true notice column differences using error notice */
+	#[Values(self::class, Values::LOCAL)]
 	public string $notice = '';
 
 	//------------------------------------------------------------------------------------- $requests
@@ -118,23 +109,13 @@ class Maintainer implements Configurable, Registerable
 	public array $requests = [];
 
 	//----------------------------------------------------------------------------------- $simulation
-	/**
-	 * If true Maintainer is in simulation mode
-	 *
-	 * @var boolean
-	 */
+	/** If true Maintainer is in simulation mode */
 	private bool $simulation = false;
 
 	//-------------------------------------------------------------------------------------- $verbose
-	/**
-	 * @var boolean
-	 */
 	public bool $verbose = false;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $configuration array
-	 */
 	public function __construct($configuration = [])
 	{
 		foreach ($configuration as $property_name => $property_value) {

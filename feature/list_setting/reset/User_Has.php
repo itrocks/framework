@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature\List_Setting\Reset;
 
 use ITRocks\Framework\Feature\List_Setting\Reset;
 use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\User;
 
 /**
@@ -13,11 +14,7 @@ trait User_Has
 {
 
 	//---------------------------------------------------------------------------------- $reset_lists
-	/**
-	 * @see Reset
-	 * @values Reset::const
-	 * @var string
-	 */
+	#[Values(Reset::class)]
 	public string $reset_lists = '';
 
 }

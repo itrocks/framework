@@ -9,6 +9,7 @@ use ITRocks\Framework\RAD\Feature\Module;
 use ITRocks\Framework\RAD\Feature\Status;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 
@@ -24,15 +25,11 @@ class Feature
 {
 
 	//----------------------------------------------------------------------- $application_class_name
-	/**
-	 * @user invisible
-	 */
+	/** @user invisible */
 	public string $application_class_name;
 
 	//--------------------------------------------------------------------------------------- $bridge
-	/**
-	 * @user invisible
-	 */
+	/** @user invisible */
 	public bool $bridge;
 
 	//---------------------------------------------------------------------------------- $description
@@ -47,22 +44,16 @@ class Feature
 	public ?Module $module;
 
 	//---------------------------------------------------------------------------- $plugin_class_name
-	/**
-	 * @user invisible
-	 */
+	/** @user invisible */
 	public string $plugin_class_name;
 
 	//--------------------------------------------------------------------------------------- $status
-	/**
-	 * @user readonly
-	 * @values Status::const
-	 */
+	/** @user readonly */
+	#[Values(Status::class)]
 	public string $status = Status::AVAILABLE;
 
 	//----------------------------------------------------------------------------------------- $tags
-	/**
-	 * @var Tag[]
-	 */
+	/** @var Tag[] */
 	public array $tags;
 
 	//---------------------------------------------------------------------------------------- $title

@@ -36,9 +36,7 @@ class Getter extends Property implements Has_Get_Default_Arguments, Has_Set_Fina
 	}
 
 	//-------------------------------------------------------------------------------------- setFinal
-	/**
-	 * @throws ReflectionException
-	 */
+	/** @throws ReflectionException */
 	public function setFinal(Reflection|Reflection_Property $reflection) : void
 	{
 		if (($this->callable[1] ?? false) === static::LINK) {

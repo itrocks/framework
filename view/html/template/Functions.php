@@ -13,7 +13,6 @@ use ITRocks\Framework\Dao\Func\Now;
 use ITRocks\Framework\Feature\Condition;
 use ITRocks\Framework\Feature\Edit\Html_Builder_Property;
 use ITRocks\Framework\Feature\List_;
-use ITRocks\Framework\Feature\Validate\Property\Values_Annotation;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Collection;
 use ITRocks\Framework\Reflection\Annotation;
@@ -24,6 +23,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -1566,7 +1566,7 @@ class Functions
 	{
 		/** @var $property Reflection_Property */
 		$property = reset($template->objects);
-		$values   = Values_Annotation::of($property)->values();
+		$values   = Values::of($property)?->values ?: [];
 		if (!$values && $property->getType()->isClass()) {
 			$class_name = $property->getType()->getElementTypeAsString();
 			$values     = Dao::readAll($class_name, Dao::sort());

@@ -3,8 +3,8 @@ namespace ITRocks\Framework\Feature\List_\Search_Parameters_Parser;
 
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Feature\List_\Exception;
-use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Date_Time;
@@ -117,7 +117,7 @@ abstract class Range
 		return ($search_range !== false)
 			&& in_array($type_string, [Date_Time::class, Type::FLOAT, Type::INTEGER, Type::STRING])
 			// TODO NORMAL search range with @values crashes now, but it could be done
-			&& (!$property || !Values_Annotation::of($property)->value);
+			&& (!$property || !Values::of($property)?->values);
 	}
 
 }

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Sql;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql\Value;
@@ -35,8 +36,6 @@ class Column implements Sql\Column
 	/**
 	 * Default value for the column
 	 * May be empty, null, or a value of the same type as the column.
-	 *
-	 * @var mixed
 	 */
 	private mixed $Default;
 
@@ -46,18 +45,12 @@ class Column implements Sql\Column
 	 * A list of options, the most common is 'auto_increment' for primary auto-increment indexes.
 	 *
 	 * Cannot be null : no extra = ''
-	 *
-	 * @values auto_increment
-	 * @var string
 	 */
+	#[Values(self::AUTO_INCREMENT, '')]
 	private string $Extra = '';
 
 	//---------------------------------------------------------------------------------------- $Field
-	/**
-	 * Mysql column name
-	 *
-	 * @var string
-	 */
+	/** Mysql column name */
 	private string $Field;
 
 	//------------------------------------------------------------------------------------------ $Key
@@ -65,22 +58,18 @@ class Column implements Sql\Column
 	 * Is the data part of an index key ?
 	 *
 	 * Cannot be null : no key = ''
-	 *
-	 * @values PRI, MUL, UNI,
-	 * @var string
 	 */
+	#[Values('PRI, MUL, UNI,')]
 	private string $Key = '';
 
 	//----------------------------------------------------------------------------------------- $Null
 	/**
 	 * Can the data be null ?
 	 *
-	 * Cannot be null : not null = 'NO'
-	 *
-	 * @values YES, NO
-	 * @var string
+	 * Cannot be null : not null = self::NO
 	 */
-	private string $Null = 'NO';
+	#[Values(self::NO, self::YES)]
+	private string $Null = self::NO;
 
 	//----------------------------------------------------------------------------------------- $Type
 	/**
@@ -95,8 +84,6 @@ class Column implements Sql\Column
 	 * where 'p' = 'precision', 'l' = 'length', 'd' = 'decimals', 'v' = 'value'
 	 * numeric types can be followed with ' unsigned'
 	 * text types can be followed with 'CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci'
-	 *
-	 * @var string
 	 */
 	private string $Type;
 

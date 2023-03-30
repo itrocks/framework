@@ -11,36 +11,18 @@ abstract class Net_Account
 {
 
 	//----------------------------------------------------------------------------------------- $host
-	/**
-	 * @var string
-	 */
 	public string $host = '';
 
 	//---------------------------------------------------------------------------------------- $login
-	/**
-	 * @var string
-	 */
 	public string $login = '';
 
 	//------------------------------------------------------------------------------------- $password
-	/**
-	 * @var string
-	 */
 	public string $password = '';
 
 	//----------------------------------------------------------------------------------------- $port
-	/**
-	 * @var integer
-	 */
 	public int $port = 25;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $host     string|null
-	 * @param $login    string|null
-	 * @param $password string|null
-	 * @param $port     integer|null
-	 */
 	public function __construct(
 		string $host = null, string $login = null, string $password = null, int $port = null
 	) {
@@ -51,9 +33,6 @@ abstract class Net_Account
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->host . ':' . $this->login;

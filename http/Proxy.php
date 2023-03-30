@@ -1,6 +1,9 @@
 <?php
 namespace ITRocks\Framework\Http;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Unit;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
+
 /**
  * Http Proxy
  *
@@ -11,20 +14,11 @@ class Proxy
 {
 
 	//-------------------------------------------------------------------------------------- STANDARD
-	/**
-	 * Use new Proxy(Proxy::STANDARD) to get a proxy ready with standard headers and parameters
-	 *
-	 * @var null
-	 */
+	/** Use new Proxy(Proxy::STANDARD) to get a proxy ready with standard headers and parameters */
 	const STANDARD = null;
 
 	//------------------------------------------------------------------------------- $accept_charset
-	/**
-	 * Accept charset header
-	 * Unset this to avoid send it
-	 *
-	 * @var string
-	 */
+	/** Accept charset header. Unset this to avoid send it */
 	public string $accept_charset = 'ISO-8859-1,utf-8;q=0.7,*;q=0.7';
 
 	//------------------------------------------------------------------------------------ $automatic
@@ -32,42 +26,24 @@ class Proxy
 	 * In automatic mode, set when calling the constructor :
 	 * - $this->request_headers are automatically filled with apache_request_headers()
 	 * - $this->response_headers are used for header() calls after a positive request response
-	 *
-	 * @var boolean
 	 */
 	public bool $automatic = true;
 
 	//----------------------------------------------------------------------------------------- $data
-	/**
-	 * The request data to send
-	 *
-	 * @var string|string[]
-	 */
+	/** @var string|string[] The request data to send */
 	public array|string $data = [];
 
 	//---------------------------------------------------------------------------------------- $errno
-	/**
-	 * The last error number
-	 *
-	 * @var integer
-	 */
+	/** The last error number */
 	public int $errno;
 
 	//---------------------------------------------------------------------------------------- $error
-	/**
-	 * The last error message
-	 *
-	 * @var string
-	 */
+	/** The last error message */
 	public string $error;
 
 	//--------------------------------------------------------------------------------------- $method
-	/**
-	 * The method to use for the request
-	 *
-	 * @values GET, POST
-	 * @var string
-	 */
+	/** The method to use for the request */
+	#[Values(Http::GET, Http::POST)]
 	public string $method = Http::GET;
 
 	//------------------------------------------------------------------------------ $request_headers
@@ -80,11 +56,7 @@ class Proxy
 	public array $request_headers = [];
 
 	//------------------------------------------------------------------------------------- $response
-	/**
-	 * The content of the HTTP response
-	 *
-	 * @var string
-	 */
+	/** @var string The content of the HTTP response */
 	private string $response;
 
 	//----------------------------------------------------------------------------- $response_headers
@@ -97,33 +69,19 @@ class Proxy
 	public array $response_headers;
 
 	//---------------------------------------------------------------------------------- $retry_count
-	/**
-	 * Retry if there is an error during reading the response of the call
-	 *
-	 * @var integer
-	 */
+	/** Retry if there is an error during reading the response of the call */
 	public int $retry_count = 0;
 
 	//---------------------------------------------------------------------------------- $retry_delay
-	/**
-	 * Delay between each retry (default : 1000ms = 1s)
-	 *
-	 * @var integer milliseconds
-	 */
+	/** Delay between each retry (default : 1000ms = 1s) */
+	#[Unit('ms')]
 	public int $retry_delay = 1000;
 
 	//------------------------------------------------------------------------------------------ $url
-	/**
-	 * The URL to call for the HTTP request
-	 *
-	 * @var string
-	 */
+	/** The URL to call for the HTTP request */
 	public string $url = '';
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $automatic boolean|string
-	 */
 	public function __construct(bool|string $automatic = true)
 	{
 		$this->automatic = ($automatic === true);
@@ -171,9 +129,7 @@ class Proxy
 	}
 
 	//--------------------------------------------------------------------------------- debugFullInfo
-	/**
-	 * Display debugging information
-	 */
+	/** Display debugging information */
 	public function debugFullInfo() : void
 	{
 		echo '<pre>REQUEST_HEADERS = '  . print_r($this->request_headers, true)  . '</pre>';
@@ -186,8 +142,6 @@ class Proxy
 	/**
 	 * Call this instead of sendResponse() to send headers and response with redirections replaced
 	 * by displayed links
-	 *
-	 * @param $buffer string
 	 */
 	public function debugRedirect(string $buffer) : void
 	{
@@ -228,11 +182,7 @@ class Proxy
 	}
 
 	//----------------------------------------------------------------------------------- getResponse
-	/**
-	 * Get HTTP response
-	 *
-	 * @return string
-	 */
+	/** Get HTTP response */
 	public function getResponse() : string
 	{
 		$response = $this->response;
@@ -285,12 +235,7 @@ class Proxy
 	}
 
 	//----------------------------------------------------------------------------- getResponseHeader
-	/**
-	 * Get an HTTP response header from $response_headers
-	 *
-	 * @param $header string
-	 * @return ?string
-	 */
+	/** Get an HTTP response header from $response_headers */
 	public function getResponseHeader(string $header) : ?string
 	{
 		foreach ($this->response_headers as $response_header) {
@@ -303,11 +248,7 @@ class Proxy
 	}
 
 	//-------------------------------------------------------------------------- removeResponseHeader
-	/**
-	 * Remove response header having name $header
-	 *
-	 * @param $header string
-	 */
+	/** Remove response header having name $header */
 	public function removeResponseHeader(string $header) : void
 	{
 		$header .= ': ';
@@ -325,7 +266,7 @@ class Proxy
 	 *
 	 * @param $url    string|null
 	 * @param $data   string|string[]|null
-	 * @param $method string|null GET, POST
+	 * @param $method string|null @values Http::GET, Http::POST
 	 * @param $retry  integer|null
 	 * @return boolean true if job done, false if any error occurred
 	 */
@@ -474,9 +415,6 @@ class Proxy
 	}
 
 	//----------------------------------------------------------------------------------- setResponse
-	/**
-	 * @param $response string
-	 */
 	public function setResponse(string $response) : void
 	{
 		$this->response = ($this->getResponseHeader('Content-Encoding') === 'gzip')
@@ -535,7 +473,7 @@ class Proxy
 	/**
 	 * Set standard request headers
 	 *
-	 * @param $method string Http::GET or Http::POST
+	 * @param $method string @values Http::GET, Http::POST
 	 */
 	public function setStandardRequestHeaders(string $method = Http::GET) : void
 	{

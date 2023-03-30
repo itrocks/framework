@@ -9,6 +9,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -143,7 +144,7 @@ class Columns implements With_Build_Column
 						$property = new Reflection_Property($class_name, $path);
 						if (
 							($property->getAnnotation('translate')->value === 'common')
-							|| $property->getListAnnotation('values')->value
+							|| Values::of($property)?->values
 						) {
 							$alias = $path;
 							$path  = Translation::class

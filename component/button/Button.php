@@ -12,6 +12,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
@@ -23,44 +24,27 @@ use ITRocks\Framework\View;
 class Button
 {
 
-	//---------------------------------------------------------------------------------------- CLASS_
-	const CLASS_ = 'class';
-
-	//----------------------------------------------------------------------------------------- COLOR
-	const COLOR = 'color';
-
-	//------------------------------------------------------------------------------------------ DATA
-	const DATA = 'data';
-
-	//------------------------------------------------------------------------------------------ HINT
-	const HINT = 'hint';
-
-	//---------------------------------------------------------------------------------------- OBJECT
-	/**
-	 * The button represents an object you can drag-and-drop (e.g. to trashcan)
-	 */
-	const OBJECT = 'object';
-
-	//----------------------------------------------------------------------------------- SUB_BUTTONS
+	//----------------------------------------------------------------------- Configuration CONSTANTS
+	const CLASS_      = 'class';
+	const COLOR       = 'color';
+	const DATA        = 'data';
+	const HINT        = 'hint';
 	const SUB_BUTTONS = 'sub_buttons';
 
+	//---------------------------------------------------------------------------------------- OBJECT
+	/** The button represents an object you can drag-and-drop (e.g. to trashcan) */
+	const OBJECT = 'object';
+
 	//---------------------------------------------------------------------------------------- $align
-	/**
-	 * @see Align
-	 * @values Align::const
-	 */
+	#[Values(Align::class)]
 	public string $align = '';
 	
 	//--------------------------------------------------------------------------------- $cancel_label
-	/**
-	 * Label of the cancel button in the confirm dialog
-	 */
+	/** Label of the cancel button in the confirm dialog */
 	public string $cancel_label = '';
 
 	//-------------------------------------------------------------------------------------- $caption
-	/**
-	 * Button caption
-	 */
+	/** Button caption */
 	public string $caption = '';
 
 	//---------------------------------------------------------------------------------------- $class
@@ -100,27 +84,19 @@ class Button
 	public string $conditions = '';
 
 	//-------------------------------------------------------------------------------- $confirm_label
-	/**
-	 * Label of the confirm button in the confirm dialog
-	 */
+	/** Label of the confirm button in the confirm dialog */
 	public string $confirm_label = '';
 
 	//------------------------------------------------------------------------------ $confirm_message
-	/**
-	 * Message to display to user in the confirm dialog
-	 */
+	/** Message to display to user in the confirm dialog */
 	public string $confirm_message = '';
 
 	//----------------------------------------------------------------------------------------- $data
-	/**
-	 * @var float[]|integer[]|string[]
-	 */
+	/** @var float[]|integer[]|string[] */
 	public array $data = [];
 
 	//---------------------------------------------------------------------------------- $data_object
-	/**
-	 * Object data linked to the button (optional)
-	 */
+	/** Object data linked to the button (optional) */
 	public mixed $data_object = null;
 
 	//-------------------------------------------------------------------------------------- $feature
@@ -132,9 +108,7 @@ class Button
 	public string $feature = '';
 
 	//----------------------------------------------------------------------------------------- $hint
-	/**
-	 * A hint for the link
-	 */
+	/** A hint for the link */
 	public string $hint = '';
 
 	//----------------------------------------------------------------------------------------- $link
@@ -147,9 +121,7 @@ class Button
 	public ?string $link = null;
 
 	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * @user invisible
-	 */
+	/** @user invisible */
 	public ?object $object = null;
 
 	//---------------------------------------------------------------------------------- $sub_buttons

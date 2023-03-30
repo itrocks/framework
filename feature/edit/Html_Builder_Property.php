@@ -16,6 +16,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User_Change;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Editor;
@@ -33,15 +34,9 @@ class Html_Builder_Property extends Html_Builder_Type
 {
 
 	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * @var ?object
-	 */
 	public ?object $object = null;
 
 	//------------------------------------------------------------------------------------- $property
-	/**
-	 * @var Reflection_Property
-	 */
 	protected Reflection_Property $property;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -157,9 +152,6 @@ class Html_Builder_Property extends Html_Builder_Type
 	}
 
 	//----------------------------------------------------------------------------------------- build
-	/**
-	 * @return string
-	 */
 	public function build() : string
 	{
 		switch (Link_Annotation::of($this->property)->value) {
@@ -172,9 +164,6 @@ class Html_Builder_Property extends Html_Builder_Type
 	}
 
 	//------------------------------------------------------------------------------- buildCollection
-	/**
-	 * @return string
-	 */
 	private function buildCollection() : string
 	{
 		if (!isset($this->template)) {
@@ -191,11 +180,6 @@ class Html_Builder_Property extends Html_Builder_Type
 	}
 
 	//------------------------------------------------------------------------------------ buildFloat
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $format boolean
-	 * @return Element
-	 */
 	protected function buildFloat(bool $format = true) : Element
 	{
 		if ($format) {
@@ -218,9 +202,6 @@ class Html_Builder_Property extends Html_Builder_Type
 	}
 
 	//-------------------------------------------------------------------------------------- buildMap
-	/**
-	 * @return string
-	 */
 	private function buildMap() : string
 	{
 		if (!isset($this->template)) {
@@ -253,9 +234,6 @@ class Html_Builder_Property extends Html_Builder_Type
 	}
 
 	//----------------------------------------------------------------------------------- buildSingle
-	/**
-	 * @return string
-	 */
 	protected function buildSingle() : string
 	{
 		foreach ($this->property->getAnnotations('view_data') as $annotation) {
@@ -322,7 +300,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	) : Element
 	{
 		$values_captions = [];
-		$values          = $this->property->getListAnnotation('values')->values();
+		$values          = Values::of($this->property)?->values ?: [];
 		foreach ($values as $value) {
 			$values_captions[$value] = Names::propertyToDisplay($value);
 		}
@@ -384,9 +362,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	}
 
 	//-------------------------------------------------------------------------------- loadConditions
-	/**
-	 * Load conditions with annotation and stock in attribute
-	 */
+	/** Load conditions with annotation and stock in attribute */
 	private function loadConditions() : void
 	{
 		if (!isset($this->conditions)) {

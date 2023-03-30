@@ -14,6 +14,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
@@ -46,9 +47,7 @@ class Locale implements Configurable, Registerable, Updatable
 	public bool $format_translate = true;
 
 	//------------------------------------------------------------------------------------- $language
-	/**
-	 * @impacts translations
-	 */
+	/** @impacts translations */
 	#[Setter]
 	public string $language;
 
@@ -60,9 +59,7 @@ class Locale implements Configurable, Registerable, Updatable
 	public Translator $translations;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $configuration array|null
-	 */
+	/** @param $configuration array|null */
 	public function __construct(mixed $configuration = null)
 	{
 		$current = self::current();
@@ -90,9 +87,7 @@ class Locale implements Configurable, Registerable, Updatable
 	}
 
 	//-------------------------------------------------------------------------------- methodToLocale
-	/**
-	 * Change an ISO value into a locale formatted value, knowing its method
-	 */
+	/** Change an ISO value into a locale formatted value, knowing its method */
 	public function methodToLocale(Reflection_Method $method, mixed $value) : string
 	{
 		return $this->toLocale($value, new Type($method->returns()));
@@ -124,9 +119,7 @@ class Locale implements Configurable, Registerable, Updatable
 	}
 
 	//------------------------------------------------------------------------------ propertyToLocale
-	/**
-	 * Change an ISO value into a locale formatted value, knowing its property
-	 */
+	/** Change an ISO value into a locale formatted value, knowing its property */
 	public function propertyToLocale(Reflection_Property $property, string $value = null) : string
 	{
 		$called_user_getter = false;
@@ -179,7 +172,7 @@ class Locale implements Configurable, Registerable, Updatable
 		elseif (
 			$this->format_translate
 			&& (
-				($values = $property->getListAnnotation('values')->value)
+				($values = Values::of($property)?->values)
 				|| ($property->getAnnotation('translate')->value === 'common')
 			)
 		) {
@@ -217,9 +210,7 @@ class Locale implements Configurable, Registerable, Updatable
 	}
 
 	//--------------------------------------------------------------------------------- setDateFormat
-	/**
-	 * @param $date_format Date_Format|string if a string, must be a date format (ie 'd/m/Y')
-	 */
+	/** @param $date_format Date_Format|string if a string, must be a date format (ie 'd/m/Y') */
 	public function setDateFormat(Date_Format|string $date_format) : void
 	{
 		$this->date_format = ($date_format instanceof Date_Format)
@@ -280,39 +271,35 @@ class Locale implements Configurable, Registerable, Updatable
 	 */
 	public function toLocale(mixed $value, Type $type = null) : string
 	{
-		if (isset($type)) {
-			if ($type->isBoolean()) {
-				if (!isset($value)) {
+		if (!isset($type)) {
+			return strval($value);
+		}
+		if ($type->isBoolean()) {
+			if (!isset($value)) {
+				return '';
+			}
+			return $value ? $this->translations->translate(YES) : $this->translations->translate(NO);
+		}
+		if ($type->isDateTime()) {
+			return $this->date_format->toLocale($value);
+		}
+		if ($type->isFloat()) {
+			if (!isStrictNumeric($value)) {
+				if (in_array($value, ['', null], true)) {
 					return '';
 				}
-				return $value ? $this->translations->translate(YES) : $this->translations->translate(NO);
+				trigger_error('Not a float ' . $value, E_USER_ERROR);
 			}
-			elseif ($type->isDateTime()) {
-				return $this->date_format->toLocale($value);
-			}
-			elseif ($type->isFloat()) {
-				if (!isStrictNumeric($value)) {
-					if (in_array($value, ['', null], true)) {
-						return '';
-					}
-					else {
-						trigger_error('Not a float ' . $value, E_USER_ERROR);
-					}
+			return $this->number_format->floatToLocale(floatval($value));
+		}
+		if ($type->isInteger()) {
+			if (!isStrictNumeric($value, false)) {
+				if (in_array($value, ['', null], true)) {
+					return '';
 				}
-				return $this->number_format->floatToLocale(floatval($value));
+				trigger_error('Not an integer ' . $value, E_USER_ERROR);
 			}
-			elseif ($type->isInteger()) {
-				if (!isStrictNumeric($value, false)) {
-					if (in_array($value, ['', null], true)) {
-						return '';
-					}
-					else {
-						trigger_error('Not an integer ' . $value, E_USER_ERROR);
-					}
-
-				}
-				return $this->number_format->integerToLocale(intval($value));
-			}
+			return $this->number_format->integerToLocale(intval($value));
 		}
 		return strval($value);
 	}

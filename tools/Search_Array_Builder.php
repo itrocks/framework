@@ -9,7 +9,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Translation;
 use ITRocks\Framework\Locale\Translator;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -154,7 +154,7 @@ class Search_Array_Builder
 			/** @noinspection PhpUnhandledExceptionInspection properties should be good */
 			$property = new Reflection_Property($class->name, $property_name);
 			$texts    = null;
-			if ($values = Values_Annotation::of($property)->values()) {
+			if ($values = (Values::of($property)?->values ?: [])) {
 				$texts = Loc::rtr($search . '%', $class->name, $property_name, $values);
 			}
 			elseif (!is_null($translate = $property->getAnnotation('translate')->value)) {

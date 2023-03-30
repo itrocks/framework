@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\View\Html\Dom;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 
 /**
@@ -16,9 +17,7 @@ abstract class Element
 	const BUILD_MODE_RAW = 'raw';
 
 	//--------------------------------------------------------------------------------------- $append
-	/**
-	 * @var Element[]
-	 */
+	/** @var Element[] */
 	public array $append = [];
 
 	//----------------------------------------------------------------------------------- $attributes
@@ -30,49 +29,29 @@ abstract class Element
 	private array $attributes = [];
 
 	//----------------------------------------------------------------------------------- $build_mode
-	/**
-	 * In AUTO mode, check content to format as list or table, in RAW strictly build content
-	 *
-	 * @values self::const
-	 * @var string
-	 */
+	/** In AUTO mode, check content to format as list or table, in RAW strictly build content */
+	#[Values(self::class)]
 	private string $build_mode = self::BUILD_MODE_AUTO;
 
 	//-------------------------------------------------------------------------------------- $content
-	/**
-	 * @var string|string[]|array|null array for string[][] for build_mode AUTO
-	 */
+	/** @var string|string[]|array|null array for string[][] for build_mode AUTO */
 	private array|string|null $content = null;
 
 	//-------------------------------------------------------------------------------------- $end_tag
-	/**
-	 * @var boolean
-	 */
 	protected bool $end_tag;
 
 	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
 	private string $name = '';
 
 	//-------------------------------------------------------------------------------------- $prepend
-	/**
-	 * @var Element[]
-	 */
+	/** @var Element[] */
 	public array $prepend = [];
 
 	//--------------------------------------------------------------------------------------- $styles
-	/**
-	 * @var string[]
-	 */
+	/** @var string[] */
 	private array $styles = [];
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $name    string|null
-	 * @param $end_tag boolean
-	 */
 	public function __construct(string $name = null, bool $end_tag = true)
 	{
 		if (isset($name)) $this->name = $name;
@@ -80,9 +59,6 @@ abstract class Element
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		if ($this->styles) {
@@ -107,10 +83,6 @@ abstract class Element
 	}
 
 	//-------------------------------------------------------------------------------------- addClass
-	/**
-	 * @param $class_name string
-	 * @return Attribute
-	 */
 	public function addClass(string $class_name) : Attribute
 	{
 		$class = $this->getAttribute('class');
@@ -124,28 +96,19 @@ abstract class Element
 	}
 
 	//---------------------------------------------------------------------------------- getAttribute
-	/**
-	 * @param $name string
-	 * @return ?Attribute
-	 */
 	public function getAttribute(string $name) : ?Attribute
 	{
 		return $this->attributes[$name] ?? null;
 	}
 
 	//--------------------------------------------------------------------------------- getAttributes
-	/**
-	 * @return Attribute[]
-	 */
+	/** @return Attribute[] */
 	public function getAttributes() : array
 	{
 		return $this->attributes;
 	}
 
 	//------------------------------------------------------------------------------------ getContent
-	/**
-	 * @return ?string
-	 */
 	public function getContent() : ?string
 	{
 		if (!is_array($this->content)) {
@@ -165,9 +128,6 @@ abstract class Element
 	}
 
 	//------------------------------------------------------------------------------ getContentAsList
-	/**
-	 * @return Unordered
-	 */
 	private function getContentAsList() : Unordered
 	{
 		$list = new Unordered();
@@ -178,18 +138,12 @@ abstract class Element
 	}
 
 	//------------------------------------------------------------------------------- getContentAsRaw
-	/**
-	 * @return string
-	 */
 	private function getContentAsRaw() : string
 	{
 		return $this->parseArray($this->content);
 	}
 
 	//----------------------------------------------------------------------------- getContentAsTable
-	/**
-	 * @return Table
-	 */
 	private function getContentAsTable() : Table
 	{
 		$table = new Table();
@@ -205,20 +159,12 @@ abstract class Element
 	}
 
 	//--------------------------------------------------------------------------------------- getData
-	/**
-	 * @param $name string
-	 * @return ?Attribute
-	 */
 	public function getData(string $name) : ?Attribute
 	{
 		return $this->getAttribute('data-' . $name);
 	}
 
 	//------------------------------------------------------------------------------------ parseArray
-	/**
-	 * @param $array array
-	 * @return string
-	 */
 	private function parseArray(array $array) : string
 	{
 		$content = '';
@@ -240,10 +186,6 @@ abstract class Element
 	}
 
 	//------------------------------------------------------------------------------- removeAttribute
-	/**
-	 * @param $name string
-	 * @return ?string
-	 */
 	public function removeAttribute(string $name) : ?string
 	{
 		if (!isset($this->attributes[$name])) {
@@ -255,10 +197,6 @@ abstract class Element
 	}
 
 	//------------------------------------------------------------------------------------ removeData
-	/**
-	 * @param $name string
-	 * @return ?string
-	 */
 	public function removeData(string $name) : ?string
 	{
 		if (!isset($this->attributes['data-' . $name])) {
@@ -278,10 +216,6 @@ abstract class Element
 	 * - call this with true to get boolean attributes visible
 	 *
 	 * This is why true is the default for $value
-	 *
-	 * @param $name  string
-	 * @param $value boolean|integer|string
-	 * @return Attribute
 	 */
 	public function setAttribute(string $name, bool|int|string $value = true) : Attribute
 	{
@@ -293,49 +227,31 @@ abstract class Element
 	}
 
 	//------------------------------------------------------------------------------ setAttributeNode
-	/**
-	 * @param $attribute Attribute
-	 * @return Attribute
-	 */
 	public function setAttributeNode(Attribute $attribute) : Attribute
 	{
 		return $this->attributes[$attribute->name] = $attribute;
 	}
 
 	//---------------------------------------------------------------------------------- setBuildMode
-	/**
-	 * @param $build_mode string
-	 */
 	public function setBuildMode(string $build_mode) : void
 	{
 		$this->build_mode = $build_mode;
 	}
 
 	//------------------------------------------------------------------------------------ setContent
-	/**
-	 * @param $content array|string|string[]|null mixed[] means string[][] for build_mode AUTO
-	 */
+	/** @param $content array|string|string[]|null mixed[] means string[][] for build_mode AUTO */
 	public function setContent(array|string|null $content) : void
 	{
 		$this->content = $content;
 	}
 
 	//--------------------------------------------------------------------------------------- setData
-	/**
-	 * @param $name  string
-	 * @param $value boolean|integer|string|null
-	 * @return Attribute
-	 */
 	public function setData(string $name, bool|int|string|null $value = true) : Attribute
 	{
 		return $this->setAttributeNode(new Attribute('data-' . $name, $value));
 	}
 
 	//-------------------------------------------------------------------------------------- setStyle
-	/**
-	 * @param $key   string
-	 * @param $value string
-	 */
 	public function setStyle(string $key, string $value) : void
 	{
 		$this->styles[$key] = new Style($key, $value);

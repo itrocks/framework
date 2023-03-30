@@ -10,19 +10,14 @@ interface Field
 {
 
 	//--------------------------------------------------------------------------------------- getName
-	/**
-	 * Gets the field name
-	 *
-	 * @return string
-	 */
+	/** Gets the field name */
 	public function getName() : string;
 
 	//--------------------------------------------------------------------------------------- getType
 	/**
 	 * Gets the type for the field
 	 *
-	 * @return Type
-	 * @values float, integer, string, Date_Time, *
+	 * @return Type @values float, integer, string, Date_Time, *
 	 */
 	public function getType() : Type;
 

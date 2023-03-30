@@ -3,6 +3,7 @@ namespace ITRocks\Framework\PHP;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Attribute\Property_Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Type;
@@ -16,9 +17,7 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	use Property_Has_Attributes { Property_Has_Attributes::getAttributesCommon as private; }
 
 	//----------------------------------------------------------------------------------- $attributes
-	/**
-	 * @var Reflection_Attribute[]
-	 */
+	/** @var Reflection_Attribute[] */
 	private array $attributes;
 
 	//---------------------------------------------------------------------------------------- $class
@@ -49,18 +48,14 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	protected ?Interfaces\Reflection_Property $parent;
 
 	//------------------------------------------------------------------------------------ $token_key
-	/**
-	 * The key for the T_VAR / T_PUBLIC / T_PROTECTED / T_PRIVATE token
-	 */
+	/** The key for the T_VAR / T_PUBLIC / T_PROTECTED / T_PRIVATE token */
 	private int $token_key;
 
 	//----------------------------------------------------------------------------------------- $type
 	public string $type = '';
 
 	//----------------------------------------------------------------------------------- $visibility
-	/**
-	 * @values T_PUBLIC, T_PROTECTED, T_PRIVATE
-	 */
+	#[Values(T_PUBLIC, T_PROTECTED, T_PRIVATE)]
 	public int $visibility;
 
 	//----------------------------------------------------------------------------------- __construct

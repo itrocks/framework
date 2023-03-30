@@ -6,6 +6,7 @@ use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Reflection\Reflection_Class_Common;
@@ -28,161 +29,103 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	const T_DOC_EXTENDS = 'T_DOC_EXTENDS';
 
 	//----------------------------------------------------------------------------------- $attributes
-	/**
-	 * @var Reflection_Attribute[]
-	 */
+	/** @var Reflection_Attribute[] */
 	private array $attributes;
 
 	//------------------------------------------------------------------------------------ $constants
-	/**
-	 * @var double[]|integer[]|string[] Constant name in key, constant value in value
-	 */
+	/** @var double[]|integer[]|string[] Constant name in key, constant value in value */
 	private array $constants;
 
 	//---------------------------------------------------------------------------------- $doc_comment
-	/**
-	 * @var string
-	 */
 	private string $doc_comment;
 
 	//----------------------------------------------------------------------------------- $interfaces
-	/**
-	 * @var Reflection_Class[]|string[]
-	 */
+	/** @var Reflection_Class[]|string[] */
 	private array $interfaces;
 
 	//--------------------------------------------------------------------------- $interfaces_methods
-	/**
-	 * @var Reflection_Method[]
-	 */
+	/** @var Reflection_Method[] */
 	private array $interfaces_methods;
 
 	//---------------------------------------------------------------------------------- $is_abstract
-	/**
-	 * @var boolean
-	 */
 	private bool $is_abstract;
 
 	//------------------------------------------------------------------------------------- $is_final
-	/**
-	 * @var boolean
-	 */
 	private bool $is_final;
 
 	//----------------------------------------------------------------------------------------- $line
-	/**
-	 * @var ?integer the line where the class declaration starts into source
-	 */
+	/** @var ?integer the line where the class declaration starts into source */
 	public ?int $line = null;
 
 	//-------------------------------------------------------------------------------------- $methods
-	/**
-	 * @var Reflection_Method[]
-	 */
+	/** @var Reflection_Method[] */
 	private array $methods;
 
 	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var ?string The name of the class
-	 */
+	/** The name of the class */
 	public ?string $name = null;
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
 	 * This parent is originally set as the parent class name, but is replaced by the replacement
 	 * class name from Builder if there is one by getParent() and getParentName()
-	 *
-	 * @var bool|Interfaces\Reflection_Class|string|null
 	 */
 	private bool|Interfaces\Reflection_Class|string|null $parent;
 
 	//---------------------------------------------------------------------------- $parent_class_name
-	/**
-	 * This is the parent class name written into the source code
-	 *
-	 * @var ?string
-	 */
+	/** This is the parent class name written into the source code */
 	private ?string $parent_class_name;
 
 	//----------------------------------------------------------------------------- $parent_constants
-	/**
-	 * @var double[]|integer[]|string[]
-	 */
+	/** @var double[]|integer[]|string[] */
 	private array $parent_constants;
 
 	//------------------------------------------------------------------------------- $parent_methods
-	/**
-	 * @var Reflection_Method[]
-	 */
+	/** @var Reflection_Method[] */
 	private array $parent_methods;
 
 	//---------------------------------------------------------------------------- $parent_properties
-	/**
-	 * @var Reflection_Property[]
-	 */
+	/** @var Reflection_Property[] */
 	private array $parent_properties;
 
 	//----------------------------------------------------------------------------------- $properties
-	/**
-	 * @var Reflection_Property[]
-	 */
+	/** @var Reflection_Property[] */
 	private array $properties;
 
 	//------------------------------------------------------------------------------------- $requires
-	/**
-	 * @var integer[] key is a string PHP file path, value is the line number where it is declared
-	 */
+	/** @var integer[] key is a string PHP file path, value is the line number where it is declared */
 	public array $requires;
 
 	//---------------------------------------------------------------------------- $short_trait_names
-	/**
-	 * @var string[] key is the full name of the class, value is the short name as in source code
-	 */
+	/** @var string[] key is the full name of the class, value is the short name as in source code */
 	public array $short_trait_names;
 
 	//--------------------------------------------------------------------------------------- $source
-	/**
-	 * The PHP source reflection object containing the class
-	 *
-	 * @var Reflection_Source
-	 */
+	/** The PHP source reflection object containing the class */
 	public Reflection_Source $source;
 
 	//----------------------------------------------------------------------------------------- $stop
-	/**
-	 * @var ?integer the line where the class declaration stops into source
-	 */
+	/** The line where the class declaration stops into source */
 	public ?int $stop = null;
 
 	//------------------------------------------------------------------------------ $trait_constants
-	/**
-	 * @var double[]|integer[]|string[]
-	 */
+	/** @var double[]|integer[]|string[] */
 	private array $trait_constants;
 
 	//--------------------------------------------------------------------------------------- $traits
-	/**
-	 * @var Reflection_Class[]|string[]
-	 */
+	/** @var Reflection_Class[]|string[] */
 	private array $traits;
 
 	//------------------------------------------------------------------------------- $traits_methods
-	/**
-	 * @var Reflection_Method[]
-	 */
+	/** @var Reflection_Method[] */
 	private array $traits_methods;
 
 	//---------------------------------------------------------------------------- $traits_properties
-	/**
-	 * @var Reflection_Property[]
-	 */
+	/** @var Reflection_Property[] */
 	private array $traits_properties;
 
 	//----------------------------------------------------------------------------------------- $type
-	/**
-	 * @values T_CLASS, T_INTERFACE, T_TRAIT
-	 * @var ?integer
-	 */
+	#[Values(T_CLASS, T_INTERFACE, T_TRAIT)]
 	public ?int $type = null;
 
 	//----------------------------------------------------------------------------------- __construct

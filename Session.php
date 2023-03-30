@@ -2,6 +2,7 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\Plugin\Manager;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 
 /**
  * A class to manage variables and objects that are kept for the session time
@@ -14,44 +15,26 @@ class Session
 	const PLUGINS                 = 'plugins';
 
 	//--------------------------------------------------------------------------------------- CURRENT
-	/**
-	 * A 'current' constant used for array storage / current method dynamic calls
-	 */
+	/** A 'current' constant used for array storage / current method dynamic calls */
 	const CURRENT = 'current';
 
 	//---------------------------------------------------------------------- $configuration_file_name
-	/**
-	 * @var string
-	 */
 	public string $configuration_file_name;
 
 	//-------------------------------------------------------------------------------------- $current
-	/**
-	 * @var object[]|string[]
-	 */
+	/** @var object[]|string[] */
 	private array $current;
 
 	//--------------------------------------------------------------------------------------- $domain
-	/**
-	 * Same as Configuration::$domain
-	 *
-	 * @var string
-	 */
+	/** Same as Configuration::$domain */
 	public string $domain;
 
 	//---------------------------------------------------------------------------------- $environment
-	/**
-	 * Same as Configuration::$environment
-	 *
-	 * @values development, production, test
-	 * @var string
-	 */
+	/** Same as Configuration::$environment */
+	#[Values('development, production, test')]
 	public string $environment;
 
 	//-------------------------------------------------------------------------------------- $plugins
-	/**
-	 * @var Manager
-	 */
 	public Manager $plugins;
 
 	//-------------------------------------------------------------------------------------- $stopped
@@ -63,7 +46,6 @@ class Session
 	 * Do not set this directly to true : call stop()
 	 *
 	 * @see stop()
-	 * @var boolean
 	 */
 	public bool $stopped = false;
 
@@ -73,15 +55,10 @@ class Session
 	 * Application::current()->getTemporaryFilesPath()
 	 *
 	 * Default will be /tmp/Application_Class_Name
-	 *
-	 * @var ?string
 	 */
 	public ?string $temporary_directory;
 
 	//----------------------------------------------------------------------------------- __serialize
-	/**
-	 * @return array
-	 */
 	public function __serialize() : array
 	{
 		$data = [
@@ -104,9 +81,6 @@ class Session
 	}
 
 	//--------------------------------------------------------------------------------- __unserialize
-	/**
-	 * @param $serialized array
-	 */
 	public function __unserialize(array $serialized) : void
 	{
 		$data = $serialized;
@@ -153,30 +127,21 @@ class Session
 	}
 
 	//------------------------------------------------------------------------------------ domainName
-	/**
-	 * @example itrocks.org
-	 * @return string
-	 */
+	/** @example itrocks.org */
 	public function domainName() : string
 	{
 		return str_contains($this->domain, '://') ? parse_url($this->domain)['host'] : $this->domain;
 	}
 
 	//------------------------------------------------------------------------------------ domainPath
-	/**
-	 * @example application
-	 * @return string
-	 */
+	/** @example application */
 	public function domainPath() : string
 	{
 		return str_contains($this->domain, '://') ? parse_url($this->domain)['path'] : '';
 	}
 
 	//---------------------------------------------------------------------------------- domainScheme
-	/**
-	 * @example http, https
-	 * @return string
-	 */
+	/** @example http, https */
 	public function domainScheme() : string
 	{
 		return (str_contains($this->domain, '://') ? parse_url($this->domain)['scheme'] : '')
@@ -252,11 +217,7 @@ class Session
 	}
 
 	//---------------------------------------------------------------------------- getApplicationName
-	/**
-	 * Gets the current application name without having to unserialize it if serialized
-	 *
-	 * @return string
-	 */
+	/** Gets the current application name without having to unserialize it if serialized */
 	public function getApplicationName() : string
 	{
 		$current = $this->current[Application::class];

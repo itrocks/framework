@@ -6,6 +6,7 @@ use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Reflection\Attribute\Class_\Implement;
+use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use TypeError;
 
@@ -45,6 +46,16 @@ trait Annotation
 		// We could read uninitialized values as validating means object is not guaranteed complete
 		catch (TypeError) {
 			return null;
+		}
+	}
+
+	//-------------------------------------------------------------------------------------- setFinal
+	public function setFinal(Interfaces\Reflection|Reflection_Property $reflection) : void
+	{
+		$this->property = $reflection;
+		if (method_exists('parent', 'setFinal')) {
+			/** @noinspection PhpMultipleClassDeclarationsInspection */
+			parent::setFinal($reflection);
 		}
 	}
 

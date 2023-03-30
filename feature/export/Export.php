@@ -10,6 +10,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -25,21 +26,12 @@ class Export
 {
 
 	//------------------------------------------------------------------------------- $all_properties
-	/**
-	 * @var boolean
-	 */
 	public bool $all_properties = false;
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
 	public string $class_name;
 
 	//------------------------------------------------------------------------------------ $selection
-	/**
-	 * @var Selection
-	 */
 	public Selection $selection;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -108,9 +100,6 @@ class Export
 	}
 
 	//---------------------------------------------------------------------------------------- export
-	/**
-	 * @return string
-	 */
 	public function export() : string
 	{
 		$selection_properties = $this->all_properties ? $this->allProperties() : [];
@@ -152,7 +141,7 @@ class Export
 				if ($property->getType()->isDateTime()) {
 					$date_times[$property_path] = true;
 				}
-				if ($property->getListAnnotation('values')->values()) {
+				if (Values::of($property)?->values) {
 					$translate[$property_path] = true;
 				}
 			}

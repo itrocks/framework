@@ -2,13 +2,12 @@
 namespace ITRocks\Framework\Feature\Validate\Property;
 
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Reflection;
-use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Attribute;
 
 /**
- * Values annotation validator
+ * Values attribute validator
  */
-class Values_Annotation extends Reflection\Annotation\Property\Values_Annotation
+class Values extends Attribute\Property\Values
 {
 	use Annotation;
 
@@ -18,25 +17,11 @@ class Values_Annotation extends Reflection\Annotation\Property\Values_Annotation
 	 */
 	protected array|string $object_value;
 
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value    bool|string|null
-	 * @param $property Interfaces\Reflection_Property
-	 */
-	public function __construct(bool|string|null $value, Interfaces\Reflection_Property $property)
-	{
-		parent::__construct($value, $property);
-		$this->property = $property;
-	}
-
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		$result = [];
-		foreach ($this->value as $value) {
+		foreach ($this->values as $value) {
 			$result[] = Loc::tr($value);
 		}
 		if (!$this->property->getAnnotation('ordered_values')->value) {
@@ -46,11 +31,7 @@ class Values_Annotation extends Reflection\Annotation\Property\Values_Annotation
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
-	/**
-	 * Gets the last validate() call resulting report message
-	 *
-	 * @return string
-	 */
+	/** Gets the last validate() call resulting report message */
 	public function reportMessage() : string
 	{
 		return 'unauthorized value';
@@ -61,11 +42,11 @@ class Values_Annotation extends Reflection\Annotation\Property\Values_Annotation
 	 * Validates the property value within this object context
 	 *
 	 * @param $object object
-	 * @return boolean true if validated, false if not validated, null if could not be validated
+	 * @return boolean true if validated, false if not validated, null if it could not be validated
 	 */
 	public function validate(object $object) : bool
 	{
-		$values = $this->value;
+		$values = $this->values;
 		if (!$values) {
 			return true;
 		}

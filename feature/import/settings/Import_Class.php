@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Feature\Import\Settings;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
@@ -15,34 +16,22 @@ class Import_Class
 	use Has_Name;
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
 	public string $class_name;
 
 	//------------------------------------------------------------------------------------ $constants
-	/**
-	 * @var Reflection_Property_Value[] key is the name of the property
-	 */
+	/** @var Reflection_Property_Value[] key is the name of the property */
 	public array $constants = [];
 
 	//-------------------------------------------------------------------------- $identify_properties
-	/**
-	 * @var Import_Property[] key is the name of the property
-	 */
+	/** @var Import_Property[] key is the name of the property */
 	public array $identify_properties = [];
 
 	//---------------------------------------------------------------------------- $ignore_properties
-	/**
-	 * @var Import_Property[] key is the name of the property
-	 */
+	/** @var Import_Property[] key is the name of the property */
 	public array $ignore_properties = [];
 
 	//------------------------------------------------------------------- $object_not_found_behaviour
-	/**
-	 * @values Behaviour::const
-	 * @var string
-	 */
+	#[Values(Behaviour::class)]
 	public string $object_not_found_behaviour = Behaviour::DO_NOTHING;
 
 	//----------------------------------------------------------------------------------- $properties
@@ -56,21 +45,15 @@ class Import_Class
 	public array $properties = [];
 
 	//-------------------------------------------------------------------------------- $property_path
-	/**
-	 * @var string[] key is the name of the property
-	 */
+	/** @var string[] key is the name of the property */
 	public array $property_path;
 
 	//--------------------------------------------------------------------------- $unknown_properties
-	/**
-	 * @var Import_Property[] key is the name of the property
-	 */
+	/** @var Import_Property[] key is the name of the property */
 	public array $unknown_properties = [];
 
 	//----------------------------------------------------------------------------- $write_properties
-	/**
-	 * @var Import_Property[] key is the name of the property
-	 */
+	/** @var Import_Property[] key is the name of the property */
 	public array $write_properties = [];
 
 	//----------------------------------------------------------------------------------- __construct
@@ -96,9 +79,6 @@ class Import_Class
 	}
 
 	//----------------------------------------------------------------------------------- __serialize
-	/**
-	 * @return array
-	 */
 	public function __serialize() : array
 	{
 		$serialize = get_object_vars($this);
@@ -117,56 +97,47 @@ class Import_Class
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->getPropertyPathValue();
 	}
 
 	//--------------------------------------------------------------------------------- __unserialize
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $serialized array
-	 */
 	public function __unserialize(array $serialized) : void
 	{
 		foreach ($serialized as $key => $value) {
-			if ($key === 'constants') {
-				foreach ($value as $constant_key => $constant_value) {
-					/** @noinspection PhpUnhandledExceptionInspection constants must be valid */
-					$this->constants[$constant_key] = new Reflection_Property_Value(
-						$constant_value['class'],
-						$constant_value['name'],
-						$constant_value['value'],
-						$constant_value['final_object']
-					);
-				}
-			}
-			else {
+			if ($key !== 'constants') {
 				$this->$key = $value;
+				continue;
+			}
+			foreach ($value as $constant_key => $constant_value) {
+				/** @noinspection PhpUnhandledExceptionInspection constants must be valid */
+				$this->constants[$constant_key] = new Reflection_Property_Value(
+					$constant_value['class'],
+					$constant_value['name'],
+					$constant_value['value'],
+					$constant_value['final_object']
+				);
 			}
 		}
 	}
 
 	//----------------------------------------------------------------------------------- addConstant
-	/**
-	 * Adds a new constant to the list : default value is empty and default name is random
-	 */
+	/** Adds a new constant to the list : default value is empty and default name is random */
 	public function addConstant() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $this->class_name must be valid */
 		foreach (
 			(new Reflection_Class($this->class_name))->getProperties([T_EXTENDS, T_USE]) as $property
 		) {
-			if (!$property->isStatic() && !isset($this->constants[$property->name])) {
-				/** @noinspection PhpUnhandledExceptionInspection $property is valid */
-				$property              = new Reflection_Property_Value($property->class, $property->name);
-				$property->final_class = $this->class_name;
-				$this->constants[$property->name] = $property;
-				break;
+			if ($property->isStatic() || isset($this->constants[$property->name])) {
+				continue;
 			}
+			/** @noinspection PhpUnhandledExceptionInspection $property is valid */
+			$property              = new Reflection_Property_Value($property->class, $property->name);
+			$property->final_class = $this->class_name;
+			$this->constants[$property->name] = $property;
+			break;
 		}
 	}
 
@@ -222,10 +193,7 @@ class Import_Class
 	}
 
 	//------------------------------------------------------------------------------ getIdentifyValue
-	/**
-	 * @noinspection PhpUnused importPreview.html
-	 * @return string
-	 */
+	/** @noinspection PhpUnused importPreview.html */
 	public function getIdentifyValue() : string
 	{
 		$properties = [];
@@ -236,10 +204,7 @@ class Import_Class
 	}
 
 	//-------------------------------------------------------------------------------- getIgnoreValue
-	/**
-	 * @noinspection PhpUnused importPreview.html
-	 * @return string
-	 */
+	/** @noinspection PhpUnused importPreview.html */
 	public function getIgnoreValue() : string
 	{
 		$properties = [];
@@ -250,19 +215,13 @@ class Import_Class
 	}
 
 	//-------------------------------------------------------------------------- getPropertyPathValue
-	/**
-	 * @return string
-	 */
 	public function getPropertyPathValue() : string
 	{
 		return $this->property_path ? (join(DOT, $this->property_path)) : $this->class_name;
 	}
 
 	//--------------------------------------------------------------------------------- getWriteValue
-	/**
-	 * @noinspection PhpUnused importPreview.html
-	 * @return string
-	 */
+	/** @noinspection PhpUnused importPreview.html */
 	public function getWriteValue() : string
 	{
 		$properties = [];
@@ -273,11 +232,7 @@ class Import_Class
 	}
 
 	//-------------------------------------------------------------------------------- removeConstant
-	/**
-	 * Removes a constant from the list
-	 *
-	 * @param $property_name string
-	 */
+	/** Removes a constant from the list */
 	public function removeConstant(string $property_name) : void
 	{
 		if (isset($this->constants[$property_name])) {

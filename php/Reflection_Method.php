@@ -3,6 +3,7 @@ namespace ITRocks\Framework\PHP;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 
@@ -109,10 +110,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	private int $token_key;
 
 	//----------------------------------------------------------------------------------- $visibility
-	/**
-	 * @values T_PUBLIC, T_PROTECTED, T_PRIVATE
-	 * @var integer
-	 */
+	#[Values(T_PUBLIC, T_PROTECTED, T_PRIVATE)]
 	public int $visibility;
 
 	//----------------------------------------------------------------------------------- __construct

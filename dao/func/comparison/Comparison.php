@@ -4,7 +4,7 @@ namespace ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\List_\Summary_Builder;
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Value;
 
@@ -38,18 +38,17 @@ class Comparison implements Negate, Where
 		self::NOT_LIKE         => self::LIKE
 	];
 
+	//----------------------------------------------------------------------------------------- SIGNS
+	const SIGNS = [
+		self::EQUAL, self::GREATER, self::GREATER_OR_EQUAL, self::LESS, self::LESS_OR_EQUAL,
+		self::LIKE, self::NOT_EQUAL, self::NOT_LIKE
+	];
+
 	//----------------------------------------------------------------------------------------- $sign
-	/**
-	 * @values =, >, >=, <, <=, LIKE, <>, NOT LIKE
-	 * @var string
-	 */
+	#[Values(self::SIGNS)]
 	public string $sign = self::EQUAL;
 
 	//----------------------------------------------------------------------------------- $than_value
-	/**
-	 * @null
-	 * @var mixed
-	 */
 	public mixed $than_value = null;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -132,8 +131,7 @@ class Comparison implements Negate, Where
 		if (in_array($this->sign, [self::LIKE, self::NOT_LIKE], true)) {
 			$property = $builder->getProperty($property_path);
 			// check if we are on an enum field with @values list of values
-			$values = ($property ? Values_Annotation::of($property)->values() : []);
-			if ($values) {
+			if ($property && Values::of($property)?->values) {
 				$translate_flag = Summary_Builder::NO_TRANSLATE;
 			}
 		}

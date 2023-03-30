@@ -8,6 +8,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Traits\Date_Logged;
 
 #[Class_\Store]
@@ -70,10 +71,8 @@ abstract class Run
 	public ?object $object;
 
 	//----------------------------------------------------------------------------------------- $step
-	/**
-	 * @ordered_values
-	 * @values before, after, pending, running, complete
-	 */
+	/** @ordered_values */
+	#[Values('before, after, pending, running, complete')]
 	public string $step;
 
 	//------------------------------------------------------------------------------------- getObject
@@ -85,9 +84,7 @@ abstract class Run
 	}
 
 	//------------------------------------------------------------------------------------- setObject
-	/**
-	 * @noinspection PhpUnused #Setter
-	 */
+	/** @noinspection PhpUnused #Setter */
 	protected function setObject(?object $object) : void
 	{
 		if (!$object || !($identifier = Dao::getObjectIdentifier($object))) {

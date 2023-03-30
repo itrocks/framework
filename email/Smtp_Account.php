@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Email;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
+
 /**
  * An email smtp account
  */
@@ -11,10 +13,7 @@ class Smtp_Account extends Net_Account
 	const TLS = 'tls';
 
 	//----------------------------------------------------------------------------------- $encryption
-	/**
-	 * @values static::const
-	 * @var ?string
-	 */
+	#[Values(self::class)]
 	public ?string $encryption = null;
 
 	//----------------------------------------------------------------------------------- __construct

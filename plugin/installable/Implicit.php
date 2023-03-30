@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -17,23 +18,13 @@ class Implicit implements Installable
 {
 
 	//---------------------------------------------------------------------------------------- $class
-	/**
-	 * @var Reflection_Class
-	 */
 	public Reflection_Class $class;
 
 	//----------------------------------------------------------------------------------------- $type
-	/**
-	 * @values T_CLASS, T_TRAIT
-	 * @var integer
-	 */
+	#[Values(T_CLASS, T_TRAIT)]
 	public int $type;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class Reflection_Class|string
-	 */
 	public function __construct(Reflection_Class|string $class)
 	{
 		if (is_string($class)) {
@@ -50,18 +41,12 @@ class Implicit implements Installable
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return strval(Feature_Annotation::of($this->class)->value);
 	}
 
 	//--------------------------------------------------------------------------------------- install
-	/**
-	 * @param $installer Installer
-	 */
 	public function install(Installer $installer) : void
 	{
 		switch ($this->type) {
@@ -71,18 +56,12 @@ class Implicit implements Installable
 	}
 
 	//---------------------------------------------------------------------------------- installClass
-	/**
-	 * @param $installer Installer
-	 */
 	protected function installClass(Installer $installer) : void
 	{
 		$installer->addPlugin($this->class->name);
 	}
 
-		//---------------------------------------------------------------------------------- installTrait
-	/**
-	 * @param $installer Installer
-	 */
+	//---------------------------------------------------------------------------------- installTrait
 	protected function installTrait(Installer $installer) : void
 	{
 		$extend_attributes = Extend::notOf($this->class, Extend::STRICT);

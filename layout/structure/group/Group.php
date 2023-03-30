@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Layout\Structure;
 
 use ITRocks\Framework\Layout\Structure\Field\Property;
 use ITRocks\Framework\Layout\Structure\Group\Iteration;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 
 /**
  * A group manages repeated fields
@@ -27,16 +28,12 @@ class Group extends Element
 	const VERTICAL   = 'vertical';
 
 	//------------------------------------------------------------------------------------ $direction
-	/**
-	 * @values self::const local
-	 * @var string
-	 */
+	#[Values(self::class, Values::LOCAL)]
 	public string $direction = self::VERTICAL;
 
 	//------------------------------------------------------------------------------------- $elements
 	/**
 	 * Raw elements that are not $groups, $iterations nor $properties
-	 *
 	 * When iterations are generated, this is empty
 	 *
 	 * @var Element[]
@@ -44,25 +41,15 @@ class Group extends Element
 	public array $elements = [];
 
 	//--------------------------------------------------------------------------------------- $groups
-	/**
-	 * Sub-group elements
-	 *
-	 * @var Group[]
-	 */
+	/** @var Group[] Sub-group elements */
 	public array $groups = [];
 
 	//---------------------------------------------------------------------------- $iteration_spacing
-	/**
-	 * Space between iterations (for margins)
-	 *
-	 * @var float
-	 */
+	/** Space between iterations (for margins) */
 	public float $iteration_spacing = .5;
 
 	//----------------------------------------------------------------------------------- $iterations
-	/**
-	 * @var Iteration[]
-	 */
+	/** @var Iteration[] */
 	public array $iterations = [];
 
 	//---------------------------------------------------------------------------------------- $links
@@ -77,9 +64,7 @@ class Group extends Element
 	public array $links = [];
 
 	//----------------------------------------------------------------------------------- $properties
-	/**
-	 * @var Property[]
-	 */
+	/** @var Property[] */
 	public array $properties = [];
 
 	//-------------------------------------------------------------------------------- $property_path
@@ -87,27 +72,17 @@ class Group extends Element
 	 * The path of the property, starting from the layout model context class
 	 *
 	 * The final property has always a multiple type (eg Class[], string[])
-	 *
-	 * @var string
 	 */
 	public string $property_path;
 
 	//----------------------------------------------------------------------------------- allElements
-	/**
-	 * @return Element[]
-	 */
+	/** @return Element[] */
 	public function allElements() : array
 	{
 		return array_merge($this->elements, $this->groups, $this->iterations, $this->properties);
 	}
 
 	//------------------------------------------------------------------------------ cloneWithContext
-	/**
-	 * @param $page      Page
-	 * @param $group     Group|null
-	 * @param $iteration Iteration|null
-	 * @return static
-	 */
 	public function cloneWithContext(
 		Page $page, Group $group = null, Iteration $iteration = null
 	) : static
@@ -129,11 +104,6 @@ class Group extends Element
 	}
 
 	//------------------------------------------------------------------------------------------ dump
-	/**
-	 * @param $level integer
-	 * @param $detail boolean
-	 * @return string
-	 */
 	public function dump(int $level = 0, bool $detail = true) : string
 	{
 		if ($detail) {
@@ -154,9 +124,6 @@ class Group extends Element
 	/**
 	 * Gets the height of the linked group into this page
 	 * If the group is not stored into this page, will return 0 because we can't output it here
-	 *
-	 * @param $page Page
-	 * @return float
 	 */
 	public function heightOnPage(Page $page) : float
 	{
@@ -164,12 +131,7 @@ class Group extends Element
 	}
 
 	//------------------------------------------------------------------------------------ linkOnPage
-	/**
-	 * Gets the linked group into this page, if exist
-	 *
-	 * @param $page Page
-	 * @return ?Group
-	 */
+	/** Gets the linked group into this page, if exist */
 	public function linkOnPage(Page $page) : ?Group
 	{
 		return $this->links[strval($page->number)] ?? null;

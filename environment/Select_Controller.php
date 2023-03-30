@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Environment;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Session;
@@ -18,9 +19,6 @@ class Select_Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------- $property
-	/**
-	 * @var Reflection_Property
-	 */
 	private Reflection_Property $property;
 
 	//------------------------------------------------------------------------------------------- run
@@ -70,7 +68,7 @@ class Select_Controller implements Feature_Controller
 		if ($type->isClass()) {
 			return Dao::readAll($this->property->getType()->asString(), Dao::sort());
 		}
-		elseif ($values = $this->property->getListAnnotation('values')->values()) {
+		elseif ($values = Values::of($this->property)?->values) {
 			return array_combine($values, $values);
 		}
 		trigger_error(
