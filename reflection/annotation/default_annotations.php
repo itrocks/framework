@@ -567,12 +567,6 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@translate' => Annotation::class,
 
 	/**
-	 * @unit [[\Class\Namespace\]Class_Name::]methodName|constant
-	 * This tells that the property should be rendered using textile parsing
-	 */
-	Parser::T_PROPERTY . '@unit' => Constant_Or_Method_Annotation::class,
-
-	/**
 	 * @unlocked
 	 * This allows you to write objects with Dao::only('this_property'), even if the object is locked
 	 */

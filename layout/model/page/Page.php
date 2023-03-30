@@ -6,6 +6,7 @@ use ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Unit;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\View;
 
@@ -71,19 +72,15 @@ abstract class Page
 	//---------------------------------------------------------------------------------- $view_height
 	/**
 	 * View height for document designer
-	 *
-	 * @unit px
 	 */
-	#[Store(false)]
+	#[Store(false), Unit('px')]
 	public int $view_height;
 
 	//----------------------------------------------------------------------------------- $view_width
 	/**
 	 * View width for document designer
-	 *
-	 * @unit px
 	 */
-	#[Store(false)]
+	#[Store(false), Unit('px')]
 	public int $view_width;
 
 	//----------------------------------------------------------------------------------- __construct

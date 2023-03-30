@@ -7,6 +7,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Unit;
 use ITRocks\Framework\Reflection\Attribute\Property\User_Change;
 
 /**
@@ -39,9 +40,9 @@ class Simple extends Counter
 	//------------------------------------------------------------------------------ $documents_count
 	/**
 	 * @conditions complete_with_zeros=true
-	 * @unit per year
 	 */
 	#[Store(false)]
+	#[Unit('per year')]
 	#[User_Change('applySimpleForm', true)]
 	public int $documents_count = 9999;
 

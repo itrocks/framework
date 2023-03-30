@@ -608,7 +608,7 @@ class Reflection_Class extends ReflectionClass
 
 	//-------------------------------------------------------------------------------- sortProperties
 	/**
-	 * Sort the properties list from #[Display_Order] class attribute(s)
+	 * Sort the properties list from #Display_Order class attribute(s)
 	 *
 	 * @param $properties     Reflection_Property[] key is the name of the property
 	 * @param $display_orders Display_Order[]|string[][] additional display order attributes

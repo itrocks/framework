@@ -77,12 +77,12 @@ class Store extends Class_
 	}
 
 	//----------------------------------------------------------------------------- setDeclaringClass
-	public function setDeclaringClass(Reflection|Reflection_Class $reflection) : void
+	public function setDeclaringClass(Reflection_Class $class) : void
 	{
-		$this->class = $reflection;
+		$this->class = $class;
 		if ($this->value === static::CALCULATE) {
 			$this->calculated = true;
-			$this->value      = $this->calculateName($reflection);
+			$this->value      = $this->calculateName($class);
 		}
 	}
 

@@ -11,9 +11,9 @@ use ITRocks\Framework\Feature\List_Setting;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Template\Constant_Or_Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
+use ITRocks\Framework\Reflection\Attribute\Property\Unit;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Report\Dashboard;
 use ITRocks\Framework\Report\Dashboard\Indicator\Property_Path\Widget;
@@ -113,7 +113,7 @@ class Indicator
 	/**
 	 * Calculates and returns the formatted value of the indicator
 	 *
-	 * The value is formatted using locales, and appended with the property @unit, if it is the same
+	 * The value is formatted using locales, and appended with the property #Unit, if it is the same
 	 * for all read values
 	 */
 	public function formattedValue() : string
@@ -204,18 +204,17 @@ class Indicator
 		catch (ReflectionException) {
 			$property = null;
 		}
-		/** @var $unit_annotation ?Constant_Or_Method_Annotation */
-		$unit_annotation = ($format && $property && !str_contains($this->property_path, DOT))
-			? $property->getAnnotation('unit')
+		$unit_attribute = ($format && $property && !str_contains($this->property_path, DOT))
+			? Unit::of($property)
 			: null;
 		$last_unit = null;
 		$result    = .0;
 		$unit      = null;
 		foreach ($data->getRows() as $row) {
-			if ($unit_annotation) {
-				$unit = $unit_annotation->call($row->getObject());
+			if ($unit_attribute) {
+				$unit = $unit_attribute->call($row->getObject());
 				if (isset($last_unit) && ($unit !== $last_unit)) {
-					$unit = $unit_annotation = null;
+					$unit = $unit_attribute = null;
 				}
 			}
 			$result += $row->getValue($this->property_path);
