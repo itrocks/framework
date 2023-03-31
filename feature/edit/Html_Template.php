@@ -7,8 +7,8 @@ use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Html\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
@@ -187,7 +187,7 @@ class Html_Template extends Template
 		if (
 			($property instanceof Reflection_Property_Value)
 			&& ($property_name === 'value')
-			&& !User_Annotation::of($property)->has(User_Annotation::STRICT_READ_ONLY)
+			&& !User::of($property)->has(User::STRICT_READ_ONLY)
 		) {
 			if (
 				($builder = Widget_Annotation::of($property)->value)
@@ -249,9 +249,7 @@ class Html_Template extends Template
 					$value    = isset($value) ? strval($value) : null;
 					$id_value = '';
 				}
-				if (
-					$property->getListAnnotation(User_Annotation::ANNOTATION)->has(User_Annotation::READONLY)
-				) {
+				if (User::of($property)->has(User::READONLY)) {
 					$id_value = '';
 				}
 				$prefix = $this->properties_prefix ? $this->functions->getPropertyPrefix($this) : null;

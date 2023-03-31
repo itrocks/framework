@@ -6,7 +6,7 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Feature\Condition;
 use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\View;
 
@@ -29,7 +29,7 @@ class Controller implements Default_Feature_Controller
 
 	//------------------------------------------------------------------------ $read_only_annotations
 	/**
-	 * @var User_Annotation[]
+	 * @var User[]
 	 */
 	protected array $read_only_annotations = [];
 
@@ -65,9 +65,9 @@ class Controller implements Default_Feature_Controller
 				$mandatory->value              = false;
 				$this->mandatory_annotations[] = $mandatory;
 			}
-			$user = User_Annotation::of($property);
-			if ($user->has(User_Annotation::READONLY)) {
-				$user->remove(User_Annotation::READONLY);
+			$user = User::of($property);
+			if ($user->has(User::READONLY)) {
+				$user->remove(User::READONLY);
 				$this->read_only_annotations[] = $user;
 			}
 		}
@@ -85,7 +85,7 @@ class Controller implements Default_Feature_Controller
 			$mandatory->value = true;
 		}
 		foreach ($this->read_only_annotations as $user) {
-			$user->add(User_Annotation::READONLY);
+			$user->add(User::READONLY);
 		}
 	}
 

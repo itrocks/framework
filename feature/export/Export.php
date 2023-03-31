@@ -8,8 +8,8 @@ use ITRocks\Framework\Dao\Option\Translate;
 use ITRocks\Framework\Feature\List_\Selection;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Interfaces;
@@ -63,14 +63,13 @@ class Export
 			while (true) {
 				$link_annotation  = Link_Annotation::of($property);
 				$store_annotation = Store::of($property);
-				$user_annotation  = User_Annotation::of($property);
 				if (
 					$property->isStatic()
 					|| $link_annotation->isCollection()
 					|| $link_annotation->isMap()
 					|| $store_annotation->isFalse()
 					|| $store_annotation->isGz()
-					|| $user_annotation->has(User_Annotation::INVISIBLE)
+					|| User::of($property)->has(User::INVISIBLE)
 				) {
 					$already[$property->path] = $export_property = false;
 					break;

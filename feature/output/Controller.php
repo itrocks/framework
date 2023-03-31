@@ -20,7 +20,7 @@ use ITRocks\Framework\Feature\Output_Setting;
 use ITRocks\Framework\Feature\Output_Setting\Set;
 use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Setting;
@@ -83,16 +83,16 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 				$reflection_property = new Reflection_Property(
 					$output_settings->getClassName(), $property_path
 				);
-				$user_annotation = $reflection_property->getListAnnotation(User_Annotation::ANNOTATION);
+				$user = User::of($reflection_property);
 				$property->hide_empty
-					? $user_annotation->add(User_Annotation::HIDE_EMPTY)
-					: $user_annotation->remove(User_Annotation::HIDE_EMPTY);
+					? $user->add(User::HIDE_EMPTY)
+					: $user->remove(User::HIDE_EMPTY);
 				$property->read_only
-					? $user_annotation->add(User_Annotation::READONLY)
-					: $user_annotation->remove(User_Annotation::READONLY);
+					? $user->add(User::READONLY)
+					: $user->remove(User::READONLY);
 				$property->tooltip
-					? $user_annotation->add(User_Annotation::TOOLTIP)
-					: $user_annotation->remove(User_Annotation::TOOLTIP);
+					? $user->add(User::TOOLTIP)
+					: $user->remove(User::TOOLTIP);
 				if ($property->tab_name) {
 					$group_annotation = $reflection_property->getAnnotation(Group_Annotation::ANNOTATION);
 					$group_annotation->value = $property->tab_name;
@@ -477,10 +477,9 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			return;
 		}
 		foreach ($properties_filter as $key => $property_name) {
-			if (User_Annotation::of($properties[$property_name])->isModifiable()) {
-				continue;
+			if (!User::of($properties[$property_name])->isModifiable()) {
+				unset($properties_filter[$key]);
 			}
-			unset($properties_filter[$key]);
 		}
 	}
 

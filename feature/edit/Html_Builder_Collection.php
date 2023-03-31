@@ -6,11 +6,10 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
@@ -37,50 +36,25 @@ class Html_Builder_Collection extends Collection
 	const HIDE_EMPTY_TEST = false;
 
 	//--------------------------------------------------------------------------------------- $no_add
-	/**
-	 * Property no add cache. Do not use this property : use noAdd() instead
-	 *
-	 * @var boolean
-	 */
+	/** Property no add cache. Do not use this property : use noAdd() instead */
 	protected bool $no_add;
 
 	//------------------------------------------------------------------------------------ $no_delete
-	/**
-	 * Property no delete cache. Do not use this property : use noDelete() instead
-	 *
-	 * @var boolean
-	 */
+	/** Property no delete cache. Do not use this property : use noDelete() instead */
 	protected bool $no_delete;
 
 	//------------------------------------------------------------------------------------- $pre_path
-	/**
-	 * @var string
-	 */
 	public string $pre_path;
 
 	//------------------------------------------------------------------------------------ $read_only
-	/**
-	 * Property read only cache. Do not use this property : use readOnly() instead
-	 *
-	 * @var boolean
-	 */
+	/** Property read only cache. Do not use this property : use readOnly() instead */
 	protected bool $read_only;
 
-	//----------------------------------------------------------------------------- $user_annotations
-	/**
-	 * Contains all read annotations
-	 *
-	 * @var List_Annotation
-	 */
-	protected List_Annotation $user_annotations;
+	//------------------------------------------------------------------------------ $user_attributes
+	/** Contains all read annotations */
+	protected User $user_attributes;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $property        Reflection_Property
-	 * @param $collection      array
-	 * @param $link_properties boolean
-	 * @param $pre_path        string
-	 */
 	public function __construct(
 		Reflection_Property $property, array $collection, bool $link_properties = false,
 		string $pre_path = ''
@@ -94,8 +68,6 @@ class Html_Builder_Collection extends Collection
 	 * TODO remove this patch will crash AOP because AOP on parent method does not work
 	 * + AOP should create a build_() method that calls parent::build()
 	 * + AOP should complete parameters like Table to give full path as they may not be in use clause
-	 *
-	 * @return Unordered
 	 */
 	public function build() : Unordered
 	{
@@ -161,13 +133,6 @@ class Html_Builder_Collection extends Collection
 	}
 
 	//------------------------------------------------------------------------------------- buildCell
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object        object
-	 * @param $property      Reflection_Property
-	 * @param $property_path string
-	 * @return Item
-	 */
 	protected function buildCell(object $object, Reflection_Property $property, string $property_path)
 		: Item
 	{
@@ -248,9 +213,6 @@ class Html_Builder_Collection extends Collection
 	}
 
 	//----------------------------------------------------------------------------------- buildHeader
-	/**
-	 * @return Ordered
-	 */
 	protected function buildHeader() : Ordered
 	{
 		$header = parent::buildHeader();
@@ -262,10 +224,6 @@ class Html_Builder_Collection extends Collection
 	}
 
 	//-------------------------------------------------------------------------------------- buildRow
-	/**
-	 * @param $object object
-	 * @return Ordered
-	 */
 	protected function buildRow(object $object) : Ordered
 	{
 		$row = parent::buildRow($object);
@@ -279,19 +237,17 @@ class Html_Builder_Collection extends Collection
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
-	/**
-	 * @param $link_properties boolean
-	 * @return Reflection_Property[]
-	 */
+	/** @return Reflection_Property[] */
 	public function getProperties(bool $link_properties) : array
 	{
 		$properties = parent::getProperties($link_properties);
 		if ($this->readOnly()) {
 			foreach ($properties as $property) {
-				$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
+				$user = User::of($property);
 				if ($this->readOnly()) {
-					$user_annotation->add(User_Annotation::READONLY);
-					$user_annotation->add(User_Annotation::TOOLTIP);
+					// TODO Will crash if no #User
+					$user->add(User::READONLY);
+					$user->add(User::TOOLTIP);
 				}
 			}
 		}
@@ -299,64 +255,47 @@ class Html_Builder_Collection extends Collection
 	}
 
 	//----------------------------------------------------------------------------- getUserAnnotation
-	/**
-	 * Read @user annotations this->property
-	 *
-	 * @return User_Annotation
-	 */
-	private function getUserAnnotation() : User_Annotation
+	/** Read @user annotations this->property */
+	private function getUserAnnotation() : User
 	{
-		if (!isset($this->user_annotations)) {
-			$this->user_annotations = User_Annotation::of($this->property);
+		if (!isset($this->user_attributes)) {
+			$this->user_attributes = User::of($this->property);
 		}
-		return $this->user_annotations;
+		return $this->user_attributes;
 	}
 
 	//----------------------------------------------------------------------------- isPropertyVisible
-	/**
-	 * @param $property Reflection_Property
-	 * @return boolean
-	 */
 	protected function isPropertyVisible(Reflection_Property $property) : bool
 	{
-		$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
-		return !$user_annotation->has(User_Annotation::HIDE_EDIT)
-			&& !$user_annotation->has(User_Annotation::INVISIBLE)
-			&& !$user_annotation->has(User_Annotation::INVISIBLE_EDIT);
+		$user = User::of($property);
+		return !$user->has(User::HIDE_EDIT)
+			&& !$user->has(User::INVISIBLE)
+			&& !$user->has(User::INVISIBLE_EDIT);
 	}
 
 	//----------------------------------------------------------------------------------------- noAdd
-	/**
-	 * @return boolean
-	 */
 	protected function noAdd() : bool
 	{
 		if (!isset($this->no_add)) {
-			$this->no_add = $this->getUserAnnotation()->has(User_Annotation::NO_ADD);
+			$this->no_add = $this->getUserAnnotation()->has(User::NO_ADD);
 		}
 		return $this->no_add;
 	}
 
 	//-------------------------------------------------------------------------------------- noDelete
-	/**
-	 * @return boolean
-	 */
 	protected function noDelete() : bool
 	{
 		if (!isset($this->no_delete)) {
-			$this->no_delete = $this->getUserAnnotation()->has(User_Annotation::NO_DELETE);
+			$this->no_delete = $this->getUserAnnotation()->has(User::NO_DELETE);
 		}
 		return $this->no_delete;
 	}
 
 	//-------------------------------------------------------------------------------------- readOnly
-	/**
-	 * @return boolean
-	 */
 	protected function readOnly() : bool
 	{
 		if (!isset($this->read_only)) {
-			$this->read_only = $this->getUserAnnotation()->has(User_Annotation::READONLY);
+			$this->read_only = $this->getUserAnnotation()->has(User::READONLY);
 		}
 		return $this->read_only;
 	}

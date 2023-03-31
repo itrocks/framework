@@ -177,6 +177,7 @@ class Reflection_Attribute
 		if ($object instanceof Has_Set_Reflection_Attribute) {
 			$object->setReflectionAttribute($this);
 		}
+		$this->instance = $object;
 		return $object;
 	}
 

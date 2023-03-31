@@ -5,8 +5,8 @@ use Error;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Unit;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Tools\Contextual_Callable;
 use ITRocks\Framework\Tools\Names;
 use ReflectionException;
@@ -247,7 +247,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	public function isHidden() : string
 	{
-		return $this->getListAnnotation(User_Annotation::ANNOTATION)->has(User_Annotation::HIDDEN)
+		return User::of($this)->has(User::HIDDEN)
 			? 'hidden'
 			: '';
 	}
@@ -277,25 +277,25 @@ class Reflection_Property_Value extends Reflection_Property
 		bool $hide_empty_test = true, bool $hidden_test = false, bool $invisible_test = true
 	) : bool
 	{
-		$user_annotation = User_Annotation::of($this);
+		$user = User::of($this);
 		if (
 			!$this->final_value
-			&& $user_annotation->has(User_Annotation::ADD_ONLY)
+			&& $user->has(User::ADD_ONLY)
 			&& Dao::getObjectIdentifier($this->object)
 		) {
-			$user_annotation->add(User_Annotation::READONLY);
+			$user->add(User::READONLY);
 		}
 		return !$this->isStatic()
-			&& (!$hidden_test    || !$user_annotation->has(User_Annotation::HIDDEN))
-			&& (!$invisible_test || !$user_annotation->has(User_Annotation::INVISIBLE))
+			&& (!$hidden_test    || !$user->has(User::HIDDEN))
+			&& (!$invisible_test || !$user->has(User::INVISIBLE))
 			&& (
 				($hide_empty_test && (
-					!$user_annotation->has(User_Annotation::HIDE_EMPTY)
+					!$user->has(User::HIDE_EMPTY)
 					|| !$this->isValueEmpty()
 				))
 				|| (!$hide_empty_test && (
-					!$user_annotation->has(User_Annotation::HIDE_EMPTY)
-					|| !$user_annotation->has(User_Annotation::READONLY)
+					!$user->has(User::HIDE_EMPTY)
+					|| !$user->has(User::READONLY)
 					|| !$this->isValueEmpty()
 				))
 			);

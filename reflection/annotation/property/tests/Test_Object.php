@@ -2,18 +2,18 @@
 namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Interfaces;
 
 /**
  * Simple object to test annotations
  *
- * @see User_Annotation used in tests : testGetterAnnotationSet crashes without the use clause
+ * @see User used in tests : testGetterAnnotationSet crashes without the use clause
  */
 #[Store]
 class Test_Object

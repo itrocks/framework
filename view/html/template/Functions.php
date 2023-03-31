@@ -19,10 +19,10 @@ use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Interfaces;
@@ -592,9 +592,7 @@ class Functions
 		if ($expanded_properties) {
 			/** @var $first_property Reflection_Property_Value PhpStorm should see this, but no */
 			$first_property = reset($expanded_properties);
-			$object         = $first_property->getObject(
-				!User_Annotation::of($property)->has(User_Annotation::HIDE_EMPTY)
-			);
+			$object         = $first_property->getObject(!User::of($property)->has(User::HIDE_EMPTY));
 			$expanded_properties = $this->filterProperties($object, $expanded_properties);
 		}
 		else {
@@ -1612,8 +1610,8 @@ class Functions
 	protected function isPropertyVisible(Reflection_Property $property) : bool
 	{
 		return $property->isVisible()
-			&& !User_Annotation::of($property)->has(User_Annotation::HIDE_OUTPUT)
-			&& !User_Annotation::of($property)->has(User_Annotation::INVISIBLE_OUTPUT);
+			&& !User::of($property)->has(User::HIDE_OUTPUT)
+			&& !User::of($property)->has(User::INVISIBLE_OUTPUT);
 	}
 
 	//--------------------------------------------------------------------------- toEditPropertyExtra

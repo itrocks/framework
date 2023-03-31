@@ -12,13 +12,13 @@ use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property_Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
@@ -809,11 +809,11 @@ class Reflection_Property extends ReflectionProperty
 		bool $hide_empty_test = true, bool $hidden_test = true, bool $invisible_test = true
 	) : bool
 	{
-		$user_annotation = $this->getListAnnotation(User_Annotation::ANNOTATION);
+		$user = User::of($this);
 		return !$this->isStatic()
-			&& (!$hidden_test     || !$user_annotation->has(User_Annotation::HIDDEN))
-			&& (!$invisible_test  || !$user_annotation->has(User_Annotation::INVISIBLE))
-			&& (!$hide_empty_test || !$user_annotation->has(User_Annotation::HIDE_EMPTY));
+			&& (!$hidden_test     || !$user->has(User::HIDDEN))
+			&& (!$invisible_test  || !$user->has(User::INVISIBLE))
+			&& (!$hide_empty_test || !$user->has(User::HIDE_EMPTY));
 	}
 
 	//----------------------------------------------------------------------------------- pathAsField

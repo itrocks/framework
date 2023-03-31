@@ -39,12 +39,12 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
@@ -1009,9 +1009,8 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				foreach ($property_names as $property_name) {
 					$property_name = $property_name->getValue('property_name');
 					/** @noinspection PhpUnhandledExceptionInspection already verified */
-					$property   = new Reflection_Property($class_name, $property_name);
-					$annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
-					if ($annotation->has(User_Annotation::INVISIBLE)) {
+					$property = new Reflection_Property($class_name, $property_name);
+					if (User::of($property)->has(User::INVISIBLE)) {
 						$all_but[] = $property_name;
 					}
 				}

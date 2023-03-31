@@ -1,7 +1,12 @@
 <?php
-namespace ITRocks\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Attribute\Property;
 
-use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use Attribute;
+use ITRocks\Framework\Reflection\Attribute\Always;
+use ITRocks\Framework\Reflection\Attribute\Class_\Override;
+use ITRocks\Framework\Reflection\Attribute\Inheritable;
+use ITRocks\Framework\Reflection\Attribute\Property;
+use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
 
 /**
  * User annotation : a list of parameters concerning the accessibility of the property for the user
@@ -20,14 +25,18 @@ use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
  * - no_add : forbids user to add a new element
  * - no_delete : forbids user to delete any element
  *
- * @override value @values hidden, hide_empty, if_empty, invisible, no_add, no_delete, readonly
- * @override value @var ?string[]
+ * @override values @var ?string[]
  * @property ?string[] value
  * @todo readonly should be implicitly set when @read_only is enabled
  * @todo readonly should be replaced by two-words read_only
  */
-class User_Annotation extends List_Annotation
+#[Always, Attribute(Attribute::TARGET_PROPERTY), Inheritable]
+#[Override(
+	'values', new Values('hidden, hide_empty, if_empty, invisible, no_add, no_delete, readonly')
+)]
+class User extends Property
 {
+	use Is_List { __construct as parentConstruct; add as parentAdd; remove as parentRemove; }
 
 	//-------------------------------------------------------------------------- Constants for $value
 	const ADD_ONLY         = 'add_only';
@@ -41,9 +50,6 @@ class User_Annotation extends List_Annotation
 	const INVISIBLE_OUTPUT = 'invisible_output';
 	const NO_ADD           = 'no_add';
 	const NO_DELETE        = 'no_delete';
-
-	//------------------------------------------------------------------------------------ ANNOTATION
-	const ANNOTATION = 'user';
 
 	//-------------------------------------------------------------------------------- NOT_MODIFIABLE
 	const NOT_MODIFIABLE = [
@@ -69,12 +75,9 @@ class User_Annotation extends List_Annotation
 	const TOOLTIP = 'tooltip';
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value ?string
-	 */
-	public function __construct(?string $value)
+	public function __construct(string... $values)
 	{
-		parent::__construct($value);
+		$this->parentConstruct(...$values);
 		$this->validate();
 	}
 
@@ -86,7 +89,7 @@ class User_Annotation extends List_Annotation
 	 */
 	public function add(string $value) : void
 	{
-		parent::add($value);
+		$this->parentAdd($value);
 		$this->validate();
 	}
 
@@ -106,7 +109,7 @@ class User_Annotation extends List_Annotation
 	 */
 	public function remove(string $value) : bool
 	{
-		return parent::remove($value) && $this->validate();
+		return $this->parentRemove($value) && $this->validate();
 	}
 
 	//-------------------------------------------------------------------------------------- validate
@@ -119,8 +122,7 @@ class User_Annotation extends List_Annotation
 	{
 		if ($this->has(self::HIDE_EMPTY) && $this->has(self::IF_EMPTY)) {
 			trigger_error(
-				self::IF_EMPTY . ' and ' . self::HIDE_EMPTY . ' values are incompatible',
-				E_USER_ERROR
+				self::IF_EMPTY . ' and ' . self::HIDE_EMPTY . ' values are incompatible', E_USER_ERROR
 			);
 		}
 		return true;

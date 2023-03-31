@@ -4,8 +4,8 @@ namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -156,10 +156,10 @@ class Property_Test extends Test
 			'methodName'
 		);
 		// #Getter Local_Class_Name::methodName
-		$getter = new Getter([User_Annotation::class, 'has']);
+		$getter = new Getter([User::class, 'has']);
 		$getter->setFinal($property);
 		static::assertEquals(
-			User_Annotation::class . '::has',
+			User::class . '::has',
 			$getter->callable,
 			'Local_Class_Name::methodName'
 		);

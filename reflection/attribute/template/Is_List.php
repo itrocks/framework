@@ -31,7 +31,7 @@ trait Is_List
 	//------------------------------------------------------------------------------------------- add
 	public function add(string $value) : void
 	{
-		if (in_array($value, $this->values)) {
+		if (in_array($value, $this->values, true)) {
 			return;
 		}
 		$this->values[] = $value;
@@ -43,7 +43,7 @@ trait Is_List
 	 */
 	public function has(string $value) : bool
 	{
-		return in_array($value, $this->values);
+		return in_array($value, $this->values, true);
 	}
 
 	//---------------------------------------------------------------------------------------- remove

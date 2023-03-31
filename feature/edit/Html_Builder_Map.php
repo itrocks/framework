@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Feature\Edit;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Annotation\Property\Filters_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Namespaces;
@@ -129,8 +129,7 @@ class Html_Builder_Map extends Map
 	protected function noAdd() : bool
 	{
 		if (!isset($this->no_add)) {
-			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->no_add    = $user_annotation->has(User_Annotation::NO_ADD);
+			$this->no_add = User::of($this->property)->has(User::NO_ADD);
 		}
 		return $this->no_add;
 	}
@@ -142,8 +141,7 @@ class Html_Builder_Map extends Map
 	protected function noDelete() : bool
 	{
 		if (!isset($this->no_delete)) {
-			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->no_delete = $user_annotation->has(User_Annotation::NO_DELETE);
+			$this->no_delete = User::of($this->property)->has(User::NO_DELETE);
 		}
 		return $this->no_delete;
 	}
@@ -155,8 +153,7 @@ class Html_Builder_Map extends Map
 	protected function readOnly() : bool
 	{
 		if (!isset($this->read_only)) {
-			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->read_only = $user_annotation->has(User_Annotation::READONLY);
+			$this->read_only = User::of($this->property)->has(User::READONLY);
 		}
 		return $this->read_only;
 	}

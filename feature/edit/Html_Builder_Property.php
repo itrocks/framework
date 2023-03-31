@@ -12,9 +12,9 @@ use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\User_Change;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -62,7 +62,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		$this->null     = $property->getAnnotation('null')->value;
 		$this->property = $property;
 
-		$user_annotation = User_Annotation::of($property);
+		$user = User::of($property);
 
 		/** @var $user_default_annotation Method_Annotation */
 		$user_default_annotation = $property->getAnnotation('user_default');
@@ -92,14 +92,14 @@ class Html_Builder_Property extends Html_Builder_Type
 		}
 
 		// 1st, get read_only from @user readonly
-		$this->readonly = $user_annotation->has(User_Annotation::READONLY);
+		$this->readonly = $user->has(User::READONLY);
 
 		if (
 			!$this->readonly
 			&& (is_null($value) || (is_object($value) && Empty_Object::isEmpty($value)))
 		) {
 			// if there is @user_default, there can not be @user if_empty
-			if ($user_default_annotation->value && $user_annotation->has(User_Annotation::IF_EMPTY)) {
+			if ($user_default_annotation->value && $user->has(User::IF_EMPTY)) {
 				$flag_cannot_be_if_empty = true;
 			}
 		}
@@ -110,7 +110,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			&& ((is_object($value) && !Empty_Object::isEmpty($value)) || !empty($value))
 			&& (!isset($flag_cannot_be_if_empty) || !$flag_cannot_be_if_empty)
 		) {
-			$this->readonly = $user_annotation->has(User_Annotation::IF_EMPTY);
+			$this->readonly = $user->has(User::IF_EMPTY);
 		}
 
 		if (

@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Layout\Print_Model;
 
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Feature\Add;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\View\Html\Template;
 
@@ -39,8 +39,8 @@ class Add_Controller extends Add\Controller
 		/** @noinspection PhpUnhandledExceptionInspection */
 		$class      = new Reflection_Class($class_name);
 		$properties = $class->getProperties();
-		User_Annotation::of($properties['pages'])->add(User_Annotation::INVISIBLE);
-		User_Annotation::of($properties['document'])->value = [];
+		User::of($properties['pages'])->add(User::INVISIBLE);
+		User::of($properties['document'])->values = [];
 	}
 
 }

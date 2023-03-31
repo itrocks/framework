@@ -14,11 +14,11 @@ use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -275,10 +275,7 @@ class Collection
 						$this->class_name
 					)
 				);
-				$hide_empty_test = (
-					static::HIDE_EMPTY_TEST
-					&& User_Annotation::of($property)->has(User_Annotation::HIDE_EMPTY)
-				)
+				$hide_empty_test = (static::HIDE_EMPTY_TEST && User::of($property)->has(User::HIDE_EMPTY))
 					? !($this->has_value[$property->path] = $this->propertyHasValue($property))
 					: static::HIDE_EMPTY_TEST;
 				if (!$property->isVisible($hide_empty_test)) {
@@ -416,10 +413,10 @@ class Collection
 	 */
 	protected function isPropertyVisible(Reflection_Property $property) : bool
 	{
-		$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
-		return !$user_annotation->has(User_Annotation::HIDE_OUTPUT)
-			&& !$user_annotation->has(User_Annotation::INVISIBLE)
-			&& !$user_annotation->has(User_Annotation::INVISIBLE_OUTPUT);
+		$user = User::of($property);
+		return !$user->has(User::HIDE_OUTPUT)
+			&& !$user->has(User::INVISIBLE)
+			&& !$user->has(User::INVISIBLE_OUTPUT);
 	}
 
 	//------------------------------------------------------------------------------ propertyHasValue

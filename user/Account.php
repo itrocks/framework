@@ -33,9 +33,6 @@ trait Account
 	public string $password = '';
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->login;
