@@ -139,7 +139,11 @@ trait Has_Attributes
 					$attributes[$parent_name] = array_merge($attributes[$parent_name], $attribute);
 				}
 			}
-			elseif ($name || $attribute->isInheritable()) {
+			elseif (
+				$name
+				|| (is_array($attribute) && reset($attribute)->isInheritable())
+				|| (is_object($attribute) && $attribute->isInheritable())
+			) {
 				$attributes[$parent_name] = $attribute;
 			}
 		}
