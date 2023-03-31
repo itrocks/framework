@@ -27,9 +27,9 @@ class Store extends Property implements Has_Set_Final
 
 	//-------------------------------------------------------------------- Store value flag constants
 	public const FALSE  = 0;
-	public const GZ     = 8  | self::STRING;
-	public const HEX    = 16 | self::STRING;
-	public const JSON   = 4  | self::STRING;
+	public const GZ     = 8;
+	public const HEX    = 16;
+	public const JSON   = 4;
 	public const STORE  = 1;
 	public const STRING = 2;
 
@@ -52,9 +52,11 @@ class Store extends Property implements Has_Set_Final
 	/**
 	 * @param $value bool|integer @map static::const<int>
 	 */
-	public function __construct(bool|int $value = self::STORE)
+	public function __construct(bool|int|null $value = null)
 	{
-		$this->value = intval($value);
+		if (isset($value)) {
+			$this->value = intval($value);
+		}
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -102,18 +104,23 @@ class Store extends Property implements Has_Set_Final
 	 */
 	public function isString() : bool
 	{
-		return $this->value & self::STRING;
+		return $this->value & (self::GZ | self::HEX | self::JSON | self::STRING);
 	}
 
 	//-------------------------------------------------------------------------------------- setFinal
 	public function setFinal(Reflection|Reflection_Property $reflection) : void
 	{
-		if (isset($this->value)) return;
+		if (isset($this->value)) {
+			return;
+		}
 		if ($reflection->isStatic()) {
 			$this->value = self::FALSE;
 		}
 		elseif ($reflection->getType()->isDateTime()) {
 			$this->value = self::STRING;
+		}
+		else {
+			$this->value = self::STORE;
 		}
 	}
 
