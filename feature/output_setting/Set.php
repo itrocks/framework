@@ -8,7 +8,7 @@ use ITRocks\Framework\Component\Tab;
 use ITRocks\Framework\Component\Tab\Tabs_Builder_Class;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Reflection\Annotation\Class_\Group_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Group;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting;
@@ -18,8 +18,8 @@ use ITRocks\Framework\Tools\Names;
 /**
  * Output settings for personalized forms
  *
- * @property Property[] $properties
  * @override $properties Property[]
+ * @property Property[] $properties
  */
 class Set extends Setting\Custom\Set
 {
@@ -197,8 +197,8 @@ class Set extends Setting\Custom\Set
 				);
 			}
 		}
-		foreach (Group_Annotation::allOf($class) as $group_annotation) {
-			foreach ($group_annotation->values() as $property_path) {
+		foreach (Group::of($class) as $group) {
+			foreach ($group->values as $property_path) {
 				if (str_contains($property_path, DOT)) {
 					/** @noinspection PhpUnhandledExceptionInspection constant */
 					$this->properties[$property_path] = Builder::create(

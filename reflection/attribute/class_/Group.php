@@ -1,8 +1,10 @@
 <?php
-namespace ITRocks\Framework\Reflection\Annotation\Class_;
+namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
-use ITRocks\Framework\Reflection\Annotation\Template;
-use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
+use Attribute;
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Inheritable;
+use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
@@ -14,37 +16,24 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
  * will create two annotations : one with the name 'first group' and each property name as values,
  * the second with the name 'second group' and each of its property name as string values.
  */
-class Group_Annotation extends Template\List_Annotation implements Multiple_Annotation
+#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS), Inheritable]
+class Group extends Class_
 {
+	use Is_List { __construct as private parentConstruct; }
 
-	//------------------------------------------------------------------------------------ ANNOTATION
-	const ANNOTATION = 'group';
+	//----------------------------------------------------------------------- Special group CONSTANTS
+	public const BOTTOM = '_bottom';
+	public const TOP    = '_top';
 
 	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * The group name
-	 *
-	 * @var string
-	 */
+	/** The name of the group */
 	public string $name;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value ?string
-	 */
-	public function __construct(?string $value)
+	public function __construct(string $name, string ...$property_paths)
 	{
-		$value = strval($value);
-		$i     = strpos($value, ',');
-		if ($i === false) {
-			$i = strlen($value);
-		}
-		$i = strrpos(substr($value, 0, $i), SP);
-		if ($i === false) {
-			$i = strlen($value);
-		}
-		$this->name = trim(substr($value, 0, $i));
-		parent::__construct(substr($value, $i + 1));
+		$this->parentConstruct(...$property_paths);
+		$this->name = $name;
 	}
 
 	//----------------------------------------------------------------------------------- searchGroup
@@ -70,12 +59,11 @@ class Group_Annotation extends Template\List_Annotation implements Multiple_Anno
 	 * Search the @group annotation object where the property is stored into
 	 *
 	 * @param $groups   static[]
-	 * @param $property string|Reflection_Property
+	 * @param $property Reflection_Property|string
 	 * @return ?static
 	 */
-	public static function searchProperty(
-		array $groups, string|Reflection_Property $property
-	) : ?static
+	public static function searchProperty(array $groups, Reflection_Property|string $property)
+		: ?static
 	{
 		$property_name = is_object($property) ? $property->getName() : $property;
 		foreach ($groups as $group) {

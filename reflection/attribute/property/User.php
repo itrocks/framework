@@ -36,7 +36,11 @@ use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
 )]
 class User extends Property
 {
-	use Is_List { __construct as parentConstruct; add as parentAdd; remove as parentRemove; }
+	use Is_List {
+		__construct as private parentConstruct;
+		add         as private parentAdd;
+		remove      as private parentRemove;
+	}
 
 	//-------------------------------------------------------------------------- Constants for $value
 	const ADD_ONLY         = 'add_only';

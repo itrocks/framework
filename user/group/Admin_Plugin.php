@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User\Group;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Menu;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
@@ -41,7 +42,8 @@ class Admin_Plugin implements Installable, Registerable, Updatable
 	{
 		// create the default super-administrator group
 		$group_name = Loc::tr('Super-administrator');
-		$group      = Dao::searchOne(['name' => $group_name], Group::class) ?: new Group();
+		$group      = Dao::searchOne(['name' => $group_name], Group::class)
+			?: Builder::create(Group::class);
 		if (!$group->features && !$group->name) {
 			$group->name     = $group_name;
 			$group->features = [
