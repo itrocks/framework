@@ -163,7 +163,7 @@ class Reflection_Attribute
 			$name   = $this->name;
 			$object = ($default && is_a($name, Has_Get_Default_Arguments::class, true))
 				? Builder::create($name, $name::getDefaultArguments())
-				: ($this->attribute?->newInstance() ?: Builder::create($name, $this->getArguments()));
+				: Builder::create($name, $this->getArguments());
 		}
 		if ($object instanceof Has_Set_Declaring) {
 			$object->setDeclaring($this->declaring);

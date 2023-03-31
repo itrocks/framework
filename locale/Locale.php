@@ -131,13 +131,10 @@ class Locale implements Configurable, Registerable, Updatable
 				$called_user_getter = true;
 			}
 		}
-		$type = $property->getUserType();
-		if (is_null($value) && Null_Annotation::of($property)->value) {
+		if (is_null($value)) {
 			return '';
 		}
-		if (is_null($value) && $type->isNumeric() && Mandatory_Annotation::of($property)->value) {
-			$value = 0;
-		}
+		$type = $property->getUserType();
 		if (Encrypt_Annotation::of($property)->value || Password_Annotation::of($property)->value) {
 			$value = strlen($value) ? str_repeat('*', strlen(Password::UNCHANGED)) : '';
 		}
@@ -166,10 +163,7 @@ class Locale implements Configurable, Registerable, Updatable
 				] = $decimals;
 			}
 		}
-		if (is_null($value) && Null_Annotation::of($property)->value) {
-			$result = '';
-		}
-		elseif (
+		if (
 			$this->format_translate
 			&& (
 				($values = Values::of($property)?->values)

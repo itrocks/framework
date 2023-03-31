@@ -501,7 +501,7 @@ class Validator implements Registerable
 			}
 			elseif (isA($attribute->getName(), Annotation::class)) {
 				/** @noinspection PhpUnhandledExceptionInspection Must be valid */
-				$attribute = $attribute->newInstance(true);
+				$attribute = $attribute->newInstance();
 				/** @var $attribute Annotation */
 				$result = Result::andResult($result, $this->validateAnnotation($object, $attribute));
 			}

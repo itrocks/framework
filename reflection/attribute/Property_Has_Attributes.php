@@ -95,10 +95,10 @@ trait Property_Has_Attributes
 						$attribute, $this, $final ?: $this, $override->getDeclaringClass(false)
 					);
 					$attribute_name = $attribute->getName();
-					if ($is_repeatable) {
+					if ($this->isAttributeRepeatable($attribute_name)) {
 						$override_attributes[$attribute_name][] = $attribute;
 					}
-					elseif (!$override_attributes[$attribute_name]) {
+					elseif (!isset($override_attributes[$attribute_name])) {
 						$override_attributes[$attribute_name] = $attribute;
 					}
 				}

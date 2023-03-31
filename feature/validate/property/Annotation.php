@@ -6,6 +6,7 @@ use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 use ITRocks\Framework\Reflection\Attribute\Class_\Implement;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use TypeError;
@@ -13,26 +14,23 @@ use TypeError;
 /**
  * Common to all property annotations : includes the property context
  */
-#[Extend(Reflection\Annotation::class), Implement(Property_Context_Annotation::class)]
+#[
+	Extend(Reflection\Annotation::class),
+	Implement(Has_Set_Final::class, Property_Context_Annotation::class)
+]
 trait Annotation
 {
 	use Validate\Annotation;
 
 	//------------------------------------------------------------------------------------- $property
-	/**
-	 * The validated property
-	 *
-	 * @var Reflection_Property
-	 */
+	/** The validated property */
 	public Reflection_Property $property;
 
 	//------------------------------------------------------------------------------ getPropertyValue
 	/**
 	 * Gets the value of the property from the last validated object
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @noinspection PhpUnused not_validated.html
-	 * @return mixed
 	 */
 	public function getPropertyValue() : mixed
 	{
@@ -53,7 +51,7 @@ trait Annotation
 	public function setFinal(Interfaces\Reflection|Reflection_Property $reflection) : void
 	{
 		$this->property = $reflection;
-		if (method_exists('parent', 'setFinal')) {
+		if (method_exists(get_parent_class(static::class), 'setFinal')) {
 			/** @noinspection PhpMultipleClassDeclarationsInspection */
 			parent::setFinal($reflection);
 		}
