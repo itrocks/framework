@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Component\Tab;
 use ITRocks\Framework\Component\Tab;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Group;
+use ITRocks\Framework\Reflection\Attribute\Class_\Groups_Order;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Set;
@@ -241,7 +242,7 @@ class Tabs_Builder_Class
 	/**
 	 * Sort groups alphabetically
 	 *
-	 * If some group names are into @groups_order, they will be ordered first, in the same order,
+	 * If some group names are into #Groups_Order, they will be ordered first, in the same order,
 	 * and the trailing groups will come after, sorted alphabetically.
 	 *
 	 * @param $groups Group[] Key is the name of the group
@@ -249,8 +250,7 @@ class Tabs_Builder_Class
 	protected function sortGroups(array &$groups) : void
 	{
 		$sorted_groups = [];
-		$groups_order  = $this->class->getListAnnotation('groups_order')->values();
-		foreach ($groups_order as $group_name) {
+		foreach ((Groups_Order::of($this->class)?->values ?: []) as $group_name) {
 			if (isset($groups[$group_name])) {
 				$sorted_groups[$group_name] = $groups[$group_name];
 				unset($groups[$group_name]);

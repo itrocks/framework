@@ -217,16 +217,6 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@feature_local_access' => Annotation::class,
 
 	/**
-	 * @groups_order Group1, Group2, ...
-	 * This is a Multiple_Annotation
-	 *
-	 * Declares what is the "from the most important to the less important" order for groups
-	 * Group1 and so on are the identifiers of the groups existing for the class
-	 * groups that are not into @groups_order will be the least important, sorted alphabetically
-	 */
-	Parser::T_CLASS . '@groups_order' => List_Annotation::class,
-
-	/**
 	 * @maintain Class_Name
 	 *
 	 * Declares which class should be needed by the dataset maintainer instead of current class
