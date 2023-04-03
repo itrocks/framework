@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Objects;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Tools\Date_Time;
 
@@ -30,11 +31,8 @@ class Note
 	public object $object;
 
 	//----------------------------------------------------------------------------------------- $text
-	/**
-	 * @max_length 1024
-	 * @multiline
-	 */
-	#[Mandatory]
+	/** @max_length 1024 */
+	#[Mandatory, Multiline]
 	public string $text;
 
 	//---------------------------------------------------------------------------------------- $title

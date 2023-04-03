@@ -10,6 +10,7 @@ use ITRocks\Framework\RAD\Feature\Status;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Names;
@@ -37,9 +38,9 @@ class Feature
 	//---------------------------------------------------------------------------------- $description
 	/**
 	 * @max_length 64000
-	 * @multiline
 	 * @translate common
 	 */
+	#[Multiline]
 	public string $description;
 
 	//--------------------------------------------------------------------------------------- $module

@@ -13,6 +13,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Tools\Date_Time;
@@ -60,9 +61,8 @@ class Email
 	 * @dao files
 	 * @editor quill simple
 	 * @max_length 10000000
-	 * @multiline
 	 */
-	#[Store(Store::GZ)]
+	#[Multiline, Store(Store::GZ)]
 	public string $content = '';
 
 	//-------------------------------------------------------------------------------------- $copy_to

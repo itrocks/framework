@@ -17,6 +17,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property_Has_Attributes;
@@ -652,7 +653,7 @@ class Reflection_Property extends ReflectionProperty
 	//----------------------------------------------------------------------------------- isMultiline
 	public function isMultiline() : string
 	{
-		return $this->getAnnotation('multiline')->value ? 'multiline' : '';
+		return Multiline::of($this)->value ? 'multiline' : '';
 	}
 
 	//---------------------------------------------------------------------------------- isValueEmpty

@@ -19,6 +19,7 @@ use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -207,7 +208,7 @@ class Collection
 			$cell->setStyle('display', 'none');
 		}
 		$cell->addClass($type->asString());
-		if ($property->getAnnotation('multiline')->value) {
+		if (Multiline::of($property)->value) {
 			$cell->addClass('multiline');
 		}
 		$cell->setData(

@@ -12,6 +12,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools;
@@ -60,9 +61,9 @@ class Button
 	/**
 	 * Some natural / PHP code to apply to the object before the action is executed
 	 *
-	 * @multiline
 	 * @output string
 	 */
+	#[Multiline]
 	public ?Code $code = null;
 
 	//---------------------------------------------------------------------------------------- $color
@@ -75,8 +76,8 @@ class Button
 	 * The button will be displayed only if these conditions are ok on the context object
 	 *
 	 * @max_length 60000
-	 * @multiline
 	 */
+	#[Multiline]
 	public string $conditions = '';
 
 	//-------------------------------------------------------------------------------- $confirm_label

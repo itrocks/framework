@@ -9,6 +9,7 @@ use ITRocks\Framework\Component\Tab\Tabs_Builder_Class;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Group;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting;
@@ -18,7 +19,7 @@ use ITRocks\Framework\Tools\Names;
 /**
  * Output settings for personalized forms
  *
- * @override $properties Property[]
+ * @override $properties @var Property[]
  * @property Property[] $properties
  */
 class Set extends Setting\Custom\Set
@@ -30,9 +31,7 @@ class Set extends Setting\Custom\Set
 	const BEFORE = 'before';
 
 	//-------------------------------------------------------------------------------------- $actions
-	/**
-	 * @var Button[]
-	 */
+	/** @var Button[] */
 	public array $actions = [];
 
 	//----------------------------------------------------------------------------------- $conditions
@@ -41,9 +40,8 @@ class Set extends Setting\Custom\Set
 	 * The returned boolean value will tell if the form must be available or not for the object.
 	 *
 	 * @max_length 60000
-	 * @multiline
-	 * @var string
 	 */
+	#[Multiline]
 	public string $conditions = '';
 
 	//-------------------------------------------------------------------------------------- $objects
@@ -58,17 +56,10 @@ class Set extends Setting\Custom\Set
 	public array $objects;
 
 	//------------------------------------------------------------------------------------------ $tab
-	/**
-	 * @var ?Tab
-	 */
 	public ?Tab $tab = null;
 
 	//---------------------------------------------------------------------------------------- $title
-	/**
-	 * The title that will be displayed on the top of the output window
-	 *
-	 * @var string
-	 */
+	/** The title that will be displayed on the top of the output window */
 	public string $title = '';
 
 	//------------------------------------------------------------------------------------- addAction
@@ -76,7 +67,7 @@ class Set extends Setting\Custom\Set
 	 * Insert a button before / after another button in the actions bar
 	 *
 	 * @param $button       Button
-	 * @param $where        string @values after, before
+	 * @param $where        string @values self::AFTER, self::BEFORE
 	 * @param $where_action string
 	 */
 	public function addAction(Button $button, string $where = self::AFTER, string $where_action = '')
@@ -109,7 +100,7 @@ class Set extends Setting\Custom\Set
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $add_property_path   string
 	 * @param $tab_name            string
-	 * @param $where               string after, before,
+	 * @param $where               string self::AFTER, self::BEFORE,
 	 * @param $where_property_path string reference property path for $where
 	 * @return Property
 	 */
@@ -166,9 +157,6 @@ class Set extends Setting\Custom\Set
 	}
 
 	//------------------------------------------------------------------------------- getDefaultTitle
-	/**
-	 * @return string
-	 */
 	private function getDefaultTitle() : string
 	{
 		return Loc::tr(ucfirst(Names::classToDisplay($this->getClassName())));
@@ -211,9 +199,7 @@ class Set extends Setting\Custom\Set
 	}
 
 	//--------------------------------------------------------------------------------------- initTab
-	/**
-	 * TODO NORMAL in-tabs management
-	 */
+	/** TODO NORMAL in-tabs management */
 	protected function initTab() : void
 	{
 		if (isset($this->tab)) {
@@ -225,12 +211,7 @@ class Set extends Setting\Custom\Set
 	}
 
 	//----------------------------------------------------------------------------- propertyHideEmpty
-	/**
-	 * Sets the property to hide-empty
-	 *
-	 * @param $property_path string
-	 * @param $hide_empty    boolean
-	 */
+	/** Sets the property to hide-empty */
 	public function propertyHideEmpty(string $property_path, bool $hide_empty = false) : void
 	{
 		$this->initProperties();
@@ -240,12 +221,7 @@ class Set extends Setting\Custom\Set
 	}
 
 	//------------------------------------------------------------------------------ propertyReadOnly
-	/**
-	 * Sets the property to read-only
-	 *
-	 * @param $property_path string
-	 * @param $read_only     boolean
-	 */
+	/** Sets the property to read-only */
 	public function propertyReadOnly(string $property_path, bool $read_only = false) : void
 	{
 		$this->initProperties();
@@ -255,12 +231,7 @@ class Set extends Setting\Custom\Set
 	}
 
 	//------------------------------------------------------------------------------- propertyTooltip
-	/**
-	 * Sets the title of the input property
-	 *
-	 * @param $property_path string
-	 * @param $tooltip       string
-	 */
+	/** Sets the title of the input property */
 	public function propertyTooltip(string $property_path, string $tooltip = '') : void
 	{
 		$this->initProperties();
@@ -288,10 +259,6 @@ class Set extends Setting\Custom\Set
 	}
 
 	//----------------------------------------------------------------------------------------- title
-	/**
-	 * @param $title string
-	 * @return string
-	 */
 	public function title(string $title = '') : string
 	{
 		if ($title) {

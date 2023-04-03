@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature\List_;
 
 use ITRocks\Framework\Feature\Edit;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -34,18 +35,14 @@ class Html_Template_Functions extends Edit\Html_Template_Functions
 			return '';
 		}
 		// simplified property annotations for a simplified form
-		Mandatory::of($property)->value                   = false;
-		$property->setAnnotationLocal('editor')->value    = false;
-		$property->setAnnotationLocal('multiline')->value = false;
+		Mandatory::of($property)->value                = false;
+		Multiline::of($property)->value                = false;
+		$property->setAnnotationLocal('editor')->value = false;
 		$property->setAnnotationsLocal('user_change', []); // TODO will not work with #User_Change
 		return parent::getEditReflectionProperty($property, $name, $ignore_user, $can_always_be_null);
 	}
 
 	//----------------------------------------------------------------------------- isPropertyVisible
-	/**
-	 * @param $property Reflection_Property
-	 * @return boolean
-	 */
 	protected function isPropertyVisible(Reflection_Property $property) : bool
 	{
 		return $property->isVisible(false, false);

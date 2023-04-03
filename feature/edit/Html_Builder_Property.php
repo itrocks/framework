@@ -13,6 +13,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\User_Change;
@@ -288,7 +289,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	//----------------------------------------------------------------------------------- buildString
 	/**
 	 * @param $multiline      boolean keep this value empty, it is not used
-	 *                        because the @multiline annotation is automatically used
+	 *                        because the #Multiline attribute is automatically used
 	 * @param $values         string[] keep this value empty, it is not used
 	 *                        because the @values annotation is automatically used
 	 * @param $ordered_values boolean keep this value default, it is not used
@@ -316,7 +317,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			$ordered_values = $this->property->getAnnotation('ordered_values')->value;
 		}
 		$element = parent::buildString(
-			$this->property->getAnnotation('multiline')->value,
+			Multiline::of($this->property)->value,
 			$values_captions,
 			$ordered_values
 		);

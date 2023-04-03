@@ -5,6 +5,7 @@ use AllowDynamicProperties;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 
 /**
  * A translation is the association of the origin programmed text and its translation using a given
@@ -32,15 +33,11 @@ class Translation
 	public string $language = '';
 
 	//----------------------------------------------------------------------------------------- $text
-	/** @multiline */
-	#[Mandatory]
+	#[Mandatory, Multiline]
 	public string $text = '';
 
 	//---------------------------------------------------------------------------------- $translation
-	/**
-	 * @multiline
-	 * @var string
-	 */
+	#[Multiline]
 	public string $translation = '';
 
 	//----------------------------------------------------------------------------------- __construct

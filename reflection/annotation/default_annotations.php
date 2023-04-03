@@ -433,12 +433,6 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@min_value' => Annotation::class,
 
 	/**
-	 * @multiline [false]
-	 * This tells that the string property can store multiple lines of text (default is false)
-	 */
-	Parser::T_PROPERTY . '@multiline' => Boolean_Annotation::class,
-
-	/**
 	 * @override [false]
 	 * This tells that the property will not have autowidth on collection view
 	 */

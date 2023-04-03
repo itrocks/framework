@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Button\Code\Command\Parser;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Stringable;
@@ -21,11 +22,8 @@ class Code implements Stringable
 	public string $feature;
 
 	//--------------------------------------------------------------------------------------- $source
-	/**
-	 * @max_length 60000
-	 * @multiline
-	 */
-	#[Alias('source_code')]
+	/** @max_length 60000 */
+	#[Alias('source_code'), Multiline]
 	public string $source;
 
 	//----------------------------------------------------------------------------------------- $when

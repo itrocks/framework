@@ -8,6 +8,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 
 /**
@@ -36,11 +37,8 @@ class Data
 	public string $property_name;
 
 	//---------------------------------------------------------------------------------- $translation
-	/**
-	 * @max_length 50000
-	 * @multiline
-	 */
-	#[Mandatory]
+	/** @max_length 50000 */
+	#[Mandatory, Multiline]
 	public string $translation = '';
 
 	//------------------------------------------------------------------------------------ __toString

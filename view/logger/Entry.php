@@ -3,6 +3,7 @@ namespace ITRocks\Framework\View\Logger;
 
 use ITRocks\Framework;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\No_Escape;
@@ -17,18 +18,13 @@ trait Entry
 	//--------------------------------------------------------------------------------------- $output
 	/**
 	 * @max_length 100000000
-	 * @multiline
 	 * @user_getter userGetOutput
 	 */
-	#[Getter('getOutput'), Store(false)]
+	#[Getter('getOutput'), Multiline, Store(false)]
 	public string|No_Escape $output;
 
 	//----------------------------------------------------------------------------- deactivateScripts
-	/**
-	 * @noinspection HtmlRequiredTitleElement Don't care
-	 * @param $output string
-	 * @return string
-	 */
+	/** @noinspection HtmlRequiredTitleElement Don't care */
 	protected function deactivateScripts(string $output) : string
 	{
 		return str_ireplace(
@@ -51,9 +47,6 @@ trait Entry
 	}
 
 	//------------------------------------------------------------------------------------- getOutput
-	/**
-	 * @return string
-	 */
 	protected function getOutput() : string
 	{
 		/** @var $logger Logger */
@@ -63,20 +56,13 @@ trait Entry
 	}
 
 	//---------------------------------------------------------------------------------------- iFrame
-	/**
-	 * @param $output string
-	 * @return string
-	 */
 	protected function iFrame(string $output) : string
 	{
 		return '<iframe data-from="entry-output"></iframe><div id="entry-output">' . $output . '</div>';
 	}
 
 	//--------------------------------------------------------------------------------- userGetOutput
-	/**
-	 * @noinspection PhpUnused @user_getter
-	 * @return No_Escape
-	 */
+	/** @noinspection PhpUnused @user_getter */
 	public function userGetOutput() : No_Escape
 	{
 		return new No_Escape(
