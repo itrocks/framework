@@ -14,9 +14,6 @@ trait Toolbox
 {
 
 	//---------------------------------------------------------------------------------------- $class
-	/**
-	 * @var Reflection_Class
-	 */
 	private Reflection_Class $class;
 
 	//---------------------------------------------------------------------------------- decodeAdvice
@@ -76,11 +73,7 @@ trait Toolbox
 			$advice_parameters = $advice_method->getParameters();
 		}
 
-		$advice_has_return = str_contains($advice_method->getDocComment(), '@return')
-			|| (
-				($return_type_string = $advice_method->getReturnTypeString())
-				&& ($return_type_string !== 'void')
-			);
+		$advice_has_return = $advice_method->returns();
 
 		return [
 			$advice_class_name,
@@ -94,10 +87,6 @@ trait Toolbox
 	}
 
 	//--------------------------------------------------------------------------------- displayAdvice
-	/**
-	 * @param $advice array
-	 * @return string
-	 */
 	private function displayAdvice(array $advice) : string
 	{
 		$advice = $advice[1];

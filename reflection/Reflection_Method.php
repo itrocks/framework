@@ -16,20 +16,14 @@ class Reflection_Method extends ReflectionMethod
 	use Annoted;
 
 	//------------------------------------------------------------------------ getAnnotationCachePath
-	/**
-	 * @return string[]
-	 */
+	/** @return string[] */
 	protected function getAnnotationCachePath() : array
 	{
 		return [$this->class, $this->name . '()'];
 	}
 
 	//------------------------------------------------------------------------- getDeclaringClassName
-	/**
-	 * Gets declaring class name
-	 *
-	 * @return string
-	 */
+	/** Gets declaring class name */
 	public function getDeclaringClassName() : string
 	{
 		return $this->class;
@@ -66,10 +60,6 @@ class Reflection_Method extends ReflectionMethod
 	}
 
 	//---------------------------------------------------------------------------------- getParameter
-	/**
-	 * @param $parameter_name string
-	 * @return Reflection_Parameter
-	 */
 	public function getParameter(string $parameter_name) : Reflection_Parameter
 	{
 		return $this->getParameters()[$parameter_name];
@@ -120,8 +110,6 @@ class Reflection_Method extends ReflectionMethod
 	/**
 	 * The prototype of the function, beginning with first whitespaces before function and its doc
 	 * comments, ending with { or ; followed by LF.
-	 *
-	 * @return string
 	 */
 	public function getPrototypeString() : string
 	{
@@ -134,13 +122,14 @@ class Reflection_Method extends ReflectionMethod
 			. '(' . join(', ', $parameters) . ')' . LF . '{';
 	}
 
+	//--------------------------------------------------------------------------- getReturnTypeString
+	public function getReturnTypeString() : string
+	{
+		return strval($this->getReturnType());
+	}
+
 	//---------------------------------------------------------------------------------- hasParameter
-	/**
-	 * Returns true if the method has a parameter named $parameter_name
-	 *
-	 * @param $parameter_name string
-	 * @return boolean
-	 */
+	/** Returns true if the method has a parameter named $parameter_name */
 	public function hasParameter(string $parameter_name) : bool
 	{
 		foreach (parent::getParameters() as $parameter) {
@@ -152,12 +141,9 @@ class Reflection_Method extends ReflectionMethod
 	}
 
 	//--------------------------------------------------------------------------------------- returns
-	/**
-	 * @return string
-	 */
 	public function returns() : string
 	{
-		return $this->getAnnotation('return')->value;
+		return $this->getAnnotation('return')->value || $this->getReturnTypeString();
 	}
 
 }

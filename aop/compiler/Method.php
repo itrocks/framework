@@ -15,9 +15,6 @@ class Method
 	const DEBUG = false;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $class Reflection_Class
-	 */
 	public function __construct(Reflection_Class $class)
 	{
 		$this->class = $class;
@@ -43,11 +40,6 @@ class Method
 	}
 
 	//--------------------------------------------------------------------------------------- compile
-	/**
-	 * @param $method_name string
-	 * @param $advices     array
-	 * @return string
-	 */
 	public function compile(string $method_name, array $advices) : string
 	{
 		$methods = $this->class->getMethods([T_EXTENDS, T_IMPLEMENTS, T_USE]);
@@ -101,11 +93,7 @@ class Method
 		$count = null;
 
 		// $joinpoint_has_return
-		$joinpoint_has_return = str_contains($doc_comment, '@return')
-			|| (
-				($return_type_string = $source_method->getReturnTypeString())
-				&& ($return_type_string !== 'void')
-			);
+		$joinpoint_has_return = $source_method->returns();
 
 		// $pointcut_string
 		if ($is_static) {
