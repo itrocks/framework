@@ -14,6 +14,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -38,25 +39,20 @@ class Email
 	use Has_Output_Properties;
 
 	//-------------------------------------------------------------------------------------- $account
-	/**
-	 * @user hide_empty
-	 */
+	#[User(User::HIDE_EMPTY)]
 	public ?Account $account = null;
 
 	//---------------------------------------------------------------------------------- $attachments
-	/**
-	 * @user hide_empty
-	 * @var Attachment[]
-	 */
+	/** @var Attachment[] */
+	#[User(User::HIDE_EMPTY)]
 	public array $attachments = [];
 
 	//-------------------------------------------------------------------------------- $blind_copy_to
 	/**
 	 * @set_store_name emails_recipients_blind_copy_to
-	 * @user hide_empty
 	 * @var Recipient[]
 	 */
-	#[Alias('bcc')]
+	#[Alias('bcc'), User(User::HIDE_EMPTY)]
 	public array $blind_copy_to = [];
 
 	//-------------------------------------------------------------------------------------- $content
@@ -72,10 +68,9 @@ class Email
 	//-------------------------------------------------------------------------------------- $copy_to
 	/**
 	 * @set_store_name emails_recipients_copy_to
-	 * @user hide_empty
 	 * @var Recipient[]
 	 */
-	#[Alias('cc')]
+	#[Alias('cc'), User(User::HIDE_EMPTY)]
 	public array $copy_to = [];
 
 	//----------------------------------------------------------------------------------------- $date
@@ -86,72 +81,55 @@ class Email
 	public Date_Time|string $date;
 
 	//----------------------------------------------------------------------------------------- $from
-	/**
-	 * @user invisible_edit
-	 */
+	#[User(User::INVISIBLE_EDIT)]
 	public ?Recipient $from;
 
 	//-------------------------------------------------------------------------------------- $headers
 	/**
 	 * @null
-	 * @user invisible
 	 * @var string|string[]
 	 */
-	#[Getter]
-	#[Store(Store::JSON)]
+	#[Getter, Store(Store::JSON), User(User::INVISIBLE)]
 	public array|string $headers = [];
 
 	//--------------------------------------------------------------------------------- $receive_date
-	/**
-	 * @user hide_empty
-	 */
+	#[User(User::HIDE_EMPTY)]
 	public Date_Time|string $receive_date;
 
 	//------------------------------------------------------------------------------------- $reply_to
-	/**
-	 * @user hide_empty
-	 */
+	#[User(User::HIDE_EMPTY)]
 	public ?Recipient $reply_to = null;
 
 	//---------------------------------------------------------------------------------- $return_path
-	/**
-	 * @user hide_empty
-	 */
+	#[User(User::HIDE_EMPTY)]
 	public ?Recipient $return_path = null;
 
 	//------------------------------------------------------------------------------------ $send_date
-	/**
-	 * @user hide_empty
-	 */
+	#[User(User::HIDE_EMPTY)]
 	public Date_Time|string $send_date;
 
 	//--------------------------------------------------------------------------------- $send_message
-	/**
-	 * @user hide_empty, readonly
-	 */
+	#[User(User::HIDE_EMPTY, User::READONLY)]
 	public string $send_message = '';
 
 	//-------------------------------------------------------------------------------------- $subject
-	/**
-	 * @data focus
-	 */
+	/** @data focus */
 	public string $subject = '';
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
 	 * @set_store_name emails_recipients_to
-	 * @user hide_empty
 	 * @var Recipient[]
 	 */
+	#[User(User::HIDE_EMPTY)]
 	public array $to = [];
 
 	//----------------------------------------------------------------------------------------- $uidl
 	/**
 	 * The unique identification number of the mail into the distant server once it has been
 	 * received / sent
-	 *
-	 * @user hide_empty, readonly
 	 */
+	#[User(User::HIDE_EMPTY, User::READONLY)]
 	public string $uidl = '';
 
 	//------------------------------------------------------------------------------------ __toString
@@ -206,9 +184,7 @@ class Email
 	}
 
 	//--------------------------------------------------------------------------- getHeadersAsStrings
-	/**
-	 * @return string[]
-	 */
+	/** @return string[] */
 	public function getHeadersAsStrings() : array
 	{
 		if ($this->blind_copy_to) {
@@ -262,9 +238,7 @@ class Email
 	}
 
 	//------------------------------------------------------------------------ getRecipientsAsStrings
-	/**
-	 * @return string[]
-	 */
+	/** @return string[] */
 	public function getRecipientsAsStrings() : array
 	{
 		$recipients = [];

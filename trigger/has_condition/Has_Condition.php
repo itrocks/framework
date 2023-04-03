@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao\Func\Where;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Trigger\Has_Condition\Run;
 
 /**
@@ -29,17 +30,12 @@ trait Has_Condition
 	public string $class_name;
 
 	//-------------------------------------------------------------------------------------- $running
-	/**
-	 * @user invisible
-	 * @var Run[]
-	 */
-	#[Component]
+	/** @var Run[] */
+	#[Component, User(User::INVISIBLE)]
 	public array $running;
 
 	//---------------------------------------------------------------------------- conditionIsNotNull
-	/**
-	 * Returns true if $condition is Func::isNotNull()
-	 */
+	/** Returns true if $condition is Func::isNotNull() */
 	public function conditionIsNotNull(?Where $condition) : bool
 	{
 		return ($condition instanceof Comparison)
@@ -48,9 +44,7 @@ trait Has_Condition
 	}
 
 	//------------------------------------------------------------------------------- conditionIsNull
-	/**
-	 * Returns true if $condition is Func::isNull()
-	 */
+	/** Returns true if $condition is Func::isNull() */
 	public function conditionIsNull(?Where $condition) : bool
 	{
 		return ($condition instanceof Comparison)

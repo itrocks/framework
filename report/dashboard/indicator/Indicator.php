@@ -14,6 +14,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Attribute\Property\Unit;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Report\Dashboard;
 use ITRocks\Framework\Report\Dashboard\Indicator\Property_Path\Widget;
@@ -45,19 +46,13 @@ class Indicator
 	public Dashboard $dashboard;
 
 	//--------------------------------------------------------------------------------------- $grid_x
-	/**
-	 * horizontal coordinate on the dashboard grid, from 0 to 5
-	 *
-	 * @user invisible
-	 */
+	/** horizontal coordinate on the dashboard grid, from 0 to 5 */
+	#[User(User::INVISIBLE)]
 	public int $grid_x;
 
 	//--------------------------------------------------------------------------------------- $grid_y
-	/**
-	 * vertical coordinate on the dashboard grid, from 0 to n
-	 *
-	 * @user invisible
-	 */
+	/** vertical coordinate on the dashboard grid, from 0 to n */
+	#[User(User::INVISIBLE)]
 	public int $grid_y;
 
 	//----------------------------------------------------------------------------------------- $icon
@@ -122,9 +117,7 @@ class Indicator
 	}
 
 	//------------------------------------------------------------------------------------------ link
-	/**
-	 * A link to the target objects list
-	 */
+	/** A link to the target objects list */
 	public function link() : string
 	{
 		return View::link(
@@ -138,7 +131,6 @@ class Indicator
 	//---------------------------------------------------------------------------------------- moveTo
 	/**
 	 * Move the indicator to this destination on the grid
-	 *
 	 * - If already contains an indicator : exchange places
 	 */
 	public function moveTo(int $grid_x, int $grid_y) : void
@@ -155,9 +147,7 @@ class Indicator
 	}
 
 	//----------------------------------------------------------------------------------- placeOnGrid
-	/**
-	 * Places the current indicator into the dashboard grid, at the first available place
-	 */
+	/** Places the current indicator into the dashboard grid, at the first available place */
 	public function placeOnGrid() : void
 	{
 		$grid = $this->dashboard->grid();

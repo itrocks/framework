@@ -2,29 +2,20 @@
 namespace ITRocks\Framework\Feature\Validate\Property;
 
 use Error;
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Feature\History\Has_History;
 use ITRocks\Framework\Feature\Validate\Result;
-use ITRocks\Framework\History\Has_History;
-use ITRocks\Framework\Reflection\Annotation\Property;
-use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Attribute;
+use ITRocks\Framework\Reflection\Attribute\Has_Attributes;
+use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * The mandatory annotation validator
  */
-class Mandatory_Annotation extends Property\Mandatory_Annotation
+class Mandatory extends Attribute\Property\Mandatory
 {
 	use Annotation;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value    bool|string|null
-	 * @param $property Interfaces\Reflection_Property ie the contextual Reflection_Property object
-	 */
-	public function __construct(bool|string|null $value, Interfaces\Reflection_Property $property)
-	{
-		parent::__construct($value, $property);
-		$this->property = $property;
-	}
 
 	//--------------------------------------------------------------------------------------- isEmpty
 	/**
@@ -50,20 +41,42 @@ class Mandatory_Annotation extends Property\Mandatory_Annotation
 		return false;
 	}
 
+	//-------------------------------------------------------------------------------------------- of
+	/**
+	 * @param $reflection Reflection|Has_Attributes
+	 * @return static|static[]|null
+	 */
+	public static function of(Reflection|Has_Attributes $reflection) : array|object|null
+	{
+		static $recurse = false;
+		if ($recurse) {
+			return parent::of($reflection);
+		}
+		$recurse   = true;
+		$mandatory = $reflection->getAttribute(Builder::current()->sourceClassName(static::class));
+		$recurse   = false;
+		return $mandatory;
+	}
+
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
 	 * @return string
 	 */
 	public function reportMessage() : string
 	{
-		if (is_bool($this->value)) {
-			switch ($this->valid) {
-				case Result::INFORMATION: return 'mandatory and set';
-				case Result::WARNING:     return 'should be filled in';
-				case Result::ERROR:       return 'mandatory';
-			}
+		switch ($this->valid) {
+			case Result::INFORMATION: return 'mandatory and set';
+			case Result::WARNING:     return 'should be filled in';
+			case Result::ERROR:       return 'mandatory';
 		}
 		return '';
+	}
+
+	//-------------------------------------------------------------------------------------- setFinal
+	public function setFinal(Reflection|Reflection_Property $reflection) : void
+	{
+		parent::setFinal($reflection);
+		$this->property = $reflection;
 	}
 
 	//-------------------------------------------------------------------------------------- validate

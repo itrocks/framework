@@ -14,10 +14,8 @@ use TypeError;
 /**
  * Common to all property annotations : includes the property context
  */
-#[
-	Extend(Reflection\Annotation::class),
-	Implement(Has_Set_Final::class, Property_Context_Annotation::class)
-]
+#[Extend(Reflection\Annotation::class)]
+#[Implement(Has_Set_Final::class, Property_Context_Annotation::class)]
 trait Annotation
 {
 	use Validate\Annotation;

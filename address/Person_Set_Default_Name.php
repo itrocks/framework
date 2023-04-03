@@ -1,24 +1,22 @@
 <?php
 namespace ITRocks\Framework\Address;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Override;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A Has_Name Person which $name is set to "$first_name $last_name" when empty
  *
  * @before_write setDefaultNameIfEmpty
- * @override name @mandatory false
  */
+#[Override('name', new Mandatory(false))]
 trait Person_Set_Default_Name
 {
 	use Person_Having_Name { __toString as private parentToString; }
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * Returns name and first name and last name if the name is different
-	 *
-	 * @return string
-	 */
+	/** Returns name and first name and last name if the name is different */
 	public function __toString() : string
 	{
 		/** @var $self self|Has_Name */

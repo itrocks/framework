@@ -68,6 +68,12 @@ class Reflection_Attribute
 			$this->attribute = null;
 			$this->instance  = $attribute;
 			$this->name      = get_class($attribute);
+			// TODO useless when Override(..., new Mandatory) is automatically replaced by Builder::create
+			$class_name      = Builder::className($this->name);
+			if (!is_a($this->instance, $class_name, true)) {
+				/** @noinspection PhpUnhandledExceptionInspection replacement class name is always valid */
+				$this->instance = Builder::createClone($this->instance, $class_name);
+			}
 		}
 		$this->declaring       = $declaring;
 		$this->declaring_class = $declaring_class;

@@ -194,7 +194,7 @@ class Select_Controller implements Feature_Controller
 				. '(' . $property->name . ')';
 		}
 
-		// properties display : only if multiple or different than @display
+		// properties display : only if multiple or different from #Display
 		foreach ($properties as $property_path => $property) {
 			if ($class_count[$property_class_names[$property_path]] > 1) {
 				$property->display .= SP . '(' . Loc::tr($property->name) . ')';

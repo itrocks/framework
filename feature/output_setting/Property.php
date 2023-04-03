@@ -36,7 +36,7 @@ class Property extends Setting\Property
 	 * Forces the group where the property will be included into in order to display it in the
 	 * matching tab
 	 * Empty string means 'out of tabs'
-	 * null means 'use the original value of @group of the matching property / class'
+	 * null means 'use the original value of #Group of the matching property / class'
 	 *
 	 * @var string
 	 */

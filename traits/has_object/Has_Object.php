@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+
 /**
  * For all classes working on an object as representative value
  *
@@ -12,16 +14,10 @@ trait Has_Object
 {
 
 	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * @mandatory
-	 * @var object
-	 */
+	#[Mandatory]
 	public object $object;
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return strval($this->object);

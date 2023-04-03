@@ -158,7 +158,7 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 				else {
 					if (
 						// - accepts null if not mandatory
-						(is_null($value) && !Mandatory_Annotation::of($this->property)->value)
+						(is_null($value) && !Mandatory::of($this->property)->value)
 						// - accepts a string if #Store allows a string
 						|| (is_string($value) && Store::of($this->property)->isString())
 						// - accepts an object if is an instance of the class

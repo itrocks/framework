@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 
 /**
  * An order class
@@ -18,11 +19,8 @@ class Order extends Document
 	private ?Client $delivery_client;
 
 	//---------------------------------------------------------------------------------------- $lines
-	/**
-	 * @mandatory
-	 * @var Order_Line[]
-	 */
-	#[Property\Component]
+	/** @var Order_Line[] */
+	#[Property\Component, Mandatory]
 	private array $lines;
 
 	//------------------------------------------------------------------------------------- $salesmen

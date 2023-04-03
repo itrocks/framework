@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Property;
 
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
@@ -30,7 +31,7 @@ class Null_Annotation extends Boolean_Annotation implements Property_Context_Ann
 			(
 				!isset($value)
 				&& !$this->value
-				&& !Mandatory_Annotation::of($property)->value
+				&& !Mandatory::of($property)->value
 				&& Link_Annotation::of($property)->isObject()
 			)
 			|| $property->getType()->allowsNull()

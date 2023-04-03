@@ -6,6 +6,7 @@ use ITRocks\Framework\Phone\Phone_Format;
 use ITRocks\Framework\Phone\Phone_Number_Exception;
 use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Traits\Has_Number;
 use ReflectionException;
@@ -13,19 +14,15 @@ use ReflectionException;
 /**
  * For classes that embed a phone number
  *
- * @override number @mandatory false @validate validateNumber
+ * @override number @validate validateNumber
  */
-#[Override('number', new Alias('phone'))]
+#[Override('number', new Alias('phone'), new Mandatory(false))]
 trait Has_Phone_Number
 {
 	use Has_Number;
 
 	//-------------------------------------------------------------------------------- validateNumber
-	/**
-	 * @param $property Reflection_Property
-	 * @return string|boolean
-	 * @throws ReflectionException
-	 */
+	/** @throws ReflectionException */
 	public function validateNumber(Reflection_Property $property) : bool|string
 	{
 		$value = $property->getValue($this);

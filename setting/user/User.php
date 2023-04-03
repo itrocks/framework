@@ -6,6 +6,7 @@ use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Setting;
 
 /**
@@ -26,10 +27,7 @@ class User extends Setting
 	public ?Setting $setting;
 
 	//----------------------------------------------------------------------------------------- $user
-	/**
-	 * @mandatory false
-	 */
-	#[Composite]
+	#[Composite, Mandatory(false)]
 	public ?Framework\User $user;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -46,9 +44,7 @@ class User extends Setting
 	}
 
 	//----------------------------------------------------------------------------- invalidateObjects
-	/**
-	 * @noinspection PhpUnused @before_write
-	 */
+	/** @noinspection PhpUnused @before_write */
 	public function invalidateObjects() : void
 	{
 		Getter::invalidate($this, 'setting');

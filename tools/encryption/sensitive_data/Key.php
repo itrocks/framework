@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\User;
 
 /**
@@ -18,9 +19,7 @@ class Key
 	const METHOD = 'AES256';
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @mandatory
-	 */
+	#[Mandatory]
 	public string $class_name;
 
 	//-------------------------------------------------------------------------------- $property_name
@@ -31,9 +30,7 @@ class Key
 	public ?string $property_name;
 
 	//--------------------------------------------------------------------------------------- $secret
-	/**
-	 * @max_length 10000
-	 */
+	/** @max_length 10000 */
 	public string $secret;
 
 	//----------------------------------------------------------------------------------------- $user

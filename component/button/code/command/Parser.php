@@ -11,7 +11,7 @@ class Parser
 
 	//----------------------------------------------------------------------------------------- parse
 	/**
-	 * @param $source string
+	 * @param $source    string
 	 * @param $condition boolean If true, consider the source is a condition
 	 * @return ?Command null for nop
 	 */

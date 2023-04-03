@@ -15,7 +15,6 @@ use ITRocks\Framework\Dao\Option\Only;
 use ITRocks\Framework\Feature\Save;
 use ITRocks\Framework\Feature\Validate\Annotation\Warning_Annotation;
 use ITRocks\Framework\Feature\Validate\Property;
-use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Feature\Validate\Property\Validate_Annotation;
 use ITRocks\Framework\Feature\Validate\Property\Var_Annotation;
 use ITRocks\Framework\Locale\Loc;
@@ -31,6 +30,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -378,7 +378,6 @@ class Validator implements Registerable
 		$register->setAnnotations(Parser::T_PROPERTY, [
 			'characters' => Property\Characters_Annotation::class,
 			'length'     => Property\Length_Annotation::class,
-			'mandatory'  => Property\Mandatory_Annotation::class,
 			'max_length' => Property\Max_Length_Annotation::class,
 			'max_value'  => Property\Max_Value_Annotation::class,
 			'min_length' => Property\Min_Length_Annotation::class,
@@ -392,7 +391,8 @@ class Validator implements Registerable
 			'warning'    => Property\Warning_Annotation::class,
 		]);
 		$builder = Builder::current();
-		$builder->setReplacement(Values::class, Property\Values::class);
+		$builder->setReplacement(Mandatory::class, Property\Mandatory::class);
+		$builder->setReplacement(Values::class,    Property\Values::class);
 	}
 
 	//-------------------------------------------------------------------------------------- validate
@@ -449,7 +449,7 @@ class Validator implements Registerable
 				: Result::ERROR;
 		}
 		if (!in_array($annotation->valid, [Result::NONE, true], true)) {
-			if (($annotation->valid === Result::ERROR) && ($annotation instanceof Mandatory_Annotation)) {
+			if (($annotation->valid === Result::ERROR) && ($annotation instanceof Property\Mandatory)) {
 				foreach ($this->report as $key => $report_line) {
 					if ($report_line->property->is($annotation->property)) {
 						unset($this->report[$key]);
@@ -530,7 +530,7 @@ class Validator implements Registerable
 		if ($type->isClass()) {
 			/** @var $sub_objects object|object[] */
 			$sub_objects = $object->{$property->name};
-			if (!$sub_objects && Mandatory_Annotation::of($property)->value) {
+			if (!$sub_objects && Mandatory::of($property)->value) {
 				$sub_objects = $this->createSubObject($object, $property);
 			}
 			if ($sub_objects && !is_array($sub_objects)) {
@@ -643,7 +643,7 @@ class Validator implements Registerable
 			// if value is not set and is a link (component or not), then we validate only mandatory
 			if (!isset($object->{$property->name}) && Link_Annotation::of($property)->value) {
 				$result = Result::andResult($result, $this->validateAnnotations(
-					$object, [Mandatory_Annotation::of($property), Validate_Annotation::allOf($property)]
+					$object, [Mandatory::of($property), Validate_Annotation::allOf($property)]
 				));
 				continue;
 			}
@@ -657,10 +657,7 @@ class Validator implements Registerable
 			if (
 				Attribute\Property\Component::of($property)?->value
 				|| Link_Annotation::of($property)->isCollection()
-				|| (
-					Integrated_Annotation::of($property)->value
-					&& Mandatory_Annotation::of($property)->value
-				)
+				|| (Integrated_Annotation::of($property)->value && Mandatory::of($property)->value)
 			) {
 				$result = Result::andResult($result, $this->validateComponent(
 					$object, $only_properties, $exclude_properties, $property

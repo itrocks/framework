@@ -7,6 +7,8 @@ use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Mutex;
@@ -29,24 +31,17 @@ class Counter
 {
 
 	//--------------------------------------------------------------------------------------- $format
-	/**
-	 * @example 'F{YEAR}{ITRocks\Framework\User.current.login.0.upper}%04s'
-	 * @mandatory
-	 */
+	/** @example 'F{YEAR}{ITRocks\Framework\User.current.login.0.upper}%04s' */
+	#[Mandatory]
 	public string $format = '{YEAR}%04d';
 
 	//----------------------------------------------------------------------------------- $identifier
-	/**
-	 * @mandatory
-	 * @user add_only
-	 * @user_getter showIdentifier
-	 */
+	/** @user_getter showIdentifier */
+	#[Mandatory, User(User::ADD_ONLY)]
 	public string $identifier;
 
 	//---------------------------------------------------------------------------------- $last_update
-	/**
-	 * @user readonly
-	 */
+	#[User(User::READONLY)]
 	public Date_Time|string $last_update;
 
 	//----------------------------------------------------------------------------------- $last_value
@@ -54,10 +49,10 @@ class Counter
 	 * TODO output for the edit form, user_var for the list and the output... But isn't it the same ?
 	 *
 	 * @output string
-	 * @user readonly
 	 * @user_getter formatLastValue
 	 * @user_var string
 	 */
+	#[User(User::READONLY)]
 	public int $last_value = 0;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -72,9 +67,7 @@ class Counter
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @throws ReflectionException
-	 */
+	/** @throws ReflectionException */
 	public function __toString() : string
 	{
 		return $this->showIdentifier();
@@ -85,8 +78,8 @@ class Counter
 	 * Decrement the counter value
 	 *
 	 * @noinspection PhpUnused often used on business objects' @after_delete with $number
-	 * @param $object        object|string object or class name
-	 * @param $property_name string The name of the property containing the counter value
+	 * @param $object        object|string Object or class name
+	 * @param $property_name string        The name of the property containing the counter value
 	 */
 	public static function autoDecrement(object|string $object, string $property_name = 'number')
 		: void
@@ -154,7 +147,7 @@ class Counter
 	 * Load a counter linked to the class of an object from default data link and increment it
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object     object The object to use to format the counter
+	 * @param $object     object      The object to use to format the counter
 	 * @param $identifier string|null The identifier of the counter ; default is get_class($object)
 	 * @return string The new counter value
 	 */

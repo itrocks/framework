@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Option;
 
 use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 
 /**
  * Base option class for collections of properties (eg Exclude, Only)
@@ -10,12 +11,8 @@ abstract class Properties implements Option
 {
 
 	//----------------------------------------------------------------------------------- $properties
-	/**
-	 * Properties path used to limit a Dao operation range
-	 *
-	 * @mandatory
-	 * @var string[]
-	 */
+	/** @var string[] Properties path used to limit a Dao operation range */
+	#[Mandatory]
 	public array $properties;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -37,9 +34,7 @@ abstract class Properties implements Option
 	}
 
 	//------------------------------------------------------------------------------------------- add
-	/**
-	 * @param $properties string|string[] ... Each property can be a property.path
-	 */
+	/** @param $properties string|string[] ... Each property can be a 'property.path' */
 	public function add(array|string... $properties) : void
 	{
 		foreach (func_get_args() as $properties) {
@@ -64,12 +59,7 @@ abstract class Properties implements Option
 	}
 
 	//------------------------------------------------------------------------------------------- has
-	/**
-	 * Returns true if the option has the property name
-	 *
-	 * @param $property string
-	 * @return boolean
-	 */
+	/** Returns true if the option has the property name */
 	public function has(string $property) : bool
 	{
 		return in_array($property, $this->properties, true);

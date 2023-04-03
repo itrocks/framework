@@ -8,6 +8,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Unit;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\User_Change;
 
 /**
@@ -17,8 +18,6 @@ use ITRocks\Framework\Reflection\Attribute\Property\User_Change;
  * @before_write simpleToFormat
  * @feature Easy incremental counters configuration
  * @feature_menu Administration > Simple counters
- * @override format      @user invisible
- * @override last_update @user invisible
  */
 #[
 	Class_\Store(false),
@@ -26,8 +25,10 @@ use ITRocks\Framework\Reflection\Attribute\Property\User_Change;
 		'identifier', 'last_update', 'last_value', 'format', 'prefix', 'yearly_reset',
 		'year_with_4_characters', 'complete_with_zeros', 'documents_count'
 	),
-	Override('identifier', new Alias('document')),
-	Override('last_value', new Alias('example'), new Store(false))
+	Override('format',      new User(User::INVISIBLE)),
+	Override('identifier',  new Alias('document')),
+	Override('last_update', new User(User::INVISIBLE)),
+	Override('last_value',  new Alias('example'), new Store(false))
 ]
 class Simple extends Counter
 {

@@ -12,6 +12,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools;
 use ITRocks\Framework\Tools\Names;
@@ -51,10 +52,8 @@ class Button
 	/**
 	 * More classes for the button
 	 * This is css style, eg 'pressed' or 'if-edit-press'
-	 *
-	 * @user hidden
 	 */
-	#[Getter]
+	#[Getter, User(User::HIDDEN)]
 	public string $class = '';
 
 	//----------------------------------------------------------------------------------------- $code
@@ -67,11 +66,8 @@ class Button
 	public ?Code $code = null;
 
 	//---------------------------------------------------------------------------------------- $color
-	/**
-	 * The color of the button
-	 *
-	 * @user invisible
-	 */
+	/** The color of the button */
+	#[User(User::INVISIBLE)]
 	public ?Tools\Color $color;
 
 	//----------------------------------------------------------------------------------- $conditions
@@ -100,11 +96,8 @@ class Button
 	public mixed $data_object = null;
 
 	//-------------------------------------------------------------------------------------- $feature
-	/**
-	 * Button feature
-	 *
-	 * @user hidden
-	 */
+	/** Button feature */
+	#[User(User::HIDDEN)]
 	public string $feature = '';
 
 	//----------------------------------------------------------------------------------------- $hint
@@ -112,26 +105,21 @@ class Button
 	public string $hint = '';
 
 	//----------------------------------------------------------------------------------------- $link
-	/**
-	 * Button link
-	 *
-	 * @user invisible
-	 */
-	#[Getter('getLink')]
+	/** Button link */
+	#[Getter('getLink'), User(User::INVISIBLE)]
 	public ?string $link = null;
 
 	//--------------------------------------------------------------------------------------- $object
-	/** @user invisible */
+	#[User(User::INVISIBLE)]
 	public ?object $object = null;
 
 	//---------------------------------------------------------------------------------- $sub_buttons
 	/**
 	 * A button can be linked to a collection of sub-buttons
 	 *
-	 * @user invisible
 	 * @var Button[]
 	 */
-	#[Component]
+	#[Component, User(User::INVISIBLE)]
 	public array $sub_buttons = [];
 
 	//--------------------------------------------------------------------------------------- $target
@@ -139,9 +127,8 @@ class Button
 	 * Target for the link
 	 * Name of a targeted window / iframe
 	 * If starts with '#', target is the identifier of a DOM element in the page (for ajax call)
-	 *
-	 * @user hidden
 	 */
+	#[User(User::HIDDEN)]
 	public string $target = '#main';
 
 	//----------------------------------------------------------------------------------- __construct

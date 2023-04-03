@@ -16,6 +16,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
@@ -46,53 +47,35 @@ class Collection
 	const HIDE_EMPTY_TEST = true;
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
 	public string $class_name;
 
 	//----------------------------------------------------------------------------------- $collection
-	/**
-	 * @var object[]
-	 */
+	/** @var object[] */
 	public array $collection;
 
 	//------------------------------------------------------------------------------------ $has_value
 	/**
-	 * This is the list of properties with @user hide_empty that have a value on at least 1 line
+	 * This is the list of properties with #User::HIDE_EMPTY that have a value on at least 1 line
 	 *
 	 * @var boolean[] key is the name of the property, value is always true
 	 */
 	public array $has_value;
 
 	//----------------------------------------------------------------------------------- $properties
-	/**
-	 * @var Reflection_Property[]
-	 */
+	/** @var Reflection_Property[] */
 	protected array $properties;
 
 	//------------------------------------------------------------------------------------- $property
-	/**
-	 * @var Reflection_Property
-	 */
 	public Reflection_Property $property;
 
 	//---------------------------------------------------------------------------- $property_displays
-	/**
-	 * @var string[]
-	 */
+	/** @var string[] */
 	public array $property_displays;
 
 	//----------------------------------------------------------------------------------------- $sort
-	/**
-	 * @var boolean
-	 */
 	public bool $sort = true;
 
 	//------------------------------------------------------------------------------------- $template
-	/**
-	 * @var ?Template
-	 */
 	public ?Template $template = null;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -113,9 +96,6 @@ class Collection
 	}
 
 	//----------------------------------------------------------------------------------------- build
-	/**
-	 * @return Unordered
-	 */
 	public function build() : Unordered
 	{
 		if ($this->sort) {
@@ -142,9 +122,7 @@ class Collection
 	}
 
 	//------------------------------------------------------------------------------------- buildBody
-	/**
-	 * @return Item[]|List_[][]
-	 */
+	/** @return Item[]|List_[][] */
 	protected function buildBody() : array
 	{
 		$body = [];
@@ -158,13 +136,6 @@ class Collection
 	}
 
 	//------------------------------------------------------------------------------------- buildCell
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object        object
-	 * @param $property      Reflection_Property
-	 * @param $property_path string
-	 * @return Item
-	 */
 	protected function buildCell(object $object, Reflection_Property $property, string $property_path)
 		: Item
 	{
@@ -257,9 +228,6 @@ class Collection
 	}
 
 	//----------------------------------------------------------------------------------- buildHeader
-	/**
-	 * @return Ordered
-	 */
 	protected function buildHeader() : Ordered
 	{
 		$header = new Ordered();
@@ -299,10 +267,6 @@ class Collection
 	}
 
 	//-------------------------------------------------------------------------------------- buildRow
-	/**
-	 * @param $object object
-	 * @return Ordered
-	 */
 	protected function buildRow(object $object) : Ordered
 	{
 		$row = new Ordered();
@@ -350,12 +314,11 @@ class Collection
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $link_properties boolean
 	 * @return Reflection_Property[]
 	 */
 	protected function getProperties(bool $link_properties) : array
 	{
-		$property_display_order = $this->property->getListAnnotations('display_order');
+		$property_display_order = Display_Order::of($this->property);
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$class          = new Reflection_Class($this->class_name);
 		$representative = Representative_Annotation::of($this->property);
@@ -407,10 +370,6 @@ class Collection
 	}
 
 	//----------------------------------------------------------------------------- isPropertyVisible
-	/**
-	 * @param $property Reflection_Property
-	 * @return boolean
-	 */
 	protected function isPropertyVisible(Reflection_Property $property) : bool
 	{
 		$user = User::of($property);
@@ -420,11 +379,6 @@ class Collection
 	}
 
 	//------------------------------------------------------------------------------ propertyHasValue
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $property Reflection_Property
-	 * @return boolean
-	 */
 	protected function propertyHasValue(Reflection_Property $property) : bool
 	{
 		foreach ($this->collection as $object) {

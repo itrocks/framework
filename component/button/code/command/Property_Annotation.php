@@ -5,7 +5,6 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Button\Code\Command;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
 
@@ -45,6 +44,7 @@ class Property_Annotation implements Command
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean
+	 * @todo this probably does not work any more
 	 */
 	public function execute(object $object) : bool
 	{
@@ -58,7 +58,6 @@ class Property_Annotation implements Command
 			return false;
 		}
 		/** @noinspection PhpUnhandledExceptionInspection valid annotation class name */
-		/** @var $annotation Mandatory_Annotation */
 		$annotation = Builder::create($annotation_class, [true, $property]);
 		$property->setAnnotation('mandatory', $annotation);
 		return true;

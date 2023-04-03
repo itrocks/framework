@@ -14,7 +14,7 @@ class Snap_Line extends Element implements Has_Init
 	//----------------------------------------------------------------------------------- DUMP_SYMBOL
 	const DUMP_SYMBOL = '¦';
 
-	//---------------------------------------------------------------------------- $direction @values
+	//---------------------------------------------------------------------------- $direction #Values
 	const HORIZONTAL = 'horizontal';
 	const VERTICAL   = 'vertical';
 

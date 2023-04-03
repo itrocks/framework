@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+
 /**
  * For all classes having a name as representative value
  *
@@ -10,16 +12,10 @@ trait Has_Name
 {
 
 	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @mandatory
-	 * @var string
-	 */
+	#[Mandatory]
 	public string $name = '';
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->name;

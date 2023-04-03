@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tests\Objects;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -13,38 +14,25 @@ abstract class Document
 	use Has_Counter;
 
 	//----------------------------------------------------------------------------------------- $date
-	/**
-	 * Document date
-	 *
-	 * @mandatory
-	 * @var Date_Time|string
-	 */
+	/** Document date */
+	#[Mandatory]
 	private Date_Time|string $date;
 
 	//--------------------------------------------------------------------------------- $has_workflow
-	/**
-	 * Document should be sent through workflow
-	 *
-	 * @mandatory
-	 * @var boolean
-	 */
+	/** Document should be sent through workflow */
+	#[Mandatory]
 	public bool $has_workflow;
 
 	//--------------------------------------------------------------------------------------- $number
 	/**
 	 * Document number
 	 *
-	 * @mandatory
 	 * @search_range
-	 * @var string
 	 */
+	#[Mandatory]
 	private string $number;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $date   Date_Time|string|null
-	 * @param $number string|null
-	 */
 	public function __construct(Date_Time|string $date = null, string $number = null)
 	{
 		if (isset($date))   $this->date   = $date;
@@ -52,9 +40,6 @@ abstract class Document
 	}
 
 	//------------------------------------------------------------------------------------ setCounter
-	/**
-	 * @param $counter integer
-	 */
 	public function setCounter(int $counter) : void
 	{
 		$this->number = $counter;

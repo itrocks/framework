@@ -57,8 +57,8 @@ trait Column_Builder_Property
 					$default = join(',', $default);
 				}
 				else {
-					// if @values, then set with a real value
-					// if no @values, the string [] is stored as text : null default value even if not null
+					// if #Values, then set with a real value
+					// if no #Values, the string [] is stored as text : null default value even if not null
 					$default = Values::of($property)?->values ? '' : null;
 				}
 			}

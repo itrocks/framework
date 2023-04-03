@@ -1,9 +1,10 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
+use ITRocks\Framework;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
-use ITRocks\Framework\User;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 
 /**
  * If you need to have the updated by user information for each of your objects
@@ -15,10 +16,8 @@ trait Has_Updated_By
 {
 
 	//----------------------------------------------------------------------------------- $updated_by
-	/**
-	 * @user invisible_edit, invisible_output, readonly
-	 */
-	public ?User $updated_by;
+	#[User(User::INVISIBLE_EDIT, User::INVISIBLE_OUTPUT, User::READONLY)]
+	public ?Framework\User $updated_by;
 
 	//---------------------------------------------------------------------------------- setUpdatedBy
 	/**
@@ -29,7 +28,7 @@ trait Has_Updated_By
 	 */
 	public function setUpdatedBy() : ?array
 	{
-		if (!Dao::is($this->updated_by, $current_user = User::current())) {
+		if (!Dao::is($this->updated_by, $current_user = Framework\User::current())) {
 			$this->updated_by = $current_user;
 			return ['updated_by'];
 		}

@@ -1,6 +1,9 @@
 <?php
 namespace ITRocks\Framework\Reflection\Attribute\Template;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Implement;
+
+#[Implement(Has_Get_Default_Arguments::class)]
 trait Has_Boolean_Value
 {
 

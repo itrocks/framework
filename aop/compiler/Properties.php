@@ -731,7 +731,7 @@ class Properties
 			if ($type === Handler::WRITE) {
 				if (!isset($prototype)) {
 					$prototype = '
-	/** AOP ' . $property_name . ' writer : implementation for @setter called by __set */
+	/** AOP ' . $property_name . ' writer : implementation for #Setter called by __set */
 	private function _' . $property_name . '_write(mixed $value) : void
 	{
 		if (isset($this->_[' . Q . $property_name . Q . '])) {

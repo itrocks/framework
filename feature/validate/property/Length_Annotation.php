@@ -58,7 +58,7 @@ class Length_Annotation extends Reflection\Annotation implements Property_Contex
 		/** @noinspection PhpUnhandledExceptionInspection $this->property from $object and accessible */
 		return ($this->property instanceof Reflection_Property)
 			? (
-			Mandatory_Annotation::of($this->property)->isEmpty($object)
+				Mandatory::of($this->property)->isEmpty($object)
 				|| (strlen($this->property->getValue($object)) == $this->value)
 			)
 			: null;

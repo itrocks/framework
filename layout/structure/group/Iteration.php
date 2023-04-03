@@ -6,6 +6,7 @@ use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Field;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Page;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 
 /**
  * An iteration is a "line" (or column) of data into a group
@@ -17,26 +18,16 @@ class Iteration extends Element
 	const DUMP_SYMBOL = 'x';
 
 	//------------------------------------------------------------------------------------- $elements
-	/**
-	 * @mandatory
-	 * @var Element[]
-	 */
+	/** @var Element[] */
+	#[Mandatory]
 	public array $elements;
 
 	//--------------------------------------------------------------------------------------- $number
-	/**
-	 * Iteration number : 0..n
-	 *
-	 * @var integer
-	 */
+	/** Iteration number : 0..n */
 	public int $number;
 
 	//-------------------------------------------------------------------------------------- $spacing
-	/**
-	 * Apply group iteration spacing ?
-	 *
-	 * @var boolean
-	 */
+	/** Apply group iteration spacing ? */
 	public bool $spacing = true;
 
 	//------------------------------------------------------------------------------- calculateHeight
@@ -47,7 +38,6 @@ class Iteration extends Element
 	 * line
 	 *
 	 * @output $height
-	 * @return float
 	 */
 	public function calculateHeight() : float
 	{
@@ -71,12 +61,6 @@ class Iteration extends Element
 	}
 
 	//------------------------------------------------------------------------------ cloneWithContext
-	/**
-	 * @param $page      Page
-	 * @param $group     Group|null
-	 * @param $iteration Iteration|null
-	 * @return static
-	 */
 	public function cloneWithContext(Page $page, Group $group = null, Iteration $iteration = null)
 		: static
 	{
@@ -96,8 +80,8 @@ class Iteration extends Element
 	/**
 	 * Move the iteration and all contained elements down
 	 *
-	 * @param $height        float The distance to move (mm)
-	 * @param $elements_only boolean   If true, the iteration does not go up : only elements
+	 * @param $height        float   The distance to move (mm)
+	 * @param $elements_only boolean If true, the iteration does not go up : only elements
 	 */
 	public function down(float $height, bool $elements_only = false) : void
 	{
@@ -105,10 +89,6 @@ class Iteration extends Element
 	}
 
 	//------------------------------------------------------------------------------------------ dump
-	/**
-	 * @param $level integer
-	 * @return string
-	 */
 	public function dump(int $level = 0) : string
 	{
 		$dump = parent::dump($level) . SP . '(' . $this->number . ')' . LF;
@@ -119,9 +99,7 @@ class Iteration extends Element
 	}
 
 	//------------------------------------------------------------------------------- sortElementsByY
-	/**
-	 * Sort elements from upper to lower position, then from left to right
-	 */
+	/** Sort elements from upper to lower position, then from left to right */
 	public function sortElementsByY()
 	{
 		usort($this->elements, function(Field $element1, Field $element2) {
@@ -132,9 +110,6 @@ class Iteration extends Element
 	}
 
 	//--------------------------------------------------------------------------------------- spacing
-	/**
-	 * @return float
-	 */
 	public function spacing() : float
 	{
 		return $this->spacing ? $this->group->iteration_spacing : .0;
@@ -144,8 +119,8 @@ class Iteration extends Element
 	/**
 	 * Move the iteration and all contained elements up
 	 *
-	 * @param $height        float The distance to move (mm)
-	 * @param $elements_only boolean   If true, the iteration does not go up : only elements
+	 * @param $height        float   The distance to move (mm)
+	 * @param $elements_only boolean If true, the iteration does not go up : only elements
 	 */
 	public function up(float $height, bool $elements_only = false) : void
 	{

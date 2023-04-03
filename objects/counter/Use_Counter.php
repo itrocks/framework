@@ -14,9 +14,10 @@ use ITRocks\Framework\View\View_Exception;
 /**
  * Apply this trait to classes that use a counter
  *
- * You have to set two annotations :
+ * You have to set two annotations/attributes :
  * - @counter_property property_name (only needed if property_name is not 'number')
- * - @override property_name @calculated @mandatory false @user readonly too
+ * - @override property_name @calculated
+ * - #[Override('property_name', new Mandatory(false), new User(User::READONLY)]
  *
  * @after_write incrementCounterPropertyValue
  * @example Has_Number\Automatic is a great example about how to use this
@@ -33,9 +34,7 @@ trait Use_Counter
 	 * The job is done after the document has been written : if any problem occurs, we should not
 	 * have incremented the counter, and there is more luck to have problem before than after write
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @noinspection PhpUnused @after_write
-	 * @param $link Data_Link
 	 * @throws View_Exception
 	 */
 	public function incrementCounterPropertyValue(Data_Link $link) : void
@@ -82,10 +81,6 @@ trait Use_Counter
 	}
 
 	//------------------------------------------------------------------------- incrementPropertyName
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return string
-	 */
 	protected function incrementPropertyName() : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection object */

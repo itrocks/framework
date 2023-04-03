@@ -387,27 +387,28 @@ class Access_Control implements Configurable, Registerable
 	public function overridePropertyDocComment(string $result, Reflection_Property $object) : string
 	{
 		static $anti_loop;
-		if (empty($anti_loop)) {
-			$anti_loop = true;
-			$user      = User::current();
-			if (isA($user, Has_Groups::class)) {
-				/** @var $user User|Has_Groups */
-				$class_name = $object->getDeclaringClassName();
-				$path       = SL . str_replace(BS, SL, $class_name) . SL . Feature::OVERRIDE;
-				if (
-					$user
-					&& !empty($feature = $user->getAccessOptions($path))
-					&& isset($feature[$object->name])
-				) {
-					$annotations = [];
-					foreach ($feature[$object->name] as $annotation_name => $annotation_value) {
-						$annotations[] = '* @' . $annotation_name . SP . $annotation_value;
-					}
-					$result = join(LF, $annotations) . LF . $result;
-				}
-			}
-			$anti_loop = false;
+		if (!empty($anti_loop)) {
+			return $result;
 		}
+		$anti_loop = true;
+		$user      = User::current();
+		if (isA($user, Has_Groups::class)) {
+			/** @var $user User|Has_Groups */
+			$class_name = $object->getDeclaringClassName();
+			$path       = SL . str_replace(BS, SL, $class_name) . SL . Feature::OVERRIDE;
+			if (
+				$user
+				&& !empty($feature = $user->getAccessOptions($path))
+				&& isset($feature[$object->name])
+			) {
+				$annotations = [];
+				foreach ($feature[$object->name] as $annotation_name => $annotation_value) {
+					$annotations[] = '* @' . $annotation_name . SP . $annotation_value;
+				}
+				$result = join(LF, $annotations) . LF . $result;
+			}
+		}
+		$anti_loop = false;
 		return $result;
 	}
 

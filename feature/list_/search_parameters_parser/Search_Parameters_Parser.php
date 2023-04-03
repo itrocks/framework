@@ -304,7 +304,7 @@ class Search_Parameters_Parser
 			case Date_Time::class:
 				$search = $this->applyDateValue($search_value, $property);
 				break;
-			// String types with @values : translate
+			// String types with #Values : translate
 			case Type::STRING: /** @noinspection PhpMissingBreakStatementInspection */
 			case Type::STRING_ARRAY:
 				$property_values = ($property ? Values::of($property)?->values : null) ?: [];
@@ -391,8 +391,8 @@ class Search_Parameters_Parser
 					break;
 				}
 			default:
-				// without @values : let it continue to 'default' in order to apply the 'default' process
-				// Float | Integer | String types without @values
+				// without #Values : let it continue to 'default' in order to apply the 'default' process
+				// Float | Integer | String types without #Values
 				// case Type::FLOAT: case Type::INTEGER: case Type::STRING: case Type::STRING_ARRAY:
 				$search = Words::applyWordMeaningEmpty($search_value, $property)
 					?: Scalar::applyScalar($search_value);

@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Feature\List_;
 
 use ITRocks\Framework\Feature\Edit;
-use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -21,7 +21,7 @@ class Html_Template_Functions extends Edit\Html_Template_Functions
 	 *
 	 * @param $property           Reflection_Property
 	 * @param $name               string
-	 * @param $ignore_user        boolean ignore @user annotation, to disable invisible and read-only
+	 * @param $ignore_user        boolean ignore #User attribute, to disable invisible and read-only
 	 * @param $can_always_be_null boolean ignore @null annotation and consider this can always be null
 	 * @return string
 	 */
@@ -34,7 +34,7 @@ class Html_Template_Functions extends Edit\Html_Template_Functions
 			return '';
 		}
 		// simplified property annotations for a simplified form
-		Mandatory_Annotation::local($property)->value     = false;
+		Mandatory::of($property)->value                   = false;
 		$property->setAnnotationLocal('editor')->value    = false;
 		$property->setAnnotationLocal('multiline')->value = false;
 		$property->setAnnotationsLocal('user_change', []); // TODO will not work with #User_Change

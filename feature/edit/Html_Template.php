@@ -6,8 +6,8 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Html\Parser;
-use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
@@ -237,7 +237,7 @@ class Html_Template extends Template
 					$parent_property   = $property->getParentProperty();
 					if ($parent_property) {
 						// TODO HIGHER properties via widgets must transmit their context (property path)
-						$html_builder_type->required = Mandatory_Annotation::of($parent_property)->value;
+						$html_builder_type->required = Mandatory::of($parent_property)->value;
 					}
 					$id_value = $html_builder_type->setTemplate($this)->build();
 				}

@@ -63,7 +63,7 @@ class Max_Length_Annotation extends Reflection\Annotation implements Property_Co
 			/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 			$value = $this->property->getValue($object);
 			return is_null($this->value)
-				|| Mandatory_Annotation::of($this->property)->isEmpty($object)
+				|| Mandatory::of($this->property)->isEmpty($object)
 				|| (is_null($value) && Null_Annotation::of($this->property)->value)
 				|| (strlen($value) <= $this->value);
 		}

@@ -7,6 +7,7 @@ use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 use ITRocks\Framework\Dao\Option\Only;
 use ITRocks\Framework\Feature\Lock;
 use ITRocks\Framework\Feature\Unlock\Unlockable;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
@@ -22,19 +23,11 @@ trait Lockable
 {
 
 	//--------------------------------------------------------------------------------------- $locked
-	/**
-	 * @user hidden
-	 * @var boolean
-	 */
+	#[User(User::HIDDEN)]
 	public bool $locked = false;
 
 	//----------------------------------------------------------------------------------- isDeletable
-	/**
-	 * Determines if data were locked for deletion
-	 *
-	 * @param $link Data_Link
-	 * @return boolean
-	 */
+	/** Determines if data were locked for deletion */
 	public function isDeletable(Data_Link $link) : bool
 	{
 		return !(
@@ -93,9 +86,7 @@ trait Lockable
 	}
 
 	//--------------------------------------------------------------------------- onDuplicateLockable
-	/**
-	 * @noinspection PhpUnused @duplicate
-	 */
+	/** @noinspection PhpUnused @duplicate */
 	public function onDuplicateLockable() : void
 	{
 		$this->locked = false;

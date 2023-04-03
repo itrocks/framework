@@ -3,6 +3,8 @@ namespace ITRocks\Framework\Objects;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -18,23 +20,21 @@ class Note
 	//----------------------------------------------------------------------------------------- $date
 	/**
 	 * @default Date_Time::nowMinute
-	 * @mandatory
 	 * @see Date_Time::nowMinute
 	 */
+	#[Mandatory]
 	public Date_Time|string $date;
 
 	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * @user hidden
-	 */
+	#[User(User::HIDDEN)]
 	public object $object;
 
 	//----------------------------------------------------------------------------------------- $text
 	/**
-	 * @mandatory
 	 * @max_length 1024
 	 * @multiline
 	 */
+	#[Mandatory]
 	public string $text;
 
 	//---------------------------------------------------------------------------------------- $title

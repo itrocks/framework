@@ -6,6 +6,7 @@ use ITRocks\Framework\Mapper\Comparator;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Trigger;
@@ -19,10 +20,8 @@ use ITRocks\Framework\Trigger\Schedule\Hour_Range;
  * @override actions @set_store_name trigger_schedule_actions @var Schedule\Action[]
  * @property Schedule\Action[] actions
  */
-#[
-	Display_Order('name', 'hours', 'days_of_month', 'months', 'years', 'days_of_weeks'),
-	Store('trigger_schedules')
-]
+#[Display_Order('name', 'hours', 'days_of_month', 'months', 'years', 'days_of_weeks')]
+#[Store('trigger_schedules')]
 class Schedule extends Trigger
 {
 
@@ -32,36 +31,32 @@ class Schedule extends Trigger
 	];
 
 	//-------------------------------------------------------------------------------- $days_of_month
-	/** @user hide_empty */
+	#[User(User::HIDE_EMPTY)]
 	public string $days_of_month = '';
 
 	//--------------------------------------------------------------------------------- $days_of_week
 	/**
 	 * @ordered_values
-	 * @user hide_empty
 	 * @var string[]
 	 */
-	#[Values(self::DAYS_OF_WEEK)]
+	#[User(User::HIDE_EMPTY), Values(self::DAYS_OF_WEEK)]
 	public array $days_of_week = [];
 
 	//---------------------------------------------------------------------------------- $hour_ranges
-	/**
-	 * @user hide_empty
-	 * @var Hour_Range[]
-	 */
-	#[Component]
+	/** @var Hour_Range[] */
+	#[Component, User(User::HIDE_EMPTY)]
 	public array $hour_ranges = [];
 
 	//---------------------------------------------------------------------------------------- $hours
-	/** @user hide_empty */
+	#[User(User::HIDE_EMPTY)]
 	public string $hours = '';
 
 	//--------------------------------------------------------------------------------------- $months
-	/** @user hide_empty */
+	#[User(User::HIDE_EMPTY)]
 	public string $months = '';
 
 	//---------------------------------------------------------------------------------------- $years
-	/** @user hide_empty */
+	#[User(User::HIDE_EMPTY)]
 	public string $years = '';
 
 	//------------------------------------------------------------ calculateActionsNextLaunchDateTime
@@ -82,9 +77,7 @@ class Schedule extends Trigger
 	}
 
 	//-------------------------------------------------------------------------------- getDaysOfMonth
-	/**
-	 * @return string[] @max_value 31 @min_value 01
-	 */
+	/** @return string[] @max_value 31 @min_value 01 */
 	public function getDaysOfMonth() : array
 	{
 		return $this->rangesListToArray($this->days_of_month, 31);
@@ -117,18 +110,14 @@ class Schedule extends Trigger
 	}
 
 	//------------------------------------------------------------------------------------- getMonths
-	/**
-	 * @return string[] @max_value 12 @min_value 01
-	 */
+	/** @return string[] @max_value 12 @min_value 01 */
 	public function getMonths() : array
 	{
 		return $this->rangesListToArray($this->months, 12);
 	}
 
 	//-------------------------------------------------------------------------- getNumericDaysOfWeek
-	/**
-	 * @return integer[] @max_value 7 @min_value 1
-	 */
+	/** @return integer[] @max_value 7 @min_value 1 */
 	public function getNumericDaysOfWeek() : array
 	{
 		$days        = [];
@@ -140,9 +129,7 @@ class Schedule extends Trigger
 	}
 
 	//-------------------------------------------------------------------------------------- getYears
-	/**
-	 * @return string[] @max_value 2999 @min_value 2000
-	 */
+	/** @return string[] @max_value 2999 @min_value 2000 */
 	public function getYears() : array
 	{
 		return $this->rangesListToArray($this->years, 2999);

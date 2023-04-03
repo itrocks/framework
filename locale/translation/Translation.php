@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Locale;
 use AllowDynamicProperties;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 
 /**
  * A translation is the association of the origin programmed text and its translation using a given
@@ -19,27 +20,20 @@ class Translation
 {
 
 	//-------------------------------------------------------------------------------------- $context
-	/**
-	 * @var string
-	 */
 	public string $context = '';
 
 	//------------------------------------------------------------------------------------- $language
 	/**
 	 * Allow 2 characters-length ISO codes, and those composite like nl_be, but no more
 	 *
-	 * @mandatory
 	 * @max_length 5
-	 * @var string
 	 */
+	#[Mandatory]
 	public string $language = '';
 
 	//----------------------------------------------------------------------------------------- $text
-	/**
-	 * @mandatory
-	 * @multiline
-	 * @var string
-	 */
+	/** @multiline */
+	#[Mandatory]
 	public string $text = '';
 
 	//---------------------------------------------------------------------------------- $translation
@@ -50,12 +44,6 @@ class Translation
 	public string $translation = '';
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $text        string|null
-	 * @param $language    string|null
-	 * @param $context     string|null
-	 * @param $translation string|null
-	 */
 	public function __construct(
 		string $text = null, string $language = null, string $context = null, string $translation = null
 	) {
@@ -66,9 +54,6 @@ class Translation
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->language

@@ -4,28 +4,25 @@ namespace ITRocks\Framework\Email;
 use ITRocks\Framework\Component\Combo\Fast_Add;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Traits\Has_Email;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * An email recipient (or sender, this object can be used for both)
  *
- * @override name @mandatory false
  * @representative name, email
  * @sort name, email
  */
-#[Store]
+#[Override('name', new Mandatory(false)), Store]
 class Recipient implements Fast_Add
 {
 	use Has_Email;
 	use Has_Name;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $email string|null
-	 * @param $name  string|null
-	 */
 	public function __construct(string $email = null, string $name = null)
 	{
 		if (isset($email)) $this->email = $email;
@@ -33,9 +30,6 @@ class Recipient implements Fast_Add
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return sprintf(
@@ -46,10 +40,6 @@ class Recipient implements Fast_Add
 	}
 
 	//------------------------------------------------------------------------------------ fromString
-	/**
-	 * @param $string string
-	 * @return ?static
-	 */
 	public static function fromString(string $string) : ?static
 	{
 		if (!trim($string)) {

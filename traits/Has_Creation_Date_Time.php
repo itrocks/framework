@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -12,10 +13,8 @@ trait Has_Creation_Date_Time
 {
 
 	//------------------------------------------------------------------------------------- $creation
-	/**
-	 * @default Date_Time::now
-	 * @user invisible_edit, invisible_output, readonly
-	 */
+	/** @default Date_Time::now */
+	#[User(User::INVISIBLE_EDIT, User::INVISIBLE_OUTPUT, User::READONLY)]
 	public Date_Time|string $creation;
 
 	//--------------------------------------------------------------------- calculateCreationDateTime

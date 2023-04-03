@@ -8,6 +8,7 @@ use ITRocks\Framework\Layout\Print_Model;
 use ITRocks\Framework\RAD\Feature;
 use ITRocks\Framework\RAD\Feature\Status;
 use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 
 /**
  * Your print model are filtered by features
@@ -21,15 +22,14 @@ trait Has_Features
 	//------------------------------------------------------------------------------------- $features
 	/**
 	 * @feature configureFilters Configure print model filters by feature @user
-	 * @user invisible
 	 * @var Feature[]
 	 */
+	#[User(User::INVISIBLE)]
 	public array $features;
 
 	//------------------------------------------------------------------------------ filterByFeatures
 	/**
 	 * @noinspection PhpUnused @filter
-	 * @param $options array
 	 * @return array search criterion to filter the print model
 	 */
 	public static function filterByFeatures(array &$options) : array

@@ -151,6 +151,7 @@ class Html_Builder_Collection extends Collection
 				? ($this->pre_path . '[' . $this->property->name . ']')
 				: $this->property->name;
 		}
+		$content      = null;
 		$origin_value = $value;
 		if (
 			($builder = Widget_Annotation::of($property)->value)
@@ -255,7 +256,7 @@ class Html_Builder_Collection extends Collection
 	}
 
 	//----------------------------------------------------------------------------- getUserAnnotation
-	/** Read @user annotations this->property */
+	/** Read #User attributes of this->property */
 	private function getUserAnnotation() : User
 	{
 		if (!isset($this->user_attributes)) {

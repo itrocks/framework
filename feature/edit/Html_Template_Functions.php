@@ -40,9 +40,9 @@ class Html_Template_Functions extends Functions
 
 	//----------------------------------------------------------------------------- isPropertyVisible
 	/**
-	 * This is the same as its parent, but without the @user hide_empty test :
-	 * On forms, even empty values should be edited. @user hide_empty is for output only
-	 * Special case : the property is @user readonly. In this case it's still hidden if empty
+	 * This is the same as its parent, but without the #User::HIDE_EMPTY test :
+	 * On forms, even empty values should be edited. #User::HIDE_EMPTY is for output only
+	 * Special case : the property is #User::READONLY. In this case it's still hidden if empty
 	 *
 	 * @param $property Reflection_Property
 	 * @return boolean

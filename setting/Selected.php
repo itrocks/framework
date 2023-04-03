@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Setting;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Setting;
 
 /**
@@ -13,26 +14,15 @@ class Selected
 {
 
 	//------------------------------------------------------------------------------------- $selected
-	/**
-	 * @mandatory
-	 * @var boolean
-	 */
+	#[Mandatory]
 	public bool $selected;
 
 	//-------------------------------------------------------------------------------------- $setting
-	/**
-	 * @mandatory
-	 * @var Setting
-	 */
+	#[Mandatory]
 	public Setting $setting;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * Constructs a selected setting
-	 *
-	 * @param $setting Setting
-	 * @param $selected boolean
-	 */
+	/** Constructs a selected setting */
 	public function __construct(Setting $setting, bool $selected = false)
 	{
 		$this->setting  = $setting;
@@ -40,18 +30,12 @@ class Selected
 	}
 
 	//-------------------------------------------------------------------------------------------- id
-	/**
-	 * @return mixed
-	 */
 	public function id() : mixed
 	{
 		return Dao::getObjectIdentifier($this->setting);
 	}
 
 	//--------------------------------------------------------------------------------- selectedClass
-	/**
-	 * @return string
-	 */
 	public function selectedClass() : string
 	{
 		return $this->selected ? 'selected' : '';

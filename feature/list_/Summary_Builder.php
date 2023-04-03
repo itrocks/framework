@@ -290,7 +290,7 @@ class Summary_Builder
 		static $pattern
 			= '/([0-9%_]{4})-([0-9%_]{2})-([0-9%_]{2})(?:\s([0-9%_]{2}):([0-9%_]{2}):([0-9%_]{2}))?/x';
 		$property = $this->getProperty($property_path);
-		// check if we are on a enum field with @values list of values
+		// check if we are on a enum field with #Values list of values
 		if ($property && Values::of($property)?->values) {
 			[$translation_delimiter, $sub_translation_delimiter]
 				= $this->getTranslationDelimiters($translate_flag);

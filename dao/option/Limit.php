@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Option;
 
 use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 
 /**
  * A DAO limit option
@@ -16,9 +17,8 @@ class Limit implements Option
 	 *
 	 * @example Dao::readAll('ITRocks\Framework\User', Dao::limit(10));
 	 * Will return the 10 first read users objects
-	 * @mandatory
-	 * @var integer
 	 */
+	#[Mandatory]
 	public int $count;
 
 	//----------------------------------------------------------------------------------------- $from
@@ -28,7 +28,6 @@ class Limit implements Option
 	 * @example Dao::readAll('ITRocks\Framework\User', Dao::limit(2, 10));
 	 * Will return 10 read users objects, starting with the second read user
 	 * @min_value 1
-	 * @var integer
 	 */
 	public int $from;
 

@@ -382,7 +382,7 @@ class Functions
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $template           Template
 	 * @param $name               string
-	 * @param $ignore_user        boolean ignore @user annotation, to disable invisible and read-only
+	 * @param $ignore_user        boolean ignore #User attribute, to disable invisible and read-only
 	 * @param $can_always_be_null boolean ignore @null annotation and consider this can always be null
 	 * @return string
 	 */
@@ -437,7 +437,7 @@ class Functions
 	 * @param $object             Default_List_Data
 	 * @param $template           Template
 	 * @param $name               string
-	 * @param $ignore_user        boolean ignore @user annotation, to disable invisible and read-only
+	 * @param $ignore_user        boolean ignore #User attribute, to disable invisible and read-only
 	 * @param $can_always_be_null boolean ignore @null annotation and consider this can always be null
 	 * @return string
 	 */
@@ -503,7 +503,7 @@ class Functions
 	 *
 	 * @param $property           Reflection_Property
 	 * @param $name               string
-	 * @param $ignore_user        boolean ignore @user annotation, to disable invisible and read-only
+	 * @param $ignore_user        boolean ignore #User attribute, to disable invisible and read-only
 	 * @param $can_always_be_null boolean ignore @null annotation and consider this can always be null
 	 * @return string
 	 */
@@ -1554,7 +1554,7 @@ class Functions
 	/**
 	 * Returns the possible values for a property
 	 *
-	 * Get from @values or if it is a link to an object, read all objects
+	 * Get from #Values or if it is a link to an object, read all objects
 	 *
 	 * @example {ITRocks\Framework\User.name}
 	 * @param $template Template

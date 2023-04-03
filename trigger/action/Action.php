@@ -1,16 +1,17 @@
 <?php
 namespace ITRocks\Framework\Trigger;
 
+use ITRocks\Framework;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Logger\Entry;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Trigger\Action\Status;
 use ITRocks\Framework\Trigger\Schedule\Next_Calculation;
-use ITRocks\Framework\User;
 use ITRocks\Framework\View;
 
 /**
@@ -29,30 +30,24 @@ class Action
 
 	//-------------------------------------------------------------------------------------- $as_user
 	/** @conditions keep_user=false */
-	public ?User $as_user;
+	public ?Framework\User $as_user;
 
 	//------------------------------------------------------------------------------------ $keep_user
 	/** Execute using the user that triggered the action */
 	public bool $keep_user = false;
 
 	//----------------------------------------------------------------------------------------- $last
-	/**
-	 * Last execution time
-	 *
-	 * @user readonly
-	 */
+	/** Last execution time */
+	#[User(User::READONLY)]
 	public Date_Time|string $last;
 
 	//----------------------------------------------------------------------------------------- $next
-	/**
-	 * Next scheduled time, if this is a scheduled action
-	 *
-	 * @user readonly
-	 */
+	/** Next scheduled time, if this is a scheduled action */
+	#[User(User::READONLY)]
 	public Date_Time|string $next;
 
 	//--------------------------------------------------------------------------------------- $parent
-	/** @user invisible */
+	#[User(User::INVISIBLE)]
 	public ?Action $parent;
 
 	//--------------------------------------------------------------------------- $request_identifier
@@ -125,7 +120,7 @@ class Action
 					$action
 				);
 			}
-			$as_user = $this->keep_user ? User::current() : null;
+			$as_user = $this->keep_user ? Framework\User::current() : null;
 			$status  = Status::PENDING;
 			if (Dao::searchOne(
 				[

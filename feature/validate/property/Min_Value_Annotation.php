@@ -62,7 +62,7 @@ class Min_Value_Annotation extends Reflection\Annotation implements Property_Con
 		if ($this->property instanceof Reflection_Property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 			$value = $this->property->getValue($object);
-			return Mandatory_Annotation::of($this->property)->isEmpty($object)
+			return Mandatory::of($this->property)->isEmpty($object)
 				|| (is_null($value) && Null_Annotation::of($this->property)->value)
 				|| ($value >= $this->value);
 		}

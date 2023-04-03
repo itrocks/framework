@@ -116,7 +116,7 @@ abstract class Range
 			: ($type->isNumeric() || $type->isDateTime());
 		return ($search_range !== false)
 			&& in_array($type_string, [Date_Time::class, Type::FLOAT, Type::INTEGER, Type::STRING])
-			// TODO NORMAL search range with @values crashes now, but it could be done
+			// TODO NORMAL search range with #Values crashes now, but it could be done
 			&& (!$property || !Values::of($property)?->values);
 	}
 

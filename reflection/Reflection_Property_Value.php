@@ -24,8 +24,6 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * Keep this null to calculate automatically, fill this only to force display
 	 * The display stored here must already be translated
-	 *
-	 * @var string
 	 */
 	public string $display = '';
 
@@ -33,41 +31,25 @@ class Reflection_Property_Value extends Reflection_Property
 	/**
 	 * If set to true, $object contains the final value instead of the object containing
 	 * the valued property
-	 *
-	 * @var boolean
 	 */
 	private bool $final_value;
 
 	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * The object ($final_value = false) or the value ($final_value = true) of the property
-	 *
-	 * @var mixed
-	 */
+	/** The object ($final_value = false) or the value ($final_value = true) of the property */
 	private mixed $object;
 
 	//-------------------------------------------------------------------------------------- $tooltip
-	/**
-	 *  What will be displayed by the tooltip() function
-	 *
-	 * @var string
-	 */
+	/** What will be displayed by the tooltip() function */
 	public string $tooltip = '';
 
 	//----------------------------------------------------------------------------------------- $user
-	/**
-	 * Set this to true if the property is for an user use (ie for display into a template)
-	 *
-	 * @var boolean
-	 */
+	/** Set this to true if the property is for an user use (ie for display into a template) */
 	public bool $user;
 
 	//------------------------------------------------------------------------------------ $view_path
 	/**
-	 * The view path includes any prefix needed by the property building for view, if set
+	 * The view path includes any prefix needed by the property building for view, if set.
 	 * If not set : you should read $path ; and if not : $name
-	 *
-	 * @var string
 	 */
 	public string $view_path = '';
 
@@ -110,11 +92,7 @@ class Reflection_Property_Value extends Reflection_Property
 	}
 
 	//--------------------------------------------------------------------------------------- display
-	/**
-	 * Returns the reflection property name display, translated
-	 *
-	 * @return string
-	 */
+	/** Returns the reflection property name display, translated */
 	public function display() : string
 	{
 		return $this->display
@@ -122,18 +100,12 @@ class Reflection_Property_Value extends Reflection_Property
 	}
 
 	//------------------------------------------------------------------------------------ finalValue
-	/**
-	 * @return boolean
-	 */
 	public function finalValue() : bool
 	{
 		return $this->final_value;
 	}
 
 	//---------------------------------------------------------------------------------------- format
-	/**
-	 * @return string
-	 */
 	public function format() : string
 	{
 		return (new Reflection_Property_View($this))->getFormattedValue(
@@ -146,8 +118,6 @@ class Reflection_Property_Value extends Reflection_Property
 	 * Gets the object containing the value (null if the value was set as a value)
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $with_default boolean false
-	 * @return ?object
 	 */
 	public function getObject(bool $with_default = false) : ?object
 	{
@@ -181,12 +151,7 @@ class Reflection_Property_Value extends Reflection_Property
 	}
 
 	//----------------------------------------------------------------------------- getParentProperty
-	/**
-	 * Gets the parent property for a $property.path
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection $this->root_class is always valid
-	 * @return ?Reflection_Property_Value
-	 */
+	/** Gets the parent property for a 'property.path' */
 	public function getParentProperty() : ?Reflection_Property_Value
 	{
 		if (!empty($this->path) && ($i = strrpos($this->path, DOT))) {
@@ -229,9 +194,6 @@ class Reflection_Property_Value extends Reflection_Property
 	}
 
 	//------------------------------------------------------------------------ getWidgetClassesString
-	/**
-	 * @return string
-	 */
 	public function getWidgetClassesString() : string
 	{
 		$widget_classes = [];
@@ -242,9 +204,7 @@ class Reflection_Property_Value extends Reflection_Property
 	}
 
 	//-------------------------------------------------------------------------------------- isHidden
-	/**
-	 * @return string 'hidden' if user annotation has 'hidden', else ''
-	 */
+	/** @return string 'hidden' if user annotation has 'hidden', else '' */
 	public function isHidden() : string
 	{
 		return User::of($this)->has(User::HIDDEN)
@@ -253,12 +213,7 @@ class Reflection_Property_Value extends Reflection_Property
 	}
 
 	//---------------------------------------------------------------------------------- isValueEmpty
-	/**
-	 * Returns true if property value is empty
-	 *
-	 * @param $value mixed
-	 * @return boolean
-	 */
+	/** Returns true if property value is empty */
 	public function isValueEmpty(mixed $value = null) : bool
 	{
 		return parent::isValueEmpty(func_num_args() ? $value : $this->value());
@@ -268,9 +223,9 @@ class Reflection_Property_Value extends Reflection_Property
 	/**
 	 * Calculate if the property is visible
 	 *
-	 * @param $hide_empty_test boolean If false, will be visible even if @user hide_empty is set
-	 * @param $hidden_test     boolean If false, will be visible event if @user hidden is set
-	 * @param $invisible_test  boolean If false, will be visible event if @user invisible is set
+	 * @param $hide_empty_test boolean If false, will be visible even if #User::HIDE_EMPTY is set
+	 * @param $hidden_test     boolean If false, will be visible even if #User::HIDDEN is set
+	 * @param $invisible_test  boolean If false, will be visible even if #User::INVISIBLE is set
 	 * @return boolean
 	 */
 	public function isVisible(
@@ -324,9 +279,6 @@ class Reflection_Property_Value extends Reflection_Property
 	}
 
 	//------------------------------------------------------------------------------------------ unit
-	/**
-	 * @return string
-	 */
 	public function unit() : string
 	{
 		if (is_null($this->value())) {
@@ -337,12 +289,7 @@ class Reflection_Property_Value extends Reflection_Property
 	}
 
 	//------------------------------------------------------------------------------- userGetterValue
-	/**
-	 * Gets @user_getter value
-	 *
-	 * @param $user_getter Annotation|null
-	 * @return mixed
-	 */
+	/** Gets @user_getter value */
 	public function userGetterValue(Annotation $user_getter = null) : mixed
 	{
 		if (!isset($user_getter)) {

@@ -11,7 +11,9 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Feature_Class;
 use ITRocks\Framework\Tools\Names;
@@ -24,35 +26,22 @@ use ReflectionException;
  *
  * @representative document.name, name
  */
-#[Override('name', new Getter('getName'))]
-#[Store]
+#[Override('name', new Getter('getName')), Store]
 abstract class Model
 {
 	use Has_Name;
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @mandatory
-	 * @user invisible
-	 */
-	#[Setter]
+	#[Mandatory, Setter, User(User::INVISIBLE)]
 	public string $class_name = '';
 
 	//------------------------------------------------------------------------------------- $document
-	/**
-	 * @user readonly
-	 */
-	#[Setter]
+	#[Setter, User(User::READONLY)]
 	public ?Feature_Class $document;
 
 	//---------------------------------------------------------------------------------------- $pages
-	/**
-	 * @mandatory
-	 * @user hide_edit, hide_output
-	 * @var Page[]
-	 */
-	#[Component]
-	#[Getter]
+	/** @var Page[] */
+	#[Component, Getter, Mandatory, User(User::HIDE_EDIT, User::HIDE_OUTPUT)]
 	public array $pages;
 
 	//------------------------------------------------------------------------------------ __toString
@@ -65,18 +54,14 @@ abstract class Model
 	}
 
 	//--------------------------------------------------------------------------------- classNamePath
-	/**
-	 * @noinspection PhpUnused output.html
-	 */
+	/** @noinspection PhpUnused output.html */
 	public function classNamePath() : string
 	{
 		return (new String_Class($this->class_name))->path();
 	}
 
 	//-------------------------------------------------------------------------------------- getClass
-	/**
-	 * @throws ReflectionException
-	 */
+	/** @throws ReflectionException */
 	public function getClass() : Reflection_Class
 	{
 		return new Reflection_Class($this->class_name);
@@ -126,9 +111,7 @@ abstract class Model
 	}
 
 	//---------------------------------------------------------------------------------- setClassName
-	/**
-	 * @noinspection PhpUnused #Setter
-	 */
+	/** @noinspection PhpUnused #Setter */
 	protected function setClassName(string $value) : void
 	{
 		if (!($this->class_name = $value)) {
@@ -143,9 +126,7 @@ abstract class Model
 	}
 
 	//----------------------------------------------------------------------------------- setDocument
-	/**
-	 * @noinspection PhpUnused #Setter
-	 */
+	/** @noinspection PhpUnused #Setter */
 	protected function setDocument(Feature_Class $value = null) : void
 	{
 		if (($this->document = $value) && ($this->class_name !== $value->class_name)) {

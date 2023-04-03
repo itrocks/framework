@@ -23,7 +23,7 @@ class Group extends Element
 	//----------------------------------------------------------------------------------- DUMP_SYMBOL
 	const DUMP_SYMBOL = '>';
 
-	//---------------------------------------------------------------------------- $direction @values
+	//---------------------------------------------------------------------------- $direction #Values
 	const HORIZONTAL = 'horizontal';
 	const VERTICAL   = 'vertical';
 

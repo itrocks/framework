@@ -8,12 +8,12 @@ use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
- * A @group annotation contains a name and several values, and is a multiple annotation too
+ * A #Group attribute contains a name and several values, and is a multiple annotation too
  * It enable to group properties into named groups
  *
- * @example @group first group property_1 property_2 property_3
- * and then @group second group property_4 property_5
- * will create two annotations : one with the name 'first group' and each property name as values,
+ * @example #[Group('first group', 'property_1', 'property_2', 'property_3')]
+ * and then #[Group('second group', 'property_4, property_5')]
+ * will create two attributes : one with the name 'first group' and each property name as values,
  * the second with the name 'second group' and each of its property name as string values.
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS), Inheritable]
@@ -56,7 +56,7 @@ class Group extends Class_
 
 	//-------------------------------------------------------------------------------- searchProperty
 	/**
-	 * Search the @group annotation object where the property is stored into
+	 * Search the #Group annotation object where the property is stored into
 	 *
 	 * @param $groups   static[]
 	 * @param $property Reflection_Property|string

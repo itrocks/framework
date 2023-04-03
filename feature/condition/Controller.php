@@ -5,7 +5,7 @@ use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Feature\Condition;
-use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\View;
@@ -22,25 +22,17 @@ class Controller implements Default_Feature_Controller
 	const FEATURE = 'condition';
 
 	//------------------------------------------------------------------------ $mandatory_annotations
-	/**
-	 * @var Mandatory_Annotation[]
-	 */
+	/** @var Mandatory[] */
 	protected array $mandatory_annotations = [];
 
 	//------------------------------------------------------------------------ $read_only_annotations
-	/**
-	 * @var User[]
-	 */
+	/** @var User[] */
 	protected array $read_only_annotations = [];
 
 	//---------------------------------------------------------------------------------- getCondition
 	/**
 	 * Load and return condition
-	 *
 	 * Default condition is a simple empty 'and' operator for multiple conditions
-	 *
-	 * @param $class_name string
-	 * @return Condition
 	 */
 	protected function getCondition(string $class_name) : Condition
 	{
@@ -50,17 +42,13 @@ class Controller implements Default_Feature_Controller
 	//----------------------------------------------------------------------------- prepareProperties
 	/**
 	 * Prepare properties to be fully editable for search criteria
-	 *
 	 * - remove user readonly annotation value
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name string
 	 */
 	protected function prepareProperties(string $class_name) : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		foreach ((new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]) as $property) {
-			$mandatory = Mandatory_Annotation::of($property);
+			$mandatory = Mandatory::of($property);
 			if ($mandatory->value) {
 				$mandatory->value              = false;
 				$this->mandatory_annotations[] = $mandatory;
@@ -76,8 +64,7 @@ class Controller implements Default_Feature_Controller
 	//------------------------------------------------------------------------------- resetProperties
 	/**
 	 * Reset properties as they were before working on condition view
-	 *
-	 * - get back @user readonly
+	 * - get back #User::READONLY
 	 */
 	protected function resetProperties() : void
 	{

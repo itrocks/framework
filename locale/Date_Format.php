@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Locale;
 
 use DateTime;
 use Exception;
+use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -12,40 +13,28 @@ class Date_Format
 {
 
 	//----------------------------------------------------------------------------------- TIME_ALWAYS
-	/**
-	 * Always display time, always with seconds too
-	 */
+	/** Always display time, always with seconds too */
 	const TIME_ALWAYS = 'always';
 
 	//------------------------------------------------------------------------------------- TIME_AUTO
-	/**
-	 * Default and backward compatibility. Time is added if not 00:00:00, using ::$show_seconds
-	 */
-	const TIME_AUTO   = 'auto';
+	/** Default and backward compatibility. Time is added if not 00:00:00, using ::$show_seconds */
+	const TIME_AUTO = 'auto';
 
 	//------------------------------------------------------------------------------------ TIME_NEVER
-	/**
-	 * Never display time
-	 */
-	const TIME_NEVER  = 'never';
+	/** Never display time */
+	const TIME_NEVER = 'never';
 
 	//--------------------------------------------------------------------------------------- $format
 	/**
 	 * @example 'd/m/Y' for the french date format, or 'm/d/Y' for the english one
-	 * @var string
 	 */
 	public string $format;
 
 	//--------------------------------------------------------------------------------- $show_seconds
-	/**
-	 * @var boolean
-	 */
 	public bool $show_seconds = false;
 
 	//------------------------------------------------------------------------------------ $show_time
-	/**
-	 * @var string @values always, auto, never
-	 */
+	#[Values(self::class)]
 	public string $show_time = self::TIME_AUTO;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -54,7 +43,7 @@ class Date_Format
 	 *
 	 * Default date format, if none told, is ISO 'Y-m-d'
 	 *
-	 * @param $format string eg 'd/m/Y' for the french date format, or 'm/d/Y' for the english one
+	 * @param $format string e.g. 'd/m/Y' for the french date format, or 'm/d/Y' for the english one
 	 */
 	public function __construct(string $format = '')
 	{
@@ -68,7 +57,7 @@ class Date_Format
 	/**
 	 * @param $date   string an incomplete locale format date : day alone, year alone, compositions
 	 * @param $joker  string if set, the character that replaces missing values, instead of current
-	 * @return string the complete locale date eg 2015-30-25
+	 * @return string the complete locale date e.g. 2015-30-25
 	 */
 	private function advancedDate(string $date, string $joker = '') : string
 	{
@@ -111,10 +100,8 @@ class Date_Format
 	//------------------------------------------------------------------------------------- appendMax
 	/**
 	 * Append max date / time to an incomplete ISO date
-	 * eg 2015-10-01 will become 2015-10-01 23:59:59
+	 * e.g. 2015-10-01 will become 2015-10-01 23:59:59
 	 *
-	 * @param $date string
-	 * @return string
 	 * @throws Exception
 	 */
 	public function appendMax(string $date) : string
@@ -212,7 +199,7 @@ class Date_Format
 					: $date;
 			}
 		}
-		catch (Exception $e) {
+		catch (Exception) {
 			return $this->toLocaleFromDateWithWildcard($date);
 		}
 	}
@@ -228,7 +215,7 @@ class Date_Format
 	{
 		static $sub_pattern_date = '([0-9%_]{4}) - ([0-9%_]{2}) - ([0-9%_]{2})';
 		static $sub_pattern_time = '([0-9%_]{2}) (?::([0-9%_]{2}))? (?::([0-9%_]{2}))?';
-		/** for now it only supports Y,m,d,H,i,s chars in format */
+		/** for now, it only supports Y,m,d,H,i,s chars in format */
 		static $replacement = [
 			'Y' => '$1',
 			'm' => '$2',

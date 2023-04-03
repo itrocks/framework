@@ -7,6 +7,7 @@ use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Unit;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\View;
 
@@ -28,9 +29,7 @@ abstract class Page
 	public ?File $background;
 
 	//------------------------------------------------------------------------------------ $font_size
-	/**
-	 * Default font size for document designer (in final/stored unit)
-	 */
+	/** Default font size for document designer (in final/stored unit) */
 	public float $font_size;
 
 	//--------------------------------------------------------------------------------------- $layout
@@ -51,35 +50,27 @@ abstract class Page
 	 * @customized
 	 * @empty_check false
 	 * @no_autowidth
-	 * @user hide_output
 	 */
+	#[User(User::HIDE_OUTPUT)]
 	public string $ordering = '';
 
 	//--------------------------------------------------------------------------------- $ratio_height
-	/**
-	 * Real height for document designer (in final/stored unit)
-	 */
+	/** Real height for document designer (in final/stored unit) */
 	#[Store(false)]
 	public float $ratio_height;
 
 	//---------------------------------------------------------------------------------- $ratio_width
-	/**
-	 * Real width for document designer (in final/stored unit)
-	 */
+	/** Real width for document designer (in final/stored unit) */
 	#[Store(false)]
 	public float $ratio_width;
 
 	//---------------------------------------------------------------------------------- $view_height
-	/**
-	 * View height for document designer
-	 */
+	/** View height for document designer */
 	#[Store(false), Unit('px')]
 	public int $view_height;
 
 	//----------------------------------------------------------------------------------- $view_width
-	/**
-	 * View width for document designer
-	 */
+	/** View width for document designer */
 	#[Store(false), Unit('px')]
 	public int $view_width;
 
@@ -120,9 +111,7 @@ abstract class Page
 	abstract public function orderingCaption() : string;
 
 	//---------------------------------------------------------------------------- orderingToSortable
-	/**
-	 * Return an unsigned numeric value calculated from $this->ordering
-	 */
+	/** Return an unsigned numeric value calculated from $this->ordering */
 	abstract protected function orderingToSortable() : int;
 
 	//------------------------------------------------------------------------------------------ sort

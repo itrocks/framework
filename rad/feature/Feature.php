@@ -9,6 +9,8 @@ use ITRocks\Framework\RAD\Feature\Module;
 use ITRocks\Framework\RAD\Feature\Status;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
@@ -25,11 +27,11 @@ class Feature
 {
 
 	//----------------------------------------------------------------------- $application_class_name
-	/** @user invisible */
+	#[User(User::INVISIBLE)]
 	public string $application_class_name;
 
 	//--------------------------------------------------------------------------------------- $bridge
-	/** @user invisible */
+	#[User(User::INVISIBLE)]
 	public bool $bridge;
 
 	//---------------------------------------------------------------------------------- $description
@@ -44,11 +46,11 @@ class Feature
 	public ?Module $module;
 
 	//---------------------------------------------------------------------------- $plugin_class_name
-	/** @user invisible */
+	#[User(User::INVISIBLE)]
 	public string $plugin_class_name;
 
 	//--------------------------------------------------------------------------------------- $status
-	/** @user readonly */
+	#[User(User::READONLY)]
 	#[Values(Status::class)]
 	public string $status = Status::AVAILABLE;
 
@@ -57,10 +59,8 @@ class Feature
 	public array $tags;
 
 	//---------------------------------------------------------------------------------------- $title
-	/**
-	 * @mandatory
-	 * @translate common
-	 */
+	/** @translate common */
+	#[Mandatory]
 	public string $title;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -114,9 +114,7 @@ class Feature
 	}
 
 	//------------------------------------------------------------------------------------- uninstall
-	/**
-	 * @return boolean true if the feature was correctly uninstalled
-	 */
+	/** @return boolean true if the feature was correctly uninstalled */
 	public function uninstall() : bool
 	{
 		Dao::begin();

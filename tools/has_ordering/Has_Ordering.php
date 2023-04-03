@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\User;
 
 /**
  * Use it for any class or trait that need to have $ordering, helpful to sort elements
@@ -17,9 +18,8 @@ trait Has_Ordering
 	 * @customized
 	 * @empty_check false
 	 * @no_autowidth
-	 * @user hide_output
-	 * @var integer
 	 */
+	#[User(User::HIDE_OUTPUT)]
 	public int $ordering;
 
 	//--------------------------------------------------------------------------------------- reorder

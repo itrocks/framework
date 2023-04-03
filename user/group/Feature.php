@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Feature_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
@@ -112,10 +113,8 @@ class Feature
 	 * The fully readable name of the end-user feature.
 	 * Default will be calculated from $path :
 	 * Names::classToDisplay(getClassName()) . SP . Names::methodToDisplay(getFeatureName())
-	 *
-	 * @mandatory
 	 */
-	#[Getter('getName')]
+	#[Getter('getName'), Mandatory]
 	public string $name = '';
 
 	//----------------------------------------------------------------------------------------- $path

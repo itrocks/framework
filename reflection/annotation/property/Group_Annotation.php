@@ -41,7 +41,7 @@ class Group_Annotation extends Annotation implements Property_Context_Annotation
 
 	//-------------------------------------------------------------------------------- replaceByClass
 	/**
-	 * Replace the @group annotation value by the one set into $class's @class with this property path
+	 * Replace the #Group attribute value by the one set into $class's @class with this property path
 	 *
 	 * @param $class         Reflection_Class
 	 * @param $property_path string

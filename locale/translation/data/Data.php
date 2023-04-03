@@ -7,6 +7,7 @@ use ITRocks\Framework\Locale\Language;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 
 /**
@@ -19,35 +20,27 @@ class Data
 {
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * Needed into storage for abstraction of object
-	 *
-	 * @mandatory
-	 */
+	/** Needed into storage for abstraction of object */
+	#[Mandatory]
 	public string $class_name;
 
 	//------------------------------------------------------------------------------------- $language
 	public Language $language;
 
 	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * @mandatory
-	 */
-	#[Getter, Setter]
+	#[Getter, Mandatory, Setter]
 	public object $object;
 
 	//-------------------------------------------------------------------------------- $property_name
-	/**
-	 * @mandatory
-	 */
+	#[Mandatory]
 	public string $property_name;
 
 	//---------------------------------------------------------------------------------- $translation
 	/**
-	 * @mandatory
 	 * @max_length 50000
 	 * @multiline
 	 */
+	#[Mandatory]
 	public string $translation = '';
 
 	//------------------------------------------------------------------------------------ __toString
@@ -71,9 +64,7 @@ class Data
 	}
 
 	//------------------------------------------------------------------------------------- setObject
-	/**
-	 * @noinspection PhpUnused #Setter
-	 */
+	/** @noinspection PhpUnused #Setter */
 	protected function setObject(object $value) : void
 	{
 		$this->class_name = Builder::current()->sourceClassName(get_class($value));
@@ -81,9 +72,7 @@ class Data
 	}
 
 	//-------------------------------------------------------------------------------------------- tr
-	/**
-	 * Quick value search and translate
-	 */
+	/** Quick value search and translate */
 	public static function tr(object $object, string $property_name, string $language = null) : string
 	{
 		if (!$language) {

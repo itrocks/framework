@@ -15,98 +15,54 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	use Annoted;
 
 	//----------------------------------------------------------------------------------- $attributes
-	/**
-	 * @var Reflection_Attribute[]
-	 */
+	/** @var Reflection_Attribute[] */
 	private array $attributes;
 
 	//---------------------------------------------------------------------------------------- $class
-	/**
-	 * @var $class Reflection_Class
-	 */
 	public Reflection_Class $class;
 
 	//---------------------------------------------------------------------------------- $doc_comment
-	/**
-	 * @var string
-	 */
 	private string $doc_comment;
 
 	//--------------------------------------------------------------------------------------- $indent
 	public string $indent;
 	
 	//---------------------------------------------------------------------------------- $is_abstract
-	/**
-	 * @var boolean
-	 */
 	private bool $is_abstract;
 
 	//------------------------------------------------------------------------------------- $is_final
-	/**
-	 * @var boolean
-	 */
 	private bool $is_final;
 
 	//------------------------------------------------------------------------------------ $is_static
-	/**
-	 * @var boolean
-	 */
 	private bool $is_static;
 
 	//----------------------------------------------------------------------------------------- $line
-	/**
-	 * @var integer
-	 */
 	public int $line;
 
 	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
 	public string $name;
 
 	//----------------------------------------------------------------------------- $parameters_names
-	/**
-	 * @var string[]
-	 */
+	/** @var string[] */
 	private array $parameters_names;
 
 	//--------------------------------------------------------------------------------------- $parent
-	/**
-	 * @var Interfaces\Reflection_Method|false|null
-	 */
 	public Interfaces\Reflection_Method|false|null $parent;
 
 	//----------------------------------------------------------------------------- $prototype_string
-	/**
-	 * @var string
-	 */
 	private string $prototype_string;
 
 	//--------------------------------------------------------------------------- $return_type_string
-	/**
-	 * @var string
-	 */
 	private string $return_type_string;
 
 	//-------------------------------------------------------------------------------------- $returns
-	/**
-	 * @var boolean
-	 */
-	private bool $returns;
+	private string $returns;
 
 	//---------------------------------------------------------------------------- $returns_reference
-	/**
-	 * @var boolean
-	 */
 	private bool $returns_reference;
 
 	//------------------------------------------------------------------------------------ $token_key
-	/**
-	 * The key for the T_FUNCTION token
-	 *
-	 * @var integer
-	 */
+	/** The key for the T_FUNCTION token */
 	private int $token_key;
 
 	//----------------------------------------------------------------------------------- $visibility
@@ -135,20 +91,13 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	}
 
 	//----------------------------------------------------------------------------- getDeclaringClass
-	/**
-	 * @return Reflection_Class
-	 */
 	public function getDeclaringClass() : Reflection_Class
 	{
 		return $this->class;
 	}
 
 	//------------------------------------------------------------------------- getDeclaringClassName
-	/**
-	 * Gets declaring class name
-	 *
-	 * @return string
-	 */
+	/** Gets declaring class name */
 	public function getDeclaringClassName() : string
 	{
 		return $this->class->name;
@@ -163,50 +112,42 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 */
 	public function getDocComment(array|null $flags = []) : string
 	{
-		if (!isset($this->doc_comment)) {
-			$this->doc_comment =  '';
-			$tokens            =& $this->class->source->getTokens();
-			$token_key         =  $this->token_key;
-			while (is_array($token = $tokens[--$token_key])) {
-				if ($token[0] === T_DOC_COMMENT) {
-					$this->doc_comment = $token[1] . $this->doc_comment;
-				}
+		if (isset($this->doc_comment)) {
+			return $this->doc_comment;
+		}
+		$this->doc_comment =  '';
+		$tokens            =& $this->class->source->getTokens();
+		$token_key         =  $this->token_key;
+		while (is_array($token = $tokens[--$token_key])) {
+			if ($token[0] === T_DOC_COMMENT) {
+				$this->doc_comment = $token[1] . $this->doc_comment;
 			}
 		}
 		return $this->doc_comment;
 	}
 
 	//------------------------------------------------------------------------------------- getIndent
-	/**
-	 * @return string
-	 */
 	public function getIndent() : string
 	{
-		if (!isset($this->indent)) {
-			$tokens    =& $this->class->source->getTokens();
-			$token_key =  $this->token_key;
-			/** @noinspection PhpStatementHasEmptyBodyInspection not really empty (--) */
-			while (is_array($token = $tokens[--$token_key]) && !str_contains($token[1], LF));
-			$this->indent = is_array($token) ? $token[1] : '';
+		if (isset($this->indent)) {
+			return $this->indent;
 		}
+		$tokens    =& $this->class->source->getTokens();
+		$token_key =  $this->token_key;
+		/** @noinspection PhpStatementHasEmptyBodyInspection not really empty (--) */
+		while (is_array($token = $tokens[--$token_key]) && !str_contains($token[1], LF));
+		$this->indent = is_array($token) ? $token[1] : '';
 		return $this->indent;
 	}
 
 	//--------------------------------------------------------------------------------------- getName
-	/**
-	 * @return string
-	 */
 	public function getName() : string
 	{
 		return $this->name;
 	}
 
 	//----------------------------------------------------------------------------- getParametersCall
-	/**
-	 * Return a calling string for parameters call
-	 *
-	 * @return string ie '$param1, $param2, $param3'
-	 */
+	/** @return string A calling string for parameters call e.g. '$param1, $param2, $param3' */
 	public function getParametersCall() : string
 	{
 		$parameters_names = $this->getParametersNames();
@@ -220,47 +161,47 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 */
 	public function getParametersNames(bool $by_name = true) : array
 	{
-		$counter = 0;
-		if (!isset($this->parameters_names)) {
-			$this->parameters_names =  [];
-			$tokens                 =& $this->class->source->getTokens();
-			$token_key              =  $this->token_key;
-			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
-			while (($tokens[++$token_key]) !== '(');
-			while (($token = $tokens[++$token_key]) !== ')') {
-				if ($token[0] === T_VARIABLE) {
-					$parameter_name = substr($token[1], 1);
-					$this->parameters_names[$by_name ? $parameter_name : $counter++] = $parameter_name;
-				}
+		if (isset($this->parameters_names)) {
+			return $this->parameters_names;
+		}
+		$counter                = 0;
+		$this->parameters_names =  [];
+		$tokens                 =& $this->class->source->getTokens();
+		$token_key              =  $this->token_key;
+		/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
+		while (($tokens[++$token_key]) !== '(');
+		while (($token = $tokens[++$token_key]) !== ')') {
+			if ($token[0] === T_VARIABLE) {
+				$parameter_name = substr($token[1], 1);
+				$this->parameters_names[$by_name ? $parameter_name : $counter++] = $parameter_name;
 			}
 		}
 		return $this->parameters_names;
 	}
 
 	//------------------------------------------------------------------------------------- getParent
-	/**
-	 * @return ?Interfaces\Reflection_Method
-	 */
 	public function getParent() : ?Interfaces\Reflection_Method
 	{
-		if (!isset($this->parent)) {
-			$this->parent = false;
-			$class_parent = $this->class->getParentClass();
-			if ($class_parent) {
-				$methods = $class_parent->getMethods();
+		if (isset($this->parent)) {
+			return $this->parent ?: null;
+		}
+		$this->parent = false;
+		$class_parent = $this->class->getParentClass();
+		if (!$class_parent) {
+			return null;
+		}
+		$methods = $class_parent->getMethods();
+		if (!isset($methods[$this->name])) {
+			$methods = $class_parent->getMethods([T_USE]);
+			if (!isset($methods[$this->name])) {
+				$methods = $class_parent->getMethods([T_EXTENDS]);
 				if (!isset($methods[$this->name])) {
-					$methods = $class_parent->getMethods([T_USE]);
-					if (!isset($methods[$this->name])) {
-						$methods = $class_parent->getMethods([T_EXTENDS]);
-						if (!isset($methods[$this->name])) {
-							$methods = $class_parent->getMethods([T_IMPLEMENTS]);
-						}
-					}
-				}
-				if (isset($methods[$this->name])) {
-					$this->parent = $methods[$this->name];
+					$methods = $class_parent->getMethods([T_IMPLEMENTS]);
 				}
 			}
+		}
+		if (isset($methods[$this->name])) {
+			$this->parent = $methods[$this->name];
 		}
 		return $this->parent ?: null;
 	}
@@ -268,76 +209,68 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	//---------------------------------------------------------------------------- getPrototypeString
 	/**
 	 * The prototype of the function, beginning with first whitespaces before function and its doc
-	 * comments, ending with { or ; followed by LF.
-	 *
-	 * @return string
+	 * comments, ending with '{' or ';' followed by LF.
 	 */
 	public function getPrototypeString() : string
 	{
-		if (!isset($this->prototype_string)) {
-			$this->prototype_string = '';
-			$tokens    =& $this->class->source->getTokens();
-			$token_key =  $this->token_key;
-			while (is_array($token = $tokens[--$token_key])) {
-				if ($token[0] === T_WHITESPACE) {
-					$token[1] = str_replace([CR, LF . LF], ['', LF], $token[1]);
-				}
-				$this->prototype_string = $token[1] . $this->prototype_string;
-			}
-			$token_key = $this->token_key;
-			while (!in_array($token = $tokens[$token_key++], [';', '{'])) {
-				$this->prototype_string .= is_array($token) ? $token[1] : $token;
-			}
-			$this->prototype_string .= $token . LF;
+		if (isset($this->prototype_string)) {
+			return $this->prototype_string;
 		}
+		$this->prototype_string = '';
+		$tokens    =& $this->class->source->getTokens();
+		$token_key =  $this->token_key;
+		while (is_array($token = $tokens[--$token_key])) {
+			if ($token[0] === T_WHITESPACE) {
+				$token[1] = str_replace([CR, LF . LF], ['', LF], $token[1]);
+			}
+			$this->prototype_string = $token[1] . $this->prototype_string;
+		}
+		$token_key = $this->token_key;
+		while (!in_array($token = $tokens[$token_key++], [';', '{'])) {
+			$this->prototype_string .= is_array($token) ? $token[1] : $token;
+		}
+		$this->prototype_string .= $token . LF;
 		return $this->prototype_string;
 	}
 
 	//--------------------------------------------------------------------------- getReturnTypeString
-	/**
-	 * @return string
-	 */
 	public function getReturnTypeString() : string
 	{
-		if (!isset($this->return_type_string)) {
-			$this->return_type_string = '';
-			$get_type  =  false;
-			$tokens    =& $this->class->source->getTokens();
-			$token_key =  $this->token_key;
-			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
-			while (($tokens[++$token_key]) !== '(');
-			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
-			while (($tokens[++$token_key]) !== ')');
-			while (($token = $tokens[++$token_key]) !== '{') {
-				if ($get_type) {
-					$this->return_type_string .= is_array($token) ? $token[1] : $token;
-				}
-				if ($token === ':') $get_type = true;
-			}
-			$this->return_type_string = trim($this->return_type_string);
+		if (isset($this->return_type_string)) {
+			return $this->return_type_string ?: 'void';
 		}
+		$this->return_type_string =  '';
+		$get_type                 =  false;
+		$tokens                   =& $this->class->source->getTokens();
+		$token_key                =  $this->token_key;
+		/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
+		while (($tokens[++$token_key]) !== '(');
+		/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
+		while (($tokens[++$token_key]) !== ')');
+		while (($token = $tokens[++$token_key]) !== '{') {
+			if ($get_type) {
+				$this->return_type_string .= is_array($token) ? $token[1] : $token;
+			}
+			if ($token === ':') $get_type = true;
+		}
+		$this->return_type_string = trim($this->return_type_string);
 		return $this->return_type_string ?: 'void';
 	}
 
 	//------------------------------------------------------------------------------------ isAbstract
-	/**
-	 * @return boolean
-	 */
 	public function isAbstract() : bool
 	{
-		if (!isset($this->is_abstract)) {
-			$this->is_abstract = ($this->class->type === T_INTERFACE);
-			if (!$this->is_abstract) {
-				$this->scanBefore();
-			}
+		if (isset($this->is_abstract)) {
+			return $this->is_abstract;
+		}
+		$this->is_abstract = ($this->class->type === T_INTERFACE);
+		if (!$this->is_abstract) {
+			$this->scanBefore();
 		}
 		return $this->is_abstract;
 	}
 
 	//--------------------------------------------------------------------------------- isConstructor
-	/**
-	 * @return boolean
-	 */
 	public function isConstructor() : bool
 	{
 		return ($this->name === '__construct')
@@ -345,18 +278,12 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	}
 
 	//---------------------------------------------------------------------------------- isDestructor
-	/**
-	 * @return boolean
-	 */
 	public function isDestructor() : bool
 	{
 		return ($this->name === '__destruct');
 	}
 
 	//--------------------------------------------------------------------------------------- isFinal
-	/**
-	 * @return boolean
-	 */
 	public function isFinal() : bool
 	{
 		if (!isset($this->is_final)) {
@@ -366,45 +293,30 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	}
 
 	//------------------------------------------------------------------------------------ isInternal
-	/**
-	 * @return boolean
-	 */
 	public function isInternal() : bool
 	{
 		return false;
 	}
 
 	//------------------------------------------------------------------------------------- isPrivate
-	/**
-	 * @return boolean
-	 */
 	public function isPrivate() : bool
 	{
 		return $this->visibility === T_PRIVATE;
 	}
 
 	//----------------------------------------------------------------------------------- isProtected
-	/**
-	 * @return boolean
-	 */
 	public function isProtected() : bool
 	{
 		return $this->visibility === T_PROTECTED;
 	}
 
 	//-------------------------------------------------------------------------------------- isPublic
-	/**
-	 * @return boolean
-	 */
 	public function isPublic() : bool
 	{
 		return $this->visibility === T_PUBLIC;
 	}
 
 	//-------------------------------------------------------------------------------------- isStatic
-	/**
-	 * @return boolean
-	 */
 	public function isStatic() : bool
 	{
 		if (!isset($this->is_static)) {
@@ -414,9 +326,6 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	}
 
 	//--------------------------------------------------------------------------------- isUserDefined
-	/**
-	 * @return boolean
-	 */
 	public function isUserDefined() : bool
 	{
 		return true;
@@ -426,7 +335,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @param $class_name  string
 	 * @param $method_name string
-	 * @param $flags       integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags       integer[] @values T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return Reflection_Method
 	 */
 	public static function of(string $class_name, string $method_name, array $flags = [])
@@ -434,16 +343,17 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	{
 		$class   = Reflection_Class::of($class_name);
 		$methods = $class->getMethods($flags);
-		if (!isset($methods[$method_name]) && in_array(T_EXTENDS, $flags)) {
-			do {
-				$extends = Extend::oneOf($class)->extends;
-				$class   = $extends ? $class->source->getOutsideClass($extends[0]) : null;
-				$methods = $class?->getMethods($flags);
-			}
-			while ($class && !isset($methods[$method_name]));
-			if (!isset($methods[$method_name])) {
-				trigger_error('Method not found ' . $class_name . '::' . $method_name, E_USER_ERROR);
-			}
+		if (isset($methods[$method_name]) && in_array(T_EXTENDS, $flags)) {
+			return $methods[$method_name];
+		}
+		do {
+			$extends = Extend::oneOf($class)->extends;
+			$class   = $extends ? $class->source->getOutsideClass($extends[0]) : null;
+			$methods = $class?->getMethods($flags);
+		}
+		while ($class && !isset($methods[$method_name]));
+		if (!isset($methods[$method_name])) {
+			trigger_error('Method not found ' . $class_name . '::' . $method_name, E_USER_ERROR);
 		}
 		return $methods[$method_name];
 	}
@@ -464,9 +374,6 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 * - 7 : the name of the method
 	 * - 8 : the parameters string
 	 * - 9 : the end character of the function prototype : ';' for abstract functions, or '{'
-	 *
-	 * @param $method_name string
-	 * @return string
 	 */
 	public static function regex(string $method_name = '') : string
 	{
@@ -487,39 +394,41 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	}
 
 	//--------------------------------------------------------------------------------------- returns
-	/**
-	 * @return string
-	 */
 	public function returns() : string
 	{
-		if (!isset($this->returns)) {
-			$expr = '%'
-				. '\n\s*\*\s+@return\s+([\\\\\w]+)'
-				. '%';
-			preg_match($expr, $this->getDocComment(), $match);
-			$this->returns = $match ? $match[1] : '';
+		if (isset($this->returns)) {
+			return $this->returns;
+		}
+		$expr = '%\*\s+@return\s+([\\\\\w]+)%';
+		preg_match($expr, $this->getDocComment(), $match);
+		if ($match) {
+			$this->returns = $match[1];
+		}
+		else {
+			$this->returns = $this->getReturnTypeString();
+			if ($this->returns === 'void') {
+				$this->returns = '';
+			}
 		}
 		return $this->returns;
 	}
 
 	//------------------------------------------------------------------------------ returnsReference
-	/**
-	 * @return boolean
-	 */
 	public function returnsReference() : bool
 	{
-		if (!isset($this->returns_reference)) {
-			$tokens     =& $this->class->source->getTokens();
-			$token_key  =  $this->token_key + 1;
-			$ampersands = [
-				T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG,
-				T_AMPERSAND_NOT_FOLLOWED_BY_VAR_OR_VARARG
-			];
-			while (is_array($token = $tokens[$token_key]) && !in_array($token[0], $ampersands)) {
-				$token_key ++;
-			}
-			$this->returns_reference = is_array($token) || ($token === '&');
+		if (isset($this->returns_reference)) {
+			return $this->returns_reference;
 		}
+		$tokens     =& $this->class->source->getTokens();
+		$token_key  =  $this->token_key + 1;
+		$ampersands =  [
+			T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG,
+			T_AMPERSAND_NOT_FOLLOWED_BY_VAR_OR_VARARG
+		];
+		while (is_array($token = $tokens[$token_key]) && !in_array($token[0], $ampersands)) {
+			$token_key ++;
+		}
+		$this->returns_reference = is_array($token) || ($token === '&');
 		return $this->returns_reference;
 	}
 

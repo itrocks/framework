@@ -8,11 +8,11 @@ use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Filters_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\User_Change;
@@ -91,20 +91,20 @@ class Html_Builder_Property extends Html_Builder_Type
 			$this->data['default-value'] = Loc::propertyToLocale($property, $default_value);
 		}
 
-		// 1st, get read_only from @user readonly
+		// 1st, get read_only from #User::READONLY
 		$this->readonly = $user->has(User::READONLY);
 
 		if (
 			!$this->readonly
 			&& (is_null($value) || (is_object($value) && Empty_Object::isEmpty($value)))
 		) {
-			// if there is @user_default, there can not be @user if_empty
+			// if there is @user_default, there can not be #User if_empty
 			if ($user_default_annotation->value && $user->has(User::IF_EMPTY)) {
 				$flag_cannot_be_if_empty = true;
 			}
 		}
 
-		// 2nd, if not read_only but has a value and @user if_empty, then set read_only
+		// 2nd, if not read_only but has a value and #User if_empty, then set read_only
 		if (
 			!$this->readonly
 			&& ((is_object($value) && !Empty_Object::isEmpty($value)) || !empty($value))
@@ -270,7 +270,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		if ($placeholder = Placeholder_Annotation::of($this->property)->callProperty($this->property)) {
 			$this->attributes['placeholder'] = $placeholder;
 		}
-		$this->required = Mandatory_Annotation::of($this->property)->value;
+		$this->required = Mandatory::of($this->property)->value;
 		if (!isset($this->tooltip)) {
 			$this->tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property);
 		}
