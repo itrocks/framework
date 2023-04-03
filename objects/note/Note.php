@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Objects;
 
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
@@ -31,8 +32,7 @@ class Note
 	public object $object;
 
 	//----------------------------------------------------------------------------------------- $text
-	/** @max_length 1024 */
-	#[Mandatory, Multiline]
+	#[Mandatory, Max_Length(1024), Multiline]
 	public string $text;
 
 	//---------------------------------------------------------------------------------------- $title

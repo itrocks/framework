@@ -1,49 +1,48 @@
 <?php
 namespace ITRocks\Framework\Feature\Validate\Property;
 
+use Attribute;
 use ITRocks\Framework\Feature\Validate\Result;
-use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
-use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Attribute\Inheritable;
+use ITRocks\Framework\Reflection\Attribute\Property;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
- * The min length annotation validator
+ * Tells what is the maximal count of characters for the value of the property
  */
-class Min_Length_Annotation extends Reflection\Annotation implements Property_Context_Annotation
+#[Attribute(Attribute::TARGET_PROPERTY), Inheritable]
+class Max_Length extends Property implements Has_Set_Final
 {
 	use Annotation;
 
-	//------------------------------------------------------------------------------------ ANNOTATION
-	const ANNOTATION = 'min_length';
+	//---------------------------------------------------------------------------------------- $value
+	public int $value;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value    bool|string|null
-	 * @param $property Interfaces\Reflection_Property ie the contextual Reflection_Property object
-	 */
-	public function __construct(bool|string|null $value, Interfaces\Reflection_Property $property)
+	public function __construct(int $value)
 	{
-		parent::__construct($value);
-		$this->property = $property;
+		$this->value = $value;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	public function __toString() : string
+	{
+		return strval($this->value);
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
-	/**
-	 * Gets the last validate() call resulting report message
-	 *
-	 * @return string
-	 */
+	/** Gets the last validate() call resulting report message */
 	public function reportMessage() : string
 	{
 		if (strlen($this->value)) {
 			switch ($this->valid) {
 				case Result::INFORMATION:
-					return 'length is greater than !' . $this->value . '!';
+					return 'length is lesser than !' . $this->value . '!';
 				case Result::WARNING:
 				case Result::ERROR:
-					return 'minimal length is !' . $this->value . '!';
+					return 'maximal length is !' . $this->value . '!';
 			}
 		}
 		return '';
@@ -64,7 +63,7 @@ class Min_Length_Annotation extends Reflection\Annotation implements Property_Co
 			$value = $this->property->getValue($object);
 			return Mandatory::of($this->property)->isEmpty($object)
 				|| (is_null($value) && Null_Annotation::of($this->property)->value)
-				|| (strlen($value) >= $this->value);
+				|| (strlen($value) <= $this->value);
 		}
 		return null;
 	}

@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao\File\Session_File;
 use ITRocks\Framework\Dao\File\Spreadsheet_File;
 use ITRocks\Framework\Dao\File\Type;
 use ITRocks\Framework\Dao\File\Type_Builder;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
@@ -33,9 +34,8 @@ class File
 	 *
 	 * @binary
 	 * @impacts hash, updated_on
-	 * @max_length 4000000000
 	 */
-	#[Getter, Setter]
+	#[Getter, Max_Length(4000000000), Setter]
 	public ?string $content = null;
 
 	//----------------------------------------------------------------------------------------- $hash
@@ -43,9 +43,7 @@ class File
 	public string $hash = '';
 
 	//-------------------------------------------------------------------------- $temporary_file_name
-	/**
-	 * Temporary file name where the file is stored, used to get content into $content only if needed
-	 */
+	/** Temporary storage file name, used to get content into $content only if needed */
 	#[Getter, Setter]
 	public string $temporary_file_name = '';
 
@@ -68,18 +66,14 @@ class File
 	}
 
 	//-------------------------------------------------------------------------------------- calcHash
-	/**
-	 * Calculate hash code
-	 */
+	/** Calculate hash code */
 	protected function calcHash() : void
 	{
 		$this->hash = isset($this->content) ? hash('sha512', $this->content) : '';
 	}
 
 	//------------------------------------------------------------------------------------ getContent
-	/**
-	 * Gets $this->content, or load it from temporary file name if not set
-	 */
+	/** Gets $this->content, or load it from temporary file name if not set */
 	public function getContent() : ?string
 	{
 		if ($this->temporary_file_name && !isset($this->content)) {
@@ -214,9 +208,7 @@ class File
 	}
 
 	//-------------------------------------------------------------------------- setTemporaryFileName
-	/**
-	 * @noinspection PhpUnused #Getter
-	 */
+	/** @noinspection PhpUnused #Getter */
 	protected function setTemporaryFileName(string $temporary_file_name) : void
 	{
 		if ($temporary_file_name && file_exists($temporary_file_name)) {

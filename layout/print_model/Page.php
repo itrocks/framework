@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Layout\Print_Model;
 
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\Layout\Print_Model;
 use ITRocks\Framework\Reflection\Attribute\Class_\Override;
@@ -11,10 +12,10 @@ use ITRocks\Framework\Reflection\Attribute\Property\Getter;
  * Print model page
  *
  * @override model @var Print_Model
- * @override ordering @max_length 2
  * @property Print_Model model
  */
-#[Override('layout', new Getter('getLayout'))]
+#[Override('layout',   new Getter('getLayout'))]
+#[Override('ordering', new Max_Length(2))]
 #[Store('print_model_pages')]
 class Page extends Model\Page
 {
@@ -45,9 +46,6 @@ class Page extends Model\Page
 	}
 
 	//--------------------------------------------------------------------------------------- caption
-	/**
-	 * @return string
-	 */
 	public function caption() : string
 	{
 		switch ($this->ordering) {
@@ -61,10 +59,6 @@ class Page extends Model\Page
 	}
 
 	//------------------------------------------------------------------------------------- getLayout
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return string
-	 */
 	protected function getLayout() : string
 	{
 		if (($this->layout === '[]') || !$this->layout) {
@@ -82,11 +76,7 @@ class Page extends Model\Page
 	}
 
 	//------------------------------------------------------------------------------- orderingCaption
-	/**
-	 * Get ordering caption (first, middle, last page), or page number if free ordering number
-	 *
-	 * @return string @example 'last'
-	 */
+	/** Get ordering caption (first, middle, last page), or page number if free ordering number */
 	public function orderingCaption() : string
 	{
 		switch ($this->ordering) {
@@ -108,7 +98,6 @@ class Page extends Model\Page
 	 * @example  0 => 1000 (middle)
 	 * @example -2 => 1998
 	 * @example -1 => 1999 (last)
-	 * @return integer
 	 */
 	protected function orderingToSortable() : int
 	{

@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Locale;
 
 use AllowDynamicProperties;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
@@ -24,12 +25,8 @@ class Translation
 	public string $context = '';
 
 	//------------------------------------------------------------------------------------- $language
-	/**
-	 * Allow 2 characters-length ISO codes, and those composite like nl_be, but no more
-	 *
-	 * @max_length 5
-	 */
-	#[Mandatory]
+	/** Allow 2 characters-length ISO codes, and those composite like nl_be, but no more */
+	#[Mandatory, Max_Length(5)]
 	public string $language = '';
 
 	//----------------------------------------------------------------------------------------- $text

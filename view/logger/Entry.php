@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\View\Logger;
 
 use ITRocks\Framework;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
@@ -16,11 +17,8 @@ trait Entry
 {
 
 	//--------------------------------------------------------------------------------------- $output
-	/**
-	 * @max_length 100000000
-	 * @user_getter userGetOutput
-	 */
-	#[Getter('getOutput'), Multiline, Store(false)]
+	/** @user_getter userGetOutput */
+	#[Getter('getOutput'), Max_Length(100000000), Multiline, Store(false)]
 	public string|No_Escape $output;
 
 	//----------------------------------------------------------------------------- deactivateScripts

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Component\Button;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Button\Code\Command\Parser;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
@@ -22,8 +23,7 @@ class Code implements Stringable
 	public string $feature;
 
 	//--------------------------------------------------------------------------------------- $source
-	/** @max_length 60000 */
-	#[Alias('source_code'), Multiline]
+	#[Alias('source_code'), Max_Length(60000), Multiline]
 	public string $source;
 
 	//----------------------------------------------------------------------------------------- $when

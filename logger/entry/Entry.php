@@ -6,6 +6,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Feature\Validate;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Logger\Entry\Data;
 use ITRocks\Framework\Reflection\Attribute\Class_;
@@ -28,6 +29,9 @@ use ITRocks\Framework\User;
 #[Class_\Store('logs')]
 class Entry implements Validate\Except
 {
+	// TODO HIGH #71516 Fix Builder\Compiler as this should be replaced by dynamic call in config.php
+	use Framework\Dao\Mysql\File_Logger\Entry;
+	use Framework\View\Logger\Entry;
 
 	//---------------------------------------------------------------------------------- CONSOLE_USER
 	const CONSOLE_USER = 2;
@@ -35,14 +39,8 @@ class Entry implements Validate\Except
 	//------------------------------------------------------------------------------------- CRON_USER
 	const CRON_USER = 3;
 
-	// TODO HIGH #71516 Fix Builder\Compiler as this should be replaced by dynamic call in config.php
-	use Framework\Dao\Mysql\File_Logger\Entry;
-	use Framework\View\Logger\Entry;
-
 	//----------------------------------------------------------------------------------------- $data
-	/**
-	 * @integrated alias
-	 */
+	/** @integrated alias */
 	#[Component]
 	public ?Data $data;
 
@@ -63,11 +61,8 @@ class Entry implements Validate\Except
 	protected float $duration_start;
 
 	//--------------------------------------------------------------------------------- $memory_usage
-	/**
-	 * Memory peak usage in MB
-	 *
-	 * @max_length 7
-	 */
+	/** Memory peak usage in MB */
+	#[Max_Length(7)]
 	public int $memory_usage;
 
 	//------------------------------------------------------------------------------ $mysql_thread_id
@@ -80,21 +75,15 @@ class Entry implements Validate\Except
 	public string $session_id;
 
 	//---------------------------------------------------------------------------------------- $start
-	/**
-	 * @show_seconds
-	 */
+	/** @show_seconds */
 	public Date_Time|string $start;
 
 	//----------------------------------------------------------------------------------------- $stop
-	/**
-	 * @show_seconds
-	 */
+	/** @show_seconds */
 	public Date_Time|string $stop;
 
 	//------------------------------------------------------------------------------------------ $uri
-	/**
-	 * @max_length 255
-	 */
+	#[Max_Length(255)]
 	public string $uri;
 
 	//----------------------------------------------------------------------------------------- $user

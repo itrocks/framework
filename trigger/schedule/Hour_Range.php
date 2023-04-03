@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Trigger\Schedule;
 
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
@@ -30,11 +31,11 @@ class Hour_Range
 
 	//----------------------------------------------------------------------------------------- $from
 	/**
-	 * @max_length 8
 	 * @max_value 23:59:59
 	 * @min_value 0
 	 * @regexp [0-2][0-9]:[0-5][0-9]([0-5][0-9])?
 	 */
+	#[Max_Length(8)]
 	public string $from = '';
 
 	//------------------------------------------------------------------------------------- $schedule
@@ -43,11 +44,11 @@ class Hour_Range
 
 	//---------------------------------------------------------------------------------------- $until
 	/**
-	 * @max_length 8
 	 * @max_value 23:59:59
 	 * @min_value 0
 	 * @regexp [0-2][0-9]:[0-5][0-9]([0-5][0-9])?
 	 */
+	#[Max_Length(8)]
 	public string $until = '';
 
 	//------------------------------------------------------------------------------------- normalize

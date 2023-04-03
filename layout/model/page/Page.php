@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Layout\Model;
 
 use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
@@ -36,9 +37,8 @@ abstract class Page
 	/**
 	 * Raw page layout : a json structure from html_links & document-designer that describes fields
 	 * and how they are laid-out
-	 *
-	 * @max_length 1000000000
 	 */
+	#[Max_Length(1000000000)]
 	public string $layout = '';
 
 	//---------------------------------------------------------------------------------------- $model
@@ -103,11 +103,7 @@ abstract class Page
 	}
 
 	//------------------------------------------------------------------------------- orderingCaption
-	/**
-	 * Get ordering caption (e.g. first, middle, last page), or page number if free ordering number
-	 *
-	 * @return string @example 'last'
-	 */
+	/** Get ordering caption (e.g. first, middle, last page), or page number (free ordering number) */
 	abstract public function orderingCaption() : string;
 
 	//---------------------------------------------------------------------------- orderingToSortable

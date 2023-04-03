@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\User;
@@ -30,7 +31,7 @@ class Key
 	public ?string $property_name;
 
 	//--------------------------------------------------------------------------------------- $secret
-	/** @max_length 10000 */
+	#[Max_Length(10000)]
 	public string $secret;
 
 	//----------------------------------------------------------------------------------------- $user

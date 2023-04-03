@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Layout\Structure;
 
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 
 /**
@@ -15,7 +16,7 @@ abstract class Field extends Element
 	const RIGHT  = 'right';
 
 	//---------------------------------------------------------------------------------------- $color
-	/** @max_length 6 */
+	#[Max_Length(6)]
 	public string $color = '000000';
 
 	//------------------------------------------------------------------------------------ $font_size

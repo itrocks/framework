@@ -2,10 +2,10 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\Feature\Validate;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
-use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting\Custom;
 use ITRocks\Framework\Tools\Names;
 
@@ -25,11 +25,10 @@ class Setting implements Validate\Except
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
-	 * @max_length 1000000000
 	 * @notice string must come first, because it is stored as this
 	 * @var string|Custom\Set|null Must force type here : php real type does not take care of ordering
 	 */
-	#[Getter('getValue')]
+	#[Getter('getValue'), Max_Length(1000000000)]
 	public string|Custom\Set|null $value = null;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -77,9 +76,7 @@ class Setting implements Validate\Except
 	}
 
 	//------------------------------------------------------------------------ invalidateValueSetting
-	/**
-	 * @noinspection PhpUnused @before_write
-	 */
+	/** @noinspection PhpUnused @before_write */
 	public function invalidateValueSetting() : void
 	{
 		if (
@@ -92,9 +89,7 @@ class Setting implements Validate\Except
 	}
 
 	//---------------------------------------------------------------------------- unlinkUserSettings
-	/**
-	 * @noinspection PhpUnused @before_delete
-	 */
+	/** @noinspection PhpUnused @before_delete */
 	public function unlinkUserSettings() : void
 	{
 		foreach (Dao::search(['setting' => $this], Setting\User::class) as $user_setting) {

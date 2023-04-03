@@ -1,18 +1,19 @@
 <?php
 namespace ITRocks\Framework\Layout\Display_Model;
 
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Layout\Display_Model;
 use ITRocks\Framework\Layout\Model;
+use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 
 /**
  * Print model page
  *
  * @override model @var Display_Model
- * @override ordering @max_length 2
  * @property Display_Model model
  */
-#[Store('display_model_pages')]
+#[Override('ordering', new Max_Length(2)), Store('display_model_pages')]
 class Page extends Model\Page
 {
 
@@ -98,9 +99,7 @@ class Page extends Model\Page
 	}
 
 	//--------------------------------------------------------------------------------- calculateSize
-	/**
-	 * Calculate ratio, size, font size, etc.
-	 */
+	/** Calculate ratio, size, font size, etc. */
 	protected function calculateSize() : void
 	{
 		$ratio_width = 100;
@@ -120,11 +119,7 @@ class Page extends Model\Page
 	}
 
 	//------------------------------------------------------------------------------- orderingCaption
-	/**
-	 * Get ordering caption (e.g. first, middle, last page), or page number if free ordering number
-	 *
-	 * @return string @example 'screen'
-	 */
+	/** Get ordering caption (e.g. first, middle, last page), or page number (free ordering number) */
 	public function orderingCaption() : string
 	{
 		switch ($this->ordering) {
@@ -139,11 +134,7 @@ class Page extends Model\Page
 	}
 
 	//---------------------------------------------------------------------------- orderingToSortable
-	/**
-	 * Return an unsigned numeric value calculated from $this->ordering
-	 *
-	 * @return integer
-	 */
+	/** Return an unsigned numeric value calculated from $this->ordering */
 	protected function orderingToSortable() : int
 	{
 		return static::ORDERING[$this->ordering];

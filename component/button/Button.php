@@ -8,6 +8,7 @@ use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Confirm\Confirm;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
@@ -72,12 +73,8 @@ class Button
 	public ?Tools\Color $color;
 
 	//----------------------------------------------------------------------------------- $conditions
-	/**
-	 * The button will be displayed only if these conditions are ok on the context object
-	 *
-	 * @max_length 60000
-	 */
-	#[Multiline]
+	/** The button will be displayed only if these conditions are ok on the context object */
+	#[Max_Length(60000), Multiline]
 	public string $conditions = '';
 
 	//-------------------------------------------------------------------------------- $confirm_label
@@ -224,9 +221,7 @@ class Button
 	}
 
 	//----------------------------------------------------------------------------- conditionsApplyTo
-	/**
-	 * Returns true if the conditions apply to the context object
-	 */
+	/** Returns true if the conditions apply to the context object */
 	public function conditionsApplyTo(object $object) : bool
 	{
 		return (new Code($this->conditions))->execute($object, true);
@@ -239,9 +234,7 @@ class Button
 	}
 
 	//--------------------------------------------------------------------------------------- getLink
-	/**
-	 * @noinspection PhpUnused #Getter
-	 */
+	/** @noinspection PhpUnused #Getter */
 	protected function getLink() : ?string
 	{
 		if (isset($this->object) && !isset($this->link)) {

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Locale\Translation;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Locale\Language;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
@@ -37,8 +38,7 @@ class Data
 	public string $property_name;
 
 	//---------------------------------------------------------------------------------- $translation
-	/** @max_length 50000 */
-	#[Mandatory, Multiline]
+	#[Mandatory, Max_Length(50000), Multiline]
 	public string $translation = '';
 
 	//------------------------------------------------------------------------------------ __toString

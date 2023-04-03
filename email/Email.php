@@ -7,6 +7,7 @@ use ITRocks\Framework\Email\Account;
 use ITRocks\Framework\Email\Attachment;
 use ITRocks\Framework\Email\Output\Has_Output_Properties;
 use ITRocks\Framework\Email\Recipient;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Attribute\Class_;
@@ -60,9 +61,8 @@ class Email
 	/**
 	 * @dao files
 	 * @editor quill simple
-	 * @max_length 10000000
 	 */
-	#[Multiline, Store(Store::GZ)]
+	#[Max_Length(10000000), Multiline, Store(Store::GZ)]
 	public string $content = '';
 
 	//-------------------------------------------------------------------------------------- $copy_to

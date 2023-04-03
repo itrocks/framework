@@ -3,6 +3,7 @@ namespace ITRocks\Framework\RAD;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\RAD\Feature\Module;
@@ -36,11 +37,8 @@ class Feature
 	public bool $bridge;
 
 	//---------------------------------------------------------------------------------- $description
-	/**
-	 * @max_length 64000
-	 * @translate common
-	 */
-	#[Multiline]
+	/** @translate common */
+	#[Max_Length(64000), Multiline]
 	public string $description;
 
 	//--------------------------------------------------------------------------------------- $module

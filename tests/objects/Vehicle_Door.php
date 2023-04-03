@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
+use ITRocks\Framework\Feature\Validate\Property\Length;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
@@ -33,7 +34,7 @@ class Vehicle_Door
 	const TRUNK = 'trunk';
 
 	//----------------------------------------------------------------------------------------- $code
-	/** @length 6 */
+	#[Length(6)]
 	public string $code = '';
 
 	//--------------------------------------------------------------------------------------- $pieces

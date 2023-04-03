@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Logger\Entry;
 
 use ITRocks\Framework\Feature\Validate;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Logger\Entry;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Attribute\Class_\Set;
@@ -17,9 +18,7 @@ class Data implements Validate\Except
 	use Component;
 
 	//------------------------------------------------------------------------------------ $arguments
-	/**
-	 * @max_length 65000
-	 */
+	#[Max_Length(65000)]
 	public string $arguments = '';
 
 	//---------------------------------------------------------------------------------------- $entry
@@ -27,15 +26,11 @@ class Data implements Validate\Except
 	public Entry $entry;
 
 	//---------------------------------------------------------------------------------------- $files
-	/**
-	 * @max_length 65000
-	 */
+	#[Max_Length(65000)]
 	public string $files = '';
 
 	//----------------------------------------------------------------------------------------- $form
-	/**
-	 * @max_length 1000000
-	 */
+	#[Max_Length(1000000)]
 	public string $form = '';
 
 	//--------------------------------------------------------------------------- $request_identifier

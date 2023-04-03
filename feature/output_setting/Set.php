@@ -7,6 +7,7 @@ use ITRocks\Framework\Component\Button\Code;
 use ITRocks\Framework\Component\Tab;
 use ITRocks\Framework\Component\Tab\Tabs_Builder_Class;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Group;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
@@ -38,10 +39,8 @@ class Set extends Setting\Custom\Set
 	/**
 	 * A text php expression where $this is the referent object.
 	 * The returned boolean value will tell if the form must be available or not for the object.
-	 *
-	 * @max_length 60000
 	 */
-	#[Multiline]
+	#[Max_Length(60000), Multiline]
 	public string $conditions = '';
 
 	//-------------------------------------------------------------------------------------- $objects

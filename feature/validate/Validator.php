@@ -68,15 +68,9 @@ class Validator implements Registerable
 	public bool|string|null $valid;
 
 	//--------------------------------------------------------------------------------- $validator_on
-	/**
-	 * @var boolean
-	 */
 	public bool $validator_on = false;
 
 	//----------------------------------------------------------------------------------- $warning_on
-	/**
-	 * @var boolean
-	 */
 	public bool $warning_on = false;
 
 	//------------------------------------------------------------------------ afterMainControllerRun
@@ -92,10 +86,7 @@ class Validator implements Registerable
 	}
 
 	//---------------------------------------------------------------------- afterSaveControllerWrite
-	/**
-	 * @param $write_objects array
-	 * @throws Exception
-	 */
+	/** @throws Exception */
 	public function afterSaveControllerWrite(array $write_objects) : void
 	{
 		if ($this->warningEnabled() && $this->getWarnings()) {
@@ -115,7 +106,6 @@ class Validator implements Registerable
 	 * link. Objects must be validated before doing this
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection ReflectionException
-	 * @param $joinpoint Before_Method
 	 * @throws Exception
 	 */
 	public function beforePropertyStoreString(Before_Method $joinpoint) : void
@@ -133,9 +123,6 @@ class Validator implements Registerable
 	}
 
 	//----------------------------------------------------------------------- beforeSaveControllerRun
-	/**
-	 * @param $parameters Parameters
-	 */
 	public function beforeSaveControllerRun(Parameters $parameters) : void
 	{
 		if (!$parameters->getRawParameter('confirm')) {
@@ -191,8 +178,6 @@ class Validator implements Registerable
 	 * Create a new empty component sub-object
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object   object
-	 * @param $property Reflection_Property
 	 * @return Component
 	 */
 	private function createSubObject(object $object, Reflection_Property $property) : object
@@ -235,10 +220,7 @@ class Validator implements Registerable
 	}
 
 	//-------------------------------------------------------------------------------- getConfirmLink
-	/**
-	 * @noinspection PhpUnused not_validated.html
-	 * @return string
-	 */
+	/** @noinspection PhpUnused not_validated.html */
 	public function getConfirmLink() : string
 	{
 		$uri = lParse(SL . rParse($_SERVER['REQUEST_URI'], SL, 2), '?');
@@ -246,9 +228,7 @@ class Validator implements Registerable
 	}
 
 	//------------------------------------------------------------------------------------- getErrors
-	/**
-	 * @return Annotation[]
-	 */
+	/** @return Annotation[] */
 	public function getErrors() : array
 	{
 		$errors = [];
@@ -288,8 +268,6 @@ class Validator implements Registerable
 	/**
 	 * TODO NORMAL There is probably already a function for that somewhere. If not, should be !
 	 *
-	 * @param $elements  array
-	 * @param $base_path string
 	 * @return string[]
 	 */
 	private function getPropertiesToString(array $elements = [], string $base_path = '') : array
@@ -310,9 +288,7 @@ class Validator implements Registerable
 	}
 
 	//----------------------------------------------------------------------------------- getWarnings
-	/**
-	 * @return Annotation[]
-	 */
+	/** @return Annotation[] */
 	public function getWarnings() : array
 	{
 		$warning = [];
@@ -345,9 +321,6 @@ class Validator implements Registerable
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @param $register Register
-	 */
 	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod(
@@ -377,10 +350,7 @@ class Validator implements Registerable
 		]);
 		$register->setAnnotations(Parser::T_PROPERTY, [
 			'characters' => Property\Characters_Annotation::class,
-			'length'     => Property\Length_Annotation::class,
-			'max_length' => Property\Max_Length_Annotation::class,
 			'max_value'  => Property\Max_Value_Annotation::class,
-			'min_length' => Property\Min_Length_Annotation::class,
 			'min_value'  => Property\Min_Value_Annotation::class,
 			'precision'  => Property\Precision_Annotation::class,
 			'regex'      => Property\Regex_Annotation::class,
@@ -576,11 +546,7 @@ class Validator implements Registerable
 	}
 
 	//-------------------------------------------------------------------------------- validateObject
-	/**
-	 * @param $object object
-	 * @param $class  Reflection_Class
-	 * @return string|true|null @values Result::const
-	 */
+	/** @return string|true|null @values Result::const */
 	protected function validateObject(object $object, Reflection_Class $class) : bool|string|null
 	{
 		return $this->validateAnnotations($object, $class->getAnnotations());
@@ -668,11 +634,7 @@ class Validator implements Registerable
 	}
 
 	//-------------------------------------------------------------------------------- warningEnabled
-	/**
-	 * Return true if warning check are enabled
-	 *
-	 * @return boolean
-	 */
+	/** Return true if warning check are enabled */
 	public function warningEnabled() : bool
 	{
 		return $this->validator_on && $this->warning_on;

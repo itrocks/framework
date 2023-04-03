@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Trigger;
 use ITRocks\Framework;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Logger\Entry;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
@@ -25,7 +26,7 @@ class Action
 {
 
 	//--------------------------------------------------------------------------------------- $action
-	/** @max_length 50000 */
+	#[Max_Length(50000)]
 	public string $action = '';
 
 	//-------------------------------------------------------------------------------------- $as_user
@@ -216,8 +217,6 @@ class Action
 	/**
 	 * Wait for an action execution to be complete
 	 *
-	 * @param $timeout         integer
-	 * @param $pending_timeout integer
 	 * @return boolean|string true if done, or Timeout status @values execution, pending
 	 */
 	public function wait(int $timeout = 30, int $pending_timeout = 5) : bool|string

@@ -1,39 +1,38 @@
 <?php
 namespace ITRocks\Framework\Feature\Validate\Property;
 
+use Attribute;
 use ITRocks\Framework\Feature\Validate\Result;
-use ITRocks\Framework\Reflection;
-use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
-use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Attribute\Inheritable;
+use ITRocks\Framework\Reflection\Attribute\Property;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
- * The length annotation validator
+ * Tells what is the wished count of characters for the value of the property
  */
-class Length_Annotation extends Reflection\Annotation implements Property_Context_Annotation
+#[Attribute(Attribute::TARGET_PROPERTY), Inheritable]
+class Length extends Property implements Has_Set_Final
 {
 	use Annotation;
 
-	//------------------------------------------------------------------------------------ ANNOTATION
-	const ANNOTATION = 'length';
+	//---------------------------------------------------------------------------------------- $value
+	public int $value;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value    bool|string|null
-	 * @param $property Interfaces\Reflection_Property ie the contextual Reflection_Property object
-	 */
-	public function __construct(bool|string|null  $value, Interfaces\Reflection_Property $property)
+	public function __construct(int $value)
 	{
-		parent::__construct($value);
-		$this->property = $property;
+		$this->value = $value;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	public function __toString() : string
+	{
+		return strval($this->value);
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
-	/**
-	 * Gets the last validate() call resulting report message
-	 *
-	 * @return string
-	 */
+	/** Gets the last validate() call resulting report message */
 	public function reportMessage() : string
 	{
 		if (strlen($this->value)) {

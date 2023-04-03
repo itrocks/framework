@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Mysql\Column_Builder_Property;
 
 use ITRocks\Framework\Dao\Mysql\Column_Builder_Property;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tests;
@@ -19,7 +20,6 @@ class Test extends Tests\Test
 	 *
 	 * @assume    decimal(65,2) unsigned
 	 * @precision 2
-	 * @var float
 	 */
 	public float $decimal1;
 
@@ -30,7 +30,6 @@ class Test extends Tests\Test
 	 * @assume    decimal(65,2)
 	 * @precision 2
 	 * @signed
-	 * @var float
 	 */
 	public float $decimal1b;
 
@@ -38,23 +37,21 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-length
 	 *
-	 * @assume     decimal(9,2) unsigned
-	 * @max_length 10
-	 * @precision  2
-	 * @var float
+	 * @assume decimal(9,2) unsigned
+	 * @precision 2
 	 */
+	#[Max_Length(10)]
 	public float $decimal2;
 
 	//------------------------------------------------------------------------------------- $decimal3
 	/**
 	 * fixed precision decimal with max-length, signed
 	 *
-	 * @assume     decimal(8,2)
-	 * @max_length 10
-	 * @precision  2
+	 * @assume decimal(8,2)
+	 * @precision 2
 	 * @signed
-	 * @var float
 	 */
+	#[Max_Length(10)]
 	public float $decimal3;
 
 	//------------------------------------------------------------------------------------- $decimal4
@@ -64,7 +61,6 @@ class Test extends Tests\Test
 	 * @assume    decimal(5,2) unsigned
 	 * @max_value 495.34
 	 * @precision 2
-	 * @var float
 	 */
 	public float $decimal4;
 
@@ -75,7 +71,6 @@ class Test extends Tests\Test
 	 * @assume    decimal(5,2) unsigned
 	 * @max_value 495.3
 	 * @precision 2
-	 * @var float
 	 */
 	public float $decimal4b;
 
@@ -86,7 +81,6 @@ class Test extends Tests\Test
 	 * @assume    decimal(5,2) unsigned
 	 * @max_value 495
 	 * @precision 2
-	 * @var float
 	 */
 	public float $decimal4c;
 
@@ -99,7 +93,6 @@ class Test extends Tests\Test
 	 * @min_value -495
 	 * @precision 2
 	 * @signed
-	 * @var float
 	 */
 	public float $decimal5;
 
@@ -112,7 +105,6 @@ class Test extends Tests\Test
 	 * @min_value -495.3
 	 * @precision 2
 	 * @signed
-	 * @var float
 	 */
 	public float $decimal5b;
 
@@ -125,7 +117,6 @@ class Test extends Tests\Test
 	 * @min_value -495
 	 * @precision 2
 	 * @signed
-	 * @var float
 	 */
 	public float $decimal5c;
 
@@ -138,7 +129,6 @@ class Test extends Tests\Test
 	 * @min_value -495.34
 	 * @precision 2
 	 * @signed
-	 * @var float
 	 */
 	public float $decimal5d;
 
@@ -151,7 +141,6 @@ class Test extends Tests\Test
 	 * @min_value -495
 	 * @precision 2
 	 * @signed
-	 * @var float
 	 */
 	public float $decimal5e;
 
@@ -164,7 +153,6 @@ class Test extends Tests\Test
 	 * @min_value -525
 	 * @precision 2
 	 * @signed
-	 * @var float
 	 */
 	public float $decimal5f;
 
@@ -176,7 +164,6 @@ class Test extends Tests\Test
 	 * @max_value -495
 	 * @precision 2
 	 * @signed
-	 * @var float
 	 */
 	public float $decimal5g;
 
@@ -186,7 +173,6 @@ class Test extends Tests\Test
 	 *
 	 * @assume    smallint(5)
 	 * @min_value -2300
-	 * @var integer
 	 */
 	public int $integer1;
 
@@ -197,7 +183,6 @@ class Test extends Tests\Test
 	 * @assume    smallint(5)
 	 * @max_value 32767
 	 * @signed
-	 * @var integer
 	 */
 	public int $integer2;
 
@@ -208,7 +193,6 @@ class Test extends Tests\Test
 	 * @assume    mediumint(7)
 	 * @max_value 32768
 	 * @signed
-	 * @var integer
 	 */
 	public int $integer2b;
 
@@ -218,7 +202,6 @@ class Test extends Tests\Test
 	 *
 	 * @assume    tinyint(3) unsigned
 	 * @max_value 255
-	 * @var integer
 	 */
 	public int $integer3;
 
@@ -228,7 +211,6 @@ class Test extends Tests\Test
 	 *
 	 * @assume    smallint(5) unsigned
 	 * @max_value 65535
-	 * @var integer
 	 */
 	public int $integer3b;
 
@@ -238,7 +220,6 @@ class Test extends Tests\Test
 	 *
 	 * @assume    mediumint(8) unsigned
 	 * @max_value 16777215
-	 * @var integer
 	 */
 	public int $integer3c;
 
@@ -248,7 +229,6 @@ class Test extends Tests\Test
 	 *
 	 * @assume    int(10) unsigned
 	 * @max_value 4294967295
-	 * @var integer
 	 */
 	public int $integer3d;
 
@@ -258,22 +238,17 @@ class Test extends Tests\Test
 	 *
 	 * @assume    bigint(18) unsigned
 	 * @max_value 4294967296
-	 * @var integer
 	 */
 	public int $integer3e;
 
 	//------------------------------------------------------------------------------------- $integer4
-	/**
-	 * @assume bigint(18) unsigned
-	 * @var integer
-	 */
+	/** @assume bigint(18) unsigned */
 	public int $integer4;
 
 	//------------------------------------------------------------------------------------- $integer5
 	/**
 	 * @assume bigint(18)
 	 * @signed
-	 * @var integer
 	 */
 	public int $integer5;
 
@@ -299,18 +274,14 @@ class Test extends Tests\Test
 	}
 
 	//----------------------------------------------------------------------------------- testDecimal
-	/**
-	 * @throws ReflectionException
-	 */
+	/** @throws ReflectionException */
 	public function testDecimal() : void
 	{
 		$this->propertyTests('decimal');
 	}
 
 	//----------------------------------------------------------------------------------- testInteger
-	/**
-	 * @throws ReflectionException
-	 */
+	/** @throws ReflectionException */
 	public function testInteger() : void
 	{
 		$this->propertyTests('integer');

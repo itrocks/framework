@@ -396,12 +396,6 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@force_validate' => Boolean_Annotation::class,
 
 	/**
-	 * @length 5
-	 * Tells what is the wished count of characters for the value of the property
-	 */
-	Parser::T_PROPERTY . '@length' => Annotation::class,
-
-	/**
 	 * @link_composite
 	 * Identifies a property to link to the composite object for a @link Class
 	 * This is useful to declare it explicitly only if the @link Class links two identical classes
@@ -409,22 +403,10 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@link_composite' => Boolean_Annotation::class,
 
 	/**
-	 * @max_length 100
-	 * Tells what maximal count of characters can have the value of the property
-	 */
-	Parser::T_PROPERTY . '@max_length' => Annotation::class,
-
-	/**
 	 * @max_value 40
 	 * Tells what is the maximal allowed value for the property
 	 */
 	Parser::T_PROPERTY . '@max_value' => Annotation::class,
-
-	/**
-	 * @min_length 10
-	 * Tells what is the minimal count of characters for the value of the property
-	 */
-	Parser::T_PROPERTY . '@min_length' => Annotation::class,
 
 	/**
 	 * @min_value -5
