@@ -101,7 +101,11 @@ class Method
 		$count = null;
 
 		// $joinpoint_has_return
-		$joinpoint_has_return = str_contains($doc_comment, '@return');
+		$joinpoint_has_return = str_contains($doc_comment, '@return')
+			|| (
+				($return_type_string = $source_method->getReturnTypeString())
+				&& ($return_type_string !== 'void')
+			);
 
 		// $pointcut_string
 		if ($is_static) {
