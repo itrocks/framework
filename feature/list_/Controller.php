@@ -34,7 +34,6 @@ use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
@@ -73,53 +72,30 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	const FEATURE = Feature::F_LIST;
 
 	//---------------------------------------------------------------------------------- $class_names
-	/**
-	 * @var string The set class name (can be virtual if only the element class name exists)
-	 */
+	/** The set class name (can be virtual if only the element class name exists) */
 	private string $class_names;
 
 	//---------------------------------------------------------------- $default_displayed_lines_count
-	/**
-	 * The default displayed lines count
-	 *
-	 * @var integer
-	 */
+	/** The default displayed lines count */
 	public int $default_displayed_lines_count = 20;
 
 	//-------------------------------------------------------------------- $displayed_lines_count_gap
-	/**
-	 * The number of added / removed lines when you click on more / less
-	 *
-	 * @var integer
-	 */
+	/** The number of added / removed lines when you click on more / less */
 	public int $displayed_lines_count_gap = 100;
 
 	//--------------------------------------------------------------------------------------- $errors
-	/**
-	 * List of errors on fields' search expression
-	 *
-	 * @var Exception[]
-	 */
+	/** @var Exception[] List of errors on fields' search expression */
 	protected array $errors = [];
 
 	//------------------------------------------------------------------------- $foot_property_values
-	/**
-	 * @var Reflection_Property_Value[]
-	 */
+	/** @var Reflection_Property_Value[] */
 	protected array $foot_property_values = [];
 
 	//------------------------------------------------------------------------------ $load_more_lines
-	/**
-	 * @var boolean
-	 */
 	protected bool $load_more_lines = false;
 
 	//---------------------------------------------------------------- $maximum_displayed_lines_count
-	/**
-	 * The maximum displayed lines count, when we click on 'more'
-	 *
-	 * @var integer
-	 */
+	/** The maximum displayed lines count, when we click on 'more' */
 	public int $maximum_displayed_lines_count = 1000;
 
 	//----------------------------------------------------------------------------------- $time_limit
@@ -127,18 +103,11 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * The execution time limit for data list read data query.
 	 * You can change this value to change this limit.
 	 * A value of 0 or null will mean 'no limit'.
-	 *
-	 * @var integer
 	 */
 	public int $time_limit = 30;
 
 	//-------------------------------------------------------------------------- applyGettersToValues
-	/**
-	 * In Dao::select() result : replace values with their matching result of user_getter / getter
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $data List_Data
-	 */
+	/** In Dao::select() result : replace values with their matching result of user_getter / getter */
 	protected function applyGettersToValues(List_Data $data) : void
 	{
 		$properties             = $data->getProperties();
@@ -162,29 +131,30 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				$properties_with_getter[$property_path] = [$property, $user_getter, $translate];
 			}
 		}
-		if ($properties_with_getter) {
-			foreach ($data->getRows() as $row) {
-				$object = $row->id();
-				// Optimize memory usage : detach object from the List_Row
-				if (!is_object($object)){
-					Mapper\Getter::getObject($object, $row->getClassName());
+		if (!$properties_with_getter) {
+			return;
+		}
+		foreach ($data->getRows() as $row) {
+			$object = $row->id();
+			// Optimize memory usage : detach object from the List_Row
+			if (!is_object($object)){
+				Mapper\Getter::getObject($object, $row->getClassName());
+			}
+			foreach (
+				$properties_with_getter as $property_path => [$property, $user_getter, $translate]
+			) {
+				/** @noinspection PhpUnhandledExceptionInspection valid $object */
+				/** @var $property Reflection_Property */
+				$value = $user_getter
+					? (new Contextual_Callable($user_getter, $object))->call($property)
+					: $property->getValue($object);
+				if (is_object($value)){
+					$value = strval($value);
 				}
-				foreach (
-					$properties_with_getter as $property_path => [$property, $user_getter, $translate]
-				) {
-					/** @noinspection PhpUnhandledExceptionInspection valid $object */
-					/** @var $property Reflection_Property */
-					$value = $user_getter
-						? (new Contextual_Callable($user_getter, $object))->call($property)
-						: $property->getValue($object);
-					if (is_object($value)){
-						$value = strval($value);
-					}
-					if ($translate === 'common') {
-						$value = Loc::tr($value);
-					}
-					$row->setValue($property_path, $value);
+				if ($translate === 'common') {
+					$value = Loc::tr($value);
 				}
+				$row->setValue($property_path, $value);
 			}
 		}
 	}
@@ -193,9 +163,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	/**
 	 * Apply parameters to list settings
 	 *
-	 * @param $list_settings    Set
-	 * @param $parameters       array
-	 * @param $form             array|null
 	 * @return ?Set set if parameters did change
 	 */
 	public function applyParametersToListSettings(
@@ -306,7 +273,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	//------------------------------------------------------------------------- applySearchParameters
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $list_settings Set
 	 * @return array search-compatible search array
 	 */
 	public function applySearchParameters(Set $list_settings) : array
@@ -346,11 +312,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	}
 
 	//--------------------------------------------------------------------------- descapePropertyName
-	/**
-	 * @param $property_name string
-	 * @return string
-	 * @see Functions::escapeName()
-	 */
+	/** @see Functions::escapeName() */
 	protected function descapePropertyName(string $property_name) : string
 	{
 		$property_name = str_replace(
@@ -366,9 +328,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	/**
 	 * Force $parameters main object to a set of $this->class_names
 	 * Replace the already existing Main_Object ($this->mainObject() must be called before this)
-	 *
-	 * @param $parameters Parameters
-	 * @return string
 	 */
 	protected function forceSetMainObject(Parameters $parameters) : string
 	{
@@ -381,20 +340,13 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	}
 
 	//--------------------------------------------------------------------------------- getClassNames
-	/**
-	 * Returns the class names
-	 *
-	 * @return string
-	 */
 	public function getClassNames() : string
 	{
 		return $this->class_names;
 	}
 
 	//------------------------------------------------------------------------------------- getErrors
-	/**
-	 * @return Exception[]
-	 */
+	/** @return Exception[] */
 	public function getErrors() : array
 	{
 		return $this->errors;
@@ -405,7 +357,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @noinspection PhpDocSignatureInspection $class_name, $settings
 	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $class_name
 	 * @param $class_name string The context object or class name
-	 * @param $parameters array Parameters prepared to the view. 'selection_buttons' to be added
+	 * @param $parameters array  Parameters prepared to the view. 'selection_buttons' to be added
 	 * @param $settings   Setting\Custom\Set&Set|null
 	 * @return Button[]
 	 */
@@ -438,7 +390,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $list_settings Set
 	 * @return Property[]
 	 */
 	protected function getProperties(Set $list_settings) : array
@@ -511,7 +462,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
-	 * @param $class_name string class name
+	 * @param $class_name string   class name
 	 * @param $parameters string[] parameters
 	 * @param $settings   Set|null
 	 * @return Button[]
@@ -563,13 +514,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $parameters Parameters
-	 * @param $form       array
-	 * @param $class_name string
-	 * @return array
-	 */
 	protected function getViewParameters(Parameters $parameters, array $form, string $class_name)
 		: array
 	{
@@ -621,12 +565,12 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			}
 		}
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
-		$less_twenty    = $displayed_lines_count > $this->default_displayed_lines_count;
-		$lock_columns   = List_Annotation::of($list_settings->getClass())->has(List_Annotation::LOCK);
-		$more           = ($displayed_lines_count < $count->count);
-		$more_hundred   = ($displayed_lines_count < $this->maximum_displayed_lines_count)
+		$less_twenty  = $displayed_lines_count > $this->default_displayed_lines_count;
+		$lock_columns = Class_\List_::of($list_settings->getClass())->lock;
+		$more         = ($displayed_lines_count < $count->count);
+		$more_hundred = ($displayed_lines_count < $this->maximum_displayed_lines_count)
 			&& ($displayed_lines_count < $count->count);
-		$more_thousand  = ($displayed_lines_count < $this->maximum_displayed_lines_count)
+		$more_thousand = ($displayed_lines_count < $this->maximum_displayed_lines_count)
 			&& ($displayed_lines_count < $count->count);
 		$search_summary = $this->getSearchSummary($class_name, $list_settings_before_read, $search);
 		$parameters     = array_merge(
@@ -722,11 +666,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	}
 
 	//------------------------------------------------------------------------------- objectsToString
-	/**
-	 * In Dao::select() result : replace objects with their matching __toString() result value
-	 *
-	 * @param $data List_Data
-	 */
+	/** In Dao::select() result : replace objects with their matching __toString() result value */
 	private function objectsToString(List_Data $data) : void
 	{
 		$class_properties = [];
@@ -754,8 +694,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *
 	 * - all properties are dealt as if they are string
 	 * - all string properties do not have pre-selected values
-	 *
-	 * @param $property Reflection_Property
 	 */
 	protected function prepareSearchPropertyComponent(Reflection_Property $property) : void
 	{
@@ -976,7 +914,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name      string
 	 * @param $properties_path string[] properties path that can include invisible properties
-	 * @param $search          array search where to add Has_History criteria
+	 * @param $search          array    search where to add Has_History criteria
 	 * @return array properties path without the invisible properties
 	 */
 	public function removeInvisibleProperties(
@@ -1029,11 +967,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	}
 
 	//----------------------------------------------------------------------------------- reportError
-	/**
-	 * Log the error in order software maintainer to be informed
-	 *
-	 * @param $exception Exception
-	 */
+	/** Log the error in order software maintainer to be informed */
 	protected function reportError(Exception $exception) : void
 	{
 		if (
@@ -1179,12 +1113,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	}
 
 	//-------------------------------------------------------------------------------- searchProperty
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $property Reflection_Property
-	 * @param $value    string
-	 * @return Reflection_Property|Reflection_Property_Value
-	 */
 	private function searchProperty(Reflection_Property $property, string $value)
 		: Reflection_Property|Reflection_Property_Value
 	{

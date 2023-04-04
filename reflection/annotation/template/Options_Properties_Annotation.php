@@ -11,8 +11,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Template;
  * - some options may exclude each other : regroup them into EXCLUDED_OTIONS group string[][]
  * - don't forget to set your ANNOTATION constant
  *
- * @example
- * Used by Class_\List_Annotation and Property\Integrated_Annotation
+ * @example Used by Property\Integrated_Annotation
  */
 class Options_Properties_Annotation extends List_Annotation
 {
@@ -27,11 +26,7 @@ class Options_Properties_Annotation extends List_Annotation
 	const RESERVED_WORDS = [];
 
 	//----------------------------------------------------------------------------------- $properties
-	/**
-	 * The list of property paths
-	 *
-	 * @var string[]
-	 */
+	/** @var string[] The list of property paths */
 	public array $properties = [];
 
 	//----------------------------------------------------------------------------------- __construct
@@ -39,55 +34,48 @@ class Options_Properties_Annotation extends List_Annotation
 	 * Default value is 'full' when no value is given
 	 *
 	 * Can be empty (eq full) contain 'full', 'simple', 'block' (implicitly 'simple')
-	 *
-	 * @param $value ?string
-	 * @see List_Annotation::__construct()
 	 */
 	public function __construct(?string $value)
 	{
-		if (isset($value)) {
-			if ($value) {
-				$excluded = [];
-				$values   = [];
-				foreach (explode(SP, $value) AS $element) {
-					if (
-						str_contains($element, ',')
-						|| in_array($element, $excluded)
-						|| in_array($element, $values)
-						|| !in_array($element, static::RESERVED_WORDS)
-					) {
-						foreach (explode(',', $element) as $sub_element) {
-							if (trim($sub_element)) {
-								$this->properties[] = trim($sub_element);
-							}
-						}
-					}
-					else {
-						$element  = trim($element);
-						$values[] = $element;
-						foreach (static::EXCLUDED_OPTIONS as $excluded_options) {
-							if (in_array($element, $excluded_options)) {
-								$excluded += $excluded_options;
-							}
-						}
+		if (!isset($value)) {
+			parent::__construct($value);
+			return;
+		}
+		if (!$value) {
+			parent::__construct(join(',', static::DEFAULT_OPTIONS));
+			return;
+		}
+		$excluded = [];
+		$values   = [];
+		foreach (explode(SP, $value) AS $element) {
+			if (
+				str_contains($element, ',')
+				|| in_array($element, $excluded)
+				|| in_array($element, $values)
+				|| !in_array($element, static::RESERVED_WORDS)
+			) {
+				foreach (explode(',', $element) as $sub_element) {
+					if (trim($sub_element)) {
+						$this->properties[] = trim($sub_element);
 					}
 				}
-				$value = join(',', $values);
 			}
 			else {
-				$value = join(',', static::DEFAULT_OPTIONS);
+				$element  = trim($element);
+				$values[] = $element;
+				foreach (static::EXCLUDED_OPTIONS as $excluded_options) {
+					if (in_array($element, $excluded_options)) {
+						$excluded += $excluded_options;
+					}
+				}
 			}
 		}
-
+		$value = join(',', $values);
 		parent::__construct($value);
 	}
 
 	//----------------------------------------------------------------------------------- addProperty
-	/**
-	 * Adds a property path
-	 *
-	 * @param $property string
-	 */
+	/** Adds a property path */
 	public function addProperty(string $property) : void
 	{
 		if (!$this->hasProperty($property)) {
@@ -96,24 +84,14 @@ class Options_Properties_Annotation extends List_Annotation
 	}
 
 	//----------------------------------------------------------------------------------- hasProperty
-	/**
-	 * Returns true if the property paths list contains this property path
-	 *
-	 * @param $property string
-	 * @return boolean
-	 */
+	/** Returns true if the property paths list contains this property path */
 	public function hasProperty(string $property) : bool
 	{
 		return in_array($property, $this->properties);
 	}
 
 	//-------------------------------------------------------------------------------- removeProperty
-	/**
-	 * Remove a property path and return true if it was here and removed, false if it was not found
-	 *
-	 * @param $property string
-	 * @return boolean
-	 */
+	/** Remove property path and return true if it was here and removed, false if it was not found */
 	public function removeProperty(string $property) : bool
 	{
 		$key = array_search($property, $this->properties);

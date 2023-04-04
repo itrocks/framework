@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Logger\Entry;
+use ITRocks\Framework\Reflection\Attribute\Class_\List_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
@@ -18,10 +19,10 @@ use ITRocks\Framework\View;
 
 /**
  * Triggered action
- *
- * @list last, status, action
  */
-#[Representative('action'), Store('trigger_actions')]
+#[List_('last', 'status', 'action')]
+#[Representative('action')]
+#[Store('trigger_actions')]
 class Action
 {
 

@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Locale;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\List_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
@@ -12,9 +13,8 @@ use ITRocks\Framework\Traits\Is_Immutable;
  * A country
  *
  * @feature
- * @list code, name
  */
-#[Override('code', new Mandatory), Representative('name'), Store]
+#[Override('code', new Mandatory), List_('code', 'name'), Representative('name'), Store]
 class Country
 {
 	use Has_Code_And_Name;

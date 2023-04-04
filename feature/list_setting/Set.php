@@ -3,8 +3,8 @@ namespace ITRocks\Framework\Feature\List_Setting;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Option\Sort;
-use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Displays;
+use ITRocks\Framework\Reflection\Attribute\Class_\List_;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting;
@@ -29,8 +29,6 @@ class Set extends Setting\Custom\Set
 	/**
 	 * Maximum displayed lines count is the number of displayed lines on lists
 	 * 0 means undefined (=> take default value back)
-	 *
-	 * @var integer
 	 */
 	public int $maximum_displayed_lines_count = 20;
 
@@ -51,32 +49,17 @@ class Set extends Setting\Custom\Set
 	public array $search = [];
 
 	//----------------------------------------------------------------------------------------- $sort
-	/**
-	 * Sort option (sort properties and reverse)
-	 *
-	 * @var Sort
-	 */
+	/** Sort option (sort properties and reverse) */
 	public Sort $sort;
 
 	//-------------------------------------------------------------------- $start_display_line_number
-	/**
-	 * @var integer
-	 */
 	public int $start_display_line_number = 1;
 
 	//---------------------------------------------------------------------------------------- $title
-	/**
-	 * The title that will be displayed on the top of the list
-	 *
-	 * @var string
-	 */
+	/** The title that will be displayed on the top of the list */
 	public string $title = '';
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $class_name string|null
-	 * @param $setting    Setting|null
-	 */
 	public function __construct(string $class_name = null, Setting $setting = null)
 	{
 		parent::__construct($class_name, $setting);
@@ -152,9 +135,6 @@ class Set extends Setting\Custom\Set
 	}
 
 	//------------------------------------------------------------------------------- getDefaultTitle
-	/**
-	 * @return string
-	 */
 	private function getDefaultTitle() : string
 	{
 		return ucfirst(Displays::of($this->getClass())->value);
@@ -173,9 +153,7 @@ class Set extends Setting\Custom\Set
 		}
 		$class_name = $this->getClassName();
 		/** @noinspection PhpUnhandledExceptionInspection valid $class_name */
-		foreach (
-			List_Annotation::of(new Reflection_Class($class_name))->properties as $property_name
-		) {
+		foreach (List_::of(new Reflection_Class($class_name))->values as $property_name) {
 			try {
 				$property = new Reflection_Property($class_name, $property_name);
 			}
@@ -194,12 +172,7 @@ class Set extends Setting\Custom\Set
 	}
 
 	//------------------------------------------------------------------------------- propertyGroupBy
-	/**
-	 * Sets the property group by setting
-	 *
-	 * @param $property_path string
-	 * @param $group_by      boolean
-	 */
+	/** Sets the property group by setting */
 	public function propertyGroupBy(string $property_path, bool $group_by = false) : void
 	{
 		$this->initProperties();
@@ -209,18 +182,13 @@ class Set extends Setting\Custom\Set
 	}
 
 	//----------------------------------------------------------------------------------- resetSearch
-	/**
-	 * Reset search criterion
-	 */
+	/** Reset search criterion */
 	public function resetSearch() : void
 	{
 		$this->search = [];
 	}
 
 	//--------------------------------------------------------------------------------------- reverse
-	/**
-	 * @param $property_path string
-	 */
 	public function reverse(string $property_path) : void
 	{
 		$this->sort($property_path);
@@ -233,8 +201,6 @@ class Set extends Setting\Custom\Set
 	/**
 	 * In all cases : saves the Setting\Custom\Set object for current user and session
 	 * If $save_name is set : saves the Setting\Custom\Set object into the Settings set
-	 *
-	 * @param $save_name string
 	 */
 	public function save(string $save_name = '') : void
 	{
@@ -266,9 +232,6 @@ class Set extends Setting\Custom\Set
 	}
 
 	//------------------------------------------------------------------------------------------ sort
-	/**
-	 * @param $property_path string
-	 */
 	public function sort(string $property_path) : void
 	{
 		$this->sort->addSortColumn($property_path);
@@ -278,10 +241,6 @@ class Set extends Setting\Custom\Set
 	}
 
 	//----------------------------------------------------------------------------------------- title
-	/**
-	 * @param $title string
-	 * @return string
-	 */
 	public function title(string $title = '') : string
 	{
 		if ($title) {

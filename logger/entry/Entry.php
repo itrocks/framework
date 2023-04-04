@@ -10,6 +10,7 @@ use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Logger\Entry\Data;
 use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Class_\List_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Sort;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
@@ -24,9 +25,11 @@ use ITRocks\Framework\User;
  * @feature
  * @feature fileExport
  * @feature_menu Administration
- * @list start, stop, duration, uri, data.arguments
  */
-#[Representative('start', 'uri'), Sort('-start', 'uri'), Class_\Store('logs')]
+#[List_('start', 'stop', 'duration', 'uri', 'data.arguments')]
+#[Representative('start', 'uri')]
+#[Sort('-start', 'uri')]
+#[Class_\Store('logs')]
 class Entry implements Validate\Except
 {
 	// TODO HIGH #71516 Fix Builder\Compiler as this should be replaced by dynamic call in config.php

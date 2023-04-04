@@ -9,6 +9,7 @@ use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\RAD\Feature\Module;
 use ITRocks\Framework\RAD\Feature\Status;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
+use ITRocks\Framework\Reflection\Attribute\Class_\List_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
@@ -22,9 +23,9 @@ use ITRocks\Framework\Tools\Namespaces;
  * Final user installable feature
  *
  * @after_read initModule
- * @list title, status
  */
 #[Display_Order('title', 'module', 'description', 'status', 'tags')]
+#[List_('title', 'status')]
 #[Representative('title')]
 #[Store('rad_features')]
 class Feature
@@ -65,10 +66,6 @@ class Feature
 	public string $title;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $title       string|null Feature title
-	 * @param $description string|null Feature complete description
-	 */
 	public function __construct(string $title = null, string $description = null)
 	{
 		if (isset($title))       $this->title       = $title;
@@ -126,12 +123,7 @@ class Feature
 	}
 
 	//----------------------------------------------------------------------------------- willInstall
-	/**
-	 * Returns the list of plugins that will be installed if you install this one
-	 *
-	 * @param $recurse boolean
-	 * @return Feature[]
-	 */
+	/** @return Feature[] The list of plugins that will be installed if you install this one */
 	public function willInstall(bool $recurse = true) : array
 	{
 		$installer                    = new Installer();
@@ -142,12 +134,7 @@ class Feature
 	}
 
 	//--------------------------------------------------------------------------------- willUninstall
-	/**
-	 * Returns the list of plugins that will be uninstalled if you uninstall this one
-	 *
-	 * @param $recurse boolean
-	 * @return Feature[]
-	 */
+	/** @return Feature[] The list of plugins that will be uninstalled if you uninstall this one */
 	public function willUninstall(bool $recurse = true) : array
 	{
 		$installer                    = new Installer();

@@ -12,11 +12,11 @@ use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Property;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display;
 use ITRocks\Framework\Reflection\Attribute\Class_\Displays;
+use ITRocks\Framework\Reflection\Attribute\Class_\List_;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -34,27 +34,16 @@ class Select_Controller implements Feature_Controller
 {
 
 	//---------------------------------------------------------------------- $composite_link_property
-	/**
-	 * @var ?Reflection\Reflection_Property
-	 */
 	protected ?Reflection\Reflection_Property $composite_link_property = null;
 
 	//--------------------------------------------------------------------------- $composite_property
-	/**
-	 * @var ?Reflection\Reflection_Property
-	 */
 	protected ?Reflection\Reflection_Property $composite_property = null;
 
 	//------------------------------------------------------------------------------------------ $for
-	/**
-	 * @var ?string @values Feature::const
-	 */
+	#[Values(Feature::class)]
 	protected ?string $for = null;
 
 	//----------------------------------------------------------------------------------- $root_class
-	/**
-	 * @var ?Reflection_Class
-	 */
 	protected ?Reflection_Class $root_class = null;
 
 	//------------------------------------------------------------------------------ filterProperties
@@ -102,9 +91,6 @@ class Select_Controller implements Feature_Controller
 	 * Get list of properties to display for a class
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class                Reflection_Class
-	 * @param $composite_class_name string|null
-	 * @param $display_full_path    boolean
 	 * @return Reflection_Property[]|null[]
 	 */
 	public function getProperties(
@@ -144,10 +130,7 @@ class Select_Controller implements Feature_Controller
 	}
 
 	//-------------------------------------------------------------------------- getReverseProperties
-	/**
-	 * @param $class Reflection_Class
-	 * @return Reflection_Property[]
-	 */
+	/** @return Reflection_Property[] */
 	protected function getReverseProperties(Reflection_Class $class) : array
 	{
 		// class and its parents
@@ -213,7 +196,7 @@ class Select_Controller implements Feature_Controller
 	 * - second shift : if set, the selected property path into the root reference class name
 	 * - class_name : replace first if set : reference class name
 	 * - property_path : replace second if set : property path (used for Reverse\Join\Class(property))
-	 * @param $form  array not used
+	 * @param $form  array   not used
 	 * @param $files array[] not used
 	 * @return ?string
 	 * @throws ReflectionException
@@ -226,7 +209,7 @@ class Select_Controller implements Feature_Controller
 		$this->for = $parameters->getRawParameter('for') ?: $parameters->shiftUnnamed();
 		/** @noinspection PhpUnhandledExceptionInspection $class_name is always valid */
 		$this->root_class = new Reflection_Class($class_name);
-		if (List_Annotation::of($this->root_class)->has(List_Annotation::LOCK)) {
+		if (List_::of($this->root_class)->lock) {
 			return Loc::tr('You are not allowed to customize this list');
 		}
 		$property_path = $parameters->getRawParameter('property_path') ?: $parameters->shiftUnnamed();
@@ -275,9 +258,7 @@ class Select_Controller implements Feature_Controller
 	}
 
 	//-------------------------------------------------------------------------------- sortProperties
-	/**
-	 * @param $properties Reflection_Property[]
-	 */
+	/** @param $properties Reflection_Property[] */
 	protected function sortProperties(array &$properties) : void
 	{
 		uasort($properties, function(Reflection_Property $p1, Reflection_Property $p2) : int {

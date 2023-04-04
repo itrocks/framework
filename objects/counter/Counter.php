@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
+use ITRocks\Framework\Reflection\Attribute\Class_\List_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
@@ -24,9 +25,11 @@ use ReflectionException;
  *
  * @feature Expert incremental counters configuration
  * @feature_menu Administration
- * @list identifier, last_value, last_update, format
  */
-#[Display_Order('identifier, last_update, last_value, format'), Representative('identifier'), Store]
+#[Display_Order('identifier', 'last_update', 'last_value', 'format')]
+#[List_('identifier', 'last_value', 'last_update', 'format')]
+#[Representative('identifier')]
+#[Store]
 class Counter
 {
 
@@ -109,9 +112,7 @@ class Counter
 	}
 
 	//------------------------------------------------------------------------------- formatLastValue
-	/**
-	 * Returns the last counter value, formatted
-	 */
+	/** Returns the last counter value, formatted */
 	public function formatLastValue(object $object = null) : string
 	{
 		$format = $this->format;
