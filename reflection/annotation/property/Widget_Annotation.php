@@ -23,24 +23,23 @@ class Widget_Annotation extends Annotation implements Property_Context_Annotatio
 	const SORT = 'sort';
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value    ?string
-	 * @param $property Reflection_Property
-	 */
 	public function __construct(?string $value, Reflection_Property $property)
 	{
 		$this->constructOptions($value);
 		parent::__construct($value);
-		if (!$this->value) {
-			$type = $property->getType();
-			if ($type->isClass() && !$type->isAbstractClass()) {
-				$widget_annotation = Class_\Widget_Annotation::of($type->asReflectionClass());
-				if ($widget_annotation->value) {
-					$this->options = $widget_annotation->options;
-					$this->value   = $widget_annotation->value;
-				}
-			}
+		if ($this->value) {
+			return;
 		}
+		$type = $property->getType();
+		if (!$type->isClass() || $type->isAbstractClass()) {
+			return;
+		}
+		$widget_annotation = Class_\Widget_Annotation::of($type->asReflectionClass());
+		if (!$widget_annotation->value) {
+			return;
+		}
+		$this->options = $widget_annotation->options;
+		$this->value   = $widget_annotation->value;
 	}
 
 }

@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Locale\Language;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
@@ -14,9 +15,8 @@ use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 
 /**
  * Application data translation
- *
- * @representative class_name, property_name, language.code, translation
  */
+#[Representative('class_name', 'property_name', 'language.code', 'translation')]
 #[Store('data_translations')]
 class Data
 {

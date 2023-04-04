@@ -10,7 +10,7 @@ use ITRocks\Framework\Feature\List_\Selection;
 use ITRocks\Framework\Feature\List_Setting;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
-use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Attribute\Property\Unit;
@@ -28,9 +28,8 @@ use ReflectionException;
  *
  * @feature
  * @feature move
- * @representative setting.code
  */
-#[Store('dashboard_indicators')]
+#[Representative('setting.code'), Store('dashboard_indicators')]
 class Indicator
 {
 	use Component;
@@ -180,7 +179,7 @@ class Indicator
 
 		$options        = [Dao::groupBy(lParse($this->property_path, DOT, 1, false) ?: [])];
 		$property_paths = ($this->property_path === '@count')
-			? Representative_Annotation::of($setting->getClass())->values()
+			? Representative::of($setting->getClass())->values
 			: [$this->property_path];
 		$data = $selection->readDataSelect($property_paths, null, $options);
 

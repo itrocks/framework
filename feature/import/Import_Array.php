@@ -15,6 +15,7 @@ use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -530,7 +531,7 @@ class Import_Array
 			else {
 				/** @noinspection PhpUnhandledExceptionInspection must be valid */
 				$class = new Reflection_Class($class_name);
-				$representative_property_names = Class_\Representative_Annotation::of($class)->values();
+				$representative_property_names = Representative::of($class)->values;
 				$search = [];
 				$values = explode(' ', $value, count($representative_property_names));
 				foreach ($representative_property_names as $key => $property_name) {

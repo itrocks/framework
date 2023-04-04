@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\User\Account;
@@ -12,9 +13,8 @@ use ITRocks\Framework\User\Group\Has_Guest;
  * A user business object for all your uses in user authentication
  *
  * @feature
- * @representative login
  */
-#[Store]
+#[Representative('login'), Store]
 class User
 {
 	use Account;

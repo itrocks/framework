@@ -6,10 +6,12 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Feature_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_;
-use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
-use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
+use ITRocks\Framework\Reflection\Attribute\Class_\Sort;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
@@ -20,10 +22,8 @@ use ITRocks\Framework\Tools\Namespaces;
  *
  * @DISABLED-after_read emptyName # Disabled because slows-down configuration
  * @before_write beforeWrite
- * @representative name
- * @sort name
  */
-#[Class_\Store]
+#[Representative('name'), Sort('name'), Class_\Store]
 class Feature
 {
 
@@ -462,9 +462,7 @@ class Feature
 	}
 
 	//------------------------------------------------------------------------------------ isImplicit
-	/**
-	 * Returns true if the feature can be considered as implicit (use default feature file)
-	 */
+	/** Returns true if the feature can be considered as implicit (use default feature file) */
 	private function isImplicit() : bool
 	{
 		return isset(self::$implicit[$this->getFeatureName()]);

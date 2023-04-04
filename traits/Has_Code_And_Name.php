@@ -3,21 +3,18 @@ namespace ITRocks\Framework\Traits;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 
 /**
  * A business trait for class that need a code and a name
- *
- * @representative code, name
  */
+#[Representative('code', 'name')]
 trait Has_Code_And_Name
 {
 	use Has_Code;
 	use Has_Name { __toString as private hasNameToString; }
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return trim($this->code . SP . $this->name);
@@ -29,10 +26,6 @@ trait Has_Code_And_Name
 	 * - first get all codes matching the string as static::$code
 	 * - If none found, get the code matching the string as static::$name
 	 * - If none found, create a new code
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $value string
-	 * @return ?static
 	 */
 	public static function fromString(string $value) : ?static
 	{
@@ -74,9 +67,6 @@ trait Has_Code_And_Name
 	 *
 	 * - if at least one of them has a code and the codes are equal : it is the same
 	 * - else if they have no code and the names are equal : it is the same
-	 *
-	 * @param $object object
-	 * @return boolean
 	 */
 	public function sameAs(object $object) : bool
 	{

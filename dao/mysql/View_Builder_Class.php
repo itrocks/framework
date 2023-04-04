@@ -7,7 +7,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Sql\Builder\Select;
@@ -85,7 +85,7 @@ class View_Builder_Class
 			) {
 				continue;
 			}
-			$representative     = Representative_Annotation::of($sub_class)->values();
+			$representative     = Representative::of($sub_class)->values;
 			$source_class_name  = Builder::current()->sourceClassName($sub_class->name);
 			$sub_properties     = $sub_class->getProperties();
 			$sub_property_names = ['id', 'class' => Dao\Func::value($source_class_name)];

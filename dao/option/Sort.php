@@ -4,8 +4,7 @@ namespace ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Mapper\Comparator;
-use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Sort_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ReflectionException;
@@ -53,7 +52,7 @@ class Sort implements Option
 	 * );
 	 * @param $columns string|string[]|Reverse[] a single or several column names, or a class name
 	 * to apply each column name can be followed by ' reverse' into the string for reverse order sort
-	 * If null, the value of annotations 'sort' or 'representative' of the class will be taken.
+	 * If null, the value of #Sort or #Representative of the class will be taken.
 	 */
 	public function __construct(array|string $columns = null)
 	{
@@ -106,9 +105,7 @@ class Sort implements Option
 			$class_name       = Builder::className($class_name);
 			$this->class_name = $class_name;
 			/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
-			$class         = new Reflection_Class($class_name);
-			$this->columns = Sort_Annotation::of($class)->values()
-				?: Representative_Annotation::of($class)->values();
+			$this->columns = Representative::of(new Reflection_Class($class_name))->values;
 			$this->calculateReverse();
 		}
 	}

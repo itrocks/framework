@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Locale;
 use AllowDynamicProperties;
 use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
@@ -12,11 +13,11 @@ use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
  * A translation is the association of the origin programmed text and its translation using a given
  * language
  *
- * @representative language, text, context, translation
  * @todo Remove #AllowDynamicProperties where $id will be general to all #Store classes
  */
 #[AllowDynamicProperties]
 #[Display_Order('language', 'text', 'translation', 'context')]
+#[Representative('language', 'text', 'context', 'translation')]
 #[Store]
 class Translation
 {

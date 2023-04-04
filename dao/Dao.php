@@ -601,8 +601,8 @@ class Dao implements Configurable
 	 * done on the object identifier, without join. If object is not linked to data-link, the search
 	 * is done with the linked object as others search criterion.
 	 *
-	 * @param $what       array|T|null source object for filter, only set properties will be used
-	 *                    for search
+	 * @param $what       array|object<T>|null source object for filter, only set properties will be
+	 *                    used for search
 	 * @param $class_name class-string<T>|null must be set if is $what is a filter array instead of a
 	 *                    filter object
 	 * @param $options    Option|Option[] some options for advanced search
@@ -686,8 +686,7 @@ class Dao implements Configurable
 	 *   Dao::sort(['first_name', 'last_name', 'city.country.name'])
 	 * );
 	 * @param $columns string|string[]|null A single or several column names.
-	 *                 If null, the value of annotations 'sort' or 'representative' will be taken as
-	 *                 defaults.
+	 *                 If null, the value of #Sort or #Representative will be taken as defaults.
 	 * @return Option\Sort
 	 */
 	public static function sort(array|string $columns = null) : Option\Sort

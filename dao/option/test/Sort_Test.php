@@ -27,7 +27,7 @@ class Sort_Test extends Test
 			[['name', 'date'],     Simple_Object::class,         ['name', 'date'], '#4 - Get column with columns as construct and class as method parameter'],
 			[null,                 Simple_Object::class,         ['name', 'date'], '#5 - Get column with class as method parameter'],
 			['i_dont_exist',       Simple_Object::class,         [],               '#6 - Get column with non-existing column as class parameter'],
-			['name_value',         Representative_Object::class, ['name_value'],   '#7 - Get column with @representative column'],
+			['name_value',         Representative_Object::class, ['name_value'],   '#7 - Get column with #Representative column'],
 		];
 	}
 

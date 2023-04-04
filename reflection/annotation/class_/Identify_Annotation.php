@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 
 /**
@@ -10,7 +11,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
  *
  * @example a property called 'code' could be an identifying property for a unique coded object
  */
-class Identify_Annotation extends Representative_Annotation
+class Identify_Annotation extends Representative
 {
 
 	//------------------------------------------------------------------------------------ ANNOTATION
@@ -24,7 +25,7 @@ class Identify_Annotation extends Representative_Annotation
 	public function __construct(?string $value, Reflection_Class $class)
 	{
 		if (!$value) {
-			$value = join(',', Representative_Annotation::of($class)->values());
+			$value = join(',', Representative::of($class)->values);
 		}
 		parent::__construct($value, $class);
 	}

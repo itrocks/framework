@@ -8,7 +8,7 @@ use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Translation;
 use ITRocks\Framework\Locale\Translator;
-use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -20,29 +20,14 @@ class Search_Array_Builder
 {
 
 	//------------------------------------------------------------------------------------------ $and
-	/**
-	 * And separator
-	 *
-	 * @var string
-	 */
+	/** And separator */
 	public string $and = SP;
 
 	//------------------------------------------------------------------------------------------- $or
-	/**
-	 * Or separator
-	 *
-	 * @var string
-	 */
+	/** Or separator */
 	public string $or = ',';
 
 	//----------------------------------------------------------------------------------------- build
-	/**
-	 * @param $property_name string
-	 * @param $search_phrase string
-	 * @param $prepend       string
-	 * @param $append        string
-	 * @return array|string
-	 */
 	public function build(
 		string $property_name, string $search_phrase, string $prepend = '', string $append = ''
 	) : array|string
@@ -140,8 +125,6 @@ class Search_Array_Builder
 	//------------------------------------------------------------------- buildWithReverseTranslation
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class  Reflection_Class
-	 * @param $search string
 	 * @return array $text string[$property_name][]
 	 */
 	protected function buildWithReverseTranslation(Reflection_Class $class, string $search) : array
@@ -188,7 +171,7 @@ class Search_Array_Builder
 
 	//----------------------------------------------------------------- classRepresentativeProperties
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection @representative and @var not verified at this stage
+	 * @noinspection PhpDocMissingThrowsInspection #Representative and @var not verified at this stage
 	 * @param $class   Reflection_Class
 	 * @param $already string[] For recursion limits : already got classes
 	 * @return string[]
@@ -196,9 +179,9 @@ class Search_Array_Builder
 	private function classRepresentativeProperties(Reflection_Class $class, array $already = [])
 		: array
 	{
-		$property_names = Representative_Annotation::of($class)->values();
+		$property_names = Representative::of($class)->values;
 		foreach ($property_names as $key => $property_name) {
-			/** @noinspection PhpUnhandledExceptionInspection @representative properties should be good */
+			/** @noinspection PhpUnhandledExceptionInspection #Representative properties must be good */
 			$property = str_contains($property_name, DOT)
 				? new Reflection_Property($class->name, $property_name)
 				: $class->getProperty($property_name);

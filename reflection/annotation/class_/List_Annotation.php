@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
 use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Options_Properties_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 
 /**
@@ -25,7 +26,7 @@ class List_Annotation extends Options_Properties_Annotation implements Class_Con
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Constructor : the default value is @representative
+	 * Constructor : the default value is #Representative
 	 *
 	 * @param $value ?string
 	 * @param $class Reflection_Class The contextual Reflection_Class object
@@ -34,11 +35,10 @@ class List_Annotation extends Options_Properties_Annotation implements Class_Con
 	{
 		if ($value) {
 			parent::__construct($value);
+			return;
 		}
-		else {
-			$this->properties = Representative_Annotation::of($class)->getPropertyNames();
-			$this->value      = [];
-		}
+		$this->properties = Representative::of($class)->values;
+		$this->value      = [];
 	}
 
 }

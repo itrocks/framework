@@ -33,15 +33,14 @@ use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
-use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\Representative;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
@@ -1123,8 +1122,8 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				continue;
 			}
 			$class = $property_type->asReflectionClass();
-			$representative_property_names = Representative_Annotation::of($property)->values()
-				?: Class_\Representative_Annotation::of($class)->values();
+			$representative_property_names = Representative::of($property)->values
+				?: Attribute\Class_\Representative::of($class)->values;
 			if (!$representative_property_names && $class->isAbstract()) {
 				$representative_property_names[] = 'representative';
 			}

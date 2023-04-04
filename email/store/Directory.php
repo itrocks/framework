@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Email\Store;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
@@ -8,10 +9,8 @@ use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * Email store directory
- *
- * @representative full_path
  */
-#[Store('email_directories')]
+#[Representative('full_path'), Store('email_directories')]
 class Directory
 {
 	use Has_Name;

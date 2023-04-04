@@ -13,13 +13,13 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
+use ITRocks\Framework\Reflection\Attribute\Property\Representative;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -322,7 +322,7 @@ class Collection
 		$property_display_order = Display_Order::of($this->property);
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$class          = new Reflection_Class($this->class_name);
-		$representative = Representative_Annotation::of($this->property);
+		$representative = Representative::of($this->property);
 		/** @var $properties Reflection_Property[] */
 		$properties = $representative->getProperties();
 		if (!$properties) {

@@ -2,13 +2,13 @@
 namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Tools\Color\RGB;
 
 /**
  * Colors manager
- *
- * @representative value
  */
+#[Representative('value')]
 class Color implements Stringable
 {
 
@@ -21,17 +21,10 @@ class Color implements Stringable
 	const WHITE   = 'white';
 
 	//---------------------------------------------------------------------------------------- $value
-	/**
-	 * The color value
-	 *
-	 * @var string
-	 */
+	/** The color value */
 	public string $value = 'white';
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value string|null
-	 */
 	public function __construct(string $value = null)
 	{
 		if (isset($value)) {
@@ -40,20 +33,12 @@ class Color implements Stringable
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->value;
 	}
 
 	//------------------------------------------------------------------------------------ fromString
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $string string
-	 * @return ?static
-	 */
 	public static function fromString(string $string) : ?static
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class */
@@ -61,11 +46,7 @@ class Color implements Stringable
 	}
 
 	//--------------------------------------------------------------------------------- getBrightness
-	/**
-	 * Gets current color brightness
-	 *
-	 * @return float
-	 */
+	/** Gets current color brightness */
 	public function getBrightness() : float
 	{
 		$rgb = new RGB($this);
@@ -77,12 +58,7 @@ class Color implements Stringable
 	}
 
 	//---------------------------------------------------------------------------------- whiteOrBlack
-	/**
-	 * Return "white" if the complementary color is more white than black, "black" else.
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return static
-	 */
+	/** Return "white" if the complementary color is more white than black, "black" else. */
 	public function whiteOrBlack() : static
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class */

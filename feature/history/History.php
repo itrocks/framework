@@ -3,7 +3,9 @@ namespace ITRocks\Framework\Feature;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Set;
+use ITRocks\Framework\Reflection\Attribute\Class_\Sort;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
@@ -13,19 +15,18 @@ use ITRocks\Framework\User;
  *
  * You must @override object @var Class_Name into the final class
  * Or create another property with @replaces object
- *
- * @representative object, date, property_name, old_value, new_value
- * @sort           date, user
  */
-#[Set('History')]
-#[Store]
+#[
+	Representative('object', 'date', 'property_name', 'old_value', 'new_value'),
+	Set('History'),
+	Sort('date', 'user'),
+	Store
+]
 abstract class History
 {
 
 	//----------------------------------------------------------------------------------------- $date
-	/**
-	 * @default Date_Time::now
-	 */
+	/** @default Date_Time::now */
 	public Date_Time|string $date;
 
 	//------------------------------------------------------------------------------------ $new_value
@@ -35,8 +36,6 @@ abstract class History
 	/**
 	 * You must @override object @var Class_Name into the final class
 	 * Or create another property with @replaces object
-	 *
-	 * @var object
 	 */
 	public object $object;
 
@@ -47,9 +46,7 @@ abstract class History
 	public string $property_name;
 
 	//----------------------------------------------------------------------------------------- $user
-	/**
-	 * @default User::current
-	 */
+	/** @default User::current */
 	public User $user;
 
 	//----------------------------------------------------------------------------------- __construct

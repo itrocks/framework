@@ -5,6 +5,8 @@ use ITRocks\Framework\Component\Combo\Fast_Add;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Attribute\Class_\Override;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
+use ITRocks\Framework\Reflection\Attribute\Class_\Sort;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Traits\Has_Email;
@@ -12,11 +14,13 @@ use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * An email recipient (or sender, this object can be used for both)
- *
- * @representative name, email
- * @sort name, email
  */
-#[Override('name', new Mandatory(false)), Store]
+#[
+	Override('name', new Mandatory(false)),
+	Representative('name', 'email'),
+	Sort('name', 'email'),
+	Store
+]
 class Recipient implements Fast_Add
 {
 	use Has_Email;

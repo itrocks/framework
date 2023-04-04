@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection;
 
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Unique;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 
 /**
@@ -12,23 +13,15 @@ class Link_Class extends Reflection_Class
 {
 
 	//---------------------------------------------------------------------------------- ID_SEPARATOR
-	/**
-	 * The separator for identifiers
-	 */
+	/** The separator for identifiers */
 	const ID_SEPARATOR = ';';
 
 	//--------------------------------------------------------------------------- $link_property_name
-	/**
-	 * Set to force the property name which value is the linked object (to avoid conflicts)
-	 *
-	 * @var string
-	 */
+	/** Set to force the property name which value is the linked object (to avoid conflicts) */
 	public string $link_property_name = '';
 
 	//------------------------------------------------------------------------ getCompositeProperties
-	/**
-	 * @return Reflection_Property[]
-	 */
+	/** @return Reflection_Property[] */
 	public function getCompositeProperties() : array
 	{
 		return call_user_func([$this->name, 'getCompositeProperties']);
@@ -104,13 +97,7 @@ class Link_Class extends Reflection_Class
 	}
 
 	//------------------------------------------------------------------------------- getLinkProperty
-	/**
-	 * Returns the property of the class that make the link with the object of the parent class
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name string
-	 * @return ?Reflection_Property
-	 */
+	/** Returns the property of the class that make the link with the object of the parent class */
 	public function getLinkProperty(string $class_name = '') : ?Reflection_Property
 	{
 		if (!$class_name) {
@@ -127,10 +114,6 @@ class Link_Class extends Reflection_Class
 	}
 
 	//-------------------------------------------------------------------------------- getLinkedClass
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return Link_Class
-	 */
 	public function getLinkedClass() : Link_Class
 	{
 		/** @noinspection PhpUnhandledExceptionInspection linked class name is always valid */
@@ -138,20 +121,13 @@ class Link_Class extends Reflection_Class
 	}
 
 	//---------------------------------------------------------------------------- getLinkedClassName
-	/**
-	 * @return string
-	 */
 	public function getLinkedClassName() : string
 	{
 		return Link_Annotation::of($this)->value;
 	}
 
 	//--------------------------------------------------------------------------- getLinkedProperties
-	/**
-	 * Returns properties list of the linked class, without those of the child class
-	 *
-	 * @return Reflection_Property[]
-	 */
+	/** @return Reflection_Property[] Linked class property list, without those of the child class */
 	public function getLinkedProperties() : array
 	{
 		return $this->getLinkedClass()->getProperties([T_EXTENDS, T_USE]);
@@ -182,9 +158,6 @@ class Link_Class extends Reflection_Class
 	 *
 	 * This is the same as getLinkedClass(), with recursion.
 	 * Another difference : if the current class is not a link class, this will return $this.
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return Link_Class
 	 */
 	public function getRootLinkedClass() : Link_Class
 	{
@@ -205,8 +178,6 @@ class Link_Class extends Reflection_Class
 	 *
 	 * This is the same as getLinkedClassName(), with recursion
 	 * Another difference : if the current class is not a @link class, this will return $this->name.
-	 *
-	 * @return string
 	 */
 	public function getRootLinkedClassName() : string
 	{
@@ -215,36 +186,34 @@ class Link_Class extends Reflection_Class
 
 	//--------------------------------------------------------------------------- getUniqueProperties
 	/**
-	 * Gets the list of @unique properties. If no @unique annotation, gets link properties
+	 * Gets the list of #Unique properties. If no #Unique annotation, gets link properties
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Property[] key is the name of the property
 	 */
 	public function getUniqueProperties() : array
 	{
-		$unique = $this->getListAnnotation('unique')->values();
-		if ($unique) {
-			$unique_properties = [];
-			foreach ($unique as $property_name) {
-				/** @noinspection PhpUnhandledExceptionInspection should not have @unique bad_property */
-				$unique_properties[$property_name] = $this->getProperty($property_name);
-			}
+		$unique = Unique::of($this)?->values;
+		if (!$unique) {
+			return $this->getLinkProperties();
 		}
-		else {
-			$unique_properties = $this->getLinkProperties();
+		$unique_properties = [];
+		foreach ($unique as $property_name) {
+			/** @noinspection PhpUnhandledExceptionInspection should not have #Unique bad_property */
+			$unique_properties[$property_name] = $this->getProperty($property_name);
 		}
 		return $unique_properties;
 	}
 
 	//---------------------------------------------------------------------- getUniquePropertiesNames
 	/**
-	 * Gets the list of @unique property names. If no @unique annotation, gets link properties.
+	 * Gets the list of #Unique property names. If no #Unique annotation, gets link properties.
 	 *
 	 * @return string[] key and value are the name of each link property
 	 */
 	public function getUniquePropertiesNames() : array
 	{
-		return $this->getListAnnotation('unique')->values() ?: $this->getLinkPropertiesNames();
+		return Unique::of($this)?->values ?: $this->getLinkPropertiesNames();
 	}
 
 	//----------------------------------------------------------------------------- linkedClassNameOf
@@ -277,8 +246,6 @@ class Link_Class extends Reflection_Class
 	 * - If $strict is true, null will be returned if any of the composite properties has no value
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object object
-	 * @param $strict boolean
 	 * @return ?object The search object matching $object, with only identifiers set
 	 */
 	public static function searchObject(object $object, bool $strict = true) : ?object

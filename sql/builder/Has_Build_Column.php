@@ -2,8 +2,8 @@
 namespace ITRocks\Framework\Sql\Builder;
 
 use ITRocks\Framework\Dao\Func\Concat;
-use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Sql;
@@ -53,7 +53,7 @@ trait Has_Build_Column
 			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 			$class             = new Reflection_Class($class_name);
 			$concat_properties = [];
-			foreach (Representative_Annotation::of($class)->values() as $property_name) {
+			foreach (Representative::of($class)->values as $property_name) {
 				$concat_properties[] = $path . DOT . $property_name;
 			}
 			$concat = new Concat($concat_properties);

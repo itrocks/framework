@@ -1,24 +1,19 @@
 <?php
 namespace ITRocks\Framework\Dao\Option\Test;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
+
 /**
  * Class Representative_Object
- *
- * @representative name_value
  */
+#[Representative('name_value')]
 class Representative_Object
 {
 
 	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
 	public string $name;
 
 	//----------------------------------------------------------------------------------- $name_value
-	/**
-	 * @var string
-	 */
 	public string $name_value;
 
 }

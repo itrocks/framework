@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 
 /**
  * For all classes having a name as representative value
- *
- * @representative name
  */
+#[Representative('name')]
 trait Has_Name
 {
 

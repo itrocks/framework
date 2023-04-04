@@ -4,7 +4,7 @@ namespace ITRocks\Framework\View\Html\Builder;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper;
-use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\View;
@@ -63,8 +63,7 @@ class Map
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$class             = new Reflection_Class($this->class_name);
-		$representative    = Representative_Annotation::of($class);
-		$this->properties  = $representative->getProperties();
+		$this->properties  = Representative::of($class)->getProperties();
 		$this->is_abstract = $class->isAbstract();
 	}
 

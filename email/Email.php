@@ -12,6 +12,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
@@ -29,13 +30,13 @@ use ITRocks\Framework\Tools\Date_Time;
  * @feature output
  * @feature resend
  * @feature send
- * @representative date, from, to, subject
  */
 #[Class_\Store]
 #[Display_Order(
 	'account', 'date', 'send_date', 'receive_date', 'from', 'to', 'copy_to', 'blind_copy_to',
 	'reply_to', 'return_path', 'headers', 'send_message', 'uidl', 'subject', 'content', 'attachments'
 )]
+#[Representative('date', 'from', 'to', 'subject')]
 class Email
 {
 	use Has_Output_Properties;

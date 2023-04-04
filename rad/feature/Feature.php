@@ -9,6 +9,7 @@ use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\RAD\Feature\Module;
 use ITRocks\Framework\RAD\Feature\Status;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
+use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
@@ -22,9 +23,10 @@ use ITRocks\Framework\Tools\Namespaces;
  *
  * @after_read initModule
  * @list title, status
- * @representative title
  */
-#[Display_Order('title', 'module', 'description', 'status', 'tags'), Store('rad_features')]
+#[Display_Order('title', 'module', 'description', 'status', 'tags')]
+#[Representative('title')]
+#[Store('rad_features')]
 class Feature
 {
 
