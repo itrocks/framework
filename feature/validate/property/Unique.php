@@ -11,7 +11,7 @@ use ITRocks\Framework\Tools\Mutex;
 /**
  * The unique annotation validator
  */
-class Unique_Annotation extends Boolean_Annotation implements Property_Context_Annotation
+class Unique extends Boolean_Annotation implements Property_Context_Annotation
 {
 	use Annotation;
 
@@ -27,19 +27,12 @@ class Unique_Annotation extends Boolean_Annotation implements Property_Context_A
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
-	/**
-	 * @return string
-	 */
 	public function reportMessage() : string
 	{
 		return 'This value already exist';
 	}
 
 	//-------------------------------------------------------------------------------------- validate
-	/**
-	 * @param $object object
-	 * @return boolean
-	 */
 	public function validate(object $object) : bool
 	{
 		if (!$this->value) {
@@ -59,7 +52,7 @@ class Unique_Annotation extends Boolean_Annotation implements Property_Context_A
 		if (!$persistent_mutex) {
 			$persistent_mutex = [];
 		}
-		$mutex_key = strUri(get_class($object)) . '.@unique';
+		$mutex_key = strUri(get_class($object)) . '.#Unique';
 		if (!isset($persistent_mutex[$mutex_key])) {
 			$mutex = (new Mutex($mutex_key));
 			$mutex->lock();

@@ -2,8 +2,8 @@
 namespace ITRocks\Framework\Feature\Import\Settings;
 
 use ITRocks\Framework\Feature\Import\Import_Array;
-use ITRocks\Framework\Reflection\Annotation\Class_\Identify_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
+use ITRocks\Framework\Reflection\Attribute\Class_\Unique;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
@@ -39,7 +39,7 @@ abstract class Import_Settings_Builder
 			$class = $root_class;
 			foreach (explode(DOT, $property_path) as $pos => $property_name) {
 				if (
-					in_array($property_name, Identify_Annotation::of($class)->values())
+					in_array($property_name, Unique::of($class)->values)
 					|| in_array($property_name, Representative::of($class)->values)
 				) {
 					$auto_identify[$property_path][$pos] = true;

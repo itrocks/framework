@@ -4,7 +4,7 @@ namespace ITRocks\Framework\Feature\Validate\Property\Tests;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Mysql;
-use ITRocks\Framework\Feature\Validate\Property\Unique_Annotation;
+use ITRocks\Framework\Feature\Validate\Property\Unique;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -18,15 +18,9 @@ class Unique_Annotation_Test extends Test
 {
 
 	//------------------------------------------------------------------------------------- $dao_link
-	/**
-	 * @var Mysql\Link|MockObject|null
-	 */
 	private Mysql\Link|MockObject|null $dao_link;
 
 	//-------------------------------------------------------------------------------------- $old_dao
-	/**
-	 * @var Data_Link
-	 */
 	private Data_Link $old_dao;
 
 	//----------------------------------------------------------------------------------------- setUp
@@ -54,7 +48,7 @@ class Unique_Annotation_Test extends Test
 		$object->unique_property = null;
 		/** @noinspection PhpUnhandledExceptionInspection */
 		$property = new Reflection_Property($object, 'unique_property');
-		$this->assertTrue(Unique_Annotation::of($property)->validate($object));
+		$this->assertTrue(Unique::of($property)->validate($object));
 	}
 
 	//------------------------------------------------------------------------- testWithValidateFalse
@@ -65,7 +59,7 @@ class Unique_Annotation_Test extends Test
 		$object->unique_property = 'value';
 		/** @noinspection PhpUnhandledExceptionInspection */
 		$property = new Reflection_Property($object, 'unique_property');
-		$this->assertFalse(Unique_Annotation::of($property)->validate($object));
+		$this->assertFalse(Unique::of($property)->validate($object));
 	}
 
 	//-------------------------------------------------------------------------- testWithValidateTrue
@@ -76,7 +70,7 @@ class Unique_Annotation_Test extends Test
 		$object->unique_property = 'value';
 		/** @noinspection PhpUnhandledExceptionInspection */
 		$property = new Reflection_Property($object, 'unique_property');
-		$this->assertTrue(Unique_Annotation::of($property)->validate($object));
+		$this->assertTrue(Unique::of($property)->validate($object));
 	}
 
 }

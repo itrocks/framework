@@ -29,6 +29,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute;
+use ITRocks\Framework\Reflection\Attribute\Class_\Unique;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Attribute\Property\Decimals;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
@@ -353,7 +354,6 @@ class Validator implements Registerable
 			'characters' => Property\Characters_Annotation::class,
 			'regex'      => Property\Regex_Annotation::class,
 			'signed'     => Property\Signed_Annotation::class,
-			'unique'     => Property\Unique_Annotation::class,
 			'validate'   => Property\Validate_Annotation::class,
 			'var'        => Property\Var_Annotation::class,
 			'warning'    => Property\Warning_Annotation::class,
@@ -361,6 +361,7 @@ class Validator implements Registerable
 		$builder = Builder::current();
 		$builder->setReplacement(Decimals::class,  Property\Decimals::class);
 		$builder->setReplacement(Mandatory::class, Property\Mandatory::class);
+		$builder->setReplacement(Unique::class,    Class_\Unique::class);
 		$builder->setReplacement(Values::class,    Property\Values::class);
 	}
 
@@ -548,7 +549,10 @@ class Validator implements Registerable
 	/** @return string|true|null @values Result::const */
 	protected function validateObject(object $object, Reflection_Class $class) : bool|string|null
 	{
-		return $this->validateAnnotations($object, $class->getAnnotations());
+		return Result::andResult(
+			$this->validateAnnotations($object, $class->getAnnotations()),
+			$this->validateAttributes($object, $class->getAttributes())
+		);
 	}
 
 	//---------------------------------------------------------------------------- validateProperties
