@@ -2,6 +2,8 @@
 namespace ITRocks\Framework\Trigger\Schedule;
 
 use ITRocks\Framework\Feature\Validate\Property\Max_Length;
+use ITRocks\Framework\Feature\Validate\Property\Max_Value;
+use ITRocks\Framework\Feature\Validate\Property\Min_Value;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
@@ -19,10 +21,7 @@ class Hour_Range
 	use Component;
 
 	//------------------------------------------------------------------------------------ $frequency
-	/**
-	 * @max_value 36000
-	 * @min_value 1
-	 */
+	#[Max_Value(36000), Min_Value(1)]
 	public int $frequency = 0;
 
 	//------------------------------------------------------------------------------- $frequency_unit
@@ -30,12 +29,8 @@ class Hour_Range
 	public string $frequency_unit = '';
 
 	//----------------------------------------------------------------------------------------- $from
-	/**
-	 * @max_value 23:59:59
-	 * @min_value 0
-	 * @regexp [0-2][0-9]:[0-5][0-9]([0-5][0-9])?
-	 */
-	#[Max_Length(8)]
+	/** @regexp [0-2][0-9]:[0-5][0-9]([0-5][0-9])? */
+	#[Max_Length(8), Max_Value('23:59:59'), Min_Value('0')]
 	public string $from = '';
 
 	//------------------------------------------------------------------------------------- $schedule
@@ -43,12 +38,8 @@ class Hour_Range
 	public Schedule $schedule;
 
 	//---------------------------------------------------------------------------------------- $until
-	/**
-	 * @max_value 23:59:59
-	 * @min_value 0
-	 * @regexp [0-2][0-9]:[0-5][0-9]([0-5][0-9])?
-	 */
-	#[Max_Length(8)]
+	/** @regexp [0-2][0-9]:[0-5][0-9]([0-5][0-9])? */
+	#[Max_Length(8), Max_Value('23:59:59'), Min_Value(0)]
 	public string $until = '';
 
 	//------------------------------------------------------------------------------------- normalize

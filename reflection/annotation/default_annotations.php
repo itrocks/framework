@@ -403,18 +403,6 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@link_composite' => Boolean_Annotation::class,
 
 	/**
-	 * @max_value 40
-	 * Tells what is the maximal allowed value for the property
-	 */
-	Parser::T_PROPERTY . '@max_value' => Annotation::class,
-
-	/**
-	 * @min_value -5
-	 * Tells what is the minimal allowed value for the property
-	 */
-	Parser::T_PROPERTY . '@min_value' => Annotation::class,
-
-	/**
 	 * @override [false]
 	 * This tells that the property will not have autowidth on collection view
 	 */
@@ -444,12 +432,6 @@ Parser::$default_annotations = [
 	 * Enable or disable parent documents hierarchy for this property
 	 */
 	Parser::T_PROPERTY . '@parent_documents' => Boolean_Annotation::class,
-
-	/**
-	 * @precision 4
-	 * Tells how many decimals are stored/displayed on a float number, ie 0.5513 in ok in this case
-	 */
-	Parser::T_PROPERTY . '@precision' => Annotation::class,
 
 	/**
 	 * @print_getter printGetPropertyName

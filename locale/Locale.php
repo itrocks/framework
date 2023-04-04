@@ -12,6 +12,7 @@ use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Decimals;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
@@ -145,8 +146,7 @@ class Locale implements Configurable, Registerable, Updatable
 		}
 		elseif ($type->isFloat() && (isStrictNumeric($value) || !$called_user_getter)) {
 			$decimals = explode(
-				',',
-				str_replace([CR, LF, SP, TAB], '', strval($property->getAnnotation('decimals')->value))
+				',', str_replace([CR, LF, SP, TAB], '', strval(Decimals::of($property)?->value))
 			);
 			if (!isset($decimals[1])) {
 				$decimals[1] = $decimals[0];

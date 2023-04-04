@@ -4,9 +4,13 @@ namespace ITRocks\Framework\Dao\Mysql;
 use DateTime;
 use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Decimal;
 use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Integer;
+use ITRocks\Framework\Feature\Validate\Property\Max_Length;
+use ITRocks\Framework\Feature\Validate\Property\Max_Value;
+use ITRocks\Framework\Feature\Validate\Property\Min_Value;
 use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Decimals;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -131,17 +135,17 @@ trait Column_Builder_Property
 					. SP . Database::characterSetCollateSql();
 			}
 			if ($property_type->hasSize()) {
-				$max_length = $property->getAnnotation('max_length')->value;
-				$max_value  = $property->getAnnotation('max_value')->value;
-				$min_value  = $property->getAnnotation('min_value')->value;
-				$precision  = $property->getAnnotation('precision')->value;
+				$decimals   = Decimals::of($property)?->value;
+				$max_length = Max_Length::of($property)?->value;
+				$max_value  = Max_Value::of($property)?->value;
+				$min_value  = Min_Value::of($property)?->value;
 				$signed     = $property->getAnnotation('signed')->value;
 				if ($property_type->isInteger()) {
 					return (new Integer)->type($max_length, $min_value, $max_value, $signed);
 				}
 				elseif ($property_type->isFloat()) {
-					return $precision
-						? (new Decimal)->type($max_length, $min_value, $max_value, $signed, $precision)
+					return $decimals
+						? (new Decimal)->type($max_length, $min_value, $max_value, $signed, $decimals)
 						: 'double';
 				}
 				elseif ($property->getAnnotation('binary')->value) {
@@ -166,7 +170,7 @@ trait Column_Builder_Property
 				}
 			}
 			elseif ($store_annotation->isJson()) {
-				return static::sqlTextColumn($property->getAnnotation('max_length')->value ?: 65535);
+				return static::sqlTextColumn(Max_Length::of($property)?->value ?: 65535);
 			}
 			switch ($property_type->asString()) {
 				case Type::_ARRAY:
@@ -182,7 +186,7 @@ trait Column_Builder_Property
 				case DateTime::class: case Date_Time::class:
 					return 'datetime';
 				default:
-					return static::sqlTextColumn($property->getAnnotation('max_length')->value ?: 255);
+					return static::sqlTextColumn(Max_Length::of($property)?->value ?: 255);
 			}
 		}
 		else {

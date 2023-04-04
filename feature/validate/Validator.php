@@ -30,6 +30,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
+use ITRocks\Framework\Reflection\Attribute\Property\Decimals;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -350,9 +351,6 @@ class Validator implements Registerable
 		]);
 		$register->setAnnotations(Parser::T_PROPERTY, [
 			'characters' => Property\Characters_Annotation::class,
-			'max_value'  => Property\Max_Value_Annotation::class,
-			'min_value'  => Property\Min_Value_Annotation::class,
-			'precision'  => Property\Precision_Annotation::class,
 			'regex'      => Property\Regex_Annotation::class,
 			'signed'     => Property\Signed_Annotation::class,
 			'unique'     => Property\Unique_Annotation::class,
@@ -361,6 +359,7 @@ class Validator implements Registerable
 			'warning'    => Property\Warning_Annotation::class,
 		]);
 		$builder = Builder::current();
+		$builder->setReplacement(Decimals::class,  Property\Decimals::class);
 		$builder->setReplacement(Mandatory::class, Property\Mandatory::class);
 		$builder->setReplacement(Values::class,    Property\Values::class);
 	}

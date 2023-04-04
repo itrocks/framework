@@ -33,7 +33,6 @@ use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
-use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
@@ -916,15 +915,15 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		foreach ($properties_path as $property_path) {
 			/** @noinspection PhpUnhandledExceptionInspection must be valid */
 			$property_value  = new Reflection_Property_Value($class_name, $property_path);
-			$list_annotation = Annotation\Property\List_Annotation::of($property_value);
-			if ($list_annotation->has(Annotation\Property\List_Annotation::AVERAGE)) {
+			$list_annotation = Attribute\Property\List_::of($property_value);
+			if ($list_annotation?->has(Attribute\Property\List_::AVERAGE)) {
 				$parent_property_path = lLastParse($property_path, DOT);
 				if (!isset($select_by_path[$parent_property_path])) {
 					$select_by_path[$parent_property_path] = [];
 				}
 				$select_by_path[$parent_property_path][$property_path] = Func::average();
 			}
-			elseif ($list_annotation->has(Annotation\Property\List_Annotation::SUM)) {
+			elseif ($list_annotation?->has(Attribute\Property\List_::SUM)) {
 				$parent_property_path = lLastParse($property_path, DOT);
 				if (!isset($select_by_path[$parent_property_path])) {
 					$select_by_path[$parent_property_path] = [];

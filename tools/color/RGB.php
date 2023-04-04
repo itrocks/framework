@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Tools\Color;
 
+use ITRocks\Framework\Feature\Validate\Property\Max_Value;
+use ITRocks\Framework\Feature\Validate\Property\Min_Value;
 use ITRocks\Framework\Tools\Color;
 
 /**
@@ -10,35 +12,18 @@ class RGB
 {
 
 	//----------------------------------------------------------------------------------------- $blue
-	/**
-	 * @max_value 255
-	 * @min_value 0
-	 * @var integer
-	 */
+	#[Max_Value(255), Min_Value(0)]
 	public int $blue;
 
 	//---------------------------------------------------------------------------------------- $green
-	/**
-	 * @max_value 255
-	 * @min_value 0
-	 * @var integer
-	 */
+	#[Max_Value(255), Min_Value(0)]
 	public int $green;
 
 	//------------------------------------------------------------------------------------------ $red
-	/**
-	 * @max_value 255
-	 * @min_value 0
-	 * @var integer
-	 */
+	#[Max_Value(255), Min_Value(0)]
 	public int $red;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $red   Color|integer|string|null
-	 * @param $green string|null
-	 * @param $blue  string|null
-	 */
 	public function __construct(
 		Color|int|string $red = null, string $green = null, string $blue = null
 	) {
@@ -57,7 +42,7 @@ class RGB
 
 	//---------------------------------------------------------------------------------------- setHex
 	/**
-	 * Sets a RGB Color object using an hexadecimal string color color
+	 * Sets an RGB Color object using a hexadecimal string color
 	 *
 	 * @param $color string hexadecimal color ie '#ffffff', '2c5520', 'fff', '#ef0'
 	 * @return boolean false if conversion failed (then current object stays unchanged)
