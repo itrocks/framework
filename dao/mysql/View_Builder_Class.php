@@ -22,15 +22,10 @@ class View_Builder_Class
 	use Property_Filter;
 
 	//-------------------------------------------------------------------------- $exclude_class_names
-	/**
-	 * @var string[]
-	 */
+	/** @var string[] */
 	public array $exclude_class_names = [];
 
 	//--------------------------------------------------------------------------------------- $mysqli
-	/**
-	 * @var Contextual_Mysqli
-	 */
 	private Contextual_Mysqli $mysqli;
 
 	//----------------------------------------------------------------------------------------- build
@@ -40,8 +35,6 @@ class View_Builder_Class
 	 * A Php class becomes a View
 	 * Non-static properties of the class will become Column objects
 	 *
-	 * @param $class_name string
-	 * @param $mysqli     Contextual_Mysqli
 	 * @return View[]
 	 */
 	public function build(string $class_name, Contextual_Mysqli $mysqli) : array
@@ -57,10 +50,6 @@ class View_Builder_Class
 	 *
 	 * This takes care of excluded properties, so buildLinkView() should be called
 	 * before buildClassView().
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class Reflection_Class
-	 * @return View
 	 */
 	private function buildClassView(Reflection_Class $class) : View
 	{

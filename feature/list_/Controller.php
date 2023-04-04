@@ -38,8 +38,9 @@ use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
-use ITRocks\Framework\Reflection\Attribute;
+use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
+use ITRocks\Framework\Reflection\Attribute\Property\List_;
 use ITRocks\Framework\Reflection\Attribute\Property\Representative;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
@@ -501,9 +502,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		else {
 			$t = $i = '';
 		}
-		$class_display = Names::classToDisplay(
-			Attribute\Class_\Set::of($list_settings->getClass())->value
-		);
+		$class_display = Names::classToDisplay(Class_\Set::of($list_settings->getClass())->value);
 		$summary         = $t . $i. ucfirst($class_display) . $i . ' filtered by' . $t;
 		$summary_builder = new Summary_Builder($class_name, $search);
 		$summary        .= SP . $summary_builder;
@@ -914,15 +913,15 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		foreach ($properties_path as $property_path) {
 			/** @noinspection PhpUnhandledExceptionInspection must be valid */
 			$property_value  = new Reflection_Property_Value($class_name, $property_path);
-			$list_annotation = Attribute\Property\List_::of($property_value);
-			if ($list_annotation?->has(Attribute\Property\List_::AVERAGE)) {
+			$list_annotation = List_::of($property_value);
+			if ($list_annotation?->has(List_::AVERAGE)) {
 				$parent_property_path = lLastParse($property_path, DOT);
 				if (!isset($select_by_path[$parent_property_path])) {
 					$select_by_path[$parent_property_path] = [];
 				}
 				$select_by_path[$parent_property_path][$property_path] = Func::average();
 			}
-			elseif ($list_annotation?->has(Attribute\Property\List_::SUM)) {
+			elseif ($list_annotation?->has(List_::SUM)) {
 				$parent_property_path = lLastParse($property_path, DOT);
 				if (!isset($select_by_path[$parent_property_path])) {
 					$select_by_path[$parent_property_path] = [];
@@ -1123,7 +1122,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			}
 			$class = $property_type->asReflectionClass();
 			$representative_property_names = Representative::of($property)->values
-				?: Attribute\Class_\Representative::of($class)->values;
+				?: Class_\Representative::of($class)->values;
 			if (!$representative_property_names && $class->isAbstract()) {
 				$representative_property_names[] = 'representative';
 			}
