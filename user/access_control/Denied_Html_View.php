@@ -27,7 +27,7 @@ class Denied_Html_View extends Default_View
 		array $parameters, array $form, array $files, string $class_name, string $feature_name
 	) : ?string
 	{
-		$parameters['host'] = $_SERVER['HTTP_HOST'] ?? 'console';
+		$parameters['host'] = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'console';
 
 		$parameters['remote'] = isset($_SERVER['REMOTE_ADDR'])
 			? ($_SERVER['REMOTE_ADDR'] . ':' . $_SERVER['REMOTE_PORT'])
