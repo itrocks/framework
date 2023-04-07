@@ -2,8 +2,10 @@
 namespace ITRocks\Framework\Reflection;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Attribute\Method_Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
+use ReflectionException;
 use ReflectionMethod;
 
 /**
@@ -14,12 +16,35 @@ class Reflection_Method extends ReflectionMethod
 	implements Has_Doc_Comment, Interfaces\Reflection_Method
 {
 	use Annoted;
+	use Common;
+	use Method_Has_Attributes;
+
+	//--------------------------------------------------------------------------------------- $parent
+	/**
+	 * Only if the parent is declared into a parent class as well as into the child class.
+	 * If not, this will be null.
+	 */
+	private ?Reflection_Method $parent;
+
+	//------------------------------------------------------------------------------------ __toString
+	public function __toString() : string
+	{
+		return $this->getDeclaringClassName() . '::' . $this->name;
+	}
 
 	//------------------------------------------------------------------------ getAnnotationCachePath
 	/** @return string[] */
 	protected function getAnnotationCachePath() : array
 	{
 		return [$this->class, $this->name . '()'];
+	}
+
+	//----------------------------------------------------------------------------- getDeclaringClass
+	/** Gets the declaring class for the reflected method */
+	public function getDeclaringClass() : Reflection_Class
+	{
+		/** @noinspection PhpUnhandledExceptionInspection $this->class is always valid */
+		return new Reflection_Class($this->class);
 	}
 
 	//------------------------------------------------------------------------- getDeclaringClassName
@@ -104,6 +129,22 @@ class Reflection_Method extends ReflectionMethod
 	{
 		$parameter_names = array_keys($this->getParameters());
 		return $by_name ? array_combine($parameter_names, $parameter_names) : $parameter_names;
+	}
+
+	//------------------------------------------------------------------------------------- getParent
+	public function getParent() : ?static
+	{
+		if (isInitialized($this, 'parent')) {
+			return $this->parent;
+		}
+		$parent_class = $this->getDeclaringClass()->getParentClass();
+		try {
+			$this->parent = $parent_class?->getMethod($this->name);
+		}
+		catch (ReflectionException) {
+			$this->parent = null;
+		}
+		return $this->parent;
 	}
 
 	//---------------------------------------------------------------------------- getPrototypeString

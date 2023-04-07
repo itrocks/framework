@@ -13,9 +13,6 @@ interface Reflection_Method extends Reflection_Class_Component
 	/** Another constant for default Reflection_Class::getMethods() filter */
 	const ALL = 1799;
 
-	//----------------------------------------------------------------------------- getDeclaringClass
-	public function getDeclaringClass() : Reflection_Class|ReflectionClass;
-
 	//----------------------------------------------------------------------------- getParametersCall
 	/**
 	 * Return a calling string for parameters call
@@ -30,6 +27,9 @@ interface Reflection_Method extends Reflection_Class_Component
 	 * @return string[] key and value are both the parameter name
 	 */
 	public function getParametersNames(bool $by_name = true) : array;
+
+	//------------------------------------------------------------------------------------- getParent
+	public function getParent() : ?Reflection_Method;
 
 	//---------------------------------------------------------------------------- getPrototypeString
 	/**

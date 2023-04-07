@@ -3,6 +3,7 @@ namespace ITRocks\Framework\PHP;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
+use ITRocks\Framework\Reflection\Attribute\Method_Has_Attributes;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
@@ -13,6 +14,7 @@ use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 {
 	use Annoted;
+	use Common, Method_Has_Attributes { Common::getAttributesCommon insteadof Method_Has_Attributes; }
 
 	//----------------------------------------------------------------------------------- $attributes
 	/** @var Reflection_Attribute[] */
@@ -88,6 +90,12 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 		$this->name       = $name;
 		$this->token_key  = $token_key;
 		$this->visibility = $visibility;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	public function __toString() : string
+	{
+		return $this->getDeclaringClassName() . '::' . $this->name;
 	}
 
 	//----------------------------------------------------------------------------- getDeclaringClass
@@ -335,15 +343,16 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @param $class_name  string
 	 * @param $method_name string
-	 * @param $flags       integer[] @values T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags       integer[] @values T_DOC_EXTENDS, T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return Reflection_Method
 	 */
-	public static function of(string $class_name, string $method_name, array $flags = [])
-		: Reflection_Method
+	public static function of(
+		string $class_name, string $method_name, array $flags = [T_EXTENDS, T_USE]
+	) : Reflection_Method
 	{
 		$class   = Reflection_Class::of($class_name);
 		$methods = $class->getMethods($flags);
-		if (isset($methods[$method_name]) && in_array(T_EXTENDS, $flags)) {
+		if (isset($methods[$method_name]) && in_array(T_EXTENDS, $flags, true)) {
 			return $methods[$method_name];
 		}
 		do {

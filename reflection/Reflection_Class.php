@@ -3,8 +3,8 @@ namespace ITRocks\Framework\Reflection;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Parser;
-use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
+use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Stringable;
@@ -23,50 +23,37 @@ class Reflection_Class extends ReflectionClass
 	implements Has_Doc_Comment, Interfaces\Reflection_Class, Stringable
 {
 	use Annoted;
+	use Common;
 	use Reflection_Class_Common;
 
 	//--------------------------------------------------------------------------- $interfaces_methods
-	/**
-	 * @var Reflection_Method[]
-	 */
+	/** @var Reflection_Method[] */
 	private array $interfaces_methods;
 
 	//------------------------------------------------------------------------------- $parent_methods
-	/**
-	 * @var Reflection_Method[]
-	 */
+	/** @var Reflection_Method[] */
 	private array $parent_methods;
 
 	//------------------------------------------------------------------------------- $traits_methods
-	/**
-	 * @var Reflection_Method[]
-	 */
+	/** @var Reflection_Method[] */
 	private array $traits_methods;
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string The name of the class
-	 */
+	/** @return string The name of the class */
 	public function __toString() : string
 	{
 		return $this->name;
 	}
 
 	//------------------------------------------------------------------------------------ fromString
-	/**
-	 * @param $string string
-	 * @return ?static
-	 * @throws ReflectionException
-	 */
+	/** @throws ReflectionException */
 	public static function fromString(string $string) : ?static
 	{
 		return new Reflection_Class($string);
 	}
 
 	//------------------------------------------------------------------------ getAnnotationCachePath
-	/**
-	 * @return string[]
-	 */
+	/** @return string[] */
 	protected function getAnnotationCachePath() : array
 	{
 		return [$this->name, AT];
@@ -76,12 +63,13 @@ class Reflection_Class extends ReflectionClass
 	/**
 	 * Gets all properties which attribute has a given value
 	 *
-	 * @param $attribute Attribute
+	 * @noinspection PhpDocSignatureInspection $attribute
+	 * @param $attribute Common
 	 * @param $flags     string[] private, protected, static, or public=visible=empty
 	 * @return Reflection_Property[]
 	 */
 	public function getAttributeProperties(
-		Attribute $attribute, array $flags = [Access::PRIVATE, Access::PROTECTED, Access::STATIC]
+		object $attribute, array $flags = [Access::PRIVATE, Access::PROTECTED, Access::STATIC]
 	) : array
 	{
 		$attribute_name    = get_class($attribute);
@@ -113,7 +101,7 @@ class Reflection_Class extends ReflectionClass
 	 * TODO Problem with this implementation : if a interface/parent/trait constant is overridden in current class, this will remove it. No problem for [T_EXTENDS, T_USE] default use.
 	 *
 	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $flags @TODO proxify ?
-	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags integer[] @values T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return array Constant name in key, constant value in value
 	 */
 	public function getConstants(array|int|null $flags = [T_EXTENDS, T_IMPLEMENTS, T_USE]) : array
@@ -145,12 +133,7 @@ class Reflection_Class extends ReflectionClass
 	}
 
 	//-------------------------------------------------------------------------------- getConstructor
-	/**
-	 * Gets the constructor of the reflected class
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection $constructor has been tested for existing
-	 * @return ?Reflection_Method
-	 */
+	/** Gets the constructor of the reflected class */
 	public function getConstructor() : ?Reflection_Method
 	{
 		$constructor = parent::getConstructor();
@@ -188,8 +171,8 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $flags          integer[] T_EXTENDS. T_USE is implicit
-	 * @param $use_annotation boolean|string Set this false to disable interpretation of @default
-	 *                        Set this to 'constant' to accept @default if @return_constant is set
+	 * @param $use_annotation boolean|string Set this false to disable interpretation of #Default
+	 *                        Set this to 'constant' to accept #Default if @return_constant is set
 	 * @param $property_name  string for optimization purpose : only get defaults for this property
 	 * @return array
 	 */
@@ -229,7 +212,7 @@ class Reflection_Class extends ReflectionClass
 			}
 			foreach ($properties as $property) {
 				if (
-					($default_annotation = Default_Annotation::of($property))->value
+					($default_annotation = Default_::of($property))?->callable
 					&& (
 						($use_annotation !== 'constant')
 						|| $default_annotation->getReflectionMethod()->getAnnotation('return_constant')->value
@@ -304,8 +287,6 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * Only a method of current class can be retrieved, not one from parent classes or traits.
 	 *
-	 * @param $name string
-	 * @return ?Reflection_Method
 	 * @throws ReflectionException method does not exist
 	 */
 	#[ReturnTypeWillChange]
@@ -324,7 +305,7 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @noinspection PhpParameterNameChangedDuringInheritanceInspection $flags @TODO proxify ?
 	 * @noinspection PhpDocMissingThrowsInspection $method from parent::getMethods()
-	 * @param $flags integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags integer[]|null @values T_EXTENDS, T_IMPLEMENTS, T_USE, null
 	 * @return Reflection_Method[] key is the name of the method
 	 */
 	public function getMethods(array|int $flags = null) : array
@@ -401,12 +382,7 @@ class Reflection_Class extends ReflectionClass
 	}
 
 	//-------------------------------------------------------------------------------- getParentClass
-	/**
-	 * Gets parent class
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection $parent_class from parent::getParentClass()
-	 * @return ?Reflection_Class
-	 */
+	/** Gets parent class */
 	#[ReturnTypeWillChange]
 	public function getParentClass() : ?Reflection_Class
 	{
@@ -416,11 +392,7 @@ class Reflection_Class extends ReflectionClass
 	}
 
 	//---------------------------------------------------------------------------- getParentClassName
-	/**
-	 * Gets parent class name
-	 *
-	 * @return string
-	 */
+	/** Gets parent class name */
 	public function getParentClassName() : string
 	{
 		$parent_class = parent::getParentClass();
@@ -549,7 +521,7 @@ class Reflection_Class extends ReflectionClass
 	 * Returns true if the class has $name into its parents, interfaces or traits
 	 *
 	 * @param $name  string
-	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags integer[] @values T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return boolean
 	 */
 	public function isA(string $name, array $flags = []) : bool
@@ -578,8 +550,6 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * Reflection_Class behaviour will be :
 	 * - Abstract classes, Interfaces and Traits are always abstract
-	 *
-	 * @return boolean
 	 */
 	public function isAbstract() : bool
 	{
@@ -587,20 +557,14 @@ class Reflection_Class extends ReflectionClass
 	}
 
 	//--------------------------------------------------------------------------------------- isClass
-	/**
-	 * Checks if this class is a class (not an interface or a trait)
-	 *
-	 * @return boolean
-	 */
+	/** Checks if this class is a class (not an interface or a trait) */
 	public function isClass() : bool
 	{
 		return !$this->isInterface() && !$this->isTrait();
 	}
 
 	//-------------------------------------------------------------------------------------------- of
-	/**
-	 * @throws ReflectionException
-	 */
+	/** @throws ReflectionException */
 	public static function of(string $class_name) : static
 	{
 		return new static($class_name);

@@ -6,7 +6,6 @@ use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\PHP\Dependency\Declaration;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Tools\Paths;
 
 /**

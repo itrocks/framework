@@ -14,7 +14,9 @@ use ITRocks\Framework\Reflection\Type;
 class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Reflection_Property
 {
 	use Annoted;
-	use Property_Has_Attributes { Property_Has_Attributes::getAttributesCommon as private; }
+	use Common, Property_Has_Attributes {
+		Common::getAttributesCommon insteadof Property_Has_Attributes;
+	}
 
 	//----------------------------------------------------------------------------------- $attributes
 	/** @var Reflection_Attribute[] */
@@ -84,44 +86,6 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	public function __toString() : string
 	{
 		return $this->getFinalClassName() . '::$' . $this->getName();
-	}
-
-	//--------------------------------------------------------------------------- getAttributesCommon
-	/**
-	 * Gets the attributes list associated to the element
-	 *
-	 * _INHERITABLE attributes : parent (and interface and class) attributes are scanned too.
-	 *
-	 * The returned array key is the name of the attribute.
-	 *
-	 * The value of each returned array element is :
-	 * - !Attribute::IS_REPEATABLE attributes : a single ReflectionAttribute.
-	 * - Attribute::IS_REPEATABLE attributes : an array of ReflectionAttribute.
-	 *
-	 * @param $name  string|null
-	 * @param $flags integer
-	 * @param $final Interfaces\Reflection|null
-	 * @param $class Interfaces\Reflection_Class|null
-	 * @return Reflection_Attribute[]|Reflection_Attribute[][]
-	 */
-	public function getAttributesCommon(
-		string $name = null, int $flags = 0, Interfaces\Reflection $final = null,
-		Interfaces\Reflection_Class $class = null
-	) : array
-	{
-		$attributes = [];
-		/** @noinspection PhpMultipleClassDeclarationsInspection All parents use Has_Attributes */
-		foreach ($this->attributes as $attribute) {
-			if ($name && ($attribute->getName() !== $name)) continue;
-			$attribute->setFinalDeclaring($final, $class);
-			if ($this->isAttributeRepeatable($attribute->getName())) {
-				$attributes[$attribute->getName()][] = $attribute;
-			}
-			else {
-				$attributes[$attribute->getName()] = $attribute;
-			}
-		}
-		return $attributes;
 	}
 
 	//----------------------------------------------------------------------------- getDeclaringClass

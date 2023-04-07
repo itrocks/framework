@@ -23,11 +23,19 @@ use ReflectionException;
 class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 {
 	use Annoted;
-	use Reflection_Class_Common { Reflection_Class_Common::getAttributesCommon as private; }
+	use Common, Reflection_Class_Common {
+		Common::getAttributesCommon as private parentGetAttributesCommon;
+		Reflection_Class_Common::getAttributesCommon as private;
+	}
 	use Tokens_Parser;
 
+	//------------------------------------------------------------------------------------ AFTER_FUNC
+	protected const AFTER_FUNC = [
+		T_AMPERSAND_NOT_FOLLOWED_BY_VAR_OR_VARARG, T_COMMENT, T_DOC_COMMENT, T_FUNCTION, T_WHITESPACE
+	];
+
 	//--------------------------------------------------------------------------------- T_DOC_EXTENDS
-	const T_DOC_EXTENDS = 'T_DOC_EXTENDS';
+	public const T_DOC_EXTENDS = 'T_DOC_EXTENDS';
 
 	//----------------------------------------------------------------------------------- $attributes
 	/** @var Reflection_Attribute[] */
@@ -225,10 +233,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * - !Attribute::IS_REPEATABLE attributes : a single ReflectionAttribute.
 	 * - Attribute::IS_REPEATABLE attributes : an array of ReflectionAttribute.
 	 *
-	 * @param $name  string|null
-	 * @param $flags integer
-	 * @param $final Interfaces\Reflection|null
-	 * @param $class Interfaces\Reflection_Class|null
 	 * @return Reflection_Attribute[]|Reflection_Attribute[][]
 	 */
 	public function getAttributesCommon(
@@ -239,19 +243,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (!isset($this->attributes)) {
 			$this->scanUntilClassName();
 		}
-		$attributes = [];
-		/** @noinspection PhpMultipleClassDeclarationsInspection All parents use Has_Attributes */
-		foreach ($this->attributes as $attribute) {
-			if ($name && ($attribute->getName() !== $name)) continue;
-			$attribute->setFinalDeclaring($final, $class);
-			if ($this->isAttributeRepeatable($attribute->getName())) {
-				$attributes[$attribute->getName()][] = $attribute;
-			}
-			else {
-				$attributes[$attribute->getName()] = $attribute;
-			}
-		}
-		return $attributes;
+		return $this->parentGetAttributesCommon($name, $flags, $final, $class);
 	}
 
 	//----------------------------------------------------------------------------------- getConstant
@@ -996,7 +988,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 						$this->token_key --;
 						$attribute->line = $token_line;
 					}
-					elseif ($bracket_depth === 1) {
+					elseif (($bracket_depth === 1) && ($square_depth === 1)) {
 						$attribute->addArgument($argument_text);
 						$argument_text = '';
 					}
@@ -1178,8 +1170,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 						$line      = $token[2];
 						$token_key = $this->token_key;
 						/** @noinspection PhpStatementHasEmptyBodyInspection ++ inside */
-						while ($this->tokens[++$this->token_key][0] !== T_STRING);
-						$token = $this->tokens[$this->token_key];
+						while (!is_array($token) || in_array($token[0], static::AFTER_FUNC, true)) {
+							$token = $this->tokens[++$this->token_key];
+						}
 						$this->methods[$token[1]] = new Reflection_Method(
 							$this, $token[1], $line, $token_key, $visibility_token ?: T_PUBLIC, $attributes
 						);
