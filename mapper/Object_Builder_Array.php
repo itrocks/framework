@@ -31,31 +31,18 @@ class Object_Builder_Array
 {
 
 	//------------------------------------------------------------------------------------- $builders
-	/**
-	 * @var Object_Builder_Array[] key is the property name
-	 */
+	/** @var Object_Builder_Array[] key is the property name */
 	private array $builders;
 
 	//-------------------------------------------------------------------------------- $built_objects
-	/**
-	 * The objects that where built : get it with getBuiltObjects()
-	 *
-	 * @var Built_Object[]
-	 */
+	/** @var Built_Object[] The objects that where built : get it with getBuiltObjects() */
 	private array $built_objects = [];
 
 	//---------------------------------------------------------------------------------------- $class
-	/**
-	 * @var Reflection_Class
-	 */
 	private Reflection_Class $class;
 
 	//------------------------------------------------------------------------------------ $composite
-	/**
-	 * Store composite object to attach the #Composite property of a Component built object
-	 *
-	 * @var object|null
-	 */
+	/** Store composite object to attach the #Composite property of a Component built object */
 	public ?object $composite = null;
 
 	//------------------------------------------------------------------------------------ $from_form
@@ -64,8 +51,6 @@ class Object_Builder_Array
 	 * - apply arrayFormRevert to split key positions
 	 * - apply widgets
 	 * Setting this to false disable these specific processes.
-	 *
-	 * @var boolean
 	 */
 	private bool $from_form;
 
@@ -75,31 +60,19 @@ class Object_Builder_Array
 	 * exist in object's class.
 	 * With true, you do not generate this error, but we ignore unknown properties
 	 * With null, we store unknown properties into the object
-	 *
-	 * @var boolean|null
 	 */
 	public ?bool $ignore_unknown_properties = false;
 
 	//-------------------------------------------------------------------- $null_if_empty_sub_objects
-	/**
-	 * @var boolean set sub-objects null if empty, even if main object accepts null if empty
-	 */
+	/** Set sub-objects null if empty, even if main object accepts null if empty */
 	public bool $null_if_empty_sub_objects = false;
 
 	//----------------------------------------------------------------------------------- $properties
-	/**
-	 * Properties list, set by start()
-	 *
-	 * @var Reflection_Property[]
-	 */
+	/** @var Reflection_Property[] Properties list, set by start() */
 	private array $properties;
 
 	//-------------------------------------------------------------------------------------- $started
-	/**
-	 * True when start() is called. Back to false by stop(). This avoids resetting data when recurse
-	 *
-	 * @var boolean
-	 */
+	/** True when start() is called. Stop() : back to false. Avoids resetting data when recurse */
 	private bool $started = false;
 
 	//----------------------------------------------------------------------------------- __construct
@@ -131,11 +104,10 @@ class Object_Builder_Array
 	//----------------------------------------------------------------------------------------- build
 	/**
 	 * @param $array                array
-	 * @param $object               T|null
+	 * @param $object               object<T>|null
 	 * @param $null_if_empty        boolean
 	 * @param $ignore_property_name string|null
-	 * @return ?T
-	 * @template T
+	 * @return ?object<T>
 	 * @throws User_Error_Exception
 	 */
 	public function build(
@@ -183,12 +155,7 @@ class Object_Builder_Array
 	}
 
 	//------------------------------------------------------------------------------- buildBasicValue
-	/**
-	 * @param $property Reflection_Property
-	 * @param $value    array|boolean|float|integer|null|string
-	 * @return array|boolean|float|integer|string|null
-	 * @throws User_Error_Exception
-	 */
+	/** @throws User_Error_Exception */
 	private function buildBasicValue(
 		Reflection_Property $property, array|bool|float|int|null|string $value
 	) : array|bool|float|int|string|null
@@ -205,7 +172,6 @@ class Object_Builder_Array
 				default       => $value
 			};
 		}
-		/** @noinspection PhpExpressionAlwaysNullInspection inspector bug */
 		return $value;
 	}
 
@@ -271,8 +237,8 @@ class Object_Builder_Array
 	//--------------------------------------------------------------------------- buildDottedProperty
 	/**
 	 * @param $build         Object_Builder_Array_Tool
-	 * @param $property_name string The name of the property
-	 * @param $value         mixed The value of the property
+	 * @param $property_name string  The name of the property
+	 * @param $value         mixed   The value of the property
 	 * @param $pos           integer The position of the DOT into the $property_name
 	 */
 	private function buildDottedProperty(
@@ -410,9 +376,9 @@ class Object_Builder_Array
 
 	//------------------------------------------------------------------------------ buildObjectValue
 	/**
-	 * @param $class_name    string the class name of the object to build
-	 * @param $object        ?object the value of the object before build (it may be null if no object)
-	 * @param $array         array  the values of the properties to be replaced into the object
+	 * @param $class_name    string  The class name of the object to build
+	 * @param $object        ?object The value of the object before build, may be null if no object
+	 * @param $array         array   The values of the properties to be replaced into the object
 	 * @param $null_if_empty boolean
 	 * @param $composite     ?object The composite object (set it only if property is a #Component)
 	 * @return ?object
@@ -433,10 +399,6 @@ class Object_Builder_Array
 	}
 
 	//------------------------------------------------------------------------------- buildProperties
-	/**
-	 * @param $build Object_Builder_Array_Tool
-	 * @throws User_Error_Exception
-	 */
 	private function buildProperties(Object_Builder_Array_Tool $build) : void
 	{
 		foreach ($build->array as $property_name => $value) {
@@ -452,9 +414,6 @@ class Object_Builder_Array
 	//--------------------------------------------------------------------------------- buildProperty
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $build    Object_Builder_Array_Tool
-	 * @param $property Reflection_Property
-	 * @param $value    mixed
 	 * @return boolean true if property value is null
 	 * @throws User_Error_Exception
 	 */
@@ -584,14 +543,7 @@ class Object_Builder_Array
 	}
 
 	//--------------------------------------------------------------------------- buildSimpleProperty
-	/**
-	 * Builds a simple-name property (no DOT)
-	 *
-	 * @param $build         Object_Builder_Array_Tool
-	 * @param $property_name string
-	 * @param $value         mixed
-	 * @throws User_Error_Exception
-	 */
+	/** Builds a simple-name property (no DOT) */
 	private function buildSimpleProperty(
 		Object_Builder_Array_Tool $build, string $property_name, mixed $value
 	) : void
@@ -641,11 +593,6 @@ class Object_Builder_Array
 	//-------------------------------------------------------------------------------- buildSubObject
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object        object
-	 * @param $property      Reflection_Property
-	 * @param $value         mixed
-	 * @param $null_if_empty boolean
-	 * @return boolean
 	 * @throws User_Error_Exception
 	 */
 	private function buildSubObject(
@@ -679,15 +626,7 @@ class Object_Builder_Array
 	}
 
 	//------------------------------------------------------------------------ buildSubObjectMultiple
-	/**
-	 * @param $builder       Object_Builder_Array
-	 * @param $null_if_empty boolean
-	 * @param $object        object
-	 * @param $property_name string
-	 * @param $value         mixed
-	 * @return boolean
-	 * @throws User_Error_Exception
-	 */
+	/** @throws User_Error_Exception */
 	private function buildSubObjectMultiple(
 		object $object, string $property_name, mixed $value, bool $null_if_empty,
 		Object_Builder_Array $builder
@@ -724,10 +663,7 @@ class Object_Builder_Array
 	}
 
 	//------------------------------------------------------------------------------- buildSubObjects
-	/**
-	 * @param $build Object_Builder_Array_Tool
-	 * @throws User_Error_Exception
-	 */
+	/** @throws User_Error_Exception */
 	private function buildSubObjects(Object_Builder_Array_Tool $build) : void
 	{
 		foreach ($build->objects as $property_name => $value) {
@@ -765,9 +701,6 @@ class Object_Builder_Array
 	//-------------------------------------------------------------------------------- initLinkObject
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $array  array
-	 * @param $object ?object
-	 * @return ?array
 	 * @throws User_Error_Exception
 	 */
 	private function initLinkObject(array &$array, ?object &$object) : ?array
@@ -841,8 +774,8 @@ class Object_Builder_Array
 	 *   $this->composite
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $array  array  the source array
-	 * @param $object ?object the object to complete (if set) or to build (if null)
+	 * @param $array  array   The source array
+	 * @param $object ?object The object to complete (if set) or to build (if null)
 	 *                This object is always set at the end of execution of initObject()
 	 * @return ?array if read from a link object, this is the search properties that identify it
 	 * @throws User_Error_Exception
@@ -909,10 +842,6 @@ class Object_Builder_Array
 	}
 
 	//-------------------------------------------------------------------------------------- setClass
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name string
-	 */
 	public function setClass(string $class_name) : void
 	{
 		if ($this->started) {
@@ -923,9 +852,6 @@ class Object_Builder_Array
 	}
 
 	//----------------------------------------------------------------------------------------- start
-	/**
-	 * @param $class_name string|null
-	 */
 	public function start(string $class_name = null) : void
 	{
 		if (isset($class_name)) {
