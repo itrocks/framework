@@ -49,7 +49,8 @@ trait Annotation
 	public function setFinal(Interfaces\Reflection|Reflection_Property $reflection) : void
 	{
 		$this->property = $reflection;
-		if (method_exists(get_parent_class(static::class), 'setFinal')) {
+		$parent_class   = get_parent_class(static::class);
+		if ($parent_class && method_exists($parent_class, 'setFinal')) {
 			/** @noinspection PhpMultipleClassDeclarationsInspection */
 			parent::setFinal($reflection);
 		}
