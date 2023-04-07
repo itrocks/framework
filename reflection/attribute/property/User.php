@@ -4,8 +4,8 @@ namespace ITRocks\Framework\Reflection\Attribute\Property;
 use Attribute;
 use ITRocks\Framework\Reflection\Attribute\Always;
 use ITRocks\Framework\Reflection\Attribute\Class_\Override;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
-use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
 
 /**
@@ -25,8 +25,6 @@ use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
  * - no_add : forbids user to add a new element
  * - no_delete : forbids user to delete any element
  *
- * @override values @var ?string[]
- * @property ?string[] value
  * @todo readonly should be implicitly set when @read_only is enabled
  * @todo readonly should be replaced by two-words read_only
  */
@@ -34,8 +32,9 @@ use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
 #[Override(
 	'values', new Values('hidden, hide_empty, if_empty, invisible, no_add, no_delete, readonly')
 )]
-class User extends Property
+class User
 {
+	use Common;
 	use Is_List {
 		__construct as private parentConstruct;
 		add         as private parentAdd;
@@ -100,7 +99,7 @@ class User extends Property
 	//---------------------------------------------------------------------------------- isModifiable
 	public function isModifiable() : bool
 	{
-		return !array_intersect($this->value, static::NOT_MODIFIABLE);
+		return !array_intersect($this->values, static::NOT_MODIFIABLE);
 	}
 
 	//---------------------------------------------------------------------------------------- remove

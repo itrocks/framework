@@ -4,20 +4,19 @@ namespace ITRocks\Framework\Reflection\Attribute\Property;
 use Attribute;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
-use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_PROPERTY), Inheritable]
-class User_Change extends Property implements Has_Set_Final
+class User_Change implements Has_Set_Final
 {
+	use Common;
 
 	//------------------------------------------------------------------------------- $change_feature
-	/**
-	 * @var string[]
-	 */
+	/** @var string[] */
 	public array $change_feature;
 
 	//------------------------------------------------------------------------------------- $realtime

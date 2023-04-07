@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
 use Attribute;
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Reflection;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Has_Attributes;
 use ITRocks\Framework\Reflection\Interfaces;
 
@@ -12,8 +12,9 @@ use ITRocks\Framework\Reflection\Interfaces;
  * Builder will use it to sort built classes.
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
-class Extend extends Reflection\Attribute
+class Extend
 {
+	use Common { of as private parentOf; }
 
 	//---------------------------------------------------------------------------------------- STRICT
 	/**
@@ -85,7 +86,7 @@ class Extend extends Reflection\Attribute
 	public static function of(Interfaces\Reflection|Has_Attributes $reflection, string $filter = '')
 		: array
 	{
-		$attributes = parent::of($reflection);
+		$attributes = static::parentOf($reflection);
 		if (!$attributes || !$filter) {
 			return $attributes;
 		}

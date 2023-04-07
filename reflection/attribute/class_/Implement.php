@@ -3,15 +3,16 @@ namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
 use Attribute;
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Common;
 
 /**
  * This must be used for traits that are designed to implement a given interface.
  * Builder will use it to sort built classes.
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
-class Implement extends Class_
+class Implement
 {
+	use Common;
 
 	//----------------------------------------------------------------------------------- $implements
 	/**

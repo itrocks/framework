@@ -5,8 +5,8 @@ use Attribute;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Always;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
-use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Default_Callable;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Get_Default_Arguments;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
@@ -22,15 +22,16 @@ use ReflectionException;
  * common method depending on the link type.
  */
 #[Always, Attribute(Attribute::TARGET_PROPERTY), Inheritable]
-class Getter extends Property implements Has_Get_Default_Arguments, Has_Set_Final
+class Getter implements Has_Get_Default_Arguments, Has_Set_Final
 {
+	use Common;
 	use Has_Default_Callable;
 
 	//------------------------------------------------------------------------------------------ LINK
 	protected const LINK = '¤link¤';
 
 	//--------------------------------------------------------------------------- getDefaultArguments
-	public static function getDefaultArguments() : array
+	public static function getDefaultArguments(Reflection $reflection) : array
 	{
 		return [static::LINK];
 	}

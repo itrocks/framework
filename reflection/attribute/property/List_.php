@@ -2,8 +2,8 @@
 namespace ITRocks\Framework\Reflection\Attribute\Property;
 
 use Attribute;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
-use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
 
 /**
@@ -11,8 +11,9 @@ use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
  * lists
  */
 #[Attribute(Attribute::TARGET_PROPERTY), Inheritable]
-class List_ extends Property
+class List_
 {
+	use Common;
 	use Is_List;
 
 	//--------------------------------------------------------------------------------------- AVERAGE

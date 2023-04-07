@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
 use Attribute;
 use ITRocks\Framework\Reflection\Attribute\Always;
-use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
@@ -17,8 +17,9 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
  * If true is passed, the user can not customize its list by adding / removing columns
  */
 #[Always, Attribute(Attribute::TARGET_CLASS), Inheritable]
-class List_ extends Class_ implements Has_Set_Final
+class List_ implements Has_Set_Final
 {
+	use Common;
 	use Is_List { __construct as parentConstruct; }
 
 	//------------------------------------------------------------------------------------------ LOCK

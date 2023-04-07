@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Reflection\Attribute\Class_;
 use Attribute;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute\Always;
-use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
@@ -20,8 +19,9 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
  * @example a property called 'name' could be a representative property for a unique named object
  */
 #[Always, Attribute(Attribute::TARGET_CLASS), Inheritable]
-class Representative extends Class_ implements Has_Set_Final
+class Representative implements Has_Set_Final
 {
+	use Common;
 	use Common\Representative;
 
 	//-------------------------------------------------------------------------------------- setFinal

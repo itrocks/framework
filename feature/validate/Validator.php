@@ -30,6 +30,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute;
 use ITRocks\Framework\Reflection\Attribute\Class_\Unique;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Attribute\Property\Decimals;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
@@ -400,13 +401,12 @@ class Validator implements Registerable
 
 	//---------------------------------------------------------------------------- validateAnnotation
 	/**
+	 * @noinspection PhpDocSignatureInspection $annotation
 	 * @param $object     object
-	 * @param $annotation Reflection\Annotation|Reflection\Attribute|Annotation
+	 * @param $annotation Reflection\Annotation|Annotation|Common
 	 * @return string|true|null @values Result::const
 	 */
-	protected function validateAnnotation(
-		object $object, Reflection\Annotation|Reflection\Attribute|Annotation $annotation
-	) : bool|string|null
+	protected function validateAnnotation(object $object, object $annotation) : bool|string|null
 	{
 		$annotation->object = $object;
 		$annotation->valid  = $annotation->validate($object);

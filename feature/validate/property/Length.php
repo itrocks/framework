@@ -3,8 +3,8 @@ namespace ITRocks\Framework\Feature\Validate\Property;
 
 use Attribute;
 use ITRocks\Framework\Feature\Validate\Result;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
-use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -12,9 +12,10 @@ use ITRocks\Framework\Reflection\Reflection_Property;
  * Tells what is the wished count of characters for the value of the property
  */
 #[Attribute(Attribute::TARGET_PROPERTY), Inheritable]
-class Length extends Property implements Has_Set_Final
+class Length implements Has_Set_Final
 {
 	use Annotation;
+	use Common;
 
 	//---------------------------------------------------------------------------------------- $value
 	public int $value;
@@ -49,7 +50,6 @@ class Length extends Property implements Has_Set_Final
 	 * Validates the property value within this object context
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object object
 	 * @return ?boolean true if validated, false if not validated, null if could not be validated
 	 */
 	public function validate(object $object) : ?bool

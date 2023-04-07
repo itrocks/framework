@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
 use Attribute;
 use ITRocks\Framework\Reflection\Attribute\Always;
-use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
 use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
 
@@ -15,8 +15,9 @@ use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
  * #[Display_Order('property_1', 'property_2', 'property_3')]
  */
 #[Always, Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS), Inheritable]
-class Display_Order extends Class_
+class Display_Order
 {
+	use Common;
 	use Is_List;
 
 }

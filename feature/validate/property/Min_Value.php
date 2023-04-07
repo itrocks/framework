@@ -4,8 +4,8 @@ namespace ITRocks\Framework\Feature\Validate\Property;
 use Attribute;
 use ITRocks\Framework\Feature\Validate\Result;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
-use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -13,9 +13,10 @@ use ITRocks\Framework\Reflection\Reflection_Property;
  * Tells what is the minimal allowed value for the property
  */
 #[Attribute(Attribute::TARGET_PROPERTY), Inheritable]
-class Min_Value extends Property implements Has_Set_Final
+class Min_Value implements Has_Set_Final
 {
 	use Annotation;
+	use Common;
 
 	//---------------------------------------------------------------------------------------- $value
 	public float|int|string $value;
@@ -53,7 +54,6 @@ class Min_Value extends Property implements Has_Set_Final
 	 * Validates the property value within this object context
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object object
 	 * @return ?boolean true if validated, false if not validated, null if it could not be validated
 	 */
 	public function validate(object $object) : ?bool

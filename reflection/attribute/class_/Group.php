@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
 use Attribute;
-use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
 use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
@@ -17,9 +17,10 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
  * the second with the name 'second group' and each of its property name as string values.
  */
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS), Inheritable]
-class Group extends Class_
+class Group
 {
-	use Is_List { __construct as private parentConstruct; }
+	use Common;
+	use Is_List { __construct as private listConstruct; }
 
 	//----------------------------------------------------------------------- Special group CONSTANTS
 	public const BOTTOM = '_bottom';
@@ -32,7 +33,7 @@ class Group extends Class_
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct(string $name, string ...$property_paths)
 	{
-		$this->parentConstruct(...$property_paths);
+		$this->listConstruct(...$property_paths);
 		$this->name = $name;
 	}
 

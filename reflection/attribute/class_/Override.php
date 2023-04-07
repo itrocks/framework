@@ -2,20 +2,20 @@
 namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
 use Attribute;
-use ITRocks\Framework\Reflection;
-use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
 
 #[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS), Inheritable]
-class Override extends Class_
+class Override
 {
+	use Common;
 
 	//------------------------------------------------------------------------------------ $overrides
 	/**
 	 * The key is the name of an attribute
-	 * The value is an argument list
+	 * The value is a method/property attribute
 	 *
-	 * @var Reflection\Attribute[]
+	 * @var Common[]
 	 */
 	public array $overrides;
 
@@ -23,7 +23,12 @@ class Override extends Class_
 	public string $property_name;
 
 	//----------------------------------------------------------------------------------- __construct
-	public function __construct(string $property_name, Reflection\Attribute... $overrides)
+	/**
+	 * @noinspection PhpDocSignatureInspection $overrides
+	 * @param $property_name string
+	 * @param ...$overrides  Common
+	 */
+	public function __construct(string $property_name, object... $overrides)
 	{
 		$this->overrides     = $overrides;
 		$this->property_name = $property_name;

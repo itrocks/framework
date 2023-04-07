@@ -3,16 +3,17 @@ namespace ITRocks\Framework\Reflection\Attribute\Property;
 
 use Attribute;
 use ITRocks\Framework\Reflection\Attribute\Always;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
-use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Declaring;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_String_Value;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 #[Always, Attribute(Attribute::TARGET_PROPERTY), Inheritable]
-class Alias extends Property implements Has_Set_Declaring
+class Alias implements Has_Set_Declaring
 {
+	use Common;
 	use Has_String_Value;
 
 	//---------------------------------------------------------------------------------- setDeclaring

@@ -2,8 +2,8 @@
 namespace ITRocks\Framework\Reflection\Attribute\Property;
 
 use Attribute;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
-use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Default_Callable;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
@@ -15,8 +15,9 @@ use ReflectionException;
  * The setter will be called each time the program writes the property.
  */
 #[Attribute(Attribute::TARGET_PROPERTY), Inheritable]
-class Setter extends Property implements Has_Set_Final
+class Setter implements Has_Set_Final
 {
+	use Common;
 	use Has_Default_Callable;
 
 	//-------------------------------------------------------------------------------------- setFinal

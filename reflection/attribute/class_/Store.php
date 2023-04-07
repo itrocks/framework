@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
 use Attribute;
 use ITRocks\Framework\Reflection\Attribute\Always;
-use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Get_Default_Arguments;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Declaring_Class;
@@ -16,9 +16,9 @@ use ITRocks\Framework\Reflection\Reflection_Class_Common;
 use ITRocks\Framework\Tools\Namespaces;
 
 #[Always, Attribute(Attribute::TARGET_CLASS), Inheritable]
-class Store extends Class_
-	implements Has_Get_Default_Arguments, Has_Set_Declaring_Class, Has_Set_Final
+class Store implements Has_Get_Default_Arguments, Has_Set_Declaring_Class, Has_Set_Final
 {
+	use Common;
 	use Has_String_Value;
 
 	//------------------------------------------------------------------------------------- CALCULATE
@@ -71,7 +71,7 @@ class Store extends Class_
 	}
 
 	//--------------------------------------------------------------------------- getDefaultArguments
-	public static function getDefaultArguments() : array
+	public static function getDefaultArguments(Reflection $reflection) : array
 	{
 		return [static::EXTENDS];
 	}

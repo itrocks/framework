@@ -3,8 +3,8 @@ namespace ITRocks\Framework\Reflection\Attribute\Property;
 
 use Attribute;
 use ITRocks\Framework\Reflection\Attribute\Always;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
-use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
@@ -22,8 +22,9 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
  * - no value on all others cases
  */
 #[Always, Attribute(Attribute::TARGET_PROPERTY), Inheritable]
-class Store extends Property implements Has_Set_Final
+class Store implements Has_Set_Final
 {
+	use Common;
 
 	//-------------------------------------------------------------------- Store value flag constants
 	public const FALSE  = 0;

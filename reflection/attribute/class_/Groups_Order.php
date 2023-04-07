@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Reflection\Attribute\Class_;
 
 use Attribute;
-use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
 use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
 
@@ -14,8 +14,9 @@ use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
  * groups that are not into #Groups_Order will be the least important, sorted alphabetically
  */
 #[Attribute(Attribute::TARGET_CLASS), Inheritable]
-class Groups_Order extends Class_
+class Groups_Order
 {
+	use Common;
 	use Is_List;
 
 }

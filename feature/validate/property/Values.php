@@ -2,19 +2,17 @@
 namespace ITRocks\Framework\Feature\Validate\Property;
 
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Reflection\Attribute;
+use ITRocks\Framework\Reflection\Attribute\Property;
 
 /**
  * Values attribute validator
  */
-class Values extends Attribute\Property\Values
+class Values extends Property\Values
 {
 	use Annotation;
 
 	//--------------------------------------------------------------------------------- $object_value
-	/**
-	 * @var string|string[]
-	 */
+	/** @var string|string[] */
 	protected array|string $object_value;
 
 	//------------------------------------------------------------------------------------ __toString
@@ -41,7 +39,6 @@ class Values extends Attribute\Property\Values
 	/**
 	 * Validates the property value within this object context
 	 *
-	 * @param $object object
 	 * @return boolean true if validated, false if not validated, null if it could not be validated
 	 */
 	public function validate(object $object) : bool

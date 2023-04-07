@@ -2,8 +2,8 @@
 namespace ITRocks\Framework\Reflection\Attribute\Property;
 
 use Attribute;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
-use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Attribute\Template\Is_List;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
@@ -17,8 +17,9 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
  * This is useful for data controls on string[], float[] or integer[] properties.
  */
 #[Attribute(Attribute::TARGET_PROPERTY), Inheritable]
-class Values extends Property implements Has_Set_Final
+class Values implements Has_Set_Final
 {
+	use Common;
 	use Is_List;
 
 	//----------------------------------------------------------------------- Special value constants
