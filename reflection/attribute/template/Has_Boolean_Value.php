@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection\Attribute\Template;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Implement;
+use ITRocks\Framework\Reflection\Interfaces\Reflection;
 
 #[Implement(Has_Get_Default_Arguments::class)]
 trait Has_Boolean_Value
@@ -23,7 +24,7 @@ trait Has_Boolean_Value
 	}
 
 	//--------------------------------------------------------------------------- getDefaultArguments
-	public static function getDefaultArguments() : array
+	public static function getDefaultArguments(Reflection $reflection) : array
 	{
 		return [false];
 	}

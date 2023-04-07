@@ -3,11 +3,10 @@ namespace ITRocks\Framework\Reflection\Attribute\Property;
 
 use Attribute;
 use ITRocks\Framework\Reflection\Attribute\Always;
+use ITRocks\Framework\Reflection\Attribute\Common;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
-use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Boolean_Value;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Get_Default_Arguments;
-use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
@@ -15,21 +14,19 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
  * The mandatory annotation validator
  */
 #[Always, Attribute(Attribute::TARGET_PROPERTY), Inheritable]
-class Mandatory extends Property implements Has_Get_Default_Arguments, Has_Set_Final
+class Mandatory implements Has_Get_Default_Arguments
 {
-	use Has_Boolean_Value;
+	use Common;
+	use Has_Boolean_Value { getDefaultArguments as private; }
 
-	//-------------------------------------------------------------------------------------- setFinal
-	public function setFinal(Reflection|Reflection_Property $reflection) : void
+	//--------------------------------------------------------------------------- getDefaultArguments
+	public static function getDefaultArguments(Reflection|Reflection_Property $reflection) : array
 	{
-		if (isset($this->value)) {
-			return;
-		}
-		$type        = $reflection->getType();
-		$this->value = !(
+		$type = $reflection->getType();
+		return [!(
 			$type->allowsNull() || $type->isBoolean() || $type->isDateTime() || $type->isMultiple()
 			|| $type->isString()
-		);
+		)];
 	}
 
 }

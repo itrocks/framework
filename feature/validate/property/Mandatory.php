@@ -5,26 +5,21 @@ use Error;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Feature\History\Has_History;
 use ITRocks\Framework\Feature\Validate\Result;
-use ITRocks\Framework\Reflection\Attribute;
 use ITRocks\Framework\Reflection\Attribute\Has_Attributes;
+use ITRocks\Framework\Reflection\Attribute\Property;
+use ITRocks\Framework\Reflection\Attribute\Template\Has_Set_Final;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * The mandatory annotation validator
  */
-class Mandatory extends Attribute\Property\Mandatory
+class Mandatory extends Property\Mandatory implements Has_Set_Final
 {
 	use Annotation;
 
 	//--------------------------------------------------------------------------------------- isEmpty
-	/**
-	 * Returns true if the object property value is empty
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object object
-	 * @return boolean
-	 */
+	/** Returns true if the object property value is empty */
 	public function isEmpty(object $object) : bool
 	{
 		if ($this->property instanceof Reflection_Property) {
@@ -42,10 +37,7 @@ class Mandatory extends Attribute\Property\Mandatory
 	}
 
 	//-------------------------------------------------------------------------------------------- of
-	/**
-	 * @param $reflection Reflection|Has_Attributes
-	 * @return static|static[]|null
-	 */
+	/** @return static|static[]|null */
 	public static function of(Reflection|Has_Attributes $reflection) : array|object|null
 	{
 		static $recurse = false;
@@ -59,9 +51,6 @@ class Mandatory extends Attribute\Property\Mandatory
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
-	/**
-	 * @return string
-	 */
 	public function reportMessage() : string
 	{
 		switch ($this->valid) {
@@ -75,17 +64,11 @@ class Mandatory extends Attribute\Property\Mandatory
 	//-------------------------------------------------------------------------------------- setFinal
 	public function setFinal(Reflection|Reflection_Property $reflection) : void
 	{
-		parent::setFinal($reflection);
 		$this->property = $reflection;
 	}
 
 	//-------------------------------------------------------------------------------------- validate
-	/**
-	 * Validates the property value within this object context
-	 *
-	 * @param $object object
-	 * @return boolean
-	 */
+	/** Validates the property value within this object context */
 	public function validate(object $object) : bool
 	{
 		return !$this->value || !$this->isEmpty($object);
