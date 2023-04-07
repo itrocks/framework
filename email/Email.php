@@ -14,6 +14,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
+use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
@@ -75,10 +76,7 @@ class Email
 	public array $copy_to = [];
 
 	//----------------------------------------------------------------------------------------- $date
-	/**
-	 * @default Date_Time::now
-	 * @see Date_Time::now
-	 */
+	#[Default_([Date_Time::class, 'now'])]
 	public Date_Time|string $date;
 
 	//----------------------------------------------------------------------------------------- $from
@@ -86,10 +84,7 @@ class Email
 	public ?Recipient $from;
 
 	//-------------------------------------------------------------------------------------- $headers
-	/**
-	 * @null
-	 * @var string|string[]
-	 */
+	/** @var string|string[] */
 	#[Getter, Store(Store::JSON), User(User::INVISIBLE)]
 	public array|string $headers = [];
 

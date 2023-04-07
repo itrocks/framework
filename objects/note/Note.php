@@ -3,7 +3,9 @@ namespace ITRocks\Framework\Objects;
 
 use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
+use ITRocks\Framework\Reflection\Attribute\Class_\Sort;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
@@ -13,18 +15,13 @@ use ITRocks\Framework\Tools\Date_Time;
  * @feature
  * @feature summaryEdit
  * @feature summaryOutput
- * @sort -date, title
  */
-#[Display_Order('text', 'title', 'date', 'object'), Store]
+#[Display_Order('text', 'title', 'date', 'object'), Sort('-date', 'title'), Store]
 class Note
 {
 
 	//----------------------------------------------------------------------------------------- $date
-	/**
-	 * @default Date_Time::nowMinute
-	 * @see Date_Time::nowMinute
-	 */
-	#[Mandatory]
+	#[Default_([Date_Time::class, 'nowMinute']), Mandatory]
 	public Date_Time|string $date;
 
 	//--------------------------------------------------------------------------------------- $object

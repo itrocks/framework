@@ -3,35 +3,30 @@ namespace ITRocks\Framework\Traits;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Class_\Default_;
 use ITRocks\Framework\Tools\Names;
 
 /**
  * For class that want a customizable default object
  *
- * You may want to add @default Class_Name::getDefault to any property that want to use the default
+ * You may want to add #Default Class_Name::getDefault to any property that want to use the default
  * May work with @user_default Class_Name::getDefault too
  *
- * TODO move @default from property to class annotation (default value for the @default property)
+ * TODO move #Default from property to class annotation (default value for the #Default property)
  * TODO move @user_default from property to class annotation
  *
  * @after_write onlyOneDefault
- * @default getDefault
  * @validate doNotRemoveDefault
  */
+#[Default_('getDefault')]
 trait Has_Default
 {
 
 	//-------------------------------------------------------------------------------------- $default
-	/**
-	 * @var boolean
-	 */
 	public bool $default = false;
 
 	//---------------------------------------------------------------------------- doNotRemoveDefault
-	/**
-	 * @noinspection PhpUnused @validate
-	 * @return boolean|string
-	 */
+	/** @noinspection PhpUnused @validate */
 	public function doNotRemoveDefault() : bool|string
 	{
 		if ($this->default || !Dao::getObjectIdentifier($this)) {
@@ -52,10 +47,7 @@ trait Has_Default
 	}
 	
 	//------------------------------------------------------------------------------------ getDefault
-	/**
-	 * @return ?static
-	 * @return_constant
-	 */
+	/** @return_constant */
 	public static function getDefault() : ?static
 	{
 		return Dao::searchOne(['default' => true], static::class);

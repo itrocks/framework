@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection\Attribute\Template;
 
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Interfaces\Reflection;
 
 /**
  * Constant or callable attribute
@@ -11,32 +12,43 @@ use ITRocks\Framework\Locale\Loc;
 trait Has_Constant_Or_Callable
 {
 	use Has_Callable {
-		__construct as private parentConstruct;
-		__toString as private parentToString;
-		call as private parentCall;
+		__construct as private callableConstruct;
+		__toString  as private callableToString;
+		call        as private callableCall;
+		setFinal    as private callableSetFinal;
 	}
 
 	//------------------------------------------------------------------------------------- $constant
 	public mixed $constant;
-	
+
+	//---------------------------------------------------------------------------------- $is_constant
+	public bool $is_constant;
+
 	//----------------------------------------------------------------------------------- __construct
-	public function __construct(mixed $value, bool $static = false)
+	/** @param $value callable|mixed Constant or callable */
+	public function __construct(mixed $value = self::AUTO)
 	{
-		if (is_array($value) && (($value[0] === self::STATIC) || is_callable($value))) {
-			$this->parentConstruct($value, $static);
+		if (
+			($value === self::AUTO)
+			|| (
+				is_array($value)
+				&& (count($value) === 2)
+				&& (is_object($value[0]) || is_string($value[0] ?? 0))
+				&& is_string($value[1] ?? 0)
+			)
+		) {
+			$this->is_constant = false;
+			$this->callableConstruct($value);
 			return;
 		}
-		$this->constant = $value;
-		$this->static   = $static;
-		$this->value    = [];
+		$this->constant    = $value;
+		$this->is_constant = true;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
 	public function __toString() : string
 	{
-		return $this->value
-			? $this->parentToString()
-			: strval($this->constant);
+		return $this->is_constant ? strval($this->constant) : $this->callableToString();
 	}
 
 	//------------------------------------------------------------------------------------------ call
@@ -47,9 +59,18 @@ trait Has_Constant_Or_Callable
 	 */
 	public function call(object|string|null $object, array $arguments = []) : mixed
 	{
-		return $this->value
-			? $this->parentCall($object, $arguments)
-			: ((is_string($this->constant) && $this->constant) ? Loc::tr($this->constant) : '');
+		return $this->is_constant
+			? ((is_string($this->constant) && $this->constant) ? Loc::tr($this->constant) : '')
+			: $this->callableCall($object, $arguments);
+	}
+
+	//-------------------------------------------------------------------------------------- setFinal
+	public function setFinal(Reflection $reflection) : void
+	{
+		if ($this->is_constant) {
+			return;
+		}
+		$this->callableSetFinal($reflection);
 	}
 
 }

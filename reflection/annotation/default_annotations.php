@@ -170,13 +170,6 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@data_access_control' => Method_Annotation::class,
 
 	/**
-	 * @default [[\Class\Namespace\]Class_Name::]methodName
-	 * Identifies a method that gets the default value for properties which type is this class
-	 * The Class will be sent as an argument to this callable
-	 */
-	Parser::T_CLASS . '@default' => Constant_Or_Method_Annotation::class,
-
-	/**
 	 * @default_class_feature add
 	 */
 	Parser::T_CLASS . '@default_class_feature' => Annotation::class,

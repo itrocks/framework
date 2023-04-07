@@ -5,6 +5,7 @@ use ITRocks\Framework\AOP\Weaver\Handler;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Tools\Names;
@@ -16,42 +17,18 @@ trait Scanners
 {
 
 	//------------------------------------------------------------------------------- scanForDefaults
-	/**
-	 * @param $properties array
-	 * @param $class      Reflection_Class
-	 */
 	private function scanForDefaults(array &$properties, Reflection_Class $class) : void
 	{
 		foreach ($class->getProperties([]) as $property) {
-			$expr = '%'
-				. '\n\s+\*\s+'                // each line beginning by '* '
-				. '@default'                  // default annotation
-				. '(?:\s+(?:([\\\\\w]+)::)?'  // 1 : class name
-				. '(\w+)?)?'                  // 2 : method or function name
-				. '%';
-			preg_match($expr, $property->getDocComment(), $match);
-			if ($match) {
-				$advice = [
-					empty($match[1]) ? '$this' : $match[1],
-					$match[2]
-				];
-				$properties[$property->name]['default'] = $advice;
+			$advice = Default_::of($property)?->callable;
+			if (!$advice) {
+				continue;
 			}
-		}
-		foreach ($this->scanForOverrides($class->getDocComment([]), ['default']) as $match) {
-			$advice = [
-				empty($match['class_name']) ? '$this' : $match['class_name'],
-				$match['method_name']
-			];
-			$properties[$match['property_name']]['default'] = $advice;
+			$properties[$property->name]['default'] = $advice;
 		}
 	}
 
 	//-------------------------------------------------------------------------------- scanForGetters
-	/**
-	 * @param $properties array
-	 * @param $class      Reflection_Class
-	 */
 	private function scanForGetters(array &$properties, Reflection_Class $class) : void
 	{
 		foreach ($class->getProperties([]) as $property) {
@@ -61,10 +38,6 @@ trait Scanners
 	}
 
 	//---------------------------------------------------------------------------------- scanForLinks
-	/**
-	 * @param $properties array
-	 * @param $class      Reflection_Class
-	 */
 	private function scanForLinks(array &$properties, Reflection_Class $class) : void
 	{
 		$disable = [];
@@ -148,10 +121,6 @@ trait Scanners
 	}
 
 	//------------------------------------------------------------------------------- scanForReplaces
-	/**
-	 * @param $properties array
-	 * @param $class      Reflection_Class
-	 */
 	private function scanForReplaces(array &$properties, Reflection_Class $class) : void
 	{
 		foreach ($class->getProperties([T_USE]) as $property) {
@@ -191,10 +160,6 @@ trait Scanners
 	}
 
 	//-------------------------------------------------------------------------------- scanForSetters
-	/**
-	 * @param $properties array
-	 * @param $class      Reflection_Class
-	 */
 	private function scanForSetters(array &$properties, Reflection_Class $class) : void
 	{
 		foreach ($class->getProperties([]) as $property) {

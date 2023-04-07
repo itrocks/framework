@@ -78,38 +78,38 @@ class Property_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------- testDefaultSimple
-	/** Test @default annotation into the simplest context : no AOP */
+	/** Test #Default attribute into the simplest context : no AOP */
 	public function testDefaultSimple() : void
 	{
 		$robert = new Default_Simple();
-		static::assertEquals(18, $robert->age, '@default.override');
-		static::assertEquals(43, $robert->null_age, '@default.override_null');
-		/** @noinspection PhpTypedPropertyMightBeUninitializedInspection @default */
-		static::assertEquals('Robert', $robert->name, '@default.simple');
-		static::assertEquals('Mitchum', $robert->surname, '@default.very_simple');
+		static::assertEquals(18, $robert->age,      '#Default.override');
+		static::assertEquals(43, $robert->null_age, '#Default.override_null');
+		/** @noinspection PhpTypedPropertyMightBeUninitializedInspection #Default */
+		static::assertEquals('Robert',  $robert->name,    '#Default.simple');
+		static::assertEquals('Mitchum', $robert->surname, '#Default.very_simple');
 		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
 			43,
 			(new Reflection_Property(Default_Simple::class, 'age'))->getDefaultValue(),
-			'@default.reflection.override'
+			'#Default.reflection.override'
 		);
 		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
 			43,
 			(new Reflection_Property(Default_Simple::class, 'null_age'))->getDefaultValue(),
-			'@default.reflection.override_null'
+			'#Default.reflection.override_null'
 		);
 		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
 			'Robert',
 			(new Reflection_Property(Default_Simple::class, 'name'))->getDefaultValue(),
-			'@default.reflection.simple'
+			'#Default.reflection.simple'
 		);
 		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
 			'Mitchum',
 			(new Reflection_Property(Default_Simple::class, 'surname'))->getDefaultValue(),
-			'@default.reflection.very_simple'
+			'#Default.reflection.very_simple'
 		);
 		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
@@ -121,7 +121,7 @@ class Property_Test extends Test
 				'surname'     => 'Mitchum'
 			],
 			(new Reflection_Class(Default_Simple::class))->getDefaultProperties([T_EXTENDS]),
-			'@default.reflection.all'
+			'#Default.reflection.all'
 		);
 	}
 

@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Period;
@@ -19,9 +20,7 @@ trait Has_Begin_End_Dates
 	public Date_Time|string $begin_date;
 
 	//------------------------------------------------------------------------------------- $end_date
-	/**
-	 * @default Date_Time::max
-	 */
+	#[Default_([Date_Time::class, 'max'])]
 	public Date_Time|string $end_date;
 
 	//-------------------------------------------------------------------------------------- activeAt

@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
+use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
@@ -48,10 +49,9 @@ class Test_Object
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * A fictive local property, for unit tests use only
-	 * Annotations set here are used only for the test that uses @default
-	 *
-	 * @default getDefaultPropertyValue
+	 * Annotations set here are used only for the test that uses #Default
 	 */
+	#[Default_('getDefaultPropertyValue')]
 	public string $property;
 
 	//-------------------------------------------------------------------------------- $setter_simple
@@ -68,7 +68,7 @@ class Test_Object
 
 	//----------------------------------------------------------------------- getDefaultPropertyValue
 	/**
-	 * Get the default property value, for test of @default annotation
+	 * Get the default property value, for test of #Default attribute
 	 *
 	 * @noinspection PhpUnused #Getter
 	 */

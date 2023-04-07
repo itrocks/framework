@@ -9,13 +9,13 @@ use ITRocks\Framework\Property\Path;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Class_\Override_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
-use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
+use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
@@ -30,7 +30,6 @@ use ITRocks\Framework\Tools\Date_Time_Error;
 use ITRocks\Framework\Tools\Field;
 use ITRocks\Framework\Tools\Names;
 use ReflectionException;
-use ReflectionMethod;
 use ReflectionProperty;
 use ReflectionType;
 use ReturnTypeWillChange;
@@ -42,6 +41,7 @@ class Reflection_Property extends ReflectionProperty
 	implements Field, Has_Doc_Comment, Interfaces\Reflection_Property
 {
 	use Annoted;
+	use Common;
 	use Property_Has_Attributes;
 
 	//---------------------------------------------------------------------------------------- $alias
@@ -70,7 +70,7 @@ class Reflection_Property extends ReflectionProperty
 	//--------------------------------------------------------------------------------------- $parent
 	/**
 	 * Only if the property is declared into a parent class as well as into the child class.
-	 * If not, this will be false.
+	 * If not, this will be null.
 	 */
 	private ?Reflection_Property $parent;
 
@@ -191,9 +191,7 @@ class Reflection_Property extends ReflectionProperty
 	}
 
 	//------------------------------------------------------------------------ getAnnotationCachePath
-	/**
-	 * @return string[]
-	 */
+	/** @return string[] */
 	protected function getAnnotationCachePath() : array
 	{
 		return [$this->final_class, $this->name];
@@ -258,8 +256,8 @@ class Reflection_Property extends ReflectionProperty
 	 * This is not optimized and could be slower than getting the class's default values one time
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $use_annotation boolean|string Set this to false disables interpretation of @default
-	 *                        Set this to 'constant' to accept @default if @return_constant is set
+	 * @param $use_annotation boolean|string Set this to false disables interpretation of #Default
+	 *                        Set this to 'constant' to accept #Default if @return_constant is set
 	 * @param $default_object object|null INTERNAL, DO NOT USE ! Empty object for optimization purpose
 	 * @return mixed
 	 */
@@ -270,7 +268,7 @@ class Reflection_Property extends ReflectionProperty
 		/** @var $default_annotation Method_Annotation */
 		if (
 			$use_annotation
-			&& ($default_annotation = Default_Annotation::of($this))->value
+			&& ($default_annotation = Default_::of($this))?->callable
 			&& (
 				($use_annotation !== 'constant')
 				|| $default_annotation->getReflectionMethod()->getAnnotation('return_constant')->value
@@ -284,18 +282,7 @@ class Reflection_Property extends ReflectionProperty
 					/** @noinspection PhpUnhandledExceptionInspection class valid and can be instantiated */
 					: $final_class->newInstance();
 			}
-			try {
-				$method     = new ReflectionMethod($default_annotation->value);
-				$parameters = $method->getParameters();
-				$parameter1 = $parameters[0] ?? null;
-				$parameter2 = $parameters[1] ?? null;
-			}
-			catch (ReflectionException) {
-				$parameter1 = $parameter2 = null;
-			}
-			return in_array('property', [$parameter1?->name, $parameter2?->name], true)
-				? $default_annotation->call($default_object, [$this])
-				: $default_annotation->call($default_object);
+			return $default_annotation->call($default_object);
 		}
 		return $this->getFinalClass()
 			->getDefaultProperties([T_EXTENDS], $use_annotation, $this->name)[$this->name] ?? null;
@@ -430,7 +417,7 @@ class Reflection_Property extends ReflectionProperty
 	/** Gets the parent property overridden by the current one from the parent class */
 	public function getParent() : ?Interfaces\Reflection_Property
 	{
-		if (isInitialized($this, 'overridden_property')) {
+		if (isInitialized($this, 'parent')) {
 			return $this->parent;
 		}
 		$parent_class = $this->getDeclaringClass()->getParentClass();

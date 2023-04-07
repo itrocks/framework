@@ -12,6 +12,7 @@ use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Class_\Default_;
 use ITRocks\Framework\Reflection\Attribute\Property\Decimals;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
@@ -75,10 +76,6 @@ class Locale implements Configurable, Registerable, Updatable
 	}
 
 	//--------------------------------------------------------------------------------------- current
-	/**
-	 * @param $set_current static|null
-	 * @return ?static
-	 */
 	public static function current(self $set_current = null) : ?static
 	{
 		/** @var $locale ?static */
@@ -106,11 +103,7 @@ class Locale implements Configurable, Registerable, Updatable
 			$value = $property->value();
 		}
 		$type = $property->getType();
-		if (
-			!$value
-			&& $type->isDateTime()
-			&& ($property->getAnnotation('default')->value === (Date_Time::class . '::max'))
-		) {
+		if (!$value && $type->isDateTime() && Default_::of($property)?->is([Date_Time::class, 'max'])) {
 			return Date_Time::max();
 		}
 		return (is_null($value) && Null_Annotation::of($property)->value)

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\User\Password\Reset;
 
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
@@ -11,9 +12,7 @@ class Token
 {
 
 	//----------------------------------------------------------------------------------------- $date
-	/**
-	 * @default Date_Time::now
-	 */
+	#[Default_([Date_Time::class, 'now'])]
 	public Date_Time|string $date;
 
 	//----------------------------------------------------------------------------------------- $done

@@ -52,7 +52,7 @@ trait Current
 	{
 		$called_class = static::class;
 
-		// set current (ignore Reflection_Property : to enable use of @default Class::current)
+		// set current (ignore Reflection_Property : to enable use of #Default Class::current)
 		if ($set_current && !is_a($set_current, Reflection_Property::class)) {
 			static::$current = $set_current;
 			if (!is_a($called_class, Plugin::class, true)) {

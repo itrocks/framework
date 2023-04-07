@@ -7,10 +7,10 @@ use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Integer;
 use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Feature\Validate\Property\Max_Value;
 use ITRocks\Framework\Feature\Validate\Property\Min_Value;
-use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Decimals;
+use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -34,10 +34,7 @@ trait Column_Builder_Property
 	{
 		$default       = $property->getDefaultValue('constant');
 		$property_type = $property->getType();
-		if (
-			$property_type->isDateTime()
-			&& (Default_Annotation::of($property)->value === (Date_Time::class . '::now'))
-		) {
+		if ($property_type->isDateTime() && Default_::of($property)?->is([Date_Time::class, 'now'])) {
 			$default = 'CURRENT_TIMESTAMP';
 		}
 		if (isset($default)) {
@@ -114,7 +111,6 @@ trait Column_Builder_Property
 	/**
 	 * Gets mysql expression for a property that can be null (or not)
 	 *
-	 * @param $property Reflection_Property
 	 * @return string @values NO, YES
 	 */
 	private static function propertyNullToMysql(Reflection_Property $property) : string
@@ -195,10 +191,7 @@ trait Column_Builder_Property
 	}
 
 	//-------------------------------------------------------------------------------- propertyValues
-	/**
-	 * @param $property Reflection_Property
-	 * @return string[]
-	 */
+	/** @return string[] */
 	private static function propertyValues(Reflection_Property $property) : array
 	{
 		$values = Values::of($property)?->values ?: [];

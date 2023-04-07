@@ -1,17 +1,16 @@
 <?php
 namespace ITRocks\Framework\User\Authenticate;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Traits\Has_Code;
 use ITRocks\Framework\Traits\Has_Creation_Date_Time;
 use ITRocks\Framework\Traits\Has_Validity_End_Date;
 use ITRocks\Framework\User;
 
-/**
- * @override validity_end_date @default defaultValidityEndDate
- */
-#[Store('user_tokens')]
+#[Override('validity_end_date', new Default_('defaultValidityEndDate')), Store('user_tokens')]
 class Token
 {
 	use Has_Code;
@@ -34,7 +33,7 @@ class Token
 	/**
 	 * The default lifetime of a token is 1 minute for single-use tokens, 1 month if multiple-use
 	 *
-	 * @noinspection PhpUnused @default
+	 * @noinspection PhpUnused #Default
 	 */
 	public function defaultValidityEndDate() : Date_Time
 	{

@@ -46,8 +46,9 @@ class Html_Builder_Property extends Html_Builder_Type
 	 * @param $value    mixed
 	 * @param $prefix   string|null prefix to property name
 	 */
-	public function __construct(Reflection_Property $property = null, $value = null, $prefix = null)
-	{
+	public function __construct(
+		Reflection_Property $property = null, mixed $value = null, string $prefix = null
+	) {
 		if (!$property) {
 			parent::__construct(null, null, $value, $prefix);
 			return;
@@ -72,7 +73,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			if (!isset($value)) {
 				$value = $property->value();
 			}
-			// if value is empty, then get @user_default ?: @default value (by SM)
+			// if value is empty, then get @user_default ?: #Default value (by SM)
 			if (is_null($value) || (is_object($value) && Empty_Object::isEmpty($value))) {
 				$object = $property->getObject(true);
 				if (!Dao::getObjectIdentifier($object)) {

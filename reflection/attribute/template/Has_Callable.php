@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\Reflection\Attribute\Template;
 
-use ITRocks\Framework\Dao\Event;
 use ITRocks\Framework\Reflection\Attribute\Class_\Implement;
+use ITRocks\Framework\Reflection\Attribute\Method\Generic;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
-use ReflectionException;
-use ReflectionMethod;
-use ReflectionProperty;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * @examples
@@ -20,41 +20,52 @@ use ReflectionProperty;
  * [$object, 'method']
  * [$object, '$property']
  */
-#[Implement(Has_Set_Declaring::class, Has_Set_Final::class)]
+#[Implement(Has_Set_Final::class)]
 trait Has_Callable
 {
 
-	//------------------------------------------------------------------------- call method CONSTANTS
+	//------------------------------------------------------------------------------------------ AUTO
+	/** The callable member can be AUTO until setFinal() calculates its value from property name */
+	protected const AUTO = '¤auto¤';
+
+	//-------------------------------------------------------------------------------- PROPERTY_FIRST
+	protected const PROPERTY_FIRST = true;
+
+	//---------------------------------------------------------------------------------------- STATIC
+	/** The callable class can be SELF|STATIC until setFinal() calculates its value from class name */
 	public const SELF   = 'self';
 	public const STATIC = 'static';
 
-	//--------------------------------------------------------------------------------------- $static
-	public bool $static;
-
-	//---------------------------------------------------------------------------------------- $value
+	//------------------------------------------------------------------------------------- $callable
 	/**
 	 * The callable can point on a property name.
 	 * The class name can be self::SELF or self::STATIC, which will resolve on call.
+	 * Accepts methodName and $property_name
 	 *
 	 * @noinspection PhpDocFieldTypeMismatchInspection
 	 * @var array|callable
 	 */
-	public array $value;
+	public array $callable;
+
+	//--------------------------------------------------------------------------------- $generic_name
+	public string $generic_name = '';
+
+	//--------------------------------------------------------------------------------------- $static
+	public bool $static = false;
 
 	//----------------------------------------------------------------------------------- __construct
-	public function __construct(array|callable|string $value, bool $static = false)
+	public function __construct(array|callable|string $callable = self::AUTO)
 	{
-		$this->static = $static;
-		$this->value  = is_string($value)
-			? (str_contains($value, '::') ? explode('::', $value) : [self::STATIC, $value])
-			: $value;
+		$this->callable  = is_string($callable)
+			? (str_contains($callable, '::') ? explode('::', $callable) : [self::STATIC, $callable])
+			: $callable;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
 	public function __toString() : string
 	{
-		$context = is_object($this->value[0]) ? get_class($this->value[0]) : $this->value[0];
-		return $context . '::' . $this->value[1];
+		return (is_object($this->callable[0]) ? get_class($this->callable[0]) : $this->callable[0])
+			. '::' . $this->callable[1];
 	}
 
 	//------------------------------------------------------------------------------------------ call
@@ -69,63 +80,53 @@ trait Has_Callable
 	 */
 	public function call(object|string|null $object, array $arguments = []) : mixed
 	{
-		$context = ($object && !$this->static) ? $object : $this->value[0];
-		if (str_starts_with($property_name = $this->value[1], '$')) {
-			try {
-				return ((new ReflectionProperty($context, $property_name))->isStatic())
-					? $context::$property_name
-					: $context->$property_name;
-			}
-			catch (ReflectionException) {
-				return null;
-			}
+		$class  = $this->static ? $this->callable[0] : $object;
+		$member = $this->callable[1];
+		if ($class === self::STATIC) {
+			$class = get_class($object);
 		}
-		if (($context !== $object) && !(reset($arguments) instanceof Event)) {
-			try {
-				$method     = new ReflectionMethod($this->value);
-				$parameters = $method->getParameters();
-				$parameter  = reset($parameters) ?: null;
-				$type       = $parameter?->getType()?->getName();
-				if ($type === self::SELF) {
-					$type = $method->getDeclaringClass()->name;
-				}
-				elseif ($type === self::STATIC) {
-					$type = $method->class;
-				}
-				if ($type && is_a($object, $type, true)) {
-					array_unshift($arguments, $object);
-				}
-			}
-			catch (ReflectionException) {
-			}
+		if (str_starts_with($member, '$')) {
+			return $this->static ? $class::$property_name : $class->$member;
 		}
-		return call_user_func_array([$context, $this->value[1]], $arguments);
+		if ($this->generic_name) {
+			array_unshift($arguments, $this->generic_name);
+		}
+		if ($this->static) {
+			array_unshift($arguments, $object);
+		}
+		return call_user_func_array([$class, $member], $arguments);
 	}
 
-	//---------------------------------------------------------------------------------- setDeclaring
-	public function setDeclaring(Reflection $reflection) : void
+	//----------------------------------------------------------------------------- defaultMethodName
+	protected function defaultMethodName(Reflection_Property $property) : string
 	{
-		if ($this->static || !$this->value || ($this->value[0] !== self::SELF)) {
-			return;
-		}
-		/** @noinspection PhpPossiblePolymorphicInvocationInspection All but Reflection_Class have
-		 * getDeclaringClassName */
-		$this->value[0] = ($reflection instanceof Reflection_Class)
-			? $reflection->getName()
-			: $reflection->getDeclaringClassName();
+		$attribute = Names::classToProperty(trim(rLastParse(get_class($this), BS), '_'));
+		return static::PROPERTY_FIRST
+			? Names::propertyToMethod($property->getName() . '_' . $attribute)
+			: Names::propertyToMethod($attribute . '_' . $property->getName());
 	}
 
 	//-------------------------------------------------------------------------------------- setFinal
 	public function setFinal(Reflection $reflection) : void
 	{
-		if ($this->static || !$this->value || ($this->value[0] !== self::STATIC)) {
-			return;
-		}
-		/** @noinspection PhpPossiblePolymorphicInvocationInspection All but Reflection_Class have
-		 * getFinalClassName */
-		$this->value[0] = ($reflection instanceof Reflection_Class)
+		/** @noinspection PhpPossiblePolymorphicInvocationInspection */
+		$class_name = ($reflection instanceof Reflection_Class)
 			? $reflection->getName()
 			: $reflection->getFinalClassName();
+		[$class, $member] = $this->callable;
+		if (in_array($class, [self::SELF, self::STATIC], true)) {
+			$class = $this->callable[0] = $class_name;
+		}
+		if ($member === self::AUTO) {
+			/** @var $reflection Reflection_Property Default value allowed for property attributes only */
+			$member = $this->defaultMethodName($reflection);
+		}
+		/** @var $reflection_member Reflection_Method|Reflection_Property */
+		$reflection_member = $reflection::newReflection($class, $member);
+		$this->static      = $reflection_member->isStatic();
+		if (($reflection_member instanceof Reflection_Method) && Generic::of($reflection_member)) {
+			$this->generic_name = $reflection->getName();
+		}
 	}
 
 }

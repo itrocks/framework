@@ -7,6 +7,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Set;
 use ITRocks\Framework\Reflection\Attribute\Class_\Sort;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
@@ -16,17 +17,15 @@ use ITRocks\Framework\User;
  * You must @override object @var Class_Name into the final class
  * Or create another property with @replaces object
  */
-#[
-	Representative('object', 'date', 'property_name', 'old_value', 'new_value'),
-	Set('History'),
-	Sort('date', 'user'),
-	Store
-]
+#[Representative('object', 'date', 'property_name', 'old_value', 'new_value')]
+#[Set('History')]
+#[Sort('date', 'user')]
+#[Store]
 abstract class History
 {
 
 	//----------------------------------------------------------------------------------------- $date
-	/** @default Date_Time::now */
+	#[Default_([Date_Time::class, 'now'])]
 	public Date_Time|string $date;
 
 	//------------------------------------------------------------------------------------ $new_value
@@ -46,7 +45,7 @@ abstract class History
 	public string $property_name;
 
 	//----------------------------------------------------------------------------------------- $user
-	/** @default User::current */
+	#[Default_([User::class, 'current'])]
 	public User $user;
 
 	//----------------------------------------------------------------------------------- __construct

@@ -27,34 +27,23 @@ class Properties
 	const INIT_JOINPOINT = '2.joinpoint';
 
 	//------------------------------------------------------------------------------- SETTER_RESERVED
-	/**
-	 * @var string[]
-	 */
 	private const SETTER_RESERVED = [
 		'class_name', 'element_type', 'element_type_name', 'joinpoint', 'object',
 		'property', 'property_name', 'result', 'stored', 'type', 'type_name', 'value'
 	];
 
 	//-------------------------------------------------------------------------------------- $actions
-	/**
-	 * @var string[] key is the original method name, value is the 'rename' or 'trait' action
-	 */
+	/** @var string[] key is the original method name, value is the 'rename' or 'trait' action */
 	private array $actions;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $class Reflection_Class
-	 */
 	public function __construct(Reflection_Class $class)
 	{
 		$this->class = $class;
 	}
 
 	//--------------------------------------------------------------------------------------- compile
-	/**
-	 * @param $advices array
-	 * @return string[]
-	 */
+	/** @return string[] */
 	public function compile(array $advices) : array
 	{
 		ksort($advices);
@@ -239,10 +228,6 @@ class Properties
 	}
 
 	//------------------------------------------------------------------------------------ compileAop
-	/**
-	 * @param $advices array
-	 * @return string
-	 */
 	private function compileAop(array $advices) : string
 	{
 		$parent_code = '';
@@ -303,12 +288,7 @@ class Properties
 	}
 
 	//------------------------------------------------------------------------------ compileConstruct
-	/**
-	 * Compile __construct if there is at least one property declared in this class / traits
-	 *
-	 * @param $advices array
-	 * @return string
-	 */
+	/** Compile __construct if there is at least one property declared in this class / traits */
 	private function compileConstruct(array $advices) : string
 	{
 		// only if at least one property is declared here
@@ -340,10 +320,6 @@ class Properties
 	}
 
 	//-------------------------------------------------------------------------------- compileDefault
-	/**
-	 * @param $advices array
-	 * @return string
-	 */
 	private function compileDefault(array $advices) : string
 	{
 		$over = $this->overrideMethod('__default', false);
@@ -356,17 +332,15 @@ class Properties
 					$reflection_class = $this->class;
 				}
 				else {
-					$class_name = $this->class->source->fullClassName($object);
 					// may be quite slow, but I have to check if there is a $property parameter into default
-					$reflection_source = Reflection_Source::ofClass($class_name);
-					$reflection_class  = $reflection_source->getClass($class_name);
+					$reflection_class = Reflection_Source::ofClass($object)->getClass($object);
 				}
 				// TODO BUG getMethods on Date_Time stops after min method : there are missing lot of them !
 				$reflection_methods = $reflection_class->getMethods([T_EXTENDS, T_IMPLEMENTS, T_USE]);
 				$reflection_method  = $reflection_methods[$method] ?? null;
 				$parameter_names    = $reflection_method?->getParametersNames(false) ?: [];
 				$code .= "if (!(new \ReflectionProperty(\$this, '$property_name'))->isInitialized(\$this)) {"
-					. LF . TAB . TAB . TAB . "\$this->$property_name = $object$operator$method(";
+					. LF . TAB . TAB . TAB . "\$this->$property_name = \\$object$operator$method(";
 				if (($parameter_names[0] ?? null) === 'property') {
 					$code .= 'new \ITRocks\Framework\Reflection\Reflection_Property'
 						. "(__CLASS__, '$property_name')";
@@ -379,7 +353,7 @@ class Properties
 		}
 		$code .= $over['call'] ?: (
 			$this->class->getParentClass()
-			? "if (method_exists(get_parent_class(__CLASS__), '__default')) {
+				? "if (method_exists(get_parent_class(__CLASS__), '__default')) {
 			parent::__default();
 		}"
 				: ''
@@ -448,10 +422,6 @@ class Properties
 	}
 
 	//---------------------------------------------------------------------------------- compileIsset
-	/**
-	 * @param $advices array
-	 * @return string
-	 */
 	private function compileIsset(array $advices) : string
 	{
 		$over = $this->overrideMethod('__isset');
@@ -503,11 +473,6 @@ class Properties
 	}
 
 	//----------------------------------------------------------------------------------- compileRead
-	/**
-	 * @param $property_name string
-	 * @param $advices       array
-	 * @return string
-	 */
 	private function compileRead(string $property_name, array $advices) : string
 	{
 		$code = '';
@@ -580,10 +545,6 @@ class Properties
 	}
 
 	//------------------------------------------------------------------------------------ compileSet
-	/**
-	 * @param $advices array
-	 * @return string
-	 */
 	private function compileSet(array $advices) : string
 	{
 		$over = $this->overrideMethod('__set', true, $advices);
@@ -652,10 +613,6 @@ class Properties
 	}
 
 	//---------------------------------------------------------------------------------- compileUnset
-	/**
-	 * @param $advices array
-	 * @return string
-	 */
 	private function compileUnset(array $advices) : string
 	{
 		$over = $this->overrideMethod('__unset');
@@ -699,8 +656,6 @@ class Properties
 	/**
 	 * When we unserialize a method, default properties are created even if they were not in the
 	 * serialized class (with a null value) : unset the properties overridden using AOP
-	 *
-	 * @return string
 	 */
 	private function compileWakeup() : string
 	{
@@ -717,11 +672,6 @@ class Properties
 	}
 
 	//---------------------------------------------------------------------------------- compileWrite
-	/**
-	 * @param $property_name string
-	 * @param $advices       array
-	 * @return string
-	 */
 	private function compileWrite(string $property_name, array $advices) : string
 	{
 		$code = '';
@@ -946,9 +896,6 @@ class Properties
 
 	//----------------------------------------------------------------------------------- parentCases
 	/**
-	 * @param $method_name string
-	 * @param $parameters  string
-	 * @param $advices     array
 	 * @return string[]
 	 * @todo this check only getters, links and setters. This should check AOP links too.
 	 * (the parent class has not this method, but it has AOP properties)
