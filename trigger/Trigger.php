@@ -2,6 +2,7 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Widget;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\Trigger\Action;
 use ITRocks\Framework\Widget\Map_As_Collection;
@@ -15,11 +16,8 @@ abstract class Trigger
 	use Has_Name;
 
 	//-------------------------------------------------------------------------------------- $actions
-	/**
-	 * @see Map_As_Collection
-	 * @var Action[]
-	 * @widget Map_As_Collection
-	 */
+	/** @var Action[] */
+	#[Widget(Map_As_Collection::class)]
 	public array $actions;
 
 	//-------------------------------------------------------------------------------- executeActions

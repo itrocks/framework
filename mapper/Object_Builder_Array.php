@@ -10,8 +10,8 @@ use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Attribute;
+use ITRocks\Framework\Reflection\Attribute\Property\Widget;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -429,7 +429,7 @@ class Object_Builder_Array
 		// use widget
 		if (
 			$this->from_form
-			&& ($builder = Widget_Annotation::of($property)->value)
+			&& ($builder = Widget::of($property)?->class_name)
 			&& is_a($builder, Property::class, true)
 		) {
 			/** @noinspection PhpParamsInspection Inspector bug : $builder is a string */

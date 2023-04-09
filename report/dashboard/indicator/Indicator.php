@@ -15,9 +15,10 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Attribute\Property\Unit;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
+use ITRocks\Framework\Reflection\Attribute\Property\Widget;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Report\Dashboard;
-use ITRocks\Framework\Report\Dashboard\Indicator\Property_Path\Widget;
+use ITRocks\Framework\Report\Dashboard\Indicator\Property_Path;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
@@ -58,12 +59,8 @@ class Indicator
 	public ?File $icon = null;
 
 	//-------------------------------------------------------------------------------- $property_path
-	/**
-	 * The indicator property path. Can also be '@count' for an objects counter
-	 *
-	 * @see Widget
-	 * @widget Widget
-	 */
+	/** The indicator property path. Can also be '@count' for an objects counter */
+	#[Widget(Property_Path\Widget::class)]
 	public string $property_path = self::COUNT;
 
 	//-------------------------------------------------------------------------------------- $setting

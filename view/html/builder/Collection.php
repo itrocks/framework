@@ -13,7 +13,6 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Attribute\Class_\Display_Order;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
@@ -21,6 +20,7 @@ use ITRocks\Framework\Reflection\Attribute\Property\Alias;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\Representative;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
+use ITRocks\Framework\Reflection\Attribute\Property\Widget;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -156,7 +156,7 @@ class Collection
 			$value = strval($anchor);
 		}
 		elseif (
-			($builder = Widget_Annotation::of($property)->value)
+			($builder = Widget::of($property)?->class_name)
 			&& is_a($builder, Property::class, true)
 		) {
 			/** @noinspection PhpParamsInspection Inspector bug : $builder is a string */

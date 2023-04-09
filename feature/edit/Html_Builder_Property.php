@@ -10,11 +10,11 @@ use ITRocks\Framework\Reflection\Annotation\Property\Filters_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Tooltip;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\User_Change;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
@@ -273,8 +273,8 @@ class Html_Builder_Property extends Html_Builder_Type
 			$this->attributes['placeholder'] = $placeholder;
 		}
 		$this->required = Mandatory::of($this->property)->value;
-		if (!isset($this->tooltip)) {
-			$this->tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property);
+		if (!$this->tooltip) {
+			$this->tooltip = Tooltip::of($this->property)?->callProperty($this->property) ?: '';
 		}
 		if ($data_entries = $this->property->getListAnnotation('data')->value) {
 			foreach ($data_entries as $data) {

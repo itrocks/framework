@@ -7,7 +7,7 @@ use ITRocks\Framework\Feature\Edit\Html_Builder_Collection;
 use ITRocks\Framework\Feature\Edit\Html_Template;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
-use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Widget;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Traits\Is_Immutable;
@@ -54,15 +54,15 @@ class Map_As_Collection extends Property
 				$collection = new Html_Builder_Collection(
 					$this->property, $this->value, true, $this->pre_path
 				);
+				/** @noinspection PhpDynamicFieldDeclarationInspection overrides */
 				$collection->template = $this->template;
 			}
 			// - output
 			else {
 				$collection = new Collection($this->property, $this->value, true);
 			}
-			$collection->sort = Widget_Annotation::of($this->property)->option(
-				Widget_Annotation::SORT, true
-			);
+			$widget           = Widget::of($this->property);
+			$collection->sort = !$widget || $widget->hasOption(Widget::SORT);
 			// build
 			return $collection->build();
 		}

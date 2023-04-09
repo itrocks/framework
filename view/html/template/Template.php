@@ -14,8 +14,8 @@ use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Http\Uri;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Widget;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
@@ -49,11 +49,7 @@ class Template
 	const TEMPLATE_NAMESPACE = 'template_namespace';
 
 	//-------------------------------------------------------------------------------------- $content
-	/**
-	 * Content of the template file, changed by calculated result HTML content during parse()
-	 *
-	 * @var string
-	 */
+	/** Content of the template file, changed by calculated result HTML content during parse() */
 	protected string $content;
 
 	//------------------------------------------------------------------------------------- $counters
@@ -66,19 +62,11 @@ class Template
 	public array $counters;
 
 	//------------------------------------------------------------------------------------------ $css
-	/**
-	 * Css files relative directory (ie 'default')
-	 *
-	 * @var string
-	 */
+	/** Css files relative directory (ie 'default') */
 	protected string $css;
 
 	//---------------------------------------------------------------------------------- $descendants
-	/**
-	 * Descendant objects are set when calls to parents are done, in order to get them back
-	 *
-	 * @var array
-	 */
+	/** Descendant objects are set when calls to parents are done, in order to get them back */
 	protected array $descendants = [];
 
 	//---------------------------------------------------------------------------- $descendants_names
@@ -90,17 +78,11 @@ class Template
 	protected array $descendants_names = [];
 
 	//-------------------------------------------------------------------------------------- $feature
-	/**
-	 * Feature name (name of a controller's method, end of the view name)
-	 *
-	 * @var string
-	 */
+	/** Feature name (name of a controller's method, end of the view name) */
 	protected string $feature = '';
 
 	//------------------------------------------------------------------------------------ $functions
-	/**
-	 * @var Functions
-	 */
+	/** @var Functions */
 	protected Functions $functions;
 
 	//--------------------------------------------------------------------------------- $group_values
@@ -122,9 +104,6 @@ class Template
 	protected array $included = [];
 
 	//--------------------------------------------------------------------------------- $link_objects
-	/**
-	 * @var boolean
-	 */
 	public bool $link_objects = true;
 
 	//-------------------------------------------------------------------------------- $main_template
@@ -133,40 +112,22 @@ class Template
 	 *
 	 * If null or not set : will be automatically set to current application main template 'main.html'
 	 * If false : no main template will be used
-	 *
-	 * @var ?string
 	 */
 	public string|null $main_template = null;
 
 	//-------------------------------------------------------------------------------------- $objects
-	/**
-	 * The objects queue, updated during the parsing
-	 *
-	 * @var array
-	 */
+	/** The objects queue, updated during the parsing */
 	public array $objects = [];
 
 	//----------------------------------------------------------------------------------- $parameters
-	/**
-	 * @var array
-	 */
 	protected array $parameters;
 
 	//----------------------------------------------------------------------------- $parse_class_name
-	/**
-	 * Currently parsing full class name
-	 * For static calls like {User.current}
-	 *
-	 * @var string
-	 */
+	/** Currently parsing full class name, for static calls like {User.current} */
 	public string $parse_class_name = '';
 
 	//----------------------------------------------------------------------------------------- $path
-	/**
-	 * Template file path (base for css / javascript links)
-	 *
-	 * @var string
-	 */
+	/** Template file path (base for css / javascript links) */
 	protected string $path = '';
 
 	//---------------------------------------------------------------------------- $properties_prefix
@@ -188,12 +149,7 @@ class Template
 	protected array $use = [];
 
 	//------------------------------------------------------------------------------------ $var_names
-	/**
-	 * Var names
-	 * Keys correspond to object keys
-	 *
-	 * @var string[]
-	 */
+	/** @var string[] Var names : keys matches object keys */
 	public array $var_names = [];
 
 	//----------------------------------------------------------------------------------- __construct
@@ -226,9 +182,6 @@ class Template
 	}
 
 	//---------------------------------------------------------------------------- articleClassToBody
-	/**
-	 * @param $content string
-	 */
 	protected function articleClassToBody(string &$content) : void
 	{
 		if (
@@ -369,11 +322,7 @@ class Template
 	}
 
 	//--------------------------------------------------------------------------------------- context
-	/**
-	 * Returns the context for this template, may be overridden to change context generation
-	 *
-	 * @return string
-	 */
+	/** Returns the context for this template, may be overridden to change context generation */
 	public function context() : string
 	{
 		foreach ($this->objects as $object) {
@@ -388,10 +337,6 @@ class Template
 	}
 
 	//--------------------------------------------------------------------------- getContainerContent
-	/**
-	 * @param $file_name string
-	 * @return string
-	 */
 	protected function getContainerContent(string $file_name) : string
 	{
 		$main_template = $this->getMainTemplateFile();
@@ -401,10 +346,6 @@ class Template
 	}
 
 	//------------------------------------------------------------------------------------ getCssPath
-	/**
-	 * @param $css string
-	 * @return string
-	 */
 	public static function getCssPath(string $css) : string
 	{
 		static $css_path = [];
@@ -421,19 +362,13 @@ class Template
 	}
 
 	//------------------------------------------------------------------------------------ getFeature
-	/**
-	 * @return string
-	 */
 	public function getFeature() : string
 	{
 		return $this->parameters['feature'] ?? $this->feature;
 	}
 
 	//---------------------------------------------------------------------------------- getHeadLinks
-	/**
-	 * @param $content string
-	 * @return string[]
-	 */
+	/** @return string[] */
 	public function getHeadLinks(string $content) : array
 	{
 		$links = [];
@@ -446,10 +381,7 @@ class Template
 	}
 
 	//---------------------------------------------------------------------------------- getHeadMetas
-	/**
-	 * @param $content string
-	 * @return string[]
-	 */
+	/** @return string[] */
 	protected function getHeadMetas(string $content) : array
 	{
 		$metas = [];
@@ -462,10 +394,6 @@ class Template
 	}
 
 	//---------------------------------------------------------------------------------- getHeadTitle
-	/**
-	 * @param $content string
-	 * @return string
-	 */
 	public function getHeadTitle(string $content) : string
 	{
 		if (($i = strpos($content, '<title')) === false) {
@@ -476,9 +404,7 @@ class Template
 	}
 
 	//--------------------------------------------------------------------------- getMainTemplateFile
-	/**
-	 * @return string main template file path
-	 */
+	/** @return string main template file path */
 	public function getMainTemplateFile() : string
 	{
 		if (isset($this->main_template)) {
@@ -495,23 +421,14 @@ class Template
 	}
 
 	//------------------------------------------------------------------------------------- getObject
-	/**
-	 * Gets the template top object
-	 *
-	 * @return mixed
-	 */
+	/** Gets the template top object */
 	public function getObject() : mixed
 	{
 		return reset($this->objects);
 	}
 
 	//---------------------------------------------------------------------------------- getParameter
-	/**
-	 * Gets parameter value
-	 *
-	 * @param $parameter string
-	 * @return array|string|null
-	 */
+	/** Gets parameter value */
 	public function getParameter(string $parameter) : array|string|null
 	{
 		return $this->parameters[$parameter] ?? null;
@@ -540,42 +457,26 @@ class Template
 	}
 
 	//--------------------------------------------------------------------------------- getRootObject
-	/**
-	 * Gets the root object
-	 *
-	 * @return object
-	 */
+	/** Gets the root object */
 	public function getRootObject() : object
 	{
 		return end($this->objects);
 	}
 
 	//--------------------------------------------------------------------------------- getScriptName
-	/**
-	 * @return string
-	 */
 	protected function getScriptName() : string
 	{
 		return Paths::$script_name ?: substr(Paths::$uri_base, 1);
 	}
 
 	//------------------------------------------------------------------------------------ getUriRoot
-	/**
-	 * @return string
-	 */
 	protected function getUriRoot() : string
 	{
 		return Paths::$uri_root;
 	}
 
 	//----------------------------------------------------------------------------------------- group
-	/**
-	 * Hide repeated values of a given group
-	 *
-	 * @param $var_name string
-	 * @param $value    string
-	 * @return string
-	 */
+	/** Hide repeated values of a given group */
 	protected function group(string $var_name, string $value) : string
 	{
 		if (!isset($this->group_values[$var_name]) || ($this->group_values[$var_name] !== $value)) {
@@ -586,12 +487,7 @@ class Template
 	}
 
 	//---------------------------------------------------------------------------------- htmlEntities
-	/**
-	 * Returns value replacing html entities with coded html, only if this is a displayable value
-	 *
-	 * @param $value string
-	 * @return string
-	 */
+	/** Returns value replacing html entities with coded html, only if this is a displayable value */
 	protected function htmlEntities(string $value) : string
 	{
 		return str_ireplace(
@@ -620,10 +516,6 @@ class Template
 	}
 
 	//---------------------------------------------------------------------------------- newFunctions
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return Functions
-	 */
 	protected function newFunctions() : Functions
 	{
 		/** @noinspection PhpUnhandledExceptionInspection template functions class must be valid */
@@ -633,11 +525,6 @@ class Template
 	}
 
 	//----------------------------------------------------------------------------- originValueAddDiv
-	/**
-	 * @param $value mixed
-	 * @param $property Reflection_Property
-	 * @return mixed
-	 */
 	protected function originValueAddDiv(mixed $value, Reflection_Property $property) : mixed
 	{
 		$div = new Div($value);
@@ -666,21 +553,12 @@ class Template
 	}
 
 	//----------------------------------------------------------------------------- parseArrayElement
-	/**
-	 * @param $array array
-	 * @param $index integer|string
-	 * @return mixed
-	 */
 	protected function parseArrayElement(array $array, int|string $index) : mixed
 	{
 		return $array[$index] ?? null;
 	}
 
 	//-------------------------------------------------------------------------------- parseClassName
-	/**
-	 * @param $class_name string
-	 * @return string
-	 */
 	protected function parseClassName(string $class_name) : string
 	{
 		if (!str_contains($class_name, BS)) {
@@ -707,10 +585,6 @@ class Template
 	}
 
 	//------------------------------------------------------------------------------ parseConditional
-	/**
-	 * @param $property_name string
-	 * @return boolean|string
-	 */
 	protected function parseConditional(string $property_name) : bool|string
 	{
 		$i = strpos($property_name, '?');
@@ -764,11 +638,6 @@ class Template
 	}
 
 	//-------------------------------------------------------------------------------- parseConstSpec
-	/**
-	 * @param $object     mixed
-	 * @param $const_name string
-	 * @return ?string
-	 */
 	protected function parseConstSpec(
 		/** @noinspection PhpUnusedParameterInspection */ mixed $object, string $const_name
 	) : ?string
@@ -777,12 +646,7 @@ class Template
 	}
 
 	//--------------------------------------------------------------------------------- parseConstant
-	/**
-	 * Parse a string constant delimiter by quotes at start and end
-	 *
-	 * @param $const_string string
-	 * @return string
-	 */
+	/** Parse a string constant delimiter by quotes at start and end */
 	protected function parseConstant(string $const_string) : string
 	{
 		return substr($const_string, 1, -1);
@@ -792,7 +656,6 @@ class Template
 	/**
 	 * Replace code before <!--BEGIN--> and after <!--END--> by the html main container's code
 	 *
-	 * @param $content string
 	 * @return string updated content
 	 */
 	protected function parseContainer(string $content) : string
@@ -840,10 +703,6 @@ class Template
 	}
 
 	//---------------------------------------------------------------------------------- parseContent
-	/**
-	 * @param $content string
-	 * @return string
-	 */
 	public function parseContent(string $content) : string
 	{
 		$content = $this->removeComments($content);
@@ -854,23 +713,13 @@ class Template
 	}
 
 	//----------------------------------------------------------------------------- parseFileToString
-	/**
-	 * Parse a property which content is a file object
-	 *
-	 * @param $property Reflection_Property|null
-	 * @param $file     File
-	 * @return string
-	 */
+	/** Parse a property which content is a file object */
 	protected function parseFileToString(File $file, Reflection_Property $property = null) : string
 	{
 		return (new Html\Builder\File($file, $property))->build();
 	}
 
 	//--------------------------------------------------------------------------------- parseFullPage
-	/**
-	 * @param $content string
-	 * @return string
-	 */
 	protected function parseFullPage(string $content) : string
 	{
 		$content = $this->parseContent($content);
@@ -882,12 +731,7 @@ class Template
 	}
 
 	//------------------------------------------------------------------------------------- parseFunc
-	/**
-	 * Parse a special data / function and returns its return value
-	 *
-	 * @param $func_name string
-	 * @return mixed
-	 */
+	/** Parse a special data / function and returns its return value */
 	protected function parseFunc(string $func_name) : mixed
 	{
 		$func_name = ($p = strpos($func_name, '('))
@@ -902,9 +746,6 @@ class Template
 	 *
 	 * Accept quoted 'constants' and 'constants'
 	 * All other parameters values will be parsed as values
-	 *
-	 * @param $params_string string
-	 * @return array
 	 */
 	protected function parseFuncParams(string $params_string) : array
 	{
@@ -939,10 +780,6 @@ class Template
 	}
 
 	//------------------------------------------------------------------------- parseIncludeClassName
-	/**
-	 * @param $include_uri string
-	 * @return string
-	 */
 	protected function parseIncludeClassName(string $include_uri) : string
 	{
 		if (ctype_lower($include_uri[0]) && str_contains($include_uri, SL)) {
@@ -954,10 +791,6 @@ class Template
 	}
 
 	//------------------------------------------------------------------------ parseIncludeController
-	/**
-	 * @param $include_uri string
-	 * @return string
-	 */
 	protected function parseIncludeController(string $include_uri) : string
 	{
 		$options = [Parameter::IS_INCLUDED => true];
@@ -972,11 +805,6 @@ class Template
 	}
 
 	//--------------------------------------------------------------------------- parseIncludeResolve
-	/**
-	 * @param $include_uri string
-	 * @param $class_name  string
-	 * @return string
-	 */
 	protected function parseIncludeResolve(string $include_uri, string $class_name) : string
 	{
 		if (isset($GLOBALS['D'])) {
@@ -996,10 +824,6 @@ class Template
 	}
 
 	//-------------------------------------------------------------------------- parseIncludeTemplate
-	/**
-	 * @param $include_uri string
-	 * @return string
-	 */
 	protected function parseIncludeTemplate(string $include_uri) : string
 	{
 		if (isset($GLOBALS['D'])) echo '- include ' . $include_uri . BR;
@@ -1031,12 +855,6 @@ class Template
 	}
 
 	//------------------------------------------------------------------------------------- parseLoop
-	/**
-	 * @param $content string
-	 * @param $i       integer
-	 * @param $j       integer
-	 * @return integer
-	 */
 	protected function parseLoop(string &$content, int $i, int $j) : int
 	{
 		$end_j          = $j;
@@ -1121,11 +939,6 @@ class Template
 	}
 
 	//-------------------------------------------------------------------------------- parseLoopArray
-	/**
-	 * @param $loop     Loop
-	 * @param $elements array
-	 * @return string
-	 */
 	protected function parseLoopArray(Loop $loop, array $elements) : string
 	{
 		$loop_insert = '';
@@ -1151,9 +964,6 @@ class Template
 	}
 
 	//---------------------------------------------------------------------- parseLoopContentSections
-	/**
-	 * @param $loop Loop
-	 */
 	protected function parseLoopContentSections(Loop $loop) : void
 	{
 		$this->removeSample($loop);
@@ -1163,11 +973,6 @@ class Template
 	}
 
 	//------------------------------------------------------------------------------ parseLoopElement
-	/**
-	 * @param $loop Loop
-	 * @param $else boolean
-	 * @return ?string
-	 */
 	protected function parseLoopElement(Loop $loop, bool $else = false) : ?string
 	{
 		if (is_numeric($loop->key)) {
@@ -1220,10 +1025,6 @@ class Template
 	}
 
 	//------------------------------------------------------------------------ parseLoopEmptyElements
-	/**
-	 * @param $loop Loop
-	 * @return string
-	 */
 	protected function parseLoopEmptyElements(Loop $loop) : string
 	{
 		$loop_insert = '';
@@ -1249,7 +1050,6 @@ class Template
 	/**
 	 * Removes <!--id--> code from a loop content
 	 *
-	 * @param $loop Loop
 	 * @todo HIGH see what it is used for (found only for typed_address : maybe should be removed)
 	 */
 	protected function parseLoopId(Loop $loop) : void
@@ -1271,7 +1071,7 @@ class Template
 	 * Search '<!--end-->' into content, starting from $position.
 	 * Recurse into '<!--other_things-->' and their matching '<!--end-->' if there are some
 	 *
-	 * @param $content  string The content of the template
+	 * @param $content  string  The content of the template
 	 * @param $position integer The position of the '-->' of the start of the current loop
 	 * @return integer[] the position of the '<!--else-->' then of '<!--end-->' of the current loop
 	 */
@@ -1385,7 +1185,6 @@ class Template
 	 *   <!--variable_name-->(...)<!--variable_name-->
 	 *   <!--methodName()-->(...)<!--methodName()-->
 	 *   <!--@function-->(...)<!--@function-->
-	 * @param $content string
 	 * @return string updated content
 	 */
 	protected function parseLoops(string $content) : string
@@ -1422,11 +1221,6 @@ class Template
 	}
 
 	//----------------------------------------------------------------------------------- parseMethod
-	/**
-	 * @param $object        object
-	 * @param $property_name string
-	 * @return mixed
-	 */
 	protected function parseMethod(object $object, string $property_name) : mixed
 	{
 		if ($i = strpos($property_name, '(')) {
@@ -1443,7 +1237,6 @@ class Template
 	/**
 	 * Navigate into $var_name through parents (-) and children (+)
 	 *
-	 * @param $var_name string
 	 * @return string new $var_name (without -/+)
 	 */
 	protected function parseNavigate(string $var_name) : string
@@ -1462,23 +1255,13 @@ class Template
 	}
 
 	//-------------------------------------------------------------------------------------- parseNot
-	/**
-	 * Returns the reverse boolean value for property value
-	 *
-	 * @param $property_name string
-	 * @return boolean
-	 */
+	/** Returns the reverse boolean value for property value */
 	protected function parseNot(string $property_name) : bool
 	{
 		return !$this->parseValue(substr($property_name, 1));
 	}
 
 	//--------------------------------------------------------------------------- parseObjectToString
-	/**
-	 * @param $object        object
-	 * @param $property_name string
-	 * @return string
-	 */
 	protected function parseObjectToString(
 		/** @noinspection PhpUnusedParameterInspection */
 		object $object, string $property_name
@@ -1488,19 +1271,12 @@ class Template
 	}
 
 	//-------------------------------------------------------------------------------- parseParameter
-	/**
-	 * @param $parameter_name string
-	 * @return mixed
-	 */
 	protected function parseParameter(string $parameter_name) : mixed
 	{
 		return $this->parameters[$parameter_name] ?? '';
 	}
 
 	//----------------------------------------------------------------------------------- parseParent
-	/**
-	 * @return mixed
-	 */
 	protected function parseParent() : mixed
 	{
 		$this->shift();
@@ -1511,7 +1287,6 @@ class Template
 	/**
 	 * Parse current object through methods/properties path
 	 *
-	 * @param $var_name string
 	 * @return array [mixed $object, string $property_name]
 	 */
 	protected function parsePath(string $var_name) : array
@@ -1541,13 +1316,6 @@ class Template
 	}
 
 	//--------------------------------------------------------------------------------- parseProperty
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection property exists
-	 * @param $object                  object
-	 * @param $property_name           string
-	 * @param $ignore_unknown_property boolean
-	 * @return mixed
-	 */
 	protected function parseProperty(
 		object $object, string $property_name, bool $ignore_unknown_property = false
 	) : mixed
@@ -1614,12 +1382,6 @@ class Template
 	}
 
 	//------------------------------------------------------------------------------ parseSingleValue
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $property_name string
-	 * @param $format_value  boolean
-	 * @return mixed
-	 */
 	protected function parseSingleValue(string $property_name, bool $format_value = true) : mixed
 	{
 		$add_div       = false;
@@ -1717,7 +1479,7 @@ class Template
 			$is_property_value = ($property_name === 'value') && ($object instanceof Reflection_Property);
 			if (
 				$is_property_value
-				&& ($builder = Widget_Annotation::of($object)->value)
+				&& ($builder = Widget::of($object)?->class_name)
 				&& is_a($builder, Html\Builder\Property::class, true)
 			) {
 				/** @noinspection PhpParamsInspection Inspector bug : $builder is a string */
@@ -1800,11 +1562,6 @@ class Template
 	}
 
 	//----------------------------------------------------------------------------- parseStaticMethod
-	/**
-	 * @param $class_name  string
-	 * @param $method_name string
-	 * @return mixed
-	 */
 	protected function parseStaticMethod(string $class_name, string $method_name) : mixed
 	{
 		return $class_name::$method_name();
@@ -1814,11 +1571,7 @@ class Template
 	/**
 	 * Returns the value of the static property (if static), otherwise the property itself is returned
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @noinspection PhpMixedReturnTypeCanBeReducedInspection No : $class_name::$$property_name
-	 * @param $class_name    string
-	 * @param $property_name string
-	 * @return mixed|Reflection_Property
 	 */
 	protected function parseStaticProperty(string $class_name, string $property_name) : mixed
 	{
@@ -1838,10 +1591,6 @@ class Template
 	/**
 	 * If property name is the name of a String_Class method, call this method
 	 * If not, will return true if string value equals $property_name
-	 *
-	 * @param $string        string
-	 * @param $property_name string
-	 * @return mixed
 	 */
 	protected function parseString(string $string, string $property_name) : mixed
 	{
@@ -1856,35 +1605,19 @@ class Template
 	}
 
 	//----------------------------------------------------------------------------- parseStringMethod
-	/**
-	 * @param $object      object
-	 * @param $method_name string
-	 * @return mixed
-	 */
 	protected function parseStringMethod(object $object, string $method_name) : mixed
 	{
 		return $object->$method_name();
 	}
 
 	//--------------------------------------------------------------------------- parseStringProperty
-	/**
-	 * @param $object        object
-	 * @param $property_name string
-	 * @return mixed
-	 */
 	protected function parseStringProperty(object $object, string $property_name) : mixed
 	{
 		return $object->$property_name ?? null;
 	}
 
 	//------------------------------------------------------------------------------------- parseThis
-	/**
-	 * Return true if the text at position $i of $content is a variable, or a function name to include
-	 *
-	 * @param $content string
-	 * @param $i       integer
-	 * @return boolean
-	 */
+	/** Return true if text at position $i of $content is variable, or function name to include */
 	protected function parseThis(string $content, int $i) : bool
 	{
 		$c = $content[$i];
@@ -1897,11 +1630,6 @@ class Template
 	}
 
 	//-------------------------------------------------------------------------------------- parseUse
-	/**
-	 * @param $content string
-	 * @param $i       integer
-	 * @param $j       integer
-	 */
 	protected function parseUse(string &$content, int $i, int $j) : void
 	{
 		$class_name = substr($content, $i + 4, $j - $i - 4);
@@ -1993,13 +1721,6 @@ class Template
 	}
 
 	//-------------------------------------------------------------------------------------- parseVar
-	/**
-	 * @param $content       string
-	 * @param $i             integer
-	 * @param $j             integer
-	 * @param $html_entities boolean
-	 * @return integer
-	 */
 	protected function parseVar(string &$content, int $i, int $j, bool $html_entities = false) : int
 	{
 		$var_name = substr($content, $i, $j - $i);
@@ -2036,11 +1757,6 @@ class Template
 	}
 
 	//-------------------------------------------------------------------------------- parseVarRemove
-	/**
-	 * @param $content string
-	 * @param $i       integer
-	 * @param $j       integer
-	 */
 	protected function parseVarRemove(string $content, int &$i, int &$j) : void
 	{
 		if (
@@ -2072,10 +1788,6 @@ class Template
 	}
 
 	//------------------------------------------------------------------------ parseVarWillAutoRemove
-	/**
-	 * @param $var_name string
-	 * @return boolean
-	 */
 	protected function parseVarWillAutoRemove(string &$var_name) : bool
 	{
 		if ($var_name[0] === '?') {
@@ -2099,7 +1811,6 @@ class Template
 	 *     <!--variable_name-->(...)<!--variable_name-->
 	 *     <!--methodName()-->(...)<!--methodName()-->
 	 *     <!--@function-->(...)<!--@function-->
-	 * @param $content string
 	 * @return string updated content
 	 */
 	public function parseVars(string $content) : string
@@ -2117,10 +1828,6 @@ class Template
 	}
 
 	//-------------------------------------------------------------------------------- prepareW3Links
-	/**
-	 * @param $content string
-	 * @return string
-	 */
 	protected function prepareW3Links(string $content) : string
 	{
 		foreach (['abs://', 'app://', 'dyn://', 'rel://', 'id="'] as $protocol) {
@@ -2154,10 +1861,6 @@ class Template
 	}
 
 	//--------------------------------------------------------------------------- removeAppAttributes
-	/**
-	 * @param $content string
-	 * @return string
-	 */
 	protected function removeAppAttributes(string $content) : string
 	{
 		$i = 0;
@@ -2207,11 +1910,7 @@ class Template
 	}
 
 	//-------------------------------------------------------------------------------- removeAppLinks
-	/**
-	 * @noinspection HttpUrlsUsage Always "or https"
-	 * @param $content string
-	 * @return string
-	 */
+	/** @noinspection HttpUrlsUsage Always "or https" */
 	protected function removeAppLinks(string $content) : string
 	{
 		$content = str_replace(['abs://http://', 'abs://https://'], ['http://', 'https://'], $content);
@@ -2225,10 +1924,6 @@ class Template
 	}
 
 	//-------------------------------------------------------------------------------- removeComments
-	/**
-	 * @param $content string
-	 * @return string
-	 */
 	protected function removeComments(string $content) : string
 	{
 		foreach (['//', '#'] as $comment_tag) {
@@ -2242,11 +1937,7 @@ class Template
 	}
 
 	//---------------------------------------------------------------------------------- removeSample
-	/**
-	 * Remove <!--sample-->(...) code from loop content
-	 *
-	 * @param $loop Loop
-	 */
+	/** Remove <!--sample-->(...) code from loop content */
 	protected function removeSample(Loop $loop) : void
 	{
 		foreach (['content', 'else_content'] as $property) {
@@ -2350,14 +2041,7 @@ class Template
 	}
 
 	//----------------------------------------------------------------------------------- replaceLink
-	/**
-	 * Replace link with correct link path
-	 *
-	 * Commonly called for action=, link href=, location=
-	 *
-	 * @param $link string
-	 * @return string
-	 */
+	/** Replace link with correct link path. Commonly called for action=, link href=, location= */
 	protected function replaceLink(string $link) : string
 	{
 		if (Uri::startsWithProtocol($link)) {
@@ -2376,10 +2060,8 @@ class Template
 	//---------------------------------------------------------------------------------- replaceLinks
 	/**
 	 * Replace links with correct absolute paths into $content
-	 *
 	 * Commonly called for a href=, action=, location=
 	 *
-	 * @param $content string
 	 * @return string updated content
 	 */
 	protected function replaceLinks(string $content) : string
@@ -2429,10 +2111,8 @@ class Template
 	//------------------------------------------------------------------------------------ replaceUri
 	/**
 	 * Replace URI with correct URI path
-	 *
 	 * Commonly called for @import, link href=, src=, loadScript( of gif, jpg, png, css, js files
 	 *
-	 * @param $uri string
 	 * @return string updated uri
 	 */
 	protected function replaceUri(string $uri) : string
@@ -2474,10 +2154,8 @@ class Template
 	//----------------------------------------------------------------------------------- replaceUris
 	/**
 	 * Replace URIs with correct URIs paths into $content
-	 *
 	 * Commonly called for @import, link href=, src=, loadScript( of gif, jpg, png, css, js files
 	 *
-	 * @param $content string
 	 * @return string updated content
 	 */
 	protected function replaceUris(string $content) : string
@@ -2543,18 +2221,12 @@ class Template
 	}
 
 	//------------------------------------------------------------------------------------ setContent
-	/**
-	 * @param $content string
-	 */
 	public function setContent(string $content) : void
 	{
 		$this->content = $content;
 	}
 
 	//---------------------------------------------------------------------------------------- setCss
-	/**
-	 * @param $css string
-	 */
 	public function setCss(string $css) : void
 	{
 		$this->css = $css;
@@ -2597,10 +2269,6 @@ class Template
 	}
 
 	//--------------------------------------------------------------------------------------- unshift
-	/**
-	 * @param $var_name string
-	 * @param $object   mixed
-	 */
 	protected function unshift(string $var_name, mixed $object) : void
 	{
 		if (is_object($object)) {

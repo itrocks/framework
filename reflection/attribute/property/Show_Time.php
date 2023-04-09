@@ -35,7 +35,7 @@ class Show_Time
 	public bool|string $value;
 
 	//----------------------------------------------------------------------------------- __construct
-	public function __construct($show_time = self::AUTO)
+	public function __construct(bool|string $show_time = self::AUTO)
 	{
 		$this->value = $show_time;
 	}

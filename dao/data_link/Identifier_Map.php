@@ -5,9 +5,9 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Widget;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Widget\Collection_As_Map;
@@ -30,8 +30,8 @@ abstract class Identifier_Map extends Data_Link
 	 * Disconnect an object from current data link
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object object object to disconnect from data source
-	 * @param $load_linked_objects boolean if true, load linked objects before disconnect
+	 * @param $object              object  Object to disconnect from data source
+	 * @param $load_linked_objects boolean If true, load linked objects before disconnect
 	 * @see Data_Link::disconnect()
 	 */
 	public function disconnect(object $object, bool $load_linked_objects = false) : void
@@ -44,7 +44,7 @@ abstract class Identifier_Map extends Data_Link
 			if (
 				($link_annotation->isCollection() || Component::of($property)?->value)
 				&& !empty($object->$property_name)
-				&& !is_a(Widget_Annotation::of($property)->value, Collection_As_Map::class, true)
+				&& !is_a(Widget::of($property)?->class_name, Collection_As_Map::class, true)
 			) {
 				$value = $object->$property_name;
 				if (Store::of($property)->isJson() && is_string($value)) {
@@ -76,8 +76,8 @@ abstract class Identifier_Map extends Data_Link
 	 * A null value will be returned for an object that is not linked to data link.
 	 * If $object is already an identifier, the identifier is returned.
 	 *
-	 * @param $object        ?object an object to get data link identifier from
-	 * @param $property_name string|null property name to get data link identifier instead of object
+	 * @param $object        ?object     An object to get data link identifier from
+	 * @param $property_name string|null Property name to get data link identifier instead of object
 	 * @return mixed you can test if an object identifier is set with empty($of_this_result)
 	 */
 	public function getObjectIdentifier(?object $object, string $property_name = null) : mixed
@@ -106,7 +106,7 @@ abstract class Identifier_Map extends Data_Link
 	 *
 	 * @param $object1 ?object
 	 * @param $object2 ?object
-	 * @param $strict  boolean if true, will consider @link object and non-@link object different
+	 * @param $strict  boolean If true, will consider @link object and non-@link object different
 	 * @return boolean
 	 */
 	public function is(?object $object1, ?object $object2, bool $strict = false) : bool
@@ -127,10 +127,10 @@ abstract class Identifier_Map extends Data_Link
 
 	//--------------------------------------------------------------------------------------- replace
 	/**
-	 * @param $destination T destination object
-	 * @param $source      T source object
+	 * @param $destination object<T> destination object
+	 * @param $source      object<T> source object
 	 * @param $write       boolean true if the destination object must be immediately written
-	 * @return T the resulting $destination object
+	 * @return object<T> the resulting $destination object
 	 * @see Data_Link::replace()
 	 * @template T
 	 */
@@ -150,12 +150,8 @@ abstract class Identifier_Map extends Data_Link
 	//--------------------------------------------------------------------------- setObjectIdentifier
 	/**
 	 * Forces an object identifier
-	 *
 	 * Use it after an object is read from data link to associate its identifier to it.
 	 *
-	 * @param $object        object
-	 * @param $id            mixed
-	 * @param $property_name string|null
 	 * @return $this
 	 */
 	public function setObjectIdentifier(object $object, mixed $id, string $property_name = null)

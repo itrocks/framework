@@ -60,7 +60,9 @@ trait Has_Constant_Or_Callable
 	public function call(object|string|null $object, array $arguments = []) : mixed
 	{
 		return $this->is_constant
-			? ((is_string($this->constant) && $this->constant) ? Loc::tr($this->constant) : '')
+			? (
+				(is_string($this->constant) && $this->constant) ? Loc::tr($this->constant) : $this->constant
+			)
 			: $this->callableCall($object, $arguments);
 	}
 

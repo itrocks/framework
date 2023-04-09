@@ -7,6 +7,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
 
 /**
@@ -27,9 +28,6 @@ trait Has_Callable
 	//------------------------------------------------------------------------------------------ AUTO
 	/** The callable member can be AUTO until setFinal() calculates its value from property name */
 	protected const AUTO = '¤auto¤';
-
-	//-------------------------------------------------------------------------------- PROPERTY_FIRST
-	protected const PROPERTY_FIRST = true;
 
 	//---------------------------------------------------------------------------------------- STATIC
 	/** The callable class can be SELF|STATIC until setFinal() calculates its value from class name */
@@ -97,13 +95,23 @@ trait Has_Callable
 		return call_user_func_array([$class, $member], $arguments);
 	}
 
+	//---------------------------------------------------------------------------------- callProperty
+	/**
+	 * Calculate value from the object associated to the Reflection_Property, with all common tests :
+	 * - only if this annotation has a value
+	 * - manage if $property is a Reflection_Property_Value or a simple Reflection_Property
+	 */
+	public function callProperty(Reflection_Property $property, array $arguments = []) : string
+	{
+		$object = ($property instanceof Reflection_Property_Value) ? $property->getObject() : null;
+		return $this->call($object, $arguments);
+	}
+
 	//----------------------------------------------------------------------------- defaultMethodName
 	protected function defaultMethodName(Reflection_Property $property) : string
 	{
 		$attribute = Names::classToProperty(trim(rLastParse(get_class($this), BS), '_'));
-		return static::PROPERTY_FIRST
-			? Names::propertyToMethod($property->getName() . '_' . $attribute)
-			: Names::propertyToMethod($attribute . '_' . $property->getName());
+		return Names::propertyToMethod($property->getName() . '_' . $attribute);
 	}
 
 	//-------------------------------------------------------------------------------------- setFinal

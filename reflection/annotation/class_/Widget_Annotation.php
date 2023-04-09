@@ -8,7 +8,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
 /**
  * Use a specific HTML builder class to build output / edit / object for write for the property
  */
-class Widget_Annotation extends Annotation
+class Widget extends Annotation
 {
 	use Options_Annotation;
 	use Types_Annotation;

@@ -5,11 +5,11 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
-use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Alias;
+use ITRocks\Framework\Reflection\Attribute\Property\Tooltip;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
+use ITRocks\Framework\Reflection\Attribute\Property\Widget;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
@@ -154,7 +154,7 @@ class Html_Builder_Collection extends Collection
 		$content      = null;
 		$origin_value = $value;
 		if (
-			($builder = Widget_Annotation::of($property)->value)
+			($builder = Widget::of($property)?->class_name)
 			&& is_a($builder, Property::class, true)
 		) {
 			$this->template->properties_prefix[] = $pre_path;
@@ -218,7 +218,7 @@ class Html_Builder_Collection extends Collection
 	{
 		$header = parent::buildHeader();
 		$header->addItem(new Item());
-		if ($tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property)) {
+		if ($tooltip = Tooltip::of($this->property)?->callProperty($this->property)) {
 			$header->setAttribute('title', $tooltip);
 		}
 		return $header;

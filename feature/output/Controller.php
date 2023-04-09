@@ -39,15 +39,11 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	const FEATURE = Feature::F_OUTPUT;
 
 	//------------------------------------------------------------------------------- HIDE_EMPTY_TEST
-	/**
-	 * Parameter for Reflection_Property::isVisible (for tabs)
-	 */
+	/** Parameter for Reflection_Property::isVisible (for tabs) */
 	const HIDE_EMPTY_TEST = true;
 
 	//---------------------------------------------------------------------------------- alignButtons
-	/**
-	 * @param $buttons Button[]
-	 */
+	/** @param $buttons Button[] */
 	protected function alignButtons(array &$buttons) : void
 	{
 		$found = [Align::LEFT => true, Align::CENTER => false, Align::RIGHT => false];
@@ -69,12 +65,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	}
 
 	//--------------------------------------------------------------------------- applyOutputSettings
-	/**
-	 * Apply output settings rules to output settings properties
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $output_settings Output_Setting\Set
-	 */
+	/** Apply output settings rules to output settings properties */
 	protected function applyOutputSettings(Output_Setting\Set $output_settings) : void
 	{
 		if ($output_settings->properties) {
@@ -105,9 +96,6 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	/**
 	 * Apply parameters to output settings
 	 *
-	 * @param $output_settings Output_Setting\Set
-	 * @param $parameters      array
-	 * @param $form            array|null
 	 * @return ?Output_Setting\Set set if parameters did change
 	 */
 	public function applyParametersToOutputSettings(
@@ -196,8 +184,8 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object     object|string object or class name
-	 * @param $parameters array parameters
+	 * @param $object     object|string Object or class name
+	 * @param $parameters array         Parameters
 	 * @param $settings   Setting\Custom\Set&Output_Setting\Set|null
 	 * @return Button[]
 	 */
@@ -275,10 +263,6 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	}
 
 	//------------------------------------------------------------------------------------- getModule
-	/**
-	 * @param $class_name string
-	 * @return ?Button
-	 */
 	protected function getModule(string $class_name) : ?Button
 	{
 		$class_names = Names::classToSet($class_name);
@@ -299,10 +283,6 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	}
 
 	//------------------------------------------------------------------------------------- getParent
-	/**
-	 * @param $class_name string
-	 * @return ?Button
-	 */
 	protected function getParent(string $class_name) : ?Button
 	{
 		$class_names = Names::classToSet($class_name);
@@ -323,10 +303,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	}
 
 	//----------------------------------------------------------------------------- getPropertiesList
-	/**
-	 * @param $class_name string
-	 * @return string[] property names list
-	 */
+	/** @return string[] property names list */
 	protected function getPropertiesList(
 		/** @noinspection PhpUnusedParameterInspection to extend */ string $class_name
 	) : array
@@ -335,13 +312,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	}
 
 	//---------------------------------------------------------------------------------------- getTab
-	/**
-	 * Get output tab for a given object
-	 *
-	 * @param $object          object
-	 * @param $output_settings Output_Setting\Set
-	 * @return Tab
-	 */
+	/** Get output tab for a given object */
 	protected function getTab(object $object, Output_Setting\Set $output_settings) : Tab
 	{
 		if (isset($output_settings->tab)) {
@@ -359,12 +330,6 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
-	/**
-	 * @param $parameters Parameters
-	 * @param $form       array
-	 * @param $class_name string
-	 * @return array
-	 */
 	protected function getViewParameters(Parameters $parameters, array $form, string $class_name)
 		: array
 	{
@@ -484,11 +449,6 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	}
 
 	//-------------------------------------------------------------------------------- outputSettings
-	/**
-	 * @param $class_name string
-	 * @param $feature    string
-	 * @return Output_Setting\Set
-	 */
 	protected function outputSettings(string $class_name, string $feature) : Output_Setting\Set
 	{
 		$settings = Output_Setting\Set::current($class_name, $feature);

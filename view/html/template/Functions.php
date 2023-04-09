@@ -19,11 +19,11 @@ use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
+use ITRocks\Framework\Reflection\Attribute\Property\Widget;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -704,8 +704,8 @@ class Functions
 			}
 			$is_simple = !$property->getType()->isMultiple();
 			if ($is_simple) {
-				$widget_annotation = Widget_Annotation::of($property);
-				if ($widget_annotation->value) {
+				$widget_annotation = Widget::of($property);
+				if ($widget_annotation?->class_name) {
 					$is_simple = false;
 				}
 			}

@@ -26,27 +26,17 @@ class Html_Builder_Type
 {
 
 	//----------------------------------------------------------------------------------- $attributes
-	/**
-	 * @var string[] Additional HTML attributes for your DOM element
-	 */
+	/** @var string[] Additional HTML attributes for your DOM element */
 	public array $attributes = [];
 
 	//---------------------------------------------------------------------------------- $auto_height
-	/**
-	 * @var boolean
-	 */
 	public bool $auto_height = true;
 
 	//----------------------------------------------------------------------------------- $auto_width
-	/**
-	 * @var boolean
-	 */
 	public bool $auto_width = true;
 
 	//-------------------------------------------------------------------------------------- $classes
-	/**
-	 * @var string[] Additional CSS classes for your DOM element class attribute
-	 */
+	/** @var string[] Additional CSS classes for your DOM element class attribute */
 	public array $classes = [];
 
 	//----------------------------------------------------------------------------------- $conditions
@@ -59,119 +49,64 @@ class Html_Builder_Type
 	public ?array $conditions = null;
 
 	//----------------------------------------------------------------------------------------- $data
-	/**
-	 * @var string[] Additional data-key attributes for your DOM element
-	 */
+	/** @var string[] Additional data-key attributes for your DOM element */
 	public array $data = [];
 
 	//---------------------------------------------------------------------------------- $is_abstract
-	/**
-	 * true if the component is used for an abstract class
-	 *
-	 * @var boolean
-	 */
+	/** true if the component is used for an abstract class */
 	public bool $is_abstract = false;
 
 	//--------------------------------------------------------------------------------------- $is_new
-	/**
-	 * Is it a form for a new object (true), or a modification form (false) ?
-	 *
-	 * @var boolean
-	 */
+	/** Is it a form for a new object (true), or a modification form (false) ? */
 	public bool $is_new = false;
 
 	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
 	public string $name;
 
 	//----------------------------------------------------------------------------------------- $null
 	/**
 	 * The control may have an empty value
 	 * ie checkboxes may not be limited to '0' / '1' value, and may be '' too
-	 *
-	 * @var boolean
 	 */
 	public bool $null = false;
 
 	//------------------------------------------------------------------------------------ $on_change
-	/**
-	 * @var string[]
-	 */
+	/** @var string[] */
 	public array $on_change = [];
 
 	//------------------------------------------------------------------------- $parent_level_filters
-	/**
-	 * @var boolean
-	 */
 	public bool $parent_level_filters = false;
 
 	//------------------------------------------------------------------------------------- $pre_path
-	/**
-	 * @var string
-	 */
 	public string $pre_path = '';
 
 	//------------------------------------------------------------------------------------- $readonly
-	/**
-	 * The control will be read-only
-	 *
-	 * @var boolean
-	 */
+	/** The control will be read-only */
 	public bool $readonly = false;
 
 	//------------------------------------------------------------------------------ $realtime_change
-	/**
-	 * @var boolean
-	 */
 	public bool $realtime_change = false;
 
 	//------------------------------------------------------------------------------------- $required
-	/**
-	 * Required / mandatory field
-	 *
-	 * @var boolean
-	 */
+	/** Required / mandatory field */
 	public bool $required = false;
 
 	//------------------------------------------------------------------------------------- $template
-	/**
-	 * @var Html_Template
-	 */
 	public Html_Template $template;
 
 	//-------------------------------------------------------------------------------------- $tooltip
-	/**
-	 * @var string
-	 */
 	public string $tooltip = '';
 
 	//----------------------------------------------------------------------------------------- $type
-	/**
-	 * @var ?Type
-	 */
 	protected ?Type $type = null;
 
 	//---------------------------------------------------------------------------------------- $value
-	/**
-	 * @var mixed
-	 */
 	protected mixed $value = null;
 
 	//-------------------------------------------------------------------------------------- $with_id
-	/**
-	 * @var boolean
-	 */
 	protected bool $with_id = false;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $name     string|null
-	 * @param $type     Type|null
-	 * @param $value    mixed|null
-	 * @param $pre_path string|null
-	 */
 	public function __construct(
 		string $name = null, Type $type = null, mixed $value = null, string $pre_path = null
 	) {
@@ -205,9 +140,6 @@ class Html_Builder_Type
 	}
 
 	//----------------------------------------------------------------------------------------- build
-	/**
-	 * @return string
-	 */
 	public function build() : string
 	{
 		$this->patchSearchTypes();
@@ -245,9 +177,6 @@ class Html_Builder_Type
 	}
 
 	//---------------------------------------------------------------------------------- buildBoolean
-	/**
-	 * @return Element|string
-	 */
 	protected function buildBoolean() : Element|string
 	{
 		$value = match($this->value) {
@@ -279,10 +208,6 @@ class Html_Builder_Type
 	}
 
 	//--------------------------------------------------------------------------------- buildDateTime
-	/**
-	 * @param $format boolean
-	 * @return Element
-	 */
 	protected function buildDateTime(bool $format = true) : Element
 	{
 		$input = new Input(
@@ -297,9 +222,6 @@ class Html_Builder_Type
 	}
 
 	//------------------------------------------------------------------------------------- buildFile
-	/**
-	 * @return string
-	 */
 	protected function buildFile() : string
 	{
 		$field_name = $this->getFieldName();
@@ -328,10 +250,6 @@ class Html_Builder_Type
 	}
 
 	//------------------------------------------------------------------------------------ buildFloat
-	/**
-	 * @param $format boolean
-	 * @return Element
-	 */
 	protected function buildFloat(bool $format = true) : Element
 	{
 		$input = new Input(
@@ -347,9 +265,6 @@ class Html_Builder_Type
 	}
 
 	//--------------------------------------------------------------------------------------- buildId
-	/**
-	 * @return Element
-	 */
 	protected function buildId() : Element
 	{
 		$input = new Input($this->getFieldName(), $this->value);
@@ -360,10 +275,6 @@ class Html_Builder_Type
 	}
 
 	//---------------------------------------------------------------------------------- buildInteger
-	/**
-	 * @param $format boolean
-	 * @return Element
-	 */
 	protected function buildInteger(bool $format = true) : Element
 	{
 		$input = new Input(
@@ -550,11 +461,7 @@ class Html_Builder_Type
 	}
 
 	//------------------------------------------------------------------------------ commonAttributes
-	/**
-	 * Set common attributes, classes, data to the given element
-	 *
-	 * @param $element Element
-	 */
+	/** Set common attributes, classes, data to the given element */
 	protected function commonAttributes(Element $element) : void
 	{
 		$this->addConditionsToElement($element);
@@ -579,12 +486,6 @@ class Html_Builder_Type
 	}
 
 	//---------------------------------------------------------------------------------- getFieldName
-	/**
-	 * @param $prefix            string
-	 * @param $counter_increment boolean
-	 * @param $counter_name      string
-	 * @return string
-	 */
 	public function getFieldName(
 		string $prefix = '', bool $counter_increment = true, string $counter_name = ''
 	) : string
@@ -617,11 +518,6 @@ class Html_Builder_Type
 	}
 
 	//------------------------------------------------------------------------ getRepetitiveFieldName
-	/**
-	 * @param $prefix            string
-	 * @param $counter_increment boolean
-	 * @return string
-	 */
 	private function getRepetitiveFieldName(string $prefix, bool $counter_increment) : string
 	{
 		$i                = strpos($this->pre_path, '[]');
@@ -669,9 +565,7 @@ class Html_Builder_Type
 	}
 
 	//------------------------------------------------------------------------------ patchSearchTypes
-	/**
-	 * Patch search type : e.g. dates should be typed as string
-	 */
+	/** Patch search type : e.g. dates should be typed as string */
 	private function patchSearchTypes() : void
 	{
 		if (str_starts_with($this->name, 'search[') && $this->type->isDateTime()) {
@@ -683,9 +577,6 @@ class Html_Builder_Type
 	}
 
 	//---------------------------------------------------------------------------- setInputAsReadOnly
-	/**
-	 * @param $input Element
-	 */
 	public function setInputAsReadOnly(Element $input) : void
 	{
 		if ($this->readonly) {
@@ -699,10 +590,6 @@ class Html_Builder_Type
 	}
 
 	//-------------------------------------------------------------------------- setOnChangeAttribute
-	/**
-	 * @param $element         Element
-	 * @param $realtime_change boolean
-	 */
 	private function setOnChangeAttribute(Element $element, bool $realtime_change = true) : void
 	{
 		if (!$this->on_change) {
@@ -719,7 +606,6 @@ class Html_Builder_Type
 	/**
 	 * Set template : will be set only if $template is a Html_Template
 	 *
-	 * @param $template Template
 	 * @return $this
 	 */
 	public function setTemplate(Template $template) : static
