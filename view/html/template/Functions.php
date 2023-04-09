@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpUnused into HTML templates */
+<?php /** @noinspection PhpUnused .html templates */
 namespace ITRocks\Framework\View\Html\Template;
 
 use Exception;
@@ -61,12 +61,7 @@ class Functions
 	private array $inside_blocks = [];
 
 	//------------------------------------------------------------------------ displayableClassNameOf
-	/**
-	 * Gets the name of the source class for $object
-	 *
-	 * @param $object object|string|null
-	 * @return ?Displayable
-	 */
+	/** Gets the name of the source class for $object */
 	protected function displayableClassNameOf(object|string|null $object) : ?Displayable
 	{
 		return $object
@@ -85,8 +80,6 @@ class Functions
 
 	//------------------------------------------------------------------------------------ escapeName
 	/**
-	 * @param $name string
-	 * @return string
 	 * @see List_\Controller::descapePropertyName()
 	 * @see Import_Settings_Builder::buildForm()
 	 */
@@ -119,23 +112,13 @@ class Functions
 	}
 
 	//------------------------------------------------------------------------------- getAbsoluteLink
-	/**
-	 * @param $template Template
-	 * @param $feature string
-	 * @return string
-	 */
 	public function getAbsoluteLink(Template $template, string $feature = '') : string
 	{
 		return Paths::getUrl() . $this->getLink($template, $feature);
 	}
 
 	//-------------------------------------------------------------------------------- getApplication
-	/**
-	 * Returns application name
-	 *
-	 * @param $template Template
-	 * @return string
-	 */
+	/** Returns application name */
 	public function getApplication(
 		/** @noinspection PhpUnusedParameterInspection */ Template $template
 	) : string
@@ -147,9 +130,6 @@ class Functions
 	/**
 	 * Returns object's class name
 	 * If it is a built object (using Builder), always gets the source class name
-	 *
-	 * @param $template Template
-	 * @return ?Displayable
 	 */
 	public function getClass(Template $template) : ?Displayable
 	{
@@ -157,11 +137,6 @@ class Functions
 	}
 
 	//----------------------------------------------------------------------------- getConditionClass
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $template Template
-	 * @return string
-	 */
 	public function getConditionClass(Template $template) : string
 	{
 		// the property path is the key for the Func\Comparison or Func\In nearest object
@@ -185,10 +160,6 @@ class Functions
 	 *
 	 * A shortcut to "{@rootObject.{@key}.@edit}" that enables the value of the condition
 	 * You must have a Dao_Function with the property.path for the root object as key as parent object
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $template Template
-	 * @return string
 	 */
 	public function getConditionEdit(Template $template) : string
 	{
@@ -225,10 +196,6 @@ class Functions
 	/**
 	 * A shortcut to {@key} that enables the label of a condition (property.path or special function)
 	 * You must have a Dao_Function with the property.path for the root object as key as parent object
-	 *
-	 * @param $template                  Template
-	 * @param $resolve_expression_marker boolean
-	 * @return string
 	 */
 	public function getConditionLabel(
 		Template $template, bool $resolve_expression_marker = true
@@ -249,12 +216,7 @@ class Functions
 	}
 
 	//-------------------------------------------------------------------------------------- getCount
-	/**
-	 * Returns array count
-	 *
-	 * @param $template Template
-	 * @return integer
-	 */
+	/** Returns array count */
 	public function getCount(Template $template) : int
 	{
 		return count(reset($template->objects));
@@ -265,11 +227,6 @@ class Functions
 	 * Gets the next value of a counter internal to the template parser :
 	 * - one counter per $class_name
 	 * - reset each time $context_object changes
-	 *
-	 * @param $template       Template
-	 * @param $class_name     string|null
-	 * @param $context_object object|null
-	 * @return integer
 	 */
 	public function getCounter(
 		Template $template, string $class_name = null, object $context_object = null
@@ -282,12 +239,7 @@ class Functions
 	}
 
 	//----------------------------------------------------------------------------------- getCssClass
-	/**
-	 * Escape strings that will be used as css class names. in HTML DOT will be replaced by '-'
-	 *
-	 * @param $template Template
-	 * @return string
-	 */
+	/** Escape strings that will be used as css class names. in HTML DOT will be replaced by '-' */
 	public function getCssClass(Template $template) : string
 	{
 		return str_replace(DOT, '-', reset($template->objects));
@@ -295,10 +247,8 @@ class Functions
 
 	//--------------------------------------------------------------------------------------- getDate
 	/**
-	 * Return object as date
+	 * Returns object as date
 	 *
-	 * @param $template Template
-	 * @return Date_Time
 	 * @throws Exception
 	 */
 	public function getDate(Template $template) : Date_Time
@@ -308,7 +258,7 @@ class Functions
 
 	//------------------------------------------------------------------------------------ getDisplay
 	/**
-	 * Return object's display
+	 * Returns object's display
 	 *
 	 * @param $template          Template
 	 * @param $display_full_path boolean If object is a property, returns 'the.full.property.path'
@@ -336,12 +286,7 @@ class Functions
 	}
 
 	//----------------------------------------------------------------------------------- getDisplays
-	/**
-	 * Return object's displays
-	 *
-	 * @param $template Template
-	 * @return string
-	 */
+	/** Returns object's displays */
 	public function getDisplays(Template $template) : string
 	{
 		$object = reset($template->objects);
@@ -366,10 +311,6 @@ class Functions
 	}
 
 	//--------------------------------------------------------------------------------------- getDump
-	/**
-	 * @param $template Template
-	 * @return string
-	 */
 	public function getDump(Template $template) : string
 	{
 		return print_r(reset($template->objects), true);
@@ -463,16 +404,6 @@ class Functions
 	}
 
 	//------------------------------------------------------------------------- getEditObjectProperty
-	/**
-	 * @param $object             object
-	 * @param $property_name      string
-	 * @param $property           Reflection_Property
-	 * @param $template           Template
-	 * @param $name               string
-	 * @param $ignore_user        boolean
-	 * @param $can_always_be_null boolean
-	 * @return string
-	 */
 	protected function getEditObjectProperty(
 		object $object, string $property_name, Reflection_Property $property, Template $template,
 		string $name, bool $ignore_user, bool $can_always_be_null
@@ -525,12 +456,7 @@ class Functions
 	}
 
 	//-------------------------------------------------------------------------------------- getEmpty
-	/**
-	 * Returns true if the object is empty
-	 *
-	 * @param $template Template
-	 * @return boolean
-	 */
+	/** Returns true if the object is empty */
 	public function getEmpty(Template $template) : bool
 	{
 		return empty(reset($template->objects));
@@ -541,8 +467,6 @@ class Functions
 	 * Multiple properties come last
 	 *
 	 * @noinspection PhpMixedReturnTypeCanBeReducedInspection If not an array, returns the object
-	 * @param $template Template
-	 * @return mixed
 	 */
 	public function getEndWithMultiple(Template $template) : mixed
 	{
@@ -563,9 +487,6 @@ class Functions
 	/**
 	 * Escape strings that will be used as form names. in HTML DOT will be replaced by '>' as PHP
 	 * does not like variables named 'a.b.c'
-	 *
-	 * @param $template Template
-	 * @return string
 	 */
 	public function getEscapeName(Template $template) : string
 	{
@@ -576,7 +497,6 @@ class Functions
 	/**
 	 * Returns an expanded list of properties. Source element must be a list of Reflection_Property
 	 *
-	 * @param $template Template
 	 * @return Reflection_Property[]
 	 */
 	public function getExpand(Template $template) : array
@@ -617,36 +537,21 @@ class Functions
 	}
 
 	//------------------------------------------------------------------------------------ getFeature
-	/**
-	 * Returns template's feature method name
-	 *
-	 * @param $template Template
-	 * @return Displayable
-	 */
+	/** Returns template's feature method name */
 	public function getFeature(Template $template) : Displayable
 	{
 		return new Displayable($template->getFeature(), Displayable::TYPE_METHOD);
 	}
 
 	//-------------------------------------------------------------------------------------- getField
-	/**
-	 * Return the current data as a field
-	 *
-	 * @param $template Template
-	 * @return mixed
-	 */
+	/** Returns the current data as a field */
 	public function getField(Template $template) : mixed
 	{
 		return reset($template->objects);
 	}
 
 	//--------------------------------------------------------------------------------------- getFile
-	/**
-	 * Returns a Builder\File object for the current File value
-	 *
-	 * @param $template Template
-	 * @return File
-	 */
+	/** Returns a Builder\File object for the current File value */
 	public function getFile(Template $template) : File
 	{
 		return new File(reset($template->objects));
@@ -657,7 +562,6 @@ class Functions
 	 * Filter a property or a property list that should not be displayed.
 	 * The top object of the template must be a Reflection_Property[], or it will return as null
 	 *
-	 * @param $template Template
 	 * @return Reflection_Property[]|Reflection_Property|null
 	 */
 	public function getFilterProperties(Template $template) : array|Reflection_Property|null
@@ -693,12 +597,7 @@ class Functions
 	}
 
 	//-------------------------------------------------------------------------------------- getFirst
-	/**
-	 * Returns the first current array element
-	 *
-	 * @param $template Template
-	 * @return mixed
-	 */
+	/** Returns the first current array element */
 	public function getFirst(Template $template) : mixed
 	{
 		foreach ($template->objects as $array) {
@@ -710,13 +609,7 @@ class Functions
 	}
 
 	//---------------------------------------------------------------------------------------- getHas
-	/**
-	 * Returns true if the element is not empty
-	 * (useful for conditions on arrays)
-	 *
-	 * @param $template Template
-	 * @return boolean
-	 */
+	/** Returns true if the element is not empty (useful for conditions on arrays) */
 	public function getHas(Template $template) : bool
 	{
 		$object = reset($template->objects);
@@ -765,26 +658,14 @@ class Functions
 	}
 
 	//-------------------------------------------------------------------------------------- getImage
-	/**
-	 * Returns a <img src=""> with a link to the image of the current File property
-	 *
-	 * @param $template Template
-	 * @param $width    integer|null
-	 * @param $height   integer|null
-	 * @return string
-	 */
+	/** Returns a <img src=""> with a link to the image of the current File property */
 	public function getImage(Template $template, int $width = null, int $height = null) : string
 	{
 		return $this->getFile($template)->buildImage($width, $height);
 	}
 
 	//------------------------------------------------------------------------------------ getIsFirst
-	/**
-	 * Returns true if the current array element is the first one
-	 *
-	 * @param $template Template
-	 * @return ?boolean
-	 */
+	/** Returns true if the current array element is the first one */
 	public function getIsFirst(Template $template) : ?bool
 	{
 		$var_name = null;
@@ -799,12 +680,7 @@ class Functions
 	}
 
 	//------------------------------------------------------------------------------------- getIsLast
-	/**
-	 * Returns true if the current array element is the last one
-	 *
-	 * @param $template Template
-	 * @return ?boolean
-	 */
+	/** Returns true if the current array element is the last one */
 	public function getIsLast(Template $template) : ?bool
 	{
 		$var_name = null;
@@ -819,12 +695,7 @@ class Functions
 	}
 
 	//----------------------------------------------------------------------------------- getIsSimple
-	/**
-	 * Returns true if the property value has a simple display
-	 *
-	 * @param $template Template
-	 * @return boolean
-	 */
+	/** Returns true if the property value has a simple display */
 	public function getIsSimple(Template $template) : bool
 	{
 		foreach ($template->objects as $property) {
@@ -844,10 +715,6 @@ class Functions
 	}
 
 	//---------------------------------------------------------------------------------- getIsVisible
-	/**
-	 * @param $template Template
-	 * @return boolean
-	 */
 	public function getIsVisible(Template $template) : bool
 	{
 		foreach ($template->objects as $object) {
@@ -859,13 +726,7 @@ class Functions
 	}
 
 	//--------------------------------------------------------------------------------------- getJson
-	/**
-	 * Encode using json
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $template Template
-	 * @return string
-	 */
+	/** Encode using json */
 	public function getJson(Template $template) : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection */
@@ -873,12 +734,7 @@ class Functions
 	}
 
 	//---------------------------------------------------------------------------------------- getKey
-	/**
-	 * Returns the current key of the current element of the currently read array
-	 *
-	 * @param $template Template
-	 * @return int|string|null
-	 */
+	/** Returns the current key of the current element of the currently read array */
 	public function getKey(Template $template) : int|string|null
 	{
 		foreach ($template->objects as $key => $array) {
@@ -890,25 +746,14 @@ class Functions
 	}
 
 	//-------------------------------------------------------------------------------------- getLines
-	/**
-	 * Returns lines from a text
-	 *
-	 * @param $template Template
-	 * @return string[]
-	 */
+	/** @return string[] Returns lines from a text */
 	public function getLines(Template $template) : array
 	{
 		return explode(LF, strval($template->getObject()));
 	}
 
 	//--------------------------------------------------------------------------------------- getLink
-	/**
-	 * Returns a link to the nearest object
-	 *
-	 * @param $template Template
-	 * @param $feature  string
-	 * @return string
-	 */
+	/** Returns a link to the nearest object */
 	public function getLink(Template $template, string $feature = '') : string
 	{
 		foreach ($template->objects as $object) {
@@ -923,13 +768,7 @@ class Functions
 	}
 
 	//---------------------------------------------------------------------------------------- getLoc
-	/**
-	 * Returns a value with application of current locales
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $template Template
-	 * @return mixed
-	 */
+	/** Returns a value with application of current locales */
 	public function getLoc(Template $template) : mixed
 	{
 		reset($template->var_names);
@@ -943,7 +782,7 @@ class Functions
 						}
 					} while ($parent instanceof Date_Time);
 					if (is_object($parent) && property_exists($parent, current($template->var_names))) {
-						// call propertyToLocale to apply @show_seconds
+						// call propertyToLocale to apply #Show_Seconds
 						/** @noinspection PhpUnhandledExceptionInspection object, property must be valid */
 						return Loc::propertyToLocale(
 							new Reflection_Property($parent, current($template->var_names)),
@@ -979,24 +818,14 @@ class Functions
 	}
 
 	//--------------------------------------------------------------------------------------- getNull
-	/**
-	 * Returns true if the object is null or empty string
-	 *
-	 * @param $template Template
-	 * @return boolean
-	 */
+	/** Returns true if the object is null or empty string */
 	public function getNull(Template $template) : bool
 	{
 		return reset($template->objects) === null;
 	}
 
 	//------------------------------------------------------------------------------------ getNumeric
-	/**
-	 * Returns true if the object is numeric
-	 *
-	 * @param $template Template
-	 * @return boolean
-	 */
+	/** Returns true if the object is numeric */
 	public function getNumeric(Template $template) : bool
 	{
 		return is_numeric(reset($template->objects));
@@ -1026,12 +855,7 @@ class Functions
 	}
 
 	//-------------------------------------------------------------------------------------- getParse
-	/**
-	 * Parse vars from the string value
-	 *
-	 * @param $template Template
-	 * @return string
-	 */
+	/** Parse vars from the string value */
 	public function getParse(Template $template) : string
 	{
 		return $template->parseContent(
@@ -1040,12 +864,7 @@ class Functions
 	}
 
 	//------------------------------------------------------------------------------------- getPrefix
-	/**
-	 * Prefix the property name with current property prefix string
-	 *
-	 * @param $template Template
-	 * @return string
-	 */
+	/** Prefix the property name with current property prefix string */
 	public function getPrefix(Template $template) : string
 	{
 		$name            = strval(reset($template->objects));
@@ -1054,10 +873,6 @@ class Functions
 	}
 
 	//-------------------------------------------------------------------------------- getPrintGetter
-	/**
-	 * @param $template Template
-	 * @return string
-	 */
 	public function getPrintGetter(Template $template) : string
 	{
 		$value = reset($template->objects);
@@ -1166,12 +981,6 @@ class Functions
 	}
 
 	//----------------------------------------------------------------------------------- getProperty
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $template Template
-	 * @param $name     string|null
-	 * @return ?Reflection_Property_Value
-	 */
 	public function getProperty(Template $template, string $name = null) : ?Reflection_Property_Value
 	{
 		if ($name) {
@@ -1195,7 +1004,6 @@ class Functions
 	//----------------------------------------------------------------------------- getPropertyBlocks
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $property Reflection_Property
 	 * @return Block[]
 	 */
 	protected function getPropertyBlocks(Reflection_Property $property) : array
@@ -1218,10 +1026,6 @@ class Functions
 	}
 
 	//----------------------------------------------------------------------------- getPropertyPrefix
-	/**
-	 * @param $template Template
-	 * @return string
-	 */
 	public function getPropertyPrefix(Template $template) : string
 	{
 		$prefix = reset($template->properties_prefix);
@@ -1248,11 +1052,6 @@ class Functions
 	}
 
 	//----------------------------------------------------------------------------- getPropertySelect
-	/**
-	 * @param $template Template
-	 * @param $name     string|null
-	 * @return string
-	 */
 	public function getPropertySelect(Template $template, string $name = null) : string
 	{
 		foreach ($template->objects as $property) {
@@ -1264,10 +1063,6 @@ class Functions
 	}
 
 	//---------------------------------------------------------------------------- getPropertyTypeCss
-	/**
-	 * @param $template Template
-	 * @return string
-	 */
 	public function getPropertyTypeCss(Template $template) : string
 	{
 		foreach ($template->objects as $object) {
@@ -1279,24 +1074,14 @@ class Functions
 	}
 
 	//---------------------------------------------------------------------------------- getRootClass
-	/**
-	 * Returns root class from template objects stack
-	 *
-	 * @param $template Template
-	 * @return ?Displayable
-	 */
+	/** Returns root class from template objects stack */
 	public function getRootClass(Template $template) : ?Displayable
 	{
 		return $this->displayableClassNameOf($this->getRootObject($template));
 	}
 
 	//--------------------------------------------------------------------------------- getRootObject
-	/**
-	 * Returns root object from template objects stack
-	 *
-	 * @param $template Template
-	 * @return object
-	 */
+	/** Returns root object from template objects stack */
 	public function getRootObject(Template $template) : object
 	{
 		$object = null;
@@ -1309,10 +1094,6 @@ class Functions
 	}
 
 	//--------------------------------------------------------------------------------- getSearchEdit
-	/**
-	 * @param $template Template
-	 * @return string
-	 */
 	public function getSearchEdit(Template $template) : string
 	{
 		/** @var $reflection_property Reflection_Property */
@@ -1324,7 +1105,6 @@ class Functions
 	/**
 	 * Returns the sorted version of the objects collection
 	 *
-	 * @param $template Template
 	 * @return object[] the sorted objects collection
 	 */
 	public function getSort(Template $template) : array
@@ -1345,7 +1125,6 @@ class Functions
 	 * Returns the block names if current property starts one or several properties blocks
 	 * If not, returns an empty string array
 	 *
-	 * @param $template Template
 	 * @return Block[]
 	 */
 	public function getStartingBlocks(Template $template) : array
@@ -1374,7 +1153,6 @@ class Functions
 	 * Returns the block names if current property stops one or several properties blocks
 	 * If not, returns an empty string array
 	 *
-	 * @param $template Template
 	 * @return Block[]
 	 */
 	public function getStoppingBlocks(Template $template) : array
@@ -1424,10 +1202,6 @@ class Functions
 	}
 
 	//------------------------------------------------------------------------------------- getString
-	/**
-	 * @param $template Template
-	 * @return string
-	 */
 	public function getString(Template $template) : string
 	{
 		return strval(reset($template->objects));
@@ -1438,8 +1212,6 @@ class Functions
 	 * Allow to navigate through the template object
 	 *
 	 * @example {@template.css}
-	 * @param $template Template
-	 * @return Template
 	 */
 	public function getTemplate(Template $template) : Template
 	{
@@ -1461,23 +1233,13 @@ class Functions
 	}
 
 	//---------------------------------------------------------------------------------------- getTop
-	/**
-	 * Returns template's top object
-	 * (use it inside of loops)
-	 *
-	 * @param $template Template
-	 * @return mixed
-	 */
+	/** Returns template's top object (use it inside of loops) */
 	public function getTop(Template $template) : mixed
 	{
 		return $template->getObject();
 	}
 
 	//----------------------------------------------------------------------------------------- getTr
-	/**
-	 * @param $template Template
-	 * @return string
-	 */
 	public function getTr(Template $template) : string
 	{
 		$value      = array_shift($template->objects);
@@ -1489,10 +1251,6 @@ class Functions
 	}
 
 	//------------------------------------------------------------------------------------ getTypeCss
-	/**
-	 * @param $template Template
-	 * @return string
-	 */
 	public function getTypeCss(Template $template) : string
 	{
 		foreach ($template->objects as $object) {
@@ -1504,13 +1262,7 @@ class Functions
 	}
 
 	//--------------------------------------------------------------------------------------- getUnit
-	/**
-	 * Get the property unit
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $template Template
-	 * @return string
-	 */
+	/** Gets the property unit */
 	public function getUnit(Template $template) : string
 	{
 		$property = reset($template->objects);
@@ -1534,12 +1286,7 @@ class Functions
 	}
 
 	//-------------------------------------------------------------------------------------- getValue
-	/**
-	 * Returns the current value of the current element of the currently read array
-	 *
-	 * @param $template Template
-	 * @return mixed
-	 */
+	/** Returns the current value of the current element of the currently read array */
 	public function getValue(Template $template) : mixed
 	{
 		foreach ($template->objects as $key => $array) {
@@ -1553,11 +1300,9 @@ class Functions
 	//------------------------------------------------------------------------------------- getValues
 	/**
 	 * Returns the possible values for a property
-	 *
 	 * Get from #Values or if it is a link to an object, read all objects
 	 *
 	 * @example {ITRocks\Framework\User.name}
-	 * @param $template Template
 	 * @return string[]
 	 */
 	public function getValues(Template $template) : array
@@ -1581,9 +1326,6 @@ class Functions
 	 * - empty string
 	 *
 	 * It is not void if its numeric value is 0 or 0.00
-	 *
-	 * @param $template Template
-	 * @return boolean
 	 */
 	public function getVoid(Template $template) : bool
 	{
@@ -1591,22 +1333,13 @@ class Functions
 	}
 
 	//--------------------------------------------------------------------------------------- getZero
-	/**
-	 * Returns true if the object is null or empty string
-	 *
-	 * @param $template Template
-	 * @return boolean
-	 */
+	/** Returns true if the object is null or empty string */
 	public function getZero(Template $template) : bool
 	{
 		return strval(reset($template->objects)) === '0';
 	}
 
 	//----------------------------------------------------------------------------- isPropertyVisible
-	/**
-	 * @param $property Reflection_Property
-	 * @return boolean
-	 */
 	protected function isPropertyVisible(Reflection_Property $property) : bool
 	{
 		return $property->isVisible()

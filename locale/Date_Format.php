@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Locale;
 
 use DateTime;
 use Exception;
+use ITRocks\Framework\Reflection\Attribute\Property\Show_Time;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Date_Time;
 
@@ -12,35 +13,20 @@ use ITRocks\Framework\Tools\Date_Time;
 class Date_Format
 {
 
-	//----------------------------------------------------------------------------------- TIME_ALWAYS
-	/** Always display time, always with seconds too */
-	const TIME_ALWAYS = 'always';
-
-	//------------------------------------------------------------------------------------- TIME_AUTO
-	/** Default and backward compatibility. Time is added if not 00:00:00, using ::$show_seconds */
-	const TIME_AUTO = 'auto';
-
-	//------------------------------------------------------------------------------------ TIME_NEVER
-	/** Never display time */
-	const TIME_NEVER = 'never';
-
 	//--------------------------------------------------------------------------------------- $format
-	/**
-	 * @example 'd/m/Y' for the french date format, or 'm/d/Y' for the english one
-	 */
+	/** @example 'd/m/Y' for the french date format, or 'm/d/Y' for the english one */
 	public string $format;
 
 	//--------------------------------------------------------------------------------- $show_seconds
 	public bool $show_seconds = false;
 
 	//------------------------------------------------------------------------------------ $show_time
-	#[Values(self::class)]
-	public string $show_time = self::TIME_AUTO;
+	#[Values(Show_Time::class, true, false)]
+	public string $show_time = Show_Time::AUTO;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Constructor needs the locale format of the date
-	 *
 	 * Default date format, if none told, is ISO 'Y-m-d'
 	 *
 	 * @param $format string e.g. 'd/m/Y' for the french date format, or 'm/d/Y' for the english one
@@ -55,8 +41,8 @@ class Date_Format
 
 	//---------------------------------------------------------------------------------- advancedDate
 	/**
-	 * @param $date   string an incomplete locale format date : day alone, year alone, compositions
-	 * @param $joker  string if set, the character that replaces missing values, instead of current
+	 * @param $date  string an incomplete locale format date : day alone, year alone, compositions
+	 * @param $joker string if set, the character that replaces missing values, instead of current
 	 * @return string the complete locale date e.g. 2015-30-25
 	 */
 	private function advancedDate(string $date, string $joker = '') : string
@@ -183,10 +169,10 @@ class Date_Format
 			}
 			else {
 				[$date, $time] = str_contains($date, SP) ? explode(SP, $date) : [$date, ''];
-				if ($this->show_time === self::TIME_NEVER) {
+				if ($this->show_time === Show_Time::NEVER) {
 					$time = '';
 				}
-				elseif ($this->show_time !== self::TIME_ALWAYS) {
+				elseif ($this->show_time !== Show_Time::ALWAYS) {
 					if ($time === '00:00:00') {
 						$time = '';
 					}
@@ -240,16 +226,16 @@ class Date_Format
 				//return str_replace(['_', '%'], ['?', '*'], preg_replace($pattern, $replace, $date));
 				$date = preg_replace("/ $sub_pattern_date /x", $replace, $date);
 				// backward compatible code but with support to display time if required
-				if ($this->show_time === self::TIME_ALWAYS) {
+				if ($this->show_time === Show_Time::ALWAYS) {
 					return trim($date . SP . $time);
 				}
 				return $date;
 				// want code compatible with ::$show_seconds (and new constants) like in toLocale()?
 				// => change above backward code with below
-				/*if ($this->show_time === self::TIME_NEVER) {
+				/*if ($this->show_time === Show_Time::NEVER) {
 					return $date;
 				}
-				elseif ($this->show_time !== self::TIME_ALWAYS) {
+				elseif ($this->show_time !== Show_Time::ALWAYS) {
 					if ($time === '__:__:__') {
 						$time = '';
 					}

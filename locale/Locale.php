@@ -15,6 +15,8 @@ use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Default_;
 use ITRocks\Framework\Reflection\Attribute\Property\Decimals;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
+use ITRocks\Framework\Reflection\Attribute\Property\Show_Seconds;
+use ITRocks\Framework\Reflection\Attribute\Property\Show_Time;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
@@ -132,8 +134,8 @@ class Locale implements Configurable, Registerable, Updatable
 			$value = strlen($value) ? str_repeat('*', strlen(Password::UNCHANGED)) : '';
 		}
 		elseif ($type->isDateTime() && (($value instanceof Date_Time) || !$called_user_getter)) {
-			$this->date_format->show_seconds = $property->getAnnotation('show_seconds')->value;
-			$this->date_format->show_time    = $property->getAnnotation('show_time')->value ?: '';
+			$this->date_format->show_seconds = Show_Seconds::of($property)->value ?? false;
+			$this->date_format->show_time    = Show_Time::of($property)->value    ?? '';
 			// force call of toLocale(), needed for date-times
 			$called_user_getter = false;
 		}

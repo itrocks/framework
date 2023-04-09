@@ -6,6 +6,7 @@ use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
+use ITRocks\Framework\Reflection\Attribute\Property\Show_Seconds;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -19,16 +20,9 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	use Annotation;
 
 	//------------------------------------------------------------------------------- $report_message
-	/**
-	 * @var string
-	 */
 	protected string $report_message = '';
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value    bool|string|null
-	 * @param $property Interfaces\Reflection_Property
-	 */
 	public function __construct(bool|string|null $value, Interfaces\Reflection_Property $property)
 	{
 		parent::__construct($value, $property);
@@ -36,9 +30,6 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return ($this->property->getType()->isDateTime() && Locale::current())
@@ -47,25 +38,17 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	}
 
 	//------------------------------------------------------------------------------------ dateFormat
-	/**
-	 * @return string
-	 */
 	public function dateFormat() : string
 	{
 		$date    = 'Y-m-d-H-i-s';
 		$date    = array_combine(explode('-', $date), explode('-', date($date)));
 		$format  = Locale::current()->date_format->format;
-		$format .= ' H:i' . ($this->property->getAnnotation('show_seconds')->value ? ':s' : '');
+		$format .= ' H:i' . (Show_Seconds::of($this->property)?->value ? ':s' : '');
 		return strReplace($date, $format);
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
-	/**
-	 * Gets the last validate() call resulting report message
-	 *
-	 * @param $report_message string|null
-	 * @return string
-	 */
+	/** Gets the last validate() call resulting report message */
 	public function reportMessage(string $report_message = null) : string
 	{
 		if (isset($report_message)) {
@@ -79,7 +62,6 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	 * Validates the property value within this object context
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object object
 	 * @return ?boolean true if validated, false if not validated, null if could not be validated
 	 */
 	public function validate(object $object) : ?bool

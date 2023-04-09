@@ -6,12 +6,12 @@ use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Func\Where;
 use ITRocks\Framework\Dao\Sql\Link;
 use ITRocks\Framework\Locale;
-use ITRocks\Framework\Locale\Date_Format;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Attribute\Property\Show_Time;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -301,7 +301,7 @@ class Summary_Builder
 			// in case of a date, we convert to locale with time
 			$date_format            = Loc::date();
 			$show_time              = $date_format->show_time;
-			$date_format->show_time = Date_Format::TIME_ALWAYS;
+			$date_format->show_time = Show_Time::ALWAYS;
 			$date                   = Loc::dateToLocale($value);
 			$date_format->show_time = $show_time;
 			return $date;

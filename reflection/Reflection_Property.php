@@ -18,6 +18,8 @@ use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Multiline;
+use ITRocks\Framework\Reflection\Attribute\Property\Show_Seconds;
+use ITRocks\Framework\Reflection\Attribute\Property\Show_Time;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Attribute\Property_Has_Attributes;
@@ -752,22 +754,26 @@ class Reflection_Property extends ReflectionProperty
 	}
 
 	//----------------------------------------------------------------------------------- showSeconds
+	/** @noinspection PhpUnused properties.html */
 	public function showSeconds() : string
 	{
 		if (!$this->getType()->isDateTime()) {
 			return '';
 		}
-		return $this->getAnnotation('show_seconds')->value ? 'show-seconds' : '';
+		return Show_Seconds::of($this)?->value ? 'show-seconds' : '';
 	}
 
 	//-------------------------------------------------------------------------------------- showTime
+	/** @noinspection PhpUnused properties.html */
 	public function showTime() : string
 	{
 		if (!$this->getType()->isDateTime()) {
 			return '';
 		}
-		$show_time = $this->getAnnotation('show_time')->value;
-		return in_array($show_time, ['always', 'auto', true], true) ? 'show-time' : '';
+		$show_time = Show_Time::of($this)?->value;
+		return in_array($show_time, [Show_Time::ALWAYS, Show_Time::AUTO, true], true) ?
+			'show-time'
+			: '';
 	}
 
 	//--------------------------------------------------------------------- toReflectionPropertyValue

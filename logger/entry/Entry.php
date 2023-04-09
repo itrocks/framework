@@ -14,6 +14,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\List_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Sort;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
+use ITRocks\Framework\Reflection\Attribute\Property\Show_Seconds;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
@@ -78,11 +79,11 @@ class Entry implements Validate\Except
 	public string $session_id;
 
 	//---------------------------------------------------------------------------------------- $start
-	/** @show_seconds */
+	#[Show_Seconds]
 	public Date_Time|string $start;
 
 	//----------------------------------------------------------------------------------------- $stop
-	/** @show_seconds */
+	#[Show_Seconds]
 	public Date_Time|string $stop;
 
 	//------------------------------------------------------------------------------------------ $uri
