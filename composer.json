@@ -36,7 +36,7 @@
 		"kensnyder/quill-image-resize-module":   "^1.0",
 		"netcarver/textile":                     "^3.7",
 		"oomphinc/composer-installers-extender": "^2.0",
-		"php":                                   "^8.1",
+		"php":                                   "^8.2",
 		"phpunit/phpunit":                       "^9.5",
 		"setasign/fpdi":                         "^2.3",
 		"symfony/mailer":                        "^6.1",
