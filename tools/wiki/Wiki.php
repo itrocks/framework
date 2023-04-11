@@ -5,9 +5,10 @@ use ITRocks\Framework\AOP\Joinpoint\Around_Method;
 use ITRocks\Framework\Feature\Edit\Html_Template;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Attribute\Property\Textile;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
+use ITRocks\Framework\Tools;
 use ITRocks\Framework\Tools\Wiki\GeSHi;
-use ITRocks\Framework\Tools\Wiki\Textile;
 
 /**
  * The wiki plugin enable wiki parsing of multiline properties values
@@ -18,11 +19,7 @@ class Wiki implements Registerable
 {
 
 	//------------------------------------------------------------------------------ $dont_parse_wiki
-	/**
-	 * When > 0, wiki will not be parsed (inside html form components)
-	 *
-	 * @var integer
-	 */
+	/** When > 0, wiki will not be parsed (inside html form components) */
 	private int $dont_parse_wiki = 0;
 
 	//-------------------------------------------------------------------------------- $geshi_replace
@@ -45,10 +42,6 @@ class Wiki implements Registerable
 	 *
 	 * It is replaced by a geshi replacement code like `#1` that will be solved later by geshiSolve()
 	 * or now if $solve is true (default)
-	 *
-	 * @param $string string
-	 * @param $solve  boolean
-	 * @return string
 	 */
 	public function geshi(string $string, bool $solve = true) : string
 	{
@@ -88,12 +81,7 @@ class Wiki implements Registerable
 	}
 
 	//------------------------------------------------------------------------------------ geshiSolve
-	/**
-	 * Solve geshi replacements
-	 *
-	 * @param $string string
-	 * @return string
-	 */
+	/** Solve geshi replacements */
 	public function geshiSolve(string $string) : string
 	{
 		foreach ($this->geshi_replace as $replacement => $geshi) {
@@ -109,7 +97,7 @@ class Wiki implements Registerable
 	//----------------------------------------------------------------------------------- noParseZone
 	/**
 	 * @output $joinpoint->result string value after reading value or exec specs (can be an object)
-	 * @param $var_name  string can be a unique var or path.of.vars
+	 * @param $var_name  string        Can be a unique var or path.of.vars
 	 * @param $joinpoint Around_Method
 	 */
 	public function noParseZone(string $var_name, Around_Method $joinpoint) : void
@@ -125,9 +113,6 @@ class Wiki implements Registerable
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @param $register Register
-	 */
 	public function register(Register $register) : void
 	{
 		$aop = $register->aop;
@@ -156,7 +141,7 @@ class Wiki implements Registerable
 			$wiki   = new Wiki();
 			$result = $wiki->geshi('@' . $programming_language . LF . $result . LF . '@');
 		}
-		if ($property->getAnnotation('textile')->value) {
+		if (Textile::of($property)?->value) {
 			$wiki   = new Wiki();
 			$result = $wiki->geshi($result, false);
 			$result = $wiki->textile($result);
@@ -165,15 +150,10 @@ class Wiki implements Registerable
 	}
 
 	//--------------------------------------------------------------------------------------- textile
-	/**
-	 * Parse a string using textile
-	 *
-	 * @param $string string
-	 * @return string
-	 */
+	/** Parse a string using textile */
 	public function textile(string $string) : string
 	{
-		return (new Textile)->parse($string);
+		return (new Tools\Wiki\Textile)->parse($string);
 	}
 
 }

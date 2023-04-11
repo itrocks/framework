@@ -465,12 +465,6 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@signed' => Boolean_Annotation::class,
 
 	/**
-	 * @textile
-	 * This tells that the property should be rendered using textile parsing
-	 */
-	Parser::T_PROPERTY . '@textile' => Boolean_Annotation::class,
-
-	/**
 	 * @transform [true]
 	 * Identifies a property which value should be transferred to a transformed object (default yes)
 	 */

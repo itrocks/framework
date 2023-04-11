@@ -25,17 +25,11 @@ class Dao implements Configurable
 	const LINKS_LIST = 'list';
 
 	//----------------------------------------------------------------------------------------- $list
-	/**
-	 * The list of available and referenced DAO
-	 *
-	 * @var Data_Link[]
-	 */
+	/** @var Data_Link[] The list of available and referenced DAO */
 	private static array $list;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $configuration array
-	 */
+	/** @param $configuration array */
 	public function __construct(mixed $configuration)
 	{
 		if (isset($configuration[self::LINKS_LIST])) {
@@ -48,11 +42,7 @@ class Dao implements Configurable
 	}
 
 	//------------------------------------------------------------------------------------------- add
-	/**
-	 * Forces add of object to the data link : no update, even if there is an identifier
-	 *
-	 * @return Option\Add
-	 */
+	/** Forces add of object to the data link : no update, even if there is an identifier */
 	public static function add() : Option\Add
 	{
 		return new Option\Add();
@@ -77,12 +67,7 @@ class Dao implements Configurable
 	}
 
 	//----------------------------------------------------------------------------------- cacheResult
-	/**
-	 * Cache where options and query result
-	 * And use cached result if exists
-	 *
-	 * @return Option\Cache_Result
-	 */
+	/** Cache where options and query result and use cached result if exists */
 	public static function cacheResult() : Option\Cache_Result
 	{
 		return new Option\Cache_Result();
@@ -92,7 +77,6 @@ class Dao implements Configurable
 	/**
 	 * Gets the class name associated to a store set name
 	 *
-	 * @param $store_name string
 	 * @return string[] Full class name with namespace
 	 */
 	public static function classNamesOf(string $store_name) : array
@@ -123,9 +107,10 @@ class Dao implements Configurable
 	/**
 	 * Count the number of elements that match filter
 	 *
-	 * @param $what       array|object|string source object for filter, only set properties used
-	 * @param $class_name string|null must be set if is $what is a filter array instead of a filter object
-	 * @param $options    Option|Option[] array some options for advanced search
+	 * @param $what       array|object|string Source object for filter, only set properties used
+	 * @param $class_name string|null         Must be set if is $what is a filter array instead of a
+	 *                                        filter object
+	 * @param $options    Option|Option[]     Some options for advanced search
 	 * @return integer
 	 */
 	public static function count(
@@ -136,9 +121,6 @@ class Dao implements Configurable
 	}
 
 	//------------------------------------------------------------------------------ createIfNoResult
-	/**
-	 * @return Option\Create_If_No_Result
-	 */
 	public static function createIfNoResult() : Option\Create_If_No_Result
 	{
 		return new Option\Create_If_No_Result();
@@ -147,10 +129,8 @@ class Dao implements Configurable
 	//--------------------------------------------------------------------------------- createStorage
 	/**
 	 * Create a storage space for $class_name objects
-	 *
 	 * If the storage space already exists, it is updated without losing data
 	 *
-	 * @param $class_name string
 	 * @return boolean true if storage was created or updated, false if it was already up-to-date
 	 */
 	public static function createStorage(string $class_name) : bool
@@ -159,10 +139,6 @@ class Dao implements Configurable
 	}
 
 	//--------------------------------------------------------------------------------------- current
-	/**
-	 * @param $set_current Data_Link|null
-	 * @return ?Data_Link
-	 */
 	public static function current(Data_Link $set_current = null) : ?Data_Link
 	{
 		/** @var $data_link Data_Link */
@@ -177,7 +153,7 @@ class Dao implements Configurable
 	 * If object was originally read from data source, corresponding data will be overwritten.
 	 * If object was not originally read from data source, nothing is done and returns false.
 	 *
-	 * @param $object object object to delete from data source
+	 * @param $object object Object to delete from data source
 	 * @return boolean true if deleted
 	 * @see Data_Link::delete()
 	 */
@@ -190,8 +166,8 @@ class Dao implements Configurable
 	/**
 	 * Disconnect an object from current data link
 	 *
-	 * @param $object              object object to disconnect from data source
-	 * @param $load_linked_objects boolean if true, load linked objects before disconnect
+	 * @param $object              object  Object to disconnect from data source
+	 * @param $load_linked_objects boolean If true, load linked objects before disconnect
 	 * @see Data_Link::disconnect()
 	 */
 	public static function disconnect(object $object, bool $load_linked_objects = false) : void
@@ -200,22 +176,14 @@ class Dao implements Configurable
 	}
 
 	//-------------------------------------------------------------------------------------- distinct
-	/**
-	 * Gets a DAO distinct option, used to return only distinct (different) values
-	 *
-	 * @return Option\Distinct
-	 */
+	/** Gets a DAO distinct option, used to return only distinct (different) values */
 	public static function distinct() : Option\Distinct
 	{
 		return new Option\Distinct();
 	}
 
 	//------------------------------------------------------------------------------------ doublePass
-	/**
-	 * Gets as DAO double-pass option, used to enable double-pass optimization on read queries
-	 *
-	 * @return Option\Double_Pass
-	 */
+	/** Gets as DAO double-pass option, used to enable double-pass optimization on read queries */
 	public static function doublePass() : Option\Double_Pass
 	{
 		return new Option\Double_Pass();
@@ -228,7 +196,7 @@ class Dao implements Configurable
 	 * Use this for optimizations and to avoid overridden writes if you are sure of what properties
 	 * should not being written
 	 *
-	 * @param $properties string[]|string ...
+	 * @param $properties string[]|...string
 	 * @return Option\Exclude
 	 */
 	public static function exclude(array|string... $properties) : Option\Exclude
@@ -245,12 +213,13 @@ class Dao implements Configurable
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object         array|object
-	 * @param $keep_composite boolean if false, composite objects are set to null, to avoid recursions
-	 * @param $disconnect     boolean if true, all id are deleted
+	 * @param $keep_composite boolean If false, composite objects are set to null, to avoid recursions
+	 * @param $disconnect     boolean If true, all id are deleted
 	 */
 	public static function exhaust(
 		array|object $object, bool $keep_composite = true, bool $disconnect = false
-	) {
+	) : void
+	{
 		if (is_array($object)) {
 			foreach ($object as $one_object) {
 				static::exhaust($one_object, $keep_composite, $disconnect);
@@ -284,12 +253,7 @@ class Dao implements Configurable
 	//------------------------------------------------------------------------------------------- get
 	/**
 	 * Gets the data link identified by the $dao_identifier string
-	 *
 	 * If no data link matches $dao_identifier or if its empty, gets the current default data link
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection verified $class_name configuration
-	 * @param $dao_identifier string|null
-	 * @return Data_Link
 	 */
 	public static function get(string $dao_identifier = null) : Data_Link
 	{
@@ -325,10 +289,6 @@ class Dao implements Configurable
 	 * If property name is set, the object property value identifier will be read instead of the
 	 * object's identifier. This enables you to get the property value id without reading the object
 	 * from the database.
-	 *
-	 * @param $object        ?object
-	 * @param $property_name string|null
-	 * @return mixed
 	 */
 	public static function getObjectIdentifier(?object $object, string $property_name = null) : mixed
 	{
@@ -339,20 +299,12 @@ class Dao implements Configurable
 	}
 
 	//--------------------------------------------------------------------------------------- groupBy
-	/**
-	 * @param $properties string[]|string|null
-	 * @return Option\Group_By
-	 */
 	public static function groupBy(array|string $properties = null) : Option\Group_By
 	{
 		return new Option\Group_By($properties);
 	}
 
 	//---------------------------------------------------------------------------------------- having
-	/**
-	 * @param $conditions array
-	 * @return Option\Having
-	 */
 	public static function having(array $conditions = []) : Option\Having
 	{
 		return new Option\Having($conditions);
@@ -364,7 +316,7 @@ class Dao implements Configurable
 	 *
 	 * @param $object1 ?object
 	 * @param $object2 ?object
-	 * @param $strict  boolean if true, will consider @link object and no-@link object as different
+	 * @param $strict  boolean If true, will consider @link object and no-@link object as different
 	 * @return boolean
 	 */
 	public static function is(?object $object1, ?object $object2, bool $strict = false) : bool
@@ -373,11 +325,6 @@ class Dao implements Configurable
 	}
 
 	//------------------------------------------------------------------------ isLinkedObjectModified
-	/**
-	 * @param $object object
-	 * @return boolean
-	 * @see modify
-	 */
 	public static function isLinkedObjectModified(object $object) : bool
 	{
 		return isset($object->_dao_modified_linked_object);
@@ -389,7 +336,7 @@ class Dao implements Configurable
 	 * or Dao::search() results
 	 *
 	 * @param $property_name callable|string|string[]
-	 * @return Option\Key;
+	 * @return Option\Key
 	 */
 	public static function key(array|callable|string $property_name) : Option\Key
 	{
@@ -416,9 +363,6 @@ class Dao implements Configurable
 	}
 
 	//--------------------------------------------------------------------------------- linkClassOnly
-	/**
-	 * @return Option\Link_Class_Only
-	 */
 	public static function linkClassOnly() : Option\Link_Class_Only
 	{
 		return new Option\Link_Class_Only();
@@ -430,7 +374,7 @@ class Dao implements Configurable
 	 *
 	 * This disables the Link_Class_Only Dao option automatically set by Write::writeCollection
 	 *
-	 * @param $object object
+	 * @param $object   object
 	 * @param $modified boolean true to enable 'modified, force write' ; false to disable it
 	 * @see Write::writeCollection
 	 */
@@ -448,10 +392,10 @@ class Dao implements Configurable
 	/**
 	 * This option enables to write only some properties values to the DAO
 	 *
-	 * Use this for optimizations and to avoid overridden writes if you are sure of what properties
-	 * have to been written
+	 * Use this for optimizations and to avoid overridden writes if you are sure of which properties
+	 * have to be written
 	 *
-	 * @param $properties string[]|string ...
+	 * @param $properties string[]|...string
 	 * @return Option\Only
 	 */
 	public static function only(array|string... $properties) : Option\Only
@@ -465,7 +409,7 @@ class Dao implements Configurable
 	 *
 	 * For optimization purpose : this allows to get multiple linked objects in only one query.
 	 *
-	 * @param $properties string[]|string ...
+	 * @param $properties string[]|...string
 	 * @return Option\Pre_Load
 	 */
 	public static function preLoad(array|string... $properties) : Option\Pre_Load
@@ -477,9 +421,9 @@ class Dao implements Configurable
 	/**
 	 * Read an object from current data link
 	 *
-	 * @param $identifier mixed|T identifier for the object, or an object to re-read
-	 * @param $class_name class-string<T>|null class for read object. Useless if $identifier is an
-	 *                    object
+	 * @param $identifier mixed|object<T>      Identifier for the object, or an object to re-read
+	 * @param $class_name class-string<T>|null Class for read object. Useless if $identifier is an
+	 *                                         object
 	 * @return ?T an object of class objectClass, read from data source, or null if nothing found
 	 * @see Data_Link::read()
 	 * @template T
@@ -505,11 +449,7 @@ class Dao implements Configurable
 	}
 
 	//---------------------------------------------------------------------------------------- remove
-	/**
-	 * Removes a data link which identifier is a string from the list of available data links
-	 *
-	 * @param $dao_identifier string
-	 */
+	/** Removes a data link which identifier is a string from the list of available data links */
 	public static function remove(string $dao_identifier) : void
 	{
 		if (isset(self::$list[$dao_identifier])) {
@@ -527,8 +467,8 @@ class Dao implements Configurable
 	 * same data source identifier. You will still be able to write() either source or destination
 	 * after call to replace().
 	 *
-	 * @param $destination T Destination object
-	 * @param $source      T Source object
+	 * @param $destination object<T> Destination object
+	 * @param $source      object<T> Source object
 	 * @param $write       boolean true if the destination object must be immediately written
 	 * @return T the resulting $destination object
 	 * @see Data_Link::replace()
@@ -544,8 +484,8 @@ class Dao implements Configurable
 	 * Replace all references to $replaced by references to $replacement into the database.
 	 * Already loaded objects will not be changed.
 	 *
-	 * @param $replaced    T
-	 * @param $replacement T
+	 * @param $replaced    object<T>
+	 * @param $replacement object<T>
 	 * @return boolean true if replacement has been done, false if something went wrong
 	 * @template T
 	 */
@@ -577,7 +517,7 @@ class Dao implements Configurable
 	 * nothing and return null)
 	 *
 	 * @return ?boolean true if commit succeeds, false if error, null if not a transactional SQL
-	 * engine
+	 *                  engine
 	 * @see Transactional::rollback()
 	 */
 	public static function rollback() : ?bool
@@ -601,12 +541,12 @@ class Dao implements Configurable
 	 * done on the object identifier, without join. If object is not linked to data-link, the search
 	 * is done with the linked object as others search criterion.
 	 *
-	 * @param $what       array|object<T>|null source object for filter, only set properties will be
-	 *                    used for search
-	 * @param $class_name class-string<T>|null must be set if is $what is a filter array instead of a
-	 *                    filter object
-	 * @param $options    Option|Option[] some options for advanced search
-	 * @return T[] a collection of read objects
+	 * @param $what       array|object<T>|null Source object for filter, only set properties will be
+	 *                                         used for search
+	 * @param $class_name class-string<T>|null Must be set if is $what is a filter array instead of a
+	 *                                         filter object
+	 * @param $options    Option|Option[] Some options for advanced search
+	 * @return T[] A collection of read objects
 	 * @see Data_Link::search()
 	 * @template T
 	 */
@@ -625,10 +565,10 @@ class Dao implements Configurable
 	 * It is highly recommended to use this search with primary keys properties values searches.
 	 * If several result exist, only one will be taken, the first on the list (it may be random).
 	 *
-	 * @param $what       array|T source object for filter, only set properties will be used for
-	 *                    search
-	 * @param $class_name class-string<T>|null must be set if is not a filter array
-	 * @param $options    Option|Option[] some options for advanced search
+	 * @param $what       array|object<T>      Source object for filter, only set properties will be
+	 *                                         used for search
+	 * @param $class_name class-string<T>|null Must be set if is not a filter array
+	 * @param $options    Option|Option[]      Some options for advanced search
 	 * @return ?T the found object, or null if no object was found
 	 * @see Data_Link::searchOne()
 	 * @template T
@@ -647,8 +587,8 @@ class Dao implements Configurable
 	 * @param $class         class-string<T> class for the read object
 	 * @param $properties    string[]|string|Func[] the list of the property paths : only those
 	 *                       properties will be read.
-	 * @param $filter_object array|T|null source object for filter, set properties will be used
-	 *                       for search. Can be an array associating properties names to matching
+	 * @param $filter_object array|object<T>|null source object for filter, set properties will be
+	 *                       used for search. Can be an array associating properties names to matching
 	 *                       search value too.
 	 * @param $options       Option|Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (it may be objects) are
@@ -695,12 +635,7 @@ class Dao implements Configurable
 	}
 
 	//----------------------------------------------------------------------------------- storeNameOf
-	/**
-	 * Gets the store name for records typed as $class_name
-	 *
-	 * @param $class object|string
-	 * @return string
-	 */
+	/** Gets the store name for records typed as $class_name */
 	public static function storeNameOf(object|string $class) : string
 	{
 		return self::current()->storeNameOf($class);
@@ -710,9 +645,6 @@ class Dao implements Configurable
 	/**
 	 * Returns true if a property will be stored into a foreign table record,
 	 * or false if it is stored as a simple value
-	 *
-	 * @param $property Reflection_Property
-	 * @return boolean
 	 */
 	public static function storedAsForeign(Reflection_Property $property) : bool
 	{
@@ -734,9 +666,6 @@ class Dao implements Configurable
 	}
 
 	//------------------------------------------------------------------------------------- translate
-	/**
-	 * @return Option\Translate
-	 */
 	public static function translate() : Option\Translate
 	{
 		return new Option\Translate();
@@ -744,10 +673,7 @@ class Dao implements Configurable
 
 	//-------------------------------------------------------------------------------------- truncate
 	/**
-	 * Truncates the data-set storing $class_name objects
-	 * All data is deleted
-	 *
-	 * @param $class_name string
+	 * Truncates the data-set storing $class_name objects. All data is deleted.
 	 */
 	public static function truncate(string $class_name) : void
 	{
@@ -762,7 +688,7 @@ class Dao implements Configurable
 	 * If object was not originally read from data source nor linked to it using replace(), a new
 	 * record will be written into data source using this object's data.
 	 *
-	 * @param $object  T object to write into data source
+	 * @param $object  object<T> object to write into data source
 	 * @param $options Option|Option[] some options for advanced write
 	 * @return ?T the written object, if has been written
 	 * @see Data_Link::write()
