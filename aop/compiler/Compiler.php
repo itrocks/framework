@@ -33,7 +33,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	use Scanners;
 
 	//----------------------------------------------------------------------------------------- DEBUG
-	const DEBUG = true;
+	const DEBUG = false;
 
 	//--------------------------------------------------------------------------------------- $weaver
 	private Weaver $weaver;

@@ -84,7 +84,7 @@ trait Scanners
 		if (!str_contains($documentation, '@override')) return [];
 		$overrides = [];
 		$expr      = '%'
-			. '\n\s+\*\s+'               // each line beginning by '* '
+			. '\*\s+'               // each line beginning by '* '
 			. '@override\s+'             // override annotation
 			. '(\w+)\s+'                 // 1 : property name
 			. '(?:'                      // begin annotations loop
@@ -125,7 +125,7 @@ trait Scanners
 	{
 		foreach ($class->getProperties([T_USE]) as $property) {
 			$expr = '%'
-				. '\n\s+\*\s+'   // each line beginning by '* '
+				. '\*\s+'        // each line beginning by '* '
 				. '@replaces\s+' // alias annotation
 				. '(\w+)'        // 1 : property name
 				. '%';
