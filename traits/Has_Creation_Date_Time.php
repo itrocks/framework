@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Tools\Date_Time;
@@ -10,6 +11,7 @@ use ITRocks\Framework\Tools\Date_Time;
  *
  * @before_write calculateCreationDateTime
  */
+#[Store]
 trait Has_Creation_Date_Time
 {
 
