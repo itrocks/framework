@@ -26,10 +26,6 @@ abstract class Writer
 	private static array $before_write = [];
 
 	//------------------------------------------------------------------------------------ afterWrite
-	/**
-	 * @param $object Has_History
-	 * @param $link   Data_Link
-	 */
 	public static function afterWrite(Has_History $object, Data_Link $link) : void
 	{
 		$class_name = Builder::className(get_class($object));
@@ -49,11 +45,6 @@ abstract class Writer
 	}
 
 	//----------------------------------------------------------------------------------- beforeWrite
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object Has_History
-	 * @param $link   Data_Link
-	 */
 	public static function beforeWrite(Has_History $object, Data_Link $link) : void
 	{
 		// Dao::begin() will be solved into afterWrite()
@@ -80,8 +71,6 @@ abstract class Writer
 	//--------------------------------------------------------------------------------- createHistory
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $before Has_History
-	 * @param $after  Has_History
 	 * @return History[]
 	 */
 	private static function createHistory(Has_History $before, Has_History $after) : array

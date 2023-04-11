@@ -33,18 +33,13 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	use Scanners;
 
 	//----------------------------------------------------------------------------------------- DEBUG
-	const DEBUG = false;
+	const DEBUG = true;
 
 	//--------------------------------------------------------------------------------------- $weaver
-	/**
-	 * @var Weaver
-	 */
 	private Weaver $weaver;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $weaver IWeaver|null If not set, the current weaver plugin is used
-	 */
+	/** @param $weaver IWeaver|null If not set, the current weaver plugin is used */
 	public function __construct(IWeaver $weaver = null)
 	{
 		$this->weaver = $weaver ?: Session::current()->plugins->get(Weaver::class);
@@ -81,11 +76,6 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	}
 
 	//--------------------------------------------------------------------------------------- compile
-	/**
-	 * @param $source   Reflection_Source
-	 * @param $compiler PHP\Compiler|null
-	 * @return boolean
-	 */
 	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null) : bool
 	{
 		$classes = $source->getClasses();
@@ -98,10 +88,6 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	}
 
 	//---------------------------------------------------------------------------------- compileClass
-	/**
-	 * @param $class Reflection_Class
-	 * @return boolean
-	 */
 	public function compileClass(Reflection_Class $class) : bool
 	{
 		if (self::DEBUG) { echo '<h2>' . $class->name . '</h2>'; flush(); }
@@ -203,9 +189,6 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	}
 
 	//-------------------------------------------------------------------------- moreSourcesToCompile
-	/**
-	 * @param $more_sources More_Sources
-	 */
 	public function moreSourcesToCompile(More_Sources $more_sources) : void
 	{
 		// search into dependencies : used classes
@@ -292,10 +275,6 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	}
 
 	//----------------------------------------------------------------------------- scanForImplements
-	/**
-	 * @param $properties array
-	 * @param $class      Reflection_Class
-	 */
 	private function scanForImplements(array &$properties, Reflection_Class $class) : void
 	{
 		// properties from the class and its direct traits
@@ -318,9 +297,6 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	}
 
 	//----------------------------------------------------------------------------- setMainController
-	/**
-	 * @param $main_controller Main
-	 */
 	public function setMainController(Main $main_controller) : void
 	{
 		// AOP compiler needs all plugins to be registered again, in order to build the complete
