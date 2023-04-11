@@ -231,7 +231,9 @@ class Builder implements Activable
 		if ($properties_values) {
 			$properties = (new Reflection_Class($class_name))->getProperties();
 			foreach ($properties_values as $property_name => $value) {
-				$properties[$property_name]->setValue($clone, $value);
+				if (isset($properties[$property_name])) {
+					$properties[$property_name]->setValue($clone, $value);
+				}
 			}
 		}
 		return $clone;
