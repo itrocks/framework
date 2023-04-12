@@ -316,7 +316,7 @@ class Search_Parameters_Parser
 						$search = Func::equal($search_value);
 						break;
 					}
-					$values = null;
+					$values = [];
 					foreach ($property_values as $value) {
 						$values[] = Names::propertyToDisplay($value);
 					}
