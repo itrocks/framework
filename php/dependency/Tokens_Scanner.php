@@ -237,6 +237,11 @@ class Tokens_Scanner
 				while ($back--) prev($tokens);
 				$token = prev($tokens);
 				while (!in_array($token[0], self::FULL_TOKENS, true)) $token = prev($tokens);
+				if (!is_array($token) && in_array($token, ['}', ')'])) {
+					// ignore dynamic class name before ::
+					next($tokens);
+					break;
+				}
 				if (in_array($token[1], self::RESERVED_CLASSES, true)) {
 					$token[0] = T_NAME_FULLY_QUALIFIED;
 					$token[1] = $this->class;
