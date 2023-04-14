@@ -169,8 +169,7 @@ class Controller implements Default_Feature_Controller
 	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return ?string
-	 * @throws Exception
-	 * @throws ReflectionException
+	 * @throws Exception|ReflectionException
 	 */
 	public function run(Parameters $parameters, array $form, array $files, string $class_name)
 		: ?string

@@ -15,6 +15,9 @@ class User_Change implements Has_Set_Final
 {
 	use Common;
 
+	//------------------------------------------------------------------------------------- COMPOSITE
+	public const COMPOSITE = 'composite';
+
 	//------------------------------------------------------------------------------- $change_feature
 	/** @var string[] */
 	public array $change_feature;

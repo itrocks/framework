@@ -84,7 +84,7 @@ function instanceIn(object|string $class_name_or_object, array $objects) : ?obje
  *
  * All parent classes, interfaces and traits are scanned recursively
  *
- * @param $object     class-string<T>|T|null
+ * @param $object     class-string<T>|object<T>|null
  * @param $class_name class-string<T>|T|class-string<T>[]|T[] If multiple, result is true for any of them
  * @return boolean
  * @template T

@@ -11,10 +11,6 @@ interface Fast_Add
 {
 
 	//------------------------------------------------------------------------------------ fromString
-	/**
-	 * @param $string string
-	 * @return ?static
-	 */
 	public static function fromString(string $string) : ?static;
 
 }

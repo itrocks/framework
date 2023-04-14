@@ -11,21 +11,12 @@ trait Person
 {
 
 	//----------------------------------------------------------------------------------- $first_name
-	/**
-	 * @var string
-	 */
 	public string $first_name = '';
 
 	//------------------------------------------------------------------------------------ $last_name
-	/**
-	 * @var string
-	 */
 	public string $last_name = '';
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		$result = trim($this->first_name . SP . $this->last_name);

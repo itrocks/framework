@@ -24,13 +24,14 @@ class Widget implements Has_Set_Final
 	const SORT = 'sort';
 
 	//----------------------------------------------------------------------------------- $class_name
-	public string $class_name;
+	/** Can be set to null to override a widget for deactivation */
+	public ?string $class_name;
 
 	//-------------------------------------------------------------------------------------- $options
 	public array $options;
 
 	//----------------------------------------------------------------------------------- __construct
-	public function __construct(string $class_name = self::AUTO, string ...$options)
+	public function __construct(?string $class_name = self::AUTO, string ...$options)
 	{
 		$this->class_name = $class_name;
 		$this->options    = $options;
@@ -39,12 +40,12 @@ class Widget implements Has_Set_Final
 	//------------------------------------------------------------------------------------ __toString
 	public function __toString() : string
 	{
-		return $this->class_name;
+		return strval($this->class_name);
 	}
 
 	//------------------------------------------------------------------------------------- hasOption
 	/**
-	 * @param $option string  @values self::SORT
+	 * @param $option string @values self::SORT
 	 * @return boolean
 	 */
 	public function hasOption(string $option) : bool
