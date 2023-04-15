@@ -169,10 +169,14 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 			);
 		}
 
-		elseif ($class->getAttributes(Store::class) && !Class_\Link_Annotation::of($class)->value) {
+		elseif (
+			$class->getAttributes(Store::class)
+			&& !Class_\Link_Annotation::of($class)->value
+			&& !$class->isAbstract()
+		) {
 			$class->source = $class->source->setSource(
 				substr(trim($class->source->getSource()), 0, -1)
-				. TAB . '//' . str_repeat('#', 91) . ' Store' . LF . LF
+				. TAB . '//' . str_repeat('#', 89) . ' Store' . LF . LF
 				. TAB . '/** Store properties */' . LF
 				. TAB . 'public int $id;' . LF . LF
 				. '}' . LF
