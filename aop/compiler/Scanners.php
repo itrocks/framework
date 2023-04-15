@@ -89,8 +89,8 @@ trait Scanners
 			. '(\w+)\s+'                 // 1 : property name
 			. '(?:'                      // begin annotations loop
 			. '(?:@.*?\s+)?'             // others overridden annotations
-			. '@annotation'              // overridden annotation
-			. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
+			. '@annotation\s'            // overridden annotation
+			. '(?:\s*(?:([\\\\\w]+)::)?' // 2 : class name
 			. '(\w*)?)?'                 // 3 : method or function name, or empty value
 			. ')+'                       // end annotations loop
 			. '%';
@@ -108,11 +108,6 @@ trait Scanners
 				];
 				if (!$override['class_name']) {
 					$override['class_name'] = 'static';
-				}
-				if (!$override['method_name']) {
-					$override['method_name'] = Names::propertyToMethod(
-						'get' . '_' . $override['property_name']
-					);
 				}
 				$overrides[] = $override;
 			}
