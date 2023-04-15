@@ -14,9 +14,7 @@ class Application
 	use Temporary_Path;
 
 	//------------------------------------------------------------------------------------------ BOTH
-	/**
-	 * For getClassesTree : want a result with the two forms of applications lists : array, and tree
-	 */
+	/** For getClassesTree : want a result with two forms of applications lists : array, and tree */
 	const BOTH = null;
 
 	//-------------------------------------------------------------------------------------- CHILDREN
@@ -43,37 +41,21 @@ class Application
 	public array $applications = [];
 
 	//--------------------------------------------------------------------------------- $include_path
-	/**
-	 * Paths functions relative to the application
-	 *
-	 * @var Include_Path
-	 */
+	/** Paths functions relative to the application */
 	public Include_Path $include_path;
 
 	//----------------------------------------------------------------------------------------- $name
-	/**
-	 * @var string
-	 */
 	public string $name;
 
 	//----------------------------------------------------------------------------------- $namespaces
-	/**
-	 * Namespaces list cache : initialized at first use
-	 *
-	 * @var string[]
-	 */
+	/** @var string[] Namespaces list cache : initialized at first use */
 	private array $namespaces = [];
 
 	//--------------------------------------------------------------------------------------- $vendor
-	/**
-	 * @var string
-	 */
 	public string $vendor;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $name string Must look like 'Author/Application' : slash is required
-	 */
+	/** $name must look like 'Author/Application' : slash is required */
 	public function __construct(string $name)
 	{
 		if (str_contains($name, SL)) {
@@ -87,19 +69,12 @@ class Application
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
 	public function __toString() : string
 	{
 		return $this->name;
 	}
 
 	//--------------------------------------------------------------------------------------- current
-	/**
-	 * @param $set_current Application|null
-	 * @return ?Application
-	 */
 	public static function current(Application $set_current = null) : ?Application
 	{
 		if ($set_current) {
@@ -114,9 +89,6 @@ class Application
 	}
 
 	//----------------------------------------------------------------------------------- getCacheDir
-	/**
-	 * @return string
-	 */
 	public static function getCacheDir() : string
 	{
 		return __DIR__ . '/../../../cache';
@@ -139,7 +111,7 @@ class Application
 	 *       ]
 	 *    ]
 	 * ]
-	 * @param $class_tree array string[...]
+	 * @param $class_tree array string[]
 	 * @param $result     array @internal The resulting classes list with links, currently being built
 	 * @return array string[][][]
 	 *   [
@@ -183,7 +155,7 @@ class Application
 	 *   'Application\Class' => ['children' => ['ITRocks\Framework' => true]],
 	 *   'ITRocks\Framework' => ['parents' => ['Application\Class]]
 	 * ]
-	 * @param $flat  boolean|string|null if false, returned as tree. If true, returns a flat string[]
+	 * @param $flat  boolean|string|null If false, returned as tree. If true, returns a flat string[]
 	 *               If null : multiple intermediate views are returned :
 	 *               [FLAT => $applications_array, NODES => $tree_nodes, TREE => $tree]
 	 *               If string : can be any const BOTH (eq null), FLAT (eq true) or TREE (eq false)
@@ -266,12 +238,7 @@ class Application
 	}
 
 	//---------------------------------------------------------------------------------- getNamespace
-	/**
-	 * Gets namespace of the application
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return string
-	 */
+	/** Gets the namespace of the application */
 	public function getNamespace() : string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection object */
@@ -279,11 +246,7 @@ class Application
 	}
 
 	//--------------------------------------------------------------------------------- getNamespaces
-	/**
-	 * Gets application and parents and used applications top namespaces
-	 *
-	 * @return string[]
-	 */
+	/** @return string[] Application and parents and used applications top namespaces */
 	public function getNamespaces() : array
 	{
 		if ($this->namespaces) {
@@ -301,8 +264,8 @@ class Application
 	 * Include extended parents using T_EXTENDS clause or extends annotation
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $recursive boolean get all parents if true
-	 * @return array[] applications class names : key = class name, value = children class names
+	 * @param $recursive boolean Get all parents if true
+	 * @return array[] Applications class names : key = class name, value = children class names
 	 */
 	public static function getParentClasses(bool $recursive = false) : array
 	{

@@ -17,9 +17,6 @@ class Element
 	const REGEX = '(//link | //script | //comment())';
 
 	//-------------------------------------------------------------------------------------- $element
-	/**
-	 * @var DOMElement
-	 */
 	public DOMElement $element;
 
 	//----------------------------------------------------------------------------------------- $path
@@ -60,18 +57,14 @@ class Element
 	}
 
 	//--------------------------------------------------------------------------------------- getPath
-	/**
-	 * @noinspection PhpUnused #Getter
-	 */
+	/** @noinspection PhpUnused #Getter */
 	public function getPath() : string
 	{
 		return $this->element->getAttribute($this->path_attribute);
 	}
 
 	//--------------------------------------------------------------------------------------- setPath
-	/**
-	 * @noinspection PhpUnused #Setter
-	 */
+	/** @noinspection PhpUnused #Setter */
 	public function setPath(string $path) : void
 	{
 		$this->element->setAttribute($this->path_attribute, $path);

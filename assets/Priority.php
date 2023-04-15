@@ -14,10 +14,6 @@ class Priority
 	const LAST     = 'last';
 
 	//----------------------------------------------------------------------------------------- valid
-	/**
-	 * @param $value string
-	 * @return boolean
-	 */
 	public static function valid(string $value) : bool
 	{
 		return in_array(

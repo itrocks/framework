@@ -57,18 +57,13 @@ class IP implements Configurable, Registerable
 	const URIS = 'uris';
 
 	//----------------------------------------------------------------------------- $remote_addresses
-	/**
-	 * Allowed remote addresses (host names or IPs)
-	 *
-	 * @var array string[][] [string $free_group_name => string[]]
-	 */
+	/** string[][] [string $free_group_name => string[]] Allowed remote addresses (names / IPs) */
 	public array $remote_addresses = [];
 
 	//----------------------------------------------------------------------------------------- $uris
 	/**
 	 * URIs restricted by originator access control, used to call a feature into the application
-	 *
-	 * @var array string[][] [string $free_group_name => string[]]
+	 * string[][] [string $free_group_name => string[]]
 	 */
 	public array $uris = [];
 
@@ -104,18 +99,12 @@ class IP implements Configurable, Registerable
 	}
 
 	//------------------------------------------------------------------------------------ badCheckIp
-	/**
-	 * @return string
-	 */
 	public function badCheckIp() : string
 	{
 		return View::link(Access_Control::class, Controller\Feature::F_DENIED);
 	}
 
 	//----------------------------------------------------------------------------------- checkAccess
-	/**
-	 * @param $uri string
-	 */
 	public function checkAccess(string &$uri) : void
 	{
 		$ok = true;
@@ -135,13 +124,7 @@ class IP implements Configurable, Registerable
 	}
 
 	//--------------------------------------------------------------------------------------- checkIP
-	/**
-	 * Returns true if the remote address matches the originators list
-	 *
-	 * @param $remote_address string The remote client address (IP)
-	 * @param $group_name     string
-	 * @return boolean
-	 */
+	/** Returns true if the remote address matches the originators list */
 	private function checkIP(string $remote_address, string $group_name) : bool
 	{
 		if (isset($this->remote_addresses[$group_name][$remote_address])) {
@@ -164,12 +147,7 @@ class IP implements Configurable, Registerable
 	}
 
 	//------------------------------------------------------------------------------------------ isIP
-	/**
-	 * Returns true if $address is an IP
-	 *
-	 * @param $address string
-	 * @return boolean
-	 */
+	/** Returns true if $address is an IP */
 	private function isIP(string $address) : bool
 	{
 		$address = explode(DOT, $address);
@@ -179,9 +157,6 @@ class IP implements Configurable, Registerable
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @param $register Register
-	 */
 	public function register(Register $register) : void
 	{
 		$aop = $register->aop;

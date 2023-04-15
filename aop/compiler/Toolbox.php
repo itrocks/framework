@@ -19,9 +19,7 @@ trait Toolbox
 	//---------------------------------------------------------------------------------- decodeAdvice
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $advice               object[]|string|string[]
-	 * @param $joinpoint_class_name string
-	 * @return array
+	 * @param $advice object[]|string|string[]
 	 */
 	private function decodeAdvice(array|string $advice, string $joinpoint_class_name) : array
 	{
@@ -101,18 +99,7 @@ trait Toolbox
 	//---------------------------------------------------------------------------- generateAdviceCode
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $advice                   string[]|object[]|string
-	 * @param $advice_class_name        ?string
-	 * @param $advice_method_name       ?string
-	 * @param $advice_function_name     ?string
-	 * @param $advice_parameters_string string
-	 * @param $advice_has_return        boolean
-	 * @param $is_advice_static         boolean
-	 * @param $joinpoint_code           string
-	 * @param $i2                       string
-	 * @param $result                   string
-	 * @param $call_if_no_plugin_object string
-	 * @return string
+	 * @param $advice string[]|object[]|string
 	 */
 	private function generateAdviceCode(
 		array|string $advice, ?string $advice_class_name, ?string $advice_method_name,

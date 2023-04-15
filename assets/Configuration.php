@@ -22,92 +22,63 @@ class Configuration
 	const COMMENT = '<!-- Source : %s %s -->' . LF;
 
 	//--------------------------------------------------------------------------------- $applications
-	/**
-	 * Child configurations coming from application inheritance
-	 *
-	 * @var static[]
-	 */
+	/** @var static[] Child configurations coming from application inheritance */
 	public array $applications = [];
 
 	//------------------------------------------------------------------------------------- $excluded
-	/**
-	 * @var Element[]
-	 */
+	/** @var Element[] */
 	public array $excluded = [];
 
 	//------------------------------------------------------------------------------------ $file_path
-	/**
-	 * Direct path to assets file for this configuration
-	 *
-	 * @var string
-	 */
+	/** Direct path to assets file for this configuration */
 	public string $file_path = '';
 
 	//---------------------------------------------------------------------------------------- $first
-	/**
-	 * Locations of assets that should be loaded first
-	 *
-	 * @var Element[]
-	 */
+	/** @var Element[] Locations of assets that should be loaded first */
 	public array $first = [];
 
 	//------------------------------------------------------------------------------------- $included
-	/**
-	 * Locations of assets not requiring specific order
-	 *
-	 * @var Element[]
-	 */
+	/** @var Element[] Locations of assets not requiring specific order */
 	public array $included = [];
 
 	//----------------------------------------------------------------------------------------- $last
-	/**
-	 * Locations of assets that should be loaded at the end
-	 *
-	 * @var Element[]
-	 */
+	/** @var Element[] Locations of assets that should be loaded at the end */
 	public array $last = [];
 
 	//-------------------------------------------------------------------------------------- $plugins
-	/**
-	 * Child configurations coming from application inheritance
-	 *
-	 * @var static[]
-	 */
+	/** @var static[] Child configurations coming from application inheritance */
 	public array $plugins = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Configuration constructor
 	 *
-	 * @param $file_path string
 	 * @throws Assets_Exception
 	 */
 	protected function __construct(string $file_path)
 	{
 		$file_path = $this->checkPath($file_path);
-		if ($file_path) {
-			$this->file_path = $file_path;
-			$this->load();
+		if (!$file_path) {
+			return;
 		}
+		$this->file_path = $file_path;
+		$this->load();
 	}
 
 	//------------------------------------------------------------------------------------------- add
-	/**
-	 * @param $file_path string
-	 * @param $is_plugin boolean
-	 * @throws Assets_Exception
-	 */
+	/** @throws Assets_Exception */
 	public function add(string $file_path, bool $is_plugin = true) : void
 	{
 		$file_path = $this->checkPath($file_path);
-		if ($file_path) {
-			$configuration = new static($file_path);
-			if ($is_plugin) {
-				$this->plugins[] = $configuration;
-			}
-			else {
-				$this->applications[] = $configuration;
-			}
+		if (!$file_path) {
+			return;
+		}
+		$configuration = new static($file_path);
+		if ($is_plugin) {
+			$this->plugins[] = $configuration;
+		}
+		else {
+			$this->applications[] = $configuration;
 		}
 	}
 
@@ -143,26 +114,16 @@ class Configuration
 	}
 
 	//------------------------------------------------------------------------------------- checkPath
-	/**
-	 * Gets direct path to assets file
-	 *
-	 * @param $path string
-	 * @return string|false path if file exist and is not already imported
-	 */
-	protected function checkPath(string $path) : string|false
+	/** Gets direct path to assets file : if file exist and is not already imported */
+	protected function checkPath(string $path) : string
 	{
 		$path = realpath($path);
 		$path = (is_dir($path) ? $path : dirname($path)) . SL . static::ASSETS_FILENAME;
-		return (file_exists($path) && !in_array($path, $this->getAllFilePaths()))
-			? $path
-			: false;
+		return (file_exists($path) && !in_array($path, $this->getAllFilePaths())) ? $path : '';
 	}
 
 	//------------------------------------------------------------------------------------------- get
-	/**
-	 * @return static
-	 * @throws Assets_Exception
-	 */
+	/** @throws Assets_Exception */
 	public static function get() : static
 	{
 		$configuration = new static(
@@ -183,9 +144,7 @@ class Configuration
 	}
 
 	//------------------------------------------------------------------------------- getAllFilePaths
-	/**
-	 * @return string[]
-	 */
+	/** @return string[] */
 	public function getAllFilePaths() : array
 	{
 		$paths = [$this->file_path];
@@ -199,10 +158,7 @@ class Configuration
 	}
 
 	//----------------------------------------------------------------------------- getConfigurations
-	/**
-	 * @param $reverse boolean
-	 * @return Configuration[]
-	 */
+	/** @return Configuration[] */
 	private function getConfigurations(bool $reverse = false) : array
 	{
 		if ($reverse) {
@@ -212,9 +168,7 @@ class Configuration
 	}
 
 	//----------------------------------------------------------------------------- getStringElements
-	/**
-	 * @return string[]
-	 */
+	/** @return string[] */
 	public function getStringElements() : array
 	{
 		$cache = [];
@@ -247,11 +201,7 @@ class Configuration
 	}
 
 	//------------------------------------------------------------------------------------------ load
-	/**
-	 * Loads configuration
-	 *
-	 * @throws Assets_Exception
-	 */
+	/** @throws Assets_Exception */
 	protected function load() : void
 	{
 		$dom = new DOMDocument();

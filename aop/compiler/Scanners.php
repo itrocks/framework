@@ -8,7 +8,6 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
-use ITRocks\Framework\Tools\Names;
 
 /**
  * Some methods that scan for getters, setters, overrides, etc. globally properties annotations
@@ -75,8 +74,6 @@ trait Scanners
 	/**
 	 * @param $documentation string @values default, link, replaces
 	 * @param $annotations   string[]
-	 * @param $disable       array
-	 * @return array
 	 */
 	private function scanForOverrides(string $documentation, array $annotations, array $disable = [])
 		: array

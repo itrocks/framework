@@ -25,8 +25,6 @@ abstract class Joinpoint
 	/**
 	 * The advice can set this to true to stop the calling process
 	 * This stops everything, including other advices and original process call
-	 *
-	 * @var boolean
 	 */
 	public bool $stop = false;
 

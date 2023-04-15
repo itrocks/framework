@@ -39,19 +39,14 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	private Weaver $weaver;
 
 	//----------------------------------------------------------------------------------- __construct
-	/** @param $weaver IWeaver|null If not set, the current weaver plugin is used */
+	/** The default weaver will be the current weaver plugin */
 	public function __construct(IWeaver $weaver = null)
 	{
 		$this->weaver = $weaver ?: Session::current()->plugins->get(Weaver::class);
 	}
 
 	//---------------------------------------------------------------------------------- addPointcuts
-	/**
-	 * @param $methods        array
-	 * @param $properties     array
-	 * @param $class_name     string
-	 * @param $handler_filter string[] @values after, around, before
-	 */
+	/** @param $handler_filter string[] @values after, around, before */
 	private function addPointcuts(
 		array &$methods, array &$properties, string $class_name, array $handler_filter = null
 	) : void
@@ -254,7 +249,6 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	 * - if any advice : add it for the current class
 	 *
 	 * @param $methods     array [$method][$index] = [$type, callback $advice]
-	 * @param $class       Interfaces\Reflection_Class
 	 * @param $only_method string Internal use only : the method name we are up-scanning
 	 */
 	private function scanForAbstract(

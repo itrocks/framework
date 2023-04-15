@@ -19,7 +19,6 @@ class Weaver implements IWeaver, Plugin
 	 * The last loaded / saved cache file name
 	 *
 	 * @see loadJoinpoints
-	 * @var string
 	 */
 	private string $file_name = '';
 
@@ -27,8 +26,8 @@ class Weaver implements IWeaver, Plugin
 	/**
 	 * All joinpoints are stored here
 	 *
-	 * @var array array[$class][$method][$index] = [$type, callback $advice]
-	 *            array[$function][$index] = [$type, callback $advice]
+	 * array[$class][$method][$index] = [$type, callback $advice]
+	 * array[$function][$index]       = [$type, callback $advice]
 	 */
 	private array $joinpoints = [];
 
@@ -41,10 +40,9 @@ class Weaver implements IWeaver, Plugin
 	 * If set, the value returned by the advice will be the pointcut returned value.
 	 * If not set, the result value passed as argument (that can be modified) will be returned
 	 *
-	 * @param $joinpoint string the joinpoint defined like a call-back : 'functionName'
-	 * @param $advice    callable the call-back call of the advice :
+	 * @param $joinpoint string   The joinpoint defined like a call-back: 'functionName'
+	 * @param $advice    callable The call-back call of the advice:
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
-	 * @return IHandler
 	 */
 	public function afterFunction(string $joinpoint, callable $advice) : IHandler
 	{
@@ -61,11 +59,9 @@ class Weaver implements IWeaver, Plugin
 	 * If set, the value returned by the advice will be the pointcut returned value.
 	 * If not set, the result value passed as argument (that can be modified) will be returned
 	 *
-	 * @param $joinpoint string[] the joinpoint defined like a call-back :
-	 *                   ['class_name', 'methodName']
-	 * @param $advice    callable the call-back call of the advice :
+	 * @param $joinpoint string[] The joinpoint defined like a call-back: ['class_name', 'methodName']
+	 * @param $advice    callable The call-back call of the advice:
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
-	 * @return IHandler
 	 */
 	public function afterMethod(array $joinpoint, callable $advice) : IHandler
 	{
@@ -83,10 +79,9 @@ class Weaver implements IWeaver, Plugin
 	 * and finally the value returned by the joinpoint method call.
 	 * The value returned by the advice will be the pointcut returned value.
 	 *
-	 * @param $joinpoint string the joinpoint defined like a call-back : 'functionName'
-	 * @param $advice    callable the call-back call of the advice :
+	 * @param $joinpoint string   The joinpoint defined like a call-back: 'functionName'
+	 * @param $advice    callable The call-back call of the advice:
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
-	 * @return IHandler
 	 */
 	public function aroundFunction(string $joinpoint, callable $advice) : IHandler
 	{
@@ -102,11 +97,9 @@ class Weaver implements IWeaver, Plugin
 	 * and finally the value returned by the joinpoint method call.
 	 * The value returned by the advice will be the pointcut returned value.
 	 *
-	 * @param $joinpoint string[] the joinpoint defined like a call-back :
-	 *                   ['class_name', 'methodName']
-	 * @param $advice    callable the call-back call of the advice :
+	 * @param $joinpoint string[] The joinpoint defined like a call-back: ['class_name', 'methodName']
+	 * @param $advice    callable The call-back call of the advice:
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
-	 * @return IHandler
 	 */
 	public function aroundMethod(array $joinpoint, callable $advice) : IHandler
 	{
@@ -117,9 +110,7 @@ class Weaver implements IWeaver, Plugin
 	}
 
 	//------------------------------------------------------------------------------------ backupFile
-	/**
-	 * Copy weaver.php to weaver.php.old for compiler changes detection
-	 */
+	/** Copy weaver.php to weaver.php.old for compiler changes detection */
 	public function backupFile() : void
 	{
 		if (!$this->file_name) {
@@ -136,14 +127,12 @@ class Weaver implements IWeaver, Plugin
 	 * Weave an aspect before the execution of a given function
 	 *
 	 * Advice arguments are the pointcut object, then the arguments passed to the joinpoint function.
-	 * The advice can return a value : if this value is set, the execution of the joinpoint will be
+	 * The advice can return a value: if this value is set, the execution of the joinpoint will be
 	 * cancelled and the returned value replaced by this one.
 	 *
-	 * @param $joinpoint string the joinpoint defined like a call-back :
-	 *                   ['class_name', 'methodName']
-	 * @param $advice    callable the call-back call of the advice :
+	 * @param $joinpoint string   The joinpoint defined like a call-back: ['class_name', 'methodName']
+	 * @param $advice    callable The call-back call of the advice:
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
-	 * @return IHandler
 	 */
 	public function beforeFunction(string $joinpoint, callable $advice) : IHandler
 	{
@@ -156,14 +145,12 @@ class Weaver implements IWeaver, Plugin
 	 * Weave an aspect before the execution of a given method
 	 *
 	 * Advice arguments are the pointcut object, then the arguments passed to the joinpoint method
-	 * The advice can return a value : if this value is set, the execution of the joinpoint will be
+	 * The advice can return a value: if this value is set, the execution of the joinpoint will be
 	 * cancelled and the returned value replaced by this one.
 	 *
-	 * @param $joinpoint string[] the joinpoint defined like a call-back :
-	 *                   ['class_name', 'methodName']
-	 * @param $advice    callable the call-back call of the advice :
+	 * @param $joinpoint string[] The joinpoint defined like a call-back: ['class_name', 'methodName']
+	 * @param $advice    callable The call-back call of the advice:
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
-	 * @return IHandler
 	 */
 	public function beforeMethod(array $joinpoint, callable $advice) : IHandler
 	{
@@ -174,9 +161,7 @@ class Weaver implements IWeaver, Plugin
 	}
 
 	//----------------------------------------------------------------------------- changedClassNames
-	/**
-	 * @return string[] class names of changed joinpoints since before call of saveJoinpoints()
-	 */
+	/** @return string[] class names of changed joinpoints since before call of saveJoinpoints() */
 	public function changedClassNames() : array
 	{
 		$changed_class_names = [];
@@ -202,9 +187,6 @@ class Weaver implements IWeaver, Plugin
 	}
 
 	//------------------------------------------------------------------------------- defaultFileName
-	/**
-	 * @return string
-	 */
 	public function defaultFileName() : string
 	{
 		return Application::getCacheDir() . SL . 'weaver.php';
@@ -214,9 +196,6 @@ class Weaver implements IWeaver, Plugin
 	/**
 	 * Change joinpoints array into a dumped php source [...].
 	 * Replaces all objects by current session plugins getters
-	 *
-	 * @param $array array
-	 * @return string
 	 */
 	private function dumpArray(array $array) : string
 	{
@@ -245,11 +224,6 @@ class Weaver implements IWeaver, Plugin
 	}
 
 	//------------------------------------------------------------------------------- dumpArrayDetail
-	/**
-	 * @param string $dump
-	 * @param mixed  $joinpoint
-	 * @param string $lf
-	 */
 	protected function dumpArrayDetail(string &$dump, mixed $joinpoint, string $lf) : void
 	{
 		$dump .= $lf . '[' . Q . $joinpoint[0] . Q . ', ';
@@ -270,10 +244,7 @@ class Weaver implements IWeaver, Plugin
 	}
 
 	//----------------------------------------------------------------------------- fileClassesAsText
-	/**
-	 * @param $file_name string
-	 * @return string[] key is the name of the class, value is its raw configuration into weaver.php
-	 */
+	/** @return string[] key = name of the class, value = its raw configuration into weaver.php */
 	private function fileClassesAsText(string $file_name) : array
 	{
 		$classes = [];
@@ -307,7 +278,7 @@ class Weaver implements IWeaver, Plugin
 	/**
 	 * Gets existing joinpoints for a class name
 	 *
-	 * @param $joinpoint_name string joinpoint class or function name
+	 * @param $joinpoint_name string Joinpoint class or function name
 	 * @return array [$method][$index] = [$type, callback $advice]
 	 */
 	public function getJoinpoints(string $joinpoint_name = '') : array
@@ -318,18 +289,12 @@ class Weaver implements IWeaver, Plugin
 	}
 
 	//--------------------------------------------------------------------------------- hasJoinpoints
-	/**
-	 * @return boolean
-	 */
 	public function hasJoinpoints() : bool
 	{
 		return (bool)$this->joinpoints;
 	}
 
 	//-------------------------------------------------------------------------------- loadJoinpoints
-	/**
-	 * @param $file_name string
-	 */
 	public function loadJoinpoints(string $file_name) : void
 	{
 		$this->file_name  = $file_name;
@@ -338,11 +303,10 @@ class Weaver implements IWeaver, Plugin
 
 	//---------------------------------------------------------------------------------- readProperty
 	/**
-	 * @param $joinpoint string[] the joinpoint defined like a call-back :
+	 * @param $joinpoint string[] The joinpoint defined like a call-back:
 	 *                   ['class_name', 'property_name']
-	 * @param $advice    callable the call-back call of the advice :
+	 * @param $advice    callable The call-back call of the advice:
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
-	 * @return IHandler
 	 */
 	public function readProperty(array $joinpoint, callable $advice) : IHandler
 	{
@@ -353,11 +317,7 @@ class Weaver implements IWeaver, Plugin
 	}
 
 	//---------------------------------------------------------------------------------------- remove
-	/**
-	 * Un-weave an aspect
-	 *
-	 * @param $handler IHandler
-	 */
+	/** Un-weave an aspect */
 	public function remove(IHandler $handler) : void
 	{
 		/** @var $handler Handler */
@@ -370,9 +330,7 @@ class Weaver implements IWeaver, Plugin
 	}
 
 	//-------------------------------------------------------------------------------- saveJoinpoints
-	/**
-	 * @param $file_name string
-	 */
+	/** @param $file_name string */
 	public function saveJoinpoints(string $file_name) : void
 	{
 		$this->file_name = $file_name;
@@ -387,11 +345,10 @@ class Weaver implements IWeaver, Plugin
 
 	//--------------------------------------------------------------------------------- writeProperty
 	/**
-	 * @param $joinpoint string[] the joinpoint defined like a call-back :
+	 * @param $joinpoint string[] The joinpoint defined like a call-back:
 	 *                   ['class_name', 'property_name']
-	 * @param $advice    callable the call-back call of the advice :
+	 * @param $advice    callable The call-back call of the advice:
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
-	 * @return IHandler
 	 */
 	public function writeProperty(array $joinpoint, callable $advice) : IHandler
 	{

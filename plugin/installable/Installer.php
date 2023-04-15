@@ -296,7 +296,6 @@ class Installer
 	{
 		if (!$file_name) {
 			/** @see File::defaultFileName() */
-			/** @noinspection PhpUndefinedMethodInspection class-string */
 			$file_name = $file_class::defaultFileName();
 		}
 		if (!isset($this->files[$file_name])) {

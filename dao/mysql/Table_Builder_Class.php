@@ -79,21 +79,23 @@ class Table_Builder_Class
 			/** @var $properties Reflection_Property[] */
 			$properties = Replaces_Annotations::removeReplacedProperties($class->getProperties());
 			foreach ($properties as $property) {
-				if ($this->filterProperty($property)) {
-					$table->addColumn(Column::buildProperty($property));
-					$type = $property->getType();
-					if ($type->isClass() && $type->isAbstractClass()) {
-						$table->addColumn(Column::buildClassProperty($property));
-					}
-					if (Link_Annotation::of($property)->isObject() && !Store::of($property)->isString()) {
-						$class_name                              = $type->asString();
-						$this->dependencies_context[$class_name] = $class_name;
-						if (!$type->isAbstractClass()) {
-							$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
-						}
-						$table->addIndex(Index::buildLink(Store_Name_Annotation::of($property)->value));
-					}
+				if (!$this->filterProperty($property)) {
+					continue;
 				}
+				$table->addColumn(Column::buildProperty($property));
+				$type = $property->getType();
+				if ($type->isClass() && $type->isAbstractClass()) {
+					$table->addColumn(Column::buildClassProperty($property));
+				}
+				if (!Link_Annotation::of($property)->isObject() || Store::of($property)->isString()) {
+					continue;
+				}
+				$class_name                              = $type->asString();
+				$this->dependencies_context[$class_name] = $class_name;
+				if (!$type->isAbstractClass()) {
+					$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
+				}
+				$table->addIndex(Index::buildLink(Store_Name_Annotation::of($property)->value));
 			}
 		}
 		return $table;

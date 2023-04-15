@@ -19,25 +19,14 @@ class Template_Compiler implements Registerable, Updatable
 	const HOOK = '<!--assets-->';
 
 	//-------------------------------------------------------------------------------- $configuration
-	/**
-	 * @var Configuration
-	 */
 	public Configuration $configuration;
 
 	//--------------------------------------------------------------------------- $main_template_path
-	/**
-	 * Path to source main.html used as base to create compiled main.html
-	 *
-	 * @var string
-	 */
+	/** Path to source main.html used as base to create compiled main.html */
 	public string $main_template_path;
 
 	//----------------------------------------------------------------------- getCompiledMainTemplate
-	/**
-	 * Sets up main template to compile one if exists
-	 *
-	 * @param $object Template
-	 */
+	/** Sets up main template to compile one if exists */
 	public function getCompiledMainTemplate(Template $object) : void
 	{
 		if (!isset($this->main_template) && file_exists($this->getCompiledPath())) {
@@ -46,18 +35,12 @@ class Template_Compiler implements Registerable, Updatable
 	}
 
 	//------------------------------------------------------------------------------- getCompiledPath
-	/**
-	 * @return string
-	 */
 	protected function getCompiledPath() : string
 	{
 		return Include_Filter::getCacheDir() . SL . 'main.html';
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @param $register Register
-	 */
 	public function register(Register $register) : void
 	{
 		Application_Updater::get()->addUpdatable($this);
@@ -68,11 +51,7 @@ class Template_Compiler implements Registerable, Updatable
 	}
 
 	//---------------------------------------------------------------------------------------- update
-	/**
-	 * @param $last_time integer
-	 * @see Updatable
-	 * @throws Assets_Exception
-	 */
+	/** @throws Assets_Exception */
 	public function update(int $last_time) : void
 	{
 		unlinkIfExists($this->getCompiledPath());

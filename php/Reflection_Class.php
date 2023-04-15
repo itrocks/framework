@@ -1290,7 +1290,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 			$this->line = $token[2];
 			$this->type = $token[0];
-			if($this->type !== T_CLASS) {
+			if ($this->type !== T_CLASS) {
 				$this->is_abstract = true;
 			}
 

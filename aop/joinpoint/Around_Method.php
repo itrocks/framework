@@ -10,19 +10,12 @@ class Around_Method extends Method_Joinpoint
 {
 
 	//------------------------------------------------------------------------------- $process_method
-	/**
-	 * @var string
-	 */
 	private string $process_method;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name     string
-	 * @param $pointcut       string[]|object[]
-	 * @param $parameters     array
-	 * @param $result         mixed
-	 * @param $advice         string[]|object[]|string
-	 * @param $process_method string
+	 * @param $pointcut string[]|object[]
+	 * @param $advice   string[]|object[]|string
 	 */
 	public function __construct(
 		string $class_name, array $pointcut, array $parameters, mixed &$result, array|string $advice,
@@ -38,7 +31,6 @@ class Around_Method extends Method_Joinpoint
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $args mixed The arguments the original method was expected to receive
-	 * @return mixed
 	 */
 	public function process(mixed... $args) : mixed
 	{

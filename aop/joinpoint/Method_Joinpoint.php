@@ -8,31 +8,19 @@ abstract class Method_Joinpoint extends Function_Joinpoint
 {
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var string
-	 */
 	public string $class_name;
 
 	//---------------------------------------------------------------------------------- $method_name
-	/**
-	 * @var string
-	 */
 	public string $method_name;
 
 	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * @var object
-	 */
 	public object $object;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @noinspection PhpMissingParentConstructorInspection $pointcut argument type does not match
-	 * @param $class_name  string
-	 * @param $pointcut    object[]|string[]
-	 * @param $parameters  array
-	 * @param $result      mixed
-	 * @param $advice      object[]|string[]|string
+	 * @param $pointcut object[]|string[]
+	 * @param $advice   object[]|string[]|string
 	 */
 	public function __construct(
 		string $class_name, array $pointcut, array $parameters, mixed &$result, array|string $advice

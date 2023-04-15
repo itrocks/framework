@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\AOP;
 
 use ITRocks\Framework\AOP\Include_Filter\Exception;
+use ITRocks\Framework\PHP\Compiler;
 use ITRocks\Framework\Tools\Paths;
 use php_user_filter;
 
@@ -13,27 +14,17 @@ class Include_Filter extends php_user_filter
 {
 
 	//------------------------------------------------------------------------------------- CACHE_DIR
-	/**
-	 * @see \ITRocks\Framework\PHP\Compiler::getCacheDir()
-	 */
+	/** @see Compiler::getCacheDir() */
 	const CACHE_DIR = 'cache/compiled';
 
 	//-------------------------------------------------------------------------------------------- ID
 	const ID = 'aop.include';
 
 	//--------------------------------------------------------------------------------------- $active
-	/**
-	 * @var boolean
-	 */
 	public static bool $active = true;
 
 	//------------------------------------------------------------------------------------ $file_name
-	/**
-	 * The name of the file currently being included
-	 * Set by file(), used by filter().
-	 *
-	 * @var ?string
-	 */
+	/** The name of the file currently being included. Set by file(), used by filter(). */
 	private static ?string $file_name;
 
 	//------------------------------------------------------------------------------------- cacheFile
@@ -42,9 +33,6 @@ class Include_Filter extends php_user_filter
 	 *
 	 * 'a/class/name/like/this/This.php' or 'a/class/name/like/This.php' into
 	 * 'a-class-name-like-This'
-	 *
-	 * @param $file_name string
-	 * @return string
 	 */
 	public static function cacheFile(string $file_name) : string
 	{
@@ -64,9 +52,7 @@ class Include_Filter extends php_user_filter
 	 * Get the real file or filter to include given a file relative to the project root or relative
 	 * to the path prefix if given
 	 *
-	 * @param $file_name   string relative path to the file to be included
-	 * @param $path_prefix string
-	 * @return string
+	 * @param $file_name string relative path to the file to be included
 	 * @throws Exception
 	 */
 	public static function file(string $file_name, string $path_prefix = '') : string
@@ -103,11 +89,8 @@ class Include_Filter extends php_user_filter
 
 	//---------------------------------------------------------------------------------------- filter
 	/**
-	 * @param $in       resource
-	 * @param $out      resource
-	 * @param $consumed integer
-	 * @param $closing  boolean
-	 * @return integer
+	 * @param $in  resource
+	 * @param $out resource
 	 */
 	public function filter(mixed $in, mixed $out, &$consumed, bool $closing) : int
 	{
@@ -127,20 +110,14 @@ class Include_Filter extends php_user_filter
 	}
 
 	//----------------------------------------------------------------------------------- getCacheDir
-	/**
-	 * Returns the cache directory
-	 *
-	 * @return string
-	 */
+	/** Returns the cache directory */
 	public static function getCacheDir() : string
 	{
 		return self::CACHE_DIR;
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @return boolean true if well registered
-	 */
+	/** @return boolean true if well registered */
 	public static function register() : bool
 	{
 		return stream_filter_register(self::ID, __CLASS__) or die('Failed to register filter');

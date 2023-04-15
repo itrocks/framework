@@ -15,9 +15,7 @@ class Person_Having_Name_Default_With_Civility implements Registerable
 {
 
 	//------------------------------------------------------------------------------- prependCivility
-	/**
-	 * @param $object object&Person_Having_Name&Has_Civility&Has_Name
-	 */
+	/** @param $object object&Person_Having_Name&Has_Civility&Has_Name */
 	public static function prependCivility(object $object) : void
 	{
 		if ($object->civility && trim($object->first_name . SP . $object->last_name)) {
@@ -26,9 +24,6 @@ class Person_Having_Name_Default_With_Civility implements Registerable
 	}
 
 	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @param $register Register
-	 */
 	public function register(Register $register) : void
 	{
 		$register->aop->afterMethod(

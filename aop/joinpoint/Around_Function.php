@@ -8,19 +8,10 @@ class Around_Function extends Function_Joinpoint
 {
 
 	//----------------------------------------------------------------------------- $process_function
-	/**
-	 * @var string
-	 */
 	private string $process_function;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $pointcut         string
-	 * @param $parameters       array
-	 * @param $result           mixed
-	 * @param $advice           string[]|object[]|string
-	 * @param $process_function string
-	 */
+	/** @param $advice string[]|object[]|string */
 	public function __construct(
 		string $pointcut, array $parameters, mixed &$result, array|string $advice,
 		string $process_function
@@ -34,7 +25,6 @@ class Around_Function extends Function_Joinpoint
 	 * Launch the function that which call was replaced by the advice
 	 *
 	 * @param $args mixed The arguments the original function was expected to receive
-	 * @return mixed
 	 */
 	public function process(mixed $args = null) : mixed
 	{

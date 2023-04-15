@@ -30,7 +30,6 @@ trait Person_Replaces_Name
 	 *
 	 * @noinspection PhpUnused #Setter
 	 * @param $property_name string @values first_name, last_name
-	 * @param $value         string
 	 */
 	protected function setNameComponent(string $property_name, string $value) : void
 	{

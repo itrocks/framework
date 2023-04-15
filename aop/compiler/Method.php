@@ -23,10 +23,7 @@ class Method
 	//---------------------------------------------------------------------------------- codeAssembly
 	/**
 	 * @param $before_code string[]
-	 * @param $advice_code string
 	 * @param $after_code  string[]
-	 * @param $indent      string
-	 * @return string
 	 */
 	private function codeAssembly(
 		array $before_code, string $advice_code, array $after_code, string $indent
@@ -81,8 +78,8 @@ class Method
 		$i3 = $i2 . TAB;
 		// $parameters = ['parameter_name' => 'parameter_name')
 		$parameters = $source_method->getParametersNames();
-		// $doc_comment = source method doc comment
-		$doc_comment = $source_method->getDocComment();
+		// source method doc comment
+		$source_method->getDocComment();
 		// $parameters_names = '$parameter1, $parameter2'
 		$parameters_names = $parameters ? ('$' . join(', $', $parameters)) : '';
 		// $prototype = 'public [static] function methodName($parameter1, $parameter2 = 'default')'

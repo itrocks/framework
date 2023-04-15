@@ -20,9 +20,7 @@ class Handler implements IHandler
 	public int $index;
 
 	//------------------------------------------------------------------------------------ $joinpoint
-	/**
-	 * @var string|string[]
-	 */
+	/** @var string|string[] */
 	public array|string $joinpoint;
 
 	//----------------------------------------------------------------------------------------- $type
@@ -30,11 +28,7 @@ class Handler implements IHandler
 	public string $type;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $type      string
-	 * @param $joinpoint string|string[]
-	 * @param $index     integer
-	 */
+	/** @param $joinpoint string|string[] */
 	public function __construct(string $type, array|string $joinpoint, int $index)
 	{
 		$this->index     = $index;

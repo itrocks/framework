@@ -110,11 +110,8 @@ class Properties
 
 	//--------------------------------------------------------------------------------- compileAdvice
 	/**
-	 * @param $property_name string
-	 * @param $type          string
-	 * @param $advice        string[]|object[]|string
-	 * @param $init          string[]
-	 * @return string
+	 * @param $advice string[]|object[]|string
+	 * @param $init   string[]
 	 */
 	private function compileAdvice(
 		string $property_name, string $type, array|string $advice, array &$init
@@ -362,10 +359,6 @@ class Properties
 	}
 
 	//------------------------------------------------------------------------------------ compileGet
-	/**
-	 * @param $advices array
-	 * @return string
-	 */
 	private function compileGet(array $advices) : string
 	{
 		$over = $this->overrideMethod('__get', true, $advices);
@@ -747,10 +740,7 @@ class Properties
 	}
 
 	//-------------------------------------------------------------------------------------- initCode
-	/**
-	 * @param $init string[]
-	 * @return string
-	 */
+	/** @param $init string[] */
 	private function initCode(array $init) : string
 	{
 		if (isset($init['7.element_type_name']) && isset($init['7.class_name'])) {
@@ -766,9 +756,7 @@ class Properties
 	/**
 	 * Override a public method
 	 *
-	 * @param $method_name  string
 	 * @param $needs_return boolean if false, call will not need return statement
-	 * @param $advices      array
 	 * @return array action (rename, trait), call, Reflection_Method method, prototype
 	 */
 	private function overrideMethod(
