@@ -48,6 +48,9 @@ class Compiler extends Cache
 	 */
 	const CACHE_DIR_NAME = 'compiled';
 
+	//----------------------------------------------------------------------------------------- DEBUG
+	const DEBUG = false;
+
 	//------------------------------------------------------------------------------------- $compiled
 	/**
 	 * Compiled files list : in order to avoid compiling the same file two times with the same
@@ -232,8 +235,9 @@ class Compiler extends Cache
 	private function addMoreSources(array $compilers) : void
 	{
 		do {
+			if (self::DEBUG) echo 'More sources 1';
 			$more_sources = new More_Sources($this->sources);
-
+			if (self::DEBUG) echo ' 2';
 			// ask each compiler for adding of compiled files, until they have nothing to add
 			foreach ($compilers as $compiler) {
 				if ($compiler instanceof Needs_Main) {
@@ -241,24 +245,27 @@ class Compiler extends Cache
 				}
 				$compiler->moreSourcesToCompile($more_sources);
 			}
-
 			foreach ($more_sources->added as $added_key => $source) {
+				if (self::DEBUG) echo SP . $source->file_name;
 				$source_file_name = $source->getFirstClassName() ?: $source->file_name;
 				if (isset($this->sources[$source_file_name])) {
 					unset($more_sources->added[$added_key]);
 				}
 				else {
+					if (self::DEBUG) echo ' RD';
 					$this->replaceDependencies($source);
 					$this->sources[$source_file_name] = $source;
+					if (self::DEBUG) echo ' >';
 				}
 			}
-
+			if (self::DEBUG) echo ' 3';
 			if (count($compilers) === 1) {
 				$more_sources->added = [];
 			}
 
 		}
 		while ($more_sources->added);
+		if (self::DEBUG) echo ' Added' . BR;
 	}
 
 	//------------------------------------------------------------------------------------- addSource
@@ -370,9 +377,12 @@ class Compiler extends Cache
 			/** @var $compilers ICompiler[] */
 			$this->saved_sources = $this->sources;
 			while ($this->sources) {
+				if (self::DEBUG) echo '=== Replace dependencies' . BR;
 				$this->replaceDependenciesForSources($this->sources);
+				if (self::DEBUG) echo '=== Add more sources' . BR;
 				$this->addMoreSources($compilers);
 				$this->saved_sources = array_merge($this->saved_sources, $this->sources);
+				if (self::DEBUG) echo '=== Compile sources' . BR;
 				$this->compileSources($compilers_stop, $cache_dir);
 			}
 			$this->sources = $this->saved_sources;
@@ -572,37 +582,43 @@ class Compiler extends Cache
 	 */
 	private function replaceDependencies(Reflection_Source $source) : void
 	{
+		if (self::DEBUG) echo ' A';
 		$dependencies = $source->getDependencies(true);
+		if (self::DEBUG) echo ' B';
 		foreach ($dependencies as $dependency) {
 			if ($dependency->type === Dependency::T_STORE) {
 				$store_is_set[$dependency->class_name] = true;
 			}
 		}
+		if (self::DEBUG) echo ' C';
 		foreach ($source->getClasses() as $class) {
 			if (
-				!isset($store_is_set[$class->name])
-				&& !$class->isAbstract()
-				&& ($store = Store::of($class))
-				&& ($store_name = $store->value)
+				isset($store_is_set[$class->name])
+				|| $class->isAbstract()
+				|| !($store = Store::of($class))
+				|| !($store_name = $store->value)
 			) {
-				$dependency                  = new Dependency();
-				$dependency->class_name      = $class->name;
-				$dependency->dependency_name = $store_name;
-				$dependency->file_name       = $source->file_name;
-				$dependency->type            = Dependency::T_STORE;
-				if (
-					($store->class->getName() === $class->name)
-					&& ($attributes = $class->getAttributes(Store::class))
-				) {
-					/** @var $attributes Reflection_Attribute[] */
-					$dependency->line = reset($attributes)->line;
-				}
-				$dependencies[] = $dependency;
+				continue;
 			}
+			$dependency                  = new Dependency();
+			$dependency->class_name      = $class->name;
+			$dependency->dependency_name = $store_name;
+			$dependency->file_name       = $source->file_name;
+			$dependency->type            = Dependency::T_STORE;
+			if (
+				($store->class->getName() === $class->name)
+				&& ($attributes = $class->getAttributes(Store::class))
+			) {
+				/** @var $attributes Reflection_Attribute[] */
+				$dependency->line = reset($attributes)->line;
+			}
+			$dependencies[] = $dependency;
 		}
+		if (self::DEBUG) echo ' D';
 		(new Set)->replace(
 			$dependencies, Dependency::class, ['file_name' => Func::equal($source->file_name)]
 		);
+		if (self::DEBUG) echo ' E';
 	}
 
 	//----------------------------------------------------------------- replaceDependenciesForSources
@@ -616,9 +632,13 @@ class Compiler extends Cache
 		$counter = 0;
 		$total   = count($sources);
 		foreach ($sources as $source) {
+			if (self::DEBUG) echo 'replace dependencies ' . $source->file_name . BR;
 			$this->text_output->progress('Replace dependencies...', ++$counter, $total);
+			if (self::DEBUG) echo ' Z';
 			$this->replaceDependencies($source);
+			if (self::DEBUG) echo ' T' . BR;
 		}
+		if (self::DEBUG) echo 'RD.DONE' . BR;
 	}
 
 	//----------------------------------------------------------------------------- setMainController
