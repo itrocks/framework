@@ -48,6 +48,9 @@ trait Has_Callable
 	//--------------------------------------------------------------------------------- $generic_name
 	public string $generic_name = '';
 
+	//---------------------------------------------------------------------------- $reflection_member
+	protected Reflection_Method|Reflection_Property $reflection_member;
+
 	//--------------------------------------------------------------------------------------- $static
 	public bool $static = false;
 
@@ -114,6 +117,18 @@ trait Has_Callable
 		return Names::propertyToMethod($property->getName() . '_' . $attribute);
 	}
 
+	//--------------------------------------------------------------------------- getReflectionMethod
+	public function getReflectionMethod() : Reflection_Method
+	{
+		return $this->reflection_member;
+	}
+
+	//-------------------------------------------------------------------------------------------- is
+	public function is(array|callable $class_member) : bool
+	{
+		return ($this->callable[1] === $class_member[1]) && isA($this->callable[0], $class_member[0]);
+	}
+
 	//-------------------------------------------------------------------------------------- setFinal
 	public function setFinal(Reflection $reflection) : void
 	{
@@ -135,6 +150,7 @@ trait Has_Callable
 		if (($reflection_member instanceof Reflection_Method) && Generic::of($reflection_member)) {
 			$this->generic_name = $reflection->getName();
 		}
+		$this->reflection_member = $reflection_member;
 	}
 
 }
