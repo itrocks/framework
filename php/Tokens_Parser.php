@@ -12,27 +12,15 @@ trait Tokens_Parser
 {
 
 	//------------------------------------------------------------------------------------ $namespace
-	/**
-	 * The current namespace name
-	 *
-	 * @var string
-	 */
+	/** The current namespace name */
 	private string $namespace;
 
 	//---------------------------------------------------------------------------------- $token_debug
-	/**
-	 * Token key for debugging
-	 *
-	 * @var integer
-	 */
+	/** Token key for debugging */
 	private int $token_debug;
 
 	//------------------------------------------------------------------------------------ $token_key
-	/**
-	 * The current key into tokens, used by parser to know what it did parse or not
-	 *
-	 * @var integer
-	 */
+	/** The current key into tokens, used by parser to know what it did parse or not */
 	private int $token_key = 0;
 
 	//--------------------------------------------------------------------------------------- $tokens
@@ -40,7 +28,6 @@ trait Tokens_Parser
 	 * PHP tokens array
 	 *
 	 * @see token_get_all()
-	 * @var array
 	 */
 	private array $tokens = [];
 
@@ -48,14 +35,11 @@ trait Tokens_Parser
 	/**
 	 * Namespaces and class names used by current namespace
 	 *
-	 * @var ?integer[] key is the used class name or namespace, value is the declaration line number
+	 * @var ?integer[] $declaration_line_number[string $user_class_name_or_namespace]
 	 */
 	private ?array $use;
 
 	//-------------------------------------------------------------------------------------- eofError
-	/**
-	 * @param $method string
-	 */
 	private function eofError(string $method) : void
 	{
 		// display current object to know more about the execution context (ie which file ?)
@@ -88,9 +72,8 @@ trait Tokens_Parser
 	/**
 	 * Resolves the full class name for any class name in current source code context
 	 *
-	 * @param $class_name string the class name we want to get the full class name
-	 * @param $use        boolean use the 'use' clause linked to the namespace
-	 * @return string
+	 * @param $class_name string  The class name we want to get the full class name
+	 * @param $use        boolean Use the 'use' clause linked to the namespace
 	 */
 	public function fullClassName(string $class_name, bool $use = true) : string
 	{
@@ -101,10 +84,8 @@ trait Tokens_Parser
 
 	//--------------------------------------------------------------------------------- scanClassName
 	/**
-	 * Scans a class name : works with 'Class_Name' and 'Has\Namespace\Class_Name'
+	 * Scans a class name: works with 'Class_Name' and 'Has\Namespace\Class_Name'
 	 * Starts from the next token
-	 *
-	 * @return string
 	 */
 	private function scanClassName() : string
 	{
@@ -126,7 +107,7 @@ trait Tokens_Parser
 
 	//-------------------------------------------------------------------------------- scanClassNames
 	/**
-	 * Scans class names separated by commas : works with 'Class_Name' and 'Has\Namespace\Class_Name'
+	 * Scans class names separated by commas: works with 'Class_Name' and 'Has\Namespace\Class_Name'
 	 * Starts from the next token
 	 *
 	 * @return string[]
@@ -174,9 +155,7 @@ trait Tokens_Parser
 	//--------------------------------------------------------------------------- scanRequireFilePath
 	/**
 	 * Scans ('File path'), "File path" and variants to get the 'file path' value
-	 * Can be a PHP expression like '__DIR__ . "File path"' : the resulting string will be kept as this
-	 *
-	 * @return string
+	 * Can be a PHP expression like '__DIR__ . "File path"': the resulting string will be kept as this
 	 */
 	private function scanRequireFilePath() : string
 	{
