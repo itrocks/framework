@@ -1,8 +1,8 @@
 <?php
 namespace ITRocks\Framework\PHP\Cache;
 
+use ITRocks\Depend\Repository;
 use ITRocks\Framework\AOP\Weaver;
-use ITRocks\Framework\PHP\Dependency\Repository;
 use ITRocks\Framework\Session;
 
 class Compiler

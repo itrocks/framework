@@ -29,6 +29,7 @@
 		"giggsey/libphonenumber-for-php":        "^8.12",
 		"html2text/html2text":                   "^4.3",
 		"intelogie/pdf.js":                      "dev-master",
+		"itrocks/depend":                        "dev-master",
 		"itrocks/quill":                         "^2.0",
 		"itrocks/quill-better-table":            "^0.1",
 		"jquery/jquery-mousewheel":              "^3.1",
