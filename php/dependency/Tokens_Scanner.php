@@ -7,6 +7,7 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Implement;
 class Tokens_Scanner
 {
 
+	//------------------------------------------------------------------------------------ TOKEN SETS
 	protected const BASIC_TYPES        = ['array', 'bool', 'callable', 'false', 'float', 'int', 'null', 'object', 'string', 'true', 'void'];
 	protected const BASIC_VARIABLE     = [...self::BASIC_TYPES, T_VARIABLE];
 	protected const CLASS_TOKENS       = [T_NAME_FULLY_QUALIFIED, T_NAME_QUALIFIED, T_STRING];
@@ -91,13 +92,11 @@ class Tokens_Scanner
 
 			case '}':
 				if ($this->curly_depth === end($this->class_depths)) {
-					//echo "- exit class|interface|trait $this->class\n";
 					array_pop($this->class_depths);
 					$this->class = '';
 					break;
 				}
 				if ($this->curly_depth === $this->namespace_depth) {
-					//echo "- exit namespace $this->namespace\n";
 					$this->namespace       = '';
 					$this->namespace_depth = 0;
 					$this->namespace_use   = [];
@@ -111,7 +110,6 @@ class Tokens_Scanner
 
 			case ']':
 				if ($this->square_depth === $this->attribute_square_depth) {
-					//echo "- exit attributes\n";
 					$this->attribute               = '';
 					$this->attribute_bracket_depth = -1;
 					$this->attribute_square_depth  = 0;
@@ -120,7 +118,6 @@ class Tokens_Scanner
 				break;
 
 			case T_ATTRIBUTE:
-				//echo "- enter attributes\n";
 				$this->square_depth ++;
 				$this->attribute_bracket_depth = $this->bracket_depth;
 				$this->attribute_square_depth  = $this->square_depth;
@@ -134,7 +131,6 @@ class Tokens_Scanner
 				}
 				else {
 					$this->class = $this->reference($token, 'declare-class') ?: $this->class;
-					//echo "- enter class $this->class\n";
 				}
 				if ($this->next_references) $this->appendNextReferences();
 				break;
@@ -165,7 +161,6 @@ class Tokens_Scanner
 				$this->class          = $this->reference($token, "declare-$type") ?: $this->class;
 				$this->class_depths[] = $this->curly_depth + 1;
 				if ($this->next_references) $this->appendNextReferences();
-				//echo "- enter $type $this->class\n";
 				break;
 
 			case T_FUNCTION:
@@ -282,7 +277,6 @@ class Tokens_Scanner
 						while (!in_array($token[0], self::CLASS_TOKENS, true)) $token = next($tokens);
 						$use = ltrim($token[1], '\\');
 						$this->reference([T_NAME_FULLY_QUALIFIED, $token[1], $token[2]], 'namespace-use');
-						//echo "- $token[2]: use $use";
 						while ($token = next($tokens)) switch ($token[0]) {
 							case T_AS:
 								while ($token[0] !== T_STRING) $token = next($tokens);
@@ -388,7 +382,6 @@ class Tokens_Scanner
 		else {
 			$this->references[] = $reference;
 		}
-		//echo "+ " . str_replace("\n", ' ', print_r(end($this->references), true)) . "\n";
 		return $name;
 	}
 
@@ -401,7 +394,6 @@ class Tokens_Scanner
 			$this->phpBlock($tokens);
 		}
 		if ($this->next_references) $this->appendNextReferences();
-		//foreach ($tokens as $token) echo str_replace("\n", " ", print_r($token, true)) . "\n";
 	}
 
 }

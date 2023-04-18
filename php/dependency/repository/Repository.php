@@ -131,6 +131,6 @@ class Repository
 
 }
 
-if (isset($argv[0]) && isset($_SERVER['PHP_SELF']) && ($argv[0] === $_SERVER['PHP_SELF'])) {
-	(new Repository('', Repository::REFRESH/*|Repository::VENDOR*/))->runConsole();
+if (isset($_SERVER['PHP_SELF']) && isset($argv[0]) && ($argv[0] === $_SERVER['PHP_SELF'])) {
+	(new Repository('', Repository::REFRESH|Repository::VENDOR))->runConsole();
 }

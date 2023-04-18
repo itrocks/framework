@@ -1,10 +1,6 @@
 <?php
 namespace ITRocks\Framework\PHP\Dependency\Repository;
 
-use ITRocks\Framework\PHP\Dependency\Repository;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
-
-#[Extend(Repository::class)]
 trait Classify
 {
 
@@ -82,9 +78,13 @@ trait Classify
 					foreach ($references as $key => &$references1) {
 						foreach ($references1 as $key1 => &$references2) {
 							unset($references2[$file_name]);
-							if (!$references2) unset($references1[$key1]);
+							if (!$references2) {
+								unset($references1[$key1]);
+							}
 						}
-						if (!$references1) unset($references[$key]);
+						if (!$references1) {
+							unset($references[$key]);
+						}
 					}
 				}
 			}

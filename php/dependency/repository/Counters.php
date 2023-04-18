@@ -1,10 +1,6 @@
 <?php
 namespace ITRocks\Framework\PHP\Dependency\Repository;
 
-use ITRocks\Framework\PHP\Dependency\Repository;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
-
-#[Extend(Repository::class)]
 trait Counters
 {
 

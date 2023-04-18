@@ -8,19 +8,17 @@ abstract class Declaration
 {
 
 	//---------------------------------------------------- Dependency::$declaration for $type = class
-	const _CLASS     = 'class';
-	const _INTERFACE = 'interface';
-	const _TRAIT     = 'trait';
+	public const _CLASS     = 'class';
+	public const _INTERFACE = 'interface';
+	public const _TRAIT     = 'trait';
 
 	//-------------------------------------------------- Dependency::$declaration for $type = feature
-	const ASSIGNED    = 'assigned';
-	const BUILT_IN    = 'built-in';
-	const INSTALLABLE = 'installable';
+	public const ASSIGNED    = 'assigned';
+	public const BUILT_IN    = 'built-in';
+	public const INSTALLABLE = 'installable';
 
 	//-------------------------------------------------------------------------------------- PROPERTY
-	/**
-	 * Dependency::$declaration for $type in (param, return, var)
-	 */
-	const PROPERTY  = 'property';
+	/** Dependency::$declaration for $type in (param, return, var) */
+	public const PROPERTY  = 'property';
 
 }

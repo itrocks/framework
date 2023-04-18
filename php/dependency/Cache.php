@@ -22,21 +22,15 @@ class Cache
 	const TYPES = [Dependency::T_SET, Dependency::T_STORE];
 
 	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * @var Dependency[] key is the class name of the dependency
-	 */
+	/** @var Dependency[] key is the class name of the dependency */
 	public static array $class_name = [];
 
 	//------------------------------------------------------------------------------ $dependency_name
-	/**
-	 * @var Dependency[] key is the name of the dependency
-	 */
+	/** @var Dependency[] key is the name of the dependency */
 	public static array $dependency_name = [];
 
 	//-------------------------------------------------------------------------------------- generate
-	/**
-	 * Generate cache files
-	 */
+	/** Generate cache files */
 	public function generate() : void
 	{
 		if (!is_dir(static::CACHE_DIR)) {

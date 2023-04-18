@@ -1,10 +1,6 @@
 <?php
 namespace ITRocks\Framework\PHP\Dependency\Repository;
 
-use ITRocks\Framework\PHP\Dependency\Repository;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
-
-#[Extend(Repository::class)]
 trait Cache_Path
 {
 
@@ -51,15 +47,17 @@ trait Cache_Path
 	//--------------------------------------------------------------------------------------- setHome
 	protected function setHome(string $home) : void
 	{
-		if ($home === '') {
-			$home = str_replace('\\', '/', getcwd());
-			while (
-				str_contains($home, '/')
-				&& !(file_exists("$home/cache") && file_exists("$home/composer.json"))
-				&& !file_exists("$home/composer.lock")
-			) {
-				$home = substr($home, 0, strrpos($home, '/'));
-			}
+		$this->home = $home;
+		if ($home !== '') {
+			return;
+		}
+		$home = str_replace('\\', '/', getcwd());
+		while (
+			str_contains($home, '/')
+			&& !(file_exists("$home/cache") && file_exists("$home/composer.json"))
+			&& !file_exists("$home/composer.lock")
+		) {
+			$home = substr($home, 0, strrpos($home, '/'));
 		}
 		$this->home = $home;
 	}

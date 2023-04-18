@@ -1,11 +1,8 @@
 <?php
 namespace ITRocks\Framework\PHP\Dependency\Repository;
 
-use ITRocks\Framework\PHP\Dependency\Repository;
 use ITRocks\Framework\PHP\Dependency\Tokens_Scanner;
-use ITRocks\Framework\Reflection\Attribute\Class_\Extend;
 
-#[Extend(Repository::class)]
 trait Scanner
 {
 
@@ -41,7 +38,6 @@ trait Scanner
 	public function scanFile(string $file) : void
 	{
 		$this->files_count ++;
-		//echo "SCAN FILE $file\n";
 		$tokens  = token_get_all($this->file_contents[$file] = file_get_contents($file));
 		$scanner = new Tokens_Scanner();
 		$scanner->scan($tokens);
