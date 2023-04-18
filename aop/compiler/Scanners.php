@@ -48,8 +48,18 @@ trait Scanners
 				}
 			}
 		}
-		foreach ($class->getProperties([]) as $property) {
+		$parent_properties = [];
+		if ($parent_class = $class->getParentClass()) {
+			$parent_properties = $parent_class->getProperties();
+		}
+		foreach ($class->getProperties() as $property) {
 			if (isset($disable[$property->name])) {
+				continue;
+			}
+			if (
+				($parent_property = $parent_properties[$property->name] ?? false)
+				&& Getter::of($parent_property)->callable
+			) {
 				continue;
 			}
 			$type = $property->getType();
@@ -62,6 +72,9 @@ trait Scanners
 			}
 			$advice = [Mapper\Getter::class, 'get' . $link_annotation->value];
 			$properties[$property->name][] = [Handler::READ, $advice];
+			if ($property->final_class->name !== $property->class->name) {
+				$properties[$property->name]['implements'][Handler::READ] = true;
+			}
 		}
 		$annotations = [Link_Annotation::ANNOTATION];
 		foreach ($this->scanForOverrides($class->getDocComment([]), $annotations, $disable) as $match) {
