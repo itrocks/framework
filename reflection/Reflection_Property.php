@@ -455,14 +455,7 @@ class Reflection_Property extends ReflectionProperty
 	#[ReturnTypeWillChange]
 	public function getType() : Type
 	{
-		$type = Var_Annotation::of($this)->getType();
-		if ($type->isNull()) {
-			trigger_error(
-				$this->getDeclaringTrait() . '::$' . $this->name
-				. ' type not set using @var annotation', E_USER_ERROR
-			);
-		}
-		return $type;
+		return Var_Annotation::of($this)->getType();
 	}
 
 	//--------------------------------------------------------------------------------- getTypeOrigin
