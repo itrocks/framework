@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\PHP;
 
+use Error;
 use ITRocks\Framework\AOP\Include_Filter;
 use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\PHP\Dependency\Declaration;
@@ -294,10 +295,20 @@ class Reflection_Source
 				}
 				elseif (!str_contains($eval, '::') && !str_contains($eval, '->')) {
 					/** @var $require_name string */
-					eval('$require_name = ' . $eval . ';');
+					try {
+						eval('$require_name = ' . $eval . ';');
+					}
+					catch (Error $error) {
+						trigger_error(
+							$error->getMessage() . ' on eval $require_name = ' . $eval
+								. ' into ' . $this->file_name . ' line ' . $token[2],
+							E_USER_ERROR
+						);
+					}
 					if (!isset($require_name)) {
 						trigger_error(
-							'Bad $require_name ' . $eval . ' into ' . $this->file_name . ' line ' . $token[2],
+							'Bad eval $require_name = ' . $eval
+							. ' into ' . $this->file_name . ' line ' . $token[2],
 							E_USER_ERROR
 						);
 					}

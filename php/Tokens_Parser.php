@@ -180,6 +180,7 @@ trait Tokens_Parser
 	 */
 	private function scanRequireFilePath() : string
 	{
+		$braces_depth      = 1;
 		$this->token_debug = $this->token_key;
 		$file_path         = '';
 		$this->token_key   ++;
@@ -187,6 +188,15 @@ trait Tokens_Parser
 			$token = $this->tokens[$this->token_key++];
 			if ($token !== ';') {
 				$file_path .= is_array($token) ? $token[1] : $token;
+			}
+			if ($token === '(') {
+				$braces_depth ++;
+			}
+			if ($token === ')') {
+				$braces_depth --;
+				if ($braces_depth) {
+					$token = null;
+				}
 			}
 		}
 		while (($token !== ';') && ($token !== ')') && isset($this->tokens[$this->token_key]));
