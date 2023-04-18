@@ -55,7 +55,7 @@ class Installer
 	/**
 	 * @var string
 	 */
-	public string $plugin_class_name;
+	public string $plugin_class_name = '';
 
 	//-------------------------------------------------------------------------------- addLocalAccess
 	/**
@@ -225,7 +225,7 @@ class Installer
 				/** @noinspection PhpUnhandledExceptionInspection must be valid */
 				$feature_install->call(
 					$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance(),
-					[__METHOD__]
+					[__METHOD__, 'install']
 				);
 			}
 		}
@@ -486,7 +486,7 @@ class Installer
 			/** @noinspection PhpUnhandledExceptionInspection must be valid */
 			$feature_install->call(
 				$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance(),
-				[__METHOD__]
+				[__METHOD__, 'uninstall']
 			);
 		}
 
