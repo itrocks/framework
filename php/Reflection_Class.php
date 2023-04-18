@@ -94,8 +94,8 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	private array $parent_methods;
 
 	//---------------------------------------------------------------------------- $parent_properties
-	/** @var Reflection_Property[] */
-	private array $parent_properties;
+	/** @var Reflection_Property[][] [string $final_class_name][string $property_name] */
+	private array $parent_properties = [];
 
 	//----------------------------------------------------------------------------------- $properties
 	/** @var Reflection_Property[] */
@@ -130,8 +130,8 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	private array $traits_methods;
 
 	//---------------------------------------------------------------------------- $traits_properties
-	/** @var Reflection_Property[] */
-	private array $traits_properties;
+	/** @var Reflection_Property[][] [string $final_class_name][string $property_name] */
+	private array $traits_properties = [];
 
 	//----------------------------------------------------------------------------------------- $type
 	#[Values(T_CLASS, T_INTERFACE, T_TRAIT)]
@@ -586,32 +586,37 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		}
 		$properties = $this->properties;
 
-		if (isset($final_class)) {
-			foreach ($this->properties as $property) {
+		if ($final_class) {
+			foreach ($properties as &$property) {
+				$property = clone $property;
 				$property->final_class = $final_class;
 			}
+		}
+		else {
+			$final_class = $this;
 		}
 
 		if ($flags) {
 			$flip = array_flip($flags);
 			if (isset($flip[T_USE])) {
-				if (!isset($this->traits_properties)) {
-					$this->traits_properties = [];
+				if (!isset($this->traits_properties[$final_class->name])) {
+					$this->traits_properties[$final_class->name] = [];
 					foreach ($this->getTraits() as $trait) {
-						$this->traits_properties = array_merge(
-							$trait->getProperties([T_USE], $final_class), $this->traits_properties
+						$this->traits_properties[$final_class->name] = array_merge(
+							$trait->getProperties([T_USE], $final_class),
+							$this->traits_properties[$final_class->name]
 						);
 					}
 				}
-				$properties = array_merge($this->traits_properties, $properties);
+				$properties = array_merge($this->traits_properties[$final_class->name], $properties);
 			}
 			if (isset($flip[T_EXTENDS])) {
-				if (!isset($this->parent_properties)) {
-					$this->parent_properties = ($parent = $this->getParentClass())
+				if (!isset($this->parent_properties[$final_class->name])) {
+					$this->parent_properties[$final_class->name] = ($parent = $this->getParentClass())
 						? $parent->getProperties([T_EXTENDS, T_USE], $final_class)
 						: [];
 				}
-				$properties = array_merge($this->parent_properties, $properties);
+				$properties = array_merge($this->parent_properties[$final_class->name], $properties);
 			}
 		}
 
