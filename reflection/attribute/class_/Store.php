@@ -111,9 +111,7 @@ class Store implements Has_Get_Default_Arguments, Has_Set_Declaring_Class, Has_S
 			$store = $attribute->newInstance();
 			return $store->storeName();
 		}
-		else {
-			return $this->calculateName($this->class);
-		}
+		return $this->calculateName($this->class);
 	}
 
 }

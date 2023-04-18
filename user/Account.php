@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\User;
 
 use ITRocks\Framework\Reflection\Attribute\Class_\Override;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Traits\Has_Email;
 
@@ -11,7 +10,7 @@ use ITRocks\Framework\Traits\Has_Email;
  *
  * It has a login, a password, and an email for password recovery automation.
  */
-#[Override('email', new Mandatory), Store]
+#[Override('email', new Mandatory)]
 trait Account
 {
 	use Has_Email;

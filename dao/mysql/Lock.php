@@ -2,13 +2,13 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Reflection\Attribute\Class_;
-use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Traits\Has_Creation_Date_Time;
 
-#[Class_\Store]
+#[Store]
 class Lock
 {
 	use Has_Creation_Date_Time;
@@ -31,7 +31,7 @@ class Lock
 	const WRITE = 'write';
 
 	//---------------------------------------------------------------------------------------- $count
-	#[Store(false)]
+	#[Property\Store(false)]
 	public int $count = 1;
 
 	//----------------------------------------------------------------------------------- $identifier

@@ -22,10 +22,7 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	const REGEX_DELIMITERS = [SL, BQ, '~', '¤', 'µ', '§'];
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $value    bool|string|null
-	 * @param $property Interfaces\Reflection_Property ie the contextual Reflection_Property object
-	 */
+	/** @param $property Interfaces\Reflection_Property ie contextual Reflection_Property object */
 	public function __construct(bool|string|null $value, Interfaces\Reflection_Property $property)
 	{
 		parent::__construct($value);
@@ -33,22 +30,14 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	}
 
 	//-------------------------------------------------------------------------------------- getValue
-	/**
-	 * Used from template. We don't want to display pattern format for users
-	 *
-	 * @return null
-	 */
-	public function getValue() : mixed
+	/** Used from template. We don't want to display pattern format for users */
+	public function getValue() : null
 	{
 		return null;
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
-	/**
-	 * Gets the last validate() call resulting report message
-	 *
-	 * @return string
-	 */
+	/** Gets the last validate() call resulting report message */
 	public function reportMessage() : string
 	{
 		return (strlen($this->value) && ($this->valid === Result::ERROR))
@@ -60,8 +49,7 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	/**
 	 * Validates the property value within this object context
 	 *
-	 * @param $object object
-	 * @return ?boolean true if validated, false if not validated, null if could not be validated
+	 * @return ?boolean true if validated, false if not validated, null if it could not be validated
 	 */
 	public function validate(object $object) : ?bool
 	{

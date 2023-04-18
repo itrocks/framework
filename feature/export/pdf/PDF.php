@@ -12,7 +12,6 @@ $error_reporting = error_reporting(E_ALL & ~E_WARNING & ~E_DEPRECATED);
 
 // A patch because composer does not want to compile fpdi-pdf-parser's autoloader
 if (file_exists(__DIR__ . '/../../../../../vendor/setasign/fpdi-pdf-parser/src')) {
-	/** @noinspection PhpIncludeInspection fpdi-pdf-parser : file_exists */
 	require_once __DIR__ . '/../../../../../vendor/setasign/fpdi-pdf-parser/src/autoload.php';
 }
 

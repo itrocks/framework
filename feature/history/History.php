@@ -6,7 +6,6 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Set;
 use ITRocks\Framework\Reflection\Attribute\Class_\Sort;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
@@ -20,7 +19,6 @@ use ITRocks\Framework\User;
 #[Representative('object', 'date', 'property_name', 'old_value', 'new_value')]
 #[Set('History')]
 #[Sort('date', 'user')]
-#[Store]
 abstract class History
 {
 

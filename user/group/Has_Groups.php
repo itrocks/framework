@@ -5,7 +5,6 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\User;
 use ITRocks\Framework\User\Group;
@@ -15,7 +14,6 @@ use ITRocks\Framework\User\Group;
  *
  * Done for User, but can be used for other environments objects : eg organisations, etc.
  */
-#[Store]
 trait Has_Groups
 {
 
@@ -45,14 +43,12 @@ trait Has_Groups
 		$feature_name     = $uri->feature_name;
 		$options          = null;
 		foreach ([$final_class_name, $source_class_name] as $class_name) {
-			if (isset($features[$class_name]) && isset($features[$class_name][$feature_name])) {
+			if (isset($features[$class_name][$feature_name])) {
 				if (!isset($options)) $options = [];
 				$options = array_merge($options, $features[$class_name][$feature_name]);
 			}
 		}
-		if (
-			isset($features[User::class]) && isset($features[User::class][Controller\Feature::F_SUPER])
-		) {
+		if (isset($features[User::class][Controller\Feature::F_SUPER])) {
 			if (!isset($options)) $options = [];
 			$options = array_merge($options, $features[User::class][Controller\Feature::F_SUPER]);
 		}

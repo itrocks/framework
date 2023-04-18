@@ -286,15 +286,14 @@ class Tokens_Scanner
 						while ($token = next($tokens)) switch ($token[0]) {
 							case T_AS:
 								while ($token[0] !== T_STRING) $token = next($tokens);
-								$this->namespace_use[$as = $token[1]] = $use;
+								$this->namespace_use[$token[1]] = $use;
 								while (is_array($token) || !str_contains(',;', $token)) $token = next($tokens);
 								break 2;
 							case ',':
 							case ';':
-								$this->namespace_use[$as = substr($use, strrpos($use, '\\') + 1)] = $use;
+								$this->namespace_use[substr($use, strrpos($use, '\\') + 1)] = $use;
 								break 2;
 						}
-						//echo " as $as\n";
 					}
 				}
 				break;

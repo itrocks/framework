@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Dao\Option;
 
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
-use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Link_Class;
 

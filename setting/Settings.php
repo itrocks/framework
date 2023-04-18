@@ -39,11 +39,9 @@ class Settings extends Set
 	{
 		if ($code instanceof Setting) {
 			parent::add($code->code, $code);
-			$setting = $code;
 		}
 		elseif ($value instanceof Setting) {
 			parent::add($code, $value);
-			$setting = $value;
 		}
 		else {
 			$setting = $this->get($code);
@@ -51,7 +49,7 @@ class Settings extends Set
 				$setting->value = $value;
 			}
 			else {
-				parent::add($code, $setting = new Setting($code, $value));
+				parent::add($code, new Setting($code, $value));
 			}
 		}
 	}

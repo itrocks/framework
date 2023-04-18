@@ -130,9 +130,9 @@ class Update implements Registerable, Updatable
 				try {
 					Dao::delete($feature_class);
 				}
-				catch (Exception $exception) {
+				catch (Exception) {
 					// keep feature classes that can't be deleted : it's better than crashing
-					// (eg may be used in print models, subscriptions)
+					// (e.g. may be used in print models, subscriptions)
 				}
 			}
 		}

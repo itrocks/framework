@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Reflection\Annotation;
 
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Template\Constant_Or_Method_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Default_True_Boolean_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;

@@ -1,12 +1,9 @@
 <?php
 namespace ITRocks\Framework\Email;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
-
 /**
  * An email net account : host, login and password to access a distant email account
  */
-#[Store]
 abstract class Net_Account
 {
 

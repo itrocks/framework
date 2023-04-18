@@ -4,14 +4,12 @@ namespace ITRocks\Framework\Trigger\Has_Condition;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Component;
-use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Setter;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Traits\Date_Logged;
 
-#[Class_\Store]
 abstract class Run
 {
 	use Component;

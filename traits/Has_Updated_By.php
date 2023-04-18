@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Traits;
 
 use ITRocks\Framework;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 
 /**
@@ -11,7 +10,6 @@ use ITRocks\Framework\Reflection\Attribute\Property\User;
  *
  * @before_write setUpdatedBy
  */
-#[Store]
 trait Has_Updated_By
 {
 

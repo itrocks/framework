@@ -9,13 +9,13 @@ use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Logger\Entry\Data;
-use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Class_\List_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Sort;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Show_Seconds;
-use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
@@ -30,7 +30,7 @@ use ITRocks\Framework\User;
 #[List_('start', 'stop', 'duration', 'uri', 'data.arguments')]
 #[Representative('start', 'uri')]
 #[Sort('-start', 'uri')]
-#[Class_\Store('logs')]
+#[Store('logs')]
 class Entry implements Validate\Except
 {
 	// TODO HIGH #71516 Fix Builder\Compiler as this should be replaced by dynamic call in config.php
@@ -61,7 +61,7 @@ class Entry implements Validate\Except
 	 * This is the microtime when the script starts.
 	 * Used to calculate duration on resume() and stop()
 	 */
-	#[Store(false)]
+	#[Property\Store(false)]
 	protected float $duration_start;
 
 	//--------------------------------------------------------------------------------- $memory_usage

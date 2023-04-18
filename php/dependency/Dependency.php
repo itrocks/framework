@@ -7,7 +7,6 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Option\Group_By;
 use ITRocks\Framework\PHP\Dependency\Cache;
-use ITRocks\Framework\PHP\Dependency\Declaration;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -20,8 +19,7 @@ use ReflectionException;
  * @index type, class_name, dependency_name, file_name
  * @todo Remove #AllowDynamicProperties where $id will be general to all #Store classes
  */
-#[AllowDynamicProperties]
-#[Store]
+#[AllowDynamicProperties, Store]
 class Dependency
 {
 

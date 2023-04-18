@@ -3,9 +3,9 @@ namespace ITRocks\Framework\SSO;
 
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
-use ITRocks\Framework\Reflection\Attribute\Property\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\User;
 
@@ -14,7 +14,7 @@ use ITRocks\Framework\User;
  *
  * @validate validateAuthentication
  */
-#[Representative('action', 'login', 'request_time_float'), Class_\Store]
+#[Representative('action', 'login', 'request_time_float'), Store]
 class Authentication
 {
 
@@ -54,7 +54,7 @@ class Authentication
 	public string $token = '';
 
 	//----------------------------------------------------------------------------------------- $user
-	#[Store(Store::STRING)]
+	#[Property\Store(Property\Store::STRING)]
 	public User $user;
 
 	//----------------------------------------------------------------------------------- $user_agent

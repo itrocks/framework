@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Traits\Hierarchical;
 
-use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Traits\Hierarchical;
@@ -11,7 +10,6 @@ use ITRocks\Framework\Traits\Hierarchical;
  *
  * @after_write writeSubCategories
  */
-#[Class_\Store]
 trait Category
 {
 	use Hierarchical;

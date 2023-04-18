@@ -1,8 +1,6 @@
 <?php
 namespace ITRocks\Framework\Reflection\Interfaces;
 
-use ReflectionClass;
-
 /**
  * An interface for all reflection method classes
  */

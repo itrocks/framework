@@ -101,12 +101,7 @@ abstract class Import_Settings_Builder
 				$import_property = new Import_Property($sub_class, $property_name);
 				try {
 					$property = new Reflection_Property($sub_class, $property_name);
-					if (
-						($identify && !$auto_identify)
-						|| (
-							isset($auto_identify[$property_path]) && isset($auto_identify[$property_path][$pos])
-						)
-					) {
+					if (($identify && !$auto_identify) || isset($auto_identify[$property_path][$pos])) {
 						$class->identify_properties[$property_name] = $import_property;
 					}
 					else {

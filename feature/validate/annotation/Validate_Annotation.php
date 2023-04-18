@@ -19,10 +19,8 @@ abstract class Validate_Annotation extends Method_Annotation
 	/**
 	 * Used from template. We do not want to output in the template the $value that
 	 * represents a method name. So we disable standard output of {value} or <!--value-->
-	 *
-	 * @return null
 	 */
-	public function getValue() : mixed
+	public function getValue() : null
 	{
 		return null;
 	}

@@ -5,13 +5,13 @@ use ITRocks\Framework\Controller;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Feature_Annotation;
-use ITRocks\Framework\Reflection\Attribute\Class_;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Sort;
+use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
-use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
@@ -23,7 +23,7 @@ use ITRocks\Framework\Tools\Namespaces;
  * @DISABLED-after_read emptyName # Disabled because slows-down configuration
  * @before_write beforeWrite
  */
-#[Representative('name'), Sort('name'), Class_\Store]
+#[Representative('name'), Sort('name'), Store]
 class Feature
 {
 
@@ -81,9 +81,7 @@ class Feature
 	 *
 	 * @var Low_Level_Feature[]
 	 */
-	#[Component]
-	#[Getter('getFeatures')]
-	#[Store(false)]
+	#[Component, Getter('getFeatures'), Property\Store(false)]
 	public array $features;
 
 	//------------------------------------------------------------------------------------- $implicit
@@ -103,9 +101,7 @@ class Feature
 	 *
 	 * @var Feature[]
 	 */
-	#[Component]
-	#[Getter('getIncludes')]
-	#[Store(false)]
+	#[Component, Getter('getIncludes'), Property\Store(false)]
 	public array $includes;
 
 	//----------------------------------------------------------------------------------------- $name
@@ -139,8 +135,7 @@ class Feature
 	 *
 	 * false if the feature is not applicable (no file, not implicit)
 	 */
-	#[Getter('getYaml')]
-	#[Store(false)]
+	#[Getter('getYaml'), Property\Store(false)]
 	public Yaml|bool|null $yaml = null;
 
 	//----------------------------------------------------------------------------------- __construct

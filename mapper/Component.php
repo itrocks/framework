@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Mapper;
 
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Composite;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -10,7 +9,6 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 /**
  * A component is a class for objects that should not exist without their container object
  */
-#[Store]
 trait Component
 {
 

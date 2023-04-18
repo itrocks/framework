@@ -940,7 +940,7 @@ class Functions
 					$class->name, $property->path, $object, false, true
 				);
 				if ($this->isPropertyVisible($property)) {
-					if (isset($properties_title) && isset($properties_title[$property_path])) {
+					if (isset($properties_title[$property_path])) {
 						$property->display = $properties_title[$property_path];
 					}
 					if ($properties_tooltip[$property_path] ?? false) {

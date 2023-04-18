@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection;
 
+use Attribute;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Attribute\Inheritable;
 use ITRocks\Framework\Reflection\Attribute\Template\Has_Get_Default_Arguments;
@@ -145,8 +146,8 @@ class Reflection_Attribute
 			return $this->is_repeatable;
 		}
 		$this->is_repeatable = class_exists($this->name)
-			&& ($attribute = (new ReflectionClass($this->name))->getAttributes(\Attribute::class))
-			&& ($attribute[0]->newInstance()->flags & \Attribute::IS_REPEATABLE);
+			&& ($attribute = (new ReflectionClass($this->name))->getAttributes(Attribute::class))
+			&& ($attribute[0]->newInstance()->flags & Attribute::IS_REPEATABLE);
 		return $this->is_repeatable;
 	}
 

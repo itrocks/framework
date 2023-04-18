@@ -610,7 +610,7 @@ class Main
 			}
 		}
 		$this->setIncludePath($_SESSION, Application::class);
-		if (isset($_SESSION['session']) && isset($_SESSION['session']->plugins)) {
+		if (isset($_SESSION['session']->plugins)) {
 			$this->resumeSession($get, $post);
 		}
 		else {

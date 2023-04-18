@@ -132,8 +132,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 		}
 
 		if ($properties) {
-			$properties_compiler = new Compiler\Properties($class);
-			$methods_code = $properties_compiler->compile($properties);
+			$methods_code = (new Compiler\Properties($class))->compile($properties);
 		}
 
 		if (self::DEBUG && $methods) {

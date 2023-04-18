@@ -9,7 +9,6 @@ use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Property\Reflection_Property;
 use ITRocks\Framework\Reflection\Attribute\Class_\Override;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Component;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
@@ -25,7 +24,7 @@ use ReflectionException;
 /**
  * A print model gives the way to print an object of a given class
  */
-#[Override('name', new Getter('getName')), Representative('document.name', 'name'), Store]
+#[Override('name', new Getter('getName')), Representative('document.name', 'name')]
 abstract class Model
 {
 	use Has_Name;

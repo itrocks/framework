@@ -1,15 +1,13 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_\Sort;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
 
 /**
  * Use it for any class or trait that need to have $ordering, helpful to sort elements
- *
- * @sort ordering
  */
-#[Store]
+#[Sort('ordering')]
 trait Has_Ordering
 {
 
