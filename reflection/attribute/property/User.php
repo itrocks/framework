@@ -78,7 +78,7 @@ class User
 	const TOOLTIP = 'tooltip';
 
 	//----------------------------------------------------------------------------------- __construct
-	public function __construct(string... $values)
+	public function __construct(string ...$values)
 	{
 		$this->parentConstruct(...$values);
 		$this->validate();

@@ -13,22 +13,12 @@ class Contextual_Callable
 {
 
 	//------------------------------------------------------------------------------ $callable_string
-	/**
-	 * @var string
-	 */
 	private string $callable_string;
 
 	//-------------------------------------------------------------------------------------- $context
-	/**
-	 * @var object
-	 */
 	private object $context;
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @var $callable_string string|null
-	 * @var $context         object|null
-	 */
 	public function __construct(string $callable_string = null, object $context = null)
 	{
 		if (isset($callable_string)) $this->callable_string = $callable_string;
@@ -36,11 +26,7 @@ class Contextual_Callable
 	}
 
 	//------------------------------------------------------------------------------------------ call
-	/**
-	 * @param $args mixed ...
-	 * @return mixed
-	 */
-	public function call(mixed... $args) : mixed
+	public function call(mixed ...$args) : mixed
 	{
 		return func_num_args()
 			? call_user_func_array($this->getCallable(), func_get_args())
@@ -48,10 +34,6 @@ class Contextual_Callable
 	}
 
 	//----------------------------------------------------------------------------------- getCallable
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return callable
-	 */
 	public function getCallable() : callable
 	{
 		if ($i = strpos($this->callable_string, '::')) {

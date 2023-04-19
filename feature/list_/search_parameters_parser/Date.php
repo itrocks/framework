@@ -989,7 +989,7 @@ abstract class Date
 	{
 		// we check if $expr is a single date containing formula,
 		// but it may be a range with 2 dates containing formula, what should return false
-		// so the use of /^ ... $/
+		// so the use of /^...$/
 		return self::getKindOfDate($expression);
 	}
 

@@ -27,7 +27,7 @@ abstract class Properties implements Option
 	 * Will write the values of user's login and password into the database
 	 * @param $properties string|string[] ...
 	 */
-	public function __construct(array|string... $properties)
+	public function __construct(array|string ...$properties)
 	{
 		$this->properties = [];
 		$this->add(func_get_args());
@@ -35,7 +35,7 @@ abstract class Properties implements Option
 
 	//------------------------------------------------------------------------------------------- add
 	/** @param $properties string|string[] ... Each property can be a 'property.path' */
-	public function add(array|string... $properties) : void
+	public function add(array|string ...$properties) : void
 	{
 		foreach (func_get_args() as $properties) {
 			if (is_array($properties)) {

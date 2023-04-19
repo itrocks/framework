@@ -32,7 +32,7 @@ class Around_Method extends Method_Joinpoint
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $args mixed The arguments the original method was expected to receive
 	 */
-	public function process(mixed... $args) : mixed
+	public function process(mixed ...$args) : mixed
 	{
 		$class_name = is_string($this->pointcut[0]) ? $this->pointcut[0] : get_class($this->pointcut[0]);
 

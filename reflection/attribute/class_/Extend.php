@@ -33,7 +33,7 @@ class Extend
 	/**
 	 * @param $extends class-string[]
 	 */
-	public function __construct(string... $extends)
+	public function __construct(string ...$extends)
 	{
 		$this->extends = $extends;
 		foreach ($this->extends as &$extends) {

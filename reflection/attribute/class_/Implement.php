@@ -24,7 +24,7 @@ class Implement
 	/**
 	 * @param $implements class-string[]
 	 */
-	public function __construct(string... $implements)
+	public function __construct(string ...$implements)
 	{
 		$this->implements = $implements;
 		foreach ($this->implements as &$implements) {

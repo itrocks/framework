@@ -28,7 +28,7 @@ class Override
 	 * @param $property_name string
 	 * @param ...$overrides  Common
 	 */
-	public function __construct(string $property_name, object... $overrides)
+	public function __construct(string $property_name, object ...$overrides)
 	{
 		$this->overrides     = $overrides;
 		$this->property_name = $property_name;

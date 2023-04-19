@@ -199,7 +199,7 @@ class Dao implements Configurable
 	 * @param $properties string[]|...string
 	 * @return Option\Exclude
 	 */
-	public static function exclude(array|string... $properties) : Option\Exclude
+	public static function exclude(array|string ...$properties) : Option\Exclude
 	{
 		return new Option\Exclude(func_get_args());
 	}
@@ -398,7 +398,7 @@ class Dao implements Configurable
 	 * @param $properties string[]|...string
 	 * @return Option\Only
 	 */
-	public static function only(array|string... $properties) : Option\Only
+	public static function only(array|string ...$properties) : Option\Only
 	{
 		return new Option\Only(func_get_args());
 	}
@@ -412,7 +412,7 @@ class Dao implements Configurable
 	 * @param $properties string[]|...string
 	 * @return Option\Pre_Load
 	 */
-	public static function preLoad(array|string... $properties) : Option\Pre_Load
+	public static function preLoad(array|string ...$properties) : Option\Pre_Load
 	{
 		return new Option\Pre_Load(func_get_args());
 	}
