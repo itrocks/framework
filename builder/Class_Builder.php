@@ -64,29 +64,30 @@ class Class_Builder
 			}
 			$class                     = Reflection_Class::of($interface_trait);
 			$classes[$interface_trait] = $class;
-			if ($class->isTrait()) {
-				$extend_attributes = Extend::of($class);
-				foreach ($extend_attributes as $extend_attribute) {
-					foreach ($extend_attribute->extends as $extends) {
-						if (Dao::search(
-							['class_name' => $extends, 'declaration' => Dependency::T_TRAIT_DECLARATION],
-							Dependency::class
-						)) {
-							$traits_extends[$interface_trait][$extends] = $extends;
-						}
-					}
-				}
-				if (isset($traits_extends[$interface_trait])) {
-					foreach ($traits_extends[$interface_trait] as $extends) {
-						if (in_array($extends, $interfaces_traits) && !isset($traits_before[$extends])) {
-							unset($interfaces_traits[$position]);
-							$interfaces_traits[] = $interface_trait;
-							continue 2;
-						}
-					}
-				}
-				$traits_before[$interface_trait] = true;
+			if (!$class->isTrait()) {
+				continue;
 			}
+			$extend_attributes = Extend::of($class);
+			foreach ($extend_attributes as $extend_attribute) {
+				foreach ($extend_attribute->extends as $extends) {
+					if (Dao::search(
+						['class_name' => $extends, 'declaration' => Dependency::T_TRAIT_DECLARATION],
+						Dependency::class
+					)) {
+						$traits_extends[$interface_trait][$extends] = $extends;
+					}
+				}
+			}
+			if (isset($traits_extends[$interface_trait])) {
+				foreach ($traits_extends[$interface_trait] as $extends) {
+					if (in_array($extends, $interfaces_traits) && !isset($traits_before[$extends])) {
+						unset($interfaces_traits[$position]);
+						$interfaces_traits[] = $interface_trait;
+						continue 2;
+					}
+				}
+			}
+			$traits_before[$interface_trait] = true;
 		}
 		$annotations = [];
 		$interfaces  = [];
