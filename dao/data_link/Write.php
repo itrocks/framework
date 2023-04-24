@@ -1,11 +1,13 @@
 <?php
 namespace ITRocks\Framework\Dao\Data_Link;
 
+use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ReflectionMethod;
 
 /**
  * Parent class for all data links Write class
@@ -103,7 +105,21 @@ abstract class Write
 			}
 		}
 		foreach ($before_writes as $before_write) {
-			$response = $before_write->call($object, [$this->link, &$options]);
+			$arguments  = [];
+			$callable   = is_string($before_write->value)
+				? explode('::', $before_write->value)
+				: $before_write->value;
+			$method     = new ReflectionMethod($callable[0], $callable[1]);
+			$parameters = $method->getParameters();
+			if ($parameters) {
+				if (is_a($parameters[0]->getType()->getName(), Data_Link::class, true)) {
+					$arguments[] = $this->link;
+					if (isset($parameters[1]) && ($parameters[1]->getType()->getName() === 'array')) {
+						$arguments[] = &$options;
+					}
+				}
+			}
+			$response = $before_write->call($object, $arguments);
 			if ($response === false) {
 				return false;
 			}
