@@ -40,7 +40,7 @@
 		"netcarver/textile":                     "^3.7",
 		"oomphinc/composer-installers-extender": "^2.0",
 		"php":                                   "^8.2",
-		"phpunit/phpunit":                       "^9.5",
+		"phpunit/phpunit":                       "^10.1",
 		"setasign/fpdi":                         "^2.3",
 		"symfony/mailer":                        "^6.1",
 		"tecnickcom/tcpdf":                      "^6.5"
