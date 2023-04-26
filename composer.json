@@ -30,6 +30,7 @@
 		"html2text/html2text":                   "^4.3",
 		"intelogie/pdf.js":                      "dev-master",
 		"itrocks/build":                         "dev-master",
+		"itrocks/cache":                         "dev-master",
 		"itrocks/class-use":                     "dev-master",
 		"itrocks/quill":                         "^2.0",
 		"itrocks/quill-better-table":            "^0.1",
