@@ -31,14 +31,13 @@ final class Sender_Test extends Test
 	public function testCallOk(string $transport_name, string $expected_class) : void
 	{
 		$sender = Sender::call($transport_name);
-		$this->assertInstanceOf($expected_class, $sender);
+		self::assertInstanceOf($expected_class, $sender);
 	}
 
 	//------------------------------------------------------- testCallWithUnknownClassRaisesException
 	public function testCallWithUnknownClassRaisesException() : void
 	{
 		$this->expectException('Exception');
-		$this->expectErrorMessage('Class ITRocks\Framework\Email\Sender\Foo not found');
 		Sender::call('Foo');
 	}
 

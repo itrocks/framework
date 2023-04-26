@@ -127,7 +127,7 @@ class Collection_Test extends Test
 		$html           = $this->callEditController($object);
 		$input_names    = $this->getInputNames($html);
 		$expected_names = $this->getAssumedNames();
-		static::assertEquals($expected_names, $input_names);
+		self::assertEquals($expected_names, $input_names);
 	}
 
 	//------------------------------------------------------------ testRemoveLineIsCorrectlyTranslate
@@ -136,8 +136,8 @@ class Collection_Test extends Test
 		$loc_state = Loc::enable(false);
 		$object    = $this->buildObject();
 		$html      = $this->callEditController($object);
-		static::assertStringNotContainsString('title="&#124;remove line&#124;"', $html);
-		static::assertStringContainsString('title="remove line"', $html);
+		self::assertStringNotContainsString('title="&#124;remove line&#124;"', $html);
+		self::assertStringContainsString('title="remove line"', $html);
 		Loc::enable($loc_state);
 	}
 

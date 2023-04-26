@@ -120,7 +120,7 @@ class Parser_Test extends Test
 		];
 		foreach ($tests as $check => $assume) {
 			Date::checkDateWildcardExpr($check, Date_Time::YEAR);
-			static::assertEquals($assume, $check);
+			self::assertEquals($assume, $check);
 		}
 		$tests = [
 			'%%' => '__',
@@ -135,7 +135,7 @@ class Parser_Test extends Test
 		];
 		foreach ($tests as $check => $assume) {
 			Date::checkDateWildcardExpr($check, Date_Time::DAY);
-			static::assertEquals($assume, $check);
+			self::assertEquals($assume, $check);
 		}
 	}
 
@@ -149,7 +149,7 @@ class Parser_Test extends Test
 		$check                = $this->parser->parse();
 		$assume               = [];
 		$assume['number']     = Func::andOp(['xxx', 'yyy']);
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//------------------------------------------------------------------------- testParseBooleanFalse
@@ -164,7 +164,7 @@ class Parser_Test extends Test
 		$assume['has_workflow'] = Func::orOp([
 			Func::equal('0'), Func::equal('0'), Func::equal('0'), Func::equal('0')
 		]);
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//-------------------------------------------------------------------------- testParseBooleanTrue
@@ -180,7 +180,7 @@ class Parser_Test extends Test
 			Func::equal('1'), Func::equal('1'), Func::equal('1'),
 			Func::equal('1'), Func::equal('1'), Func::equal('1')
 		]);
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//---------------------------------------------------------------------- testParseBooleanWildcard
@@ -193,7 +193,7 @@ class Parser_Test extends Test
 		$check                  = $this->parser->parse();
 		$assume                 = [];
 		$assume['has_workflow'] = Func::orOp([1, 0]);
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//-------------------------------------------------------------------------- testParseDateAndTime
@@ -214,7 +214,7 @@ class Parser_Test extends Test
 				'2015-03-05 23:59:59'
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//-------------------------------------------------------------- testParseDateCompareWithFormulas
@@ -233,7 +233,7 @@ class Parser_Test extends Test
 				new Func\Comparison('>', '2017-07-16 23:59:59'),
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//----------------------------------------------------------------------- testParseDateEmptyWords
@@ -249,7 +249,7 @@ class Parser_Test extends Test
 			Func::orOp([Date_Time::min(), Date_Time::max(), Func::isNull()]),
 			Func::orOp([Date_Time::min(), Date_Time::max(), Func::isNull()])
 		])];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//----------------------------------------------------------------------------- testParseDateFull
@@ -268,7 +268,7 @@ class Parser_Test extends Test
 				new Func\Range('2015-03-05 00:00:00', '2015-03-05 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//--------------------------------------------------------------------- testParseDateHoursMinutes
@@ -289,7 +289,7 @@ class Parser_Test extends Test
 				new Func\Range('2015-03-05 23:59:00', '2015-03-05 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//------------------------------------------------------------------------ testParseDateHoursOnly
@@ -310,7 +310,7 @@ class Parser_Test extends Test
 				new Func\Range('2015-03-05 23:00:00', '2015-03-05 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//---------------------------------------------------------------- testParseDateRangeWithFormulas
@@ -334,7 +334,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-05-15 00:00:00', '2016-06-15 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//----------------------------------------------------------------- testParseDateTimeWithFormulas
@@ -353,7 +353,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-06-15 13:29:00', '2016-06-15 13:29:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//----------------------------------------------------------------- testParseDateTimeWithWildcard
@@ -371,7 +371,7 @@ class Parser_Test extends Test
 				Func::like('20__-03-05 2_:1_:_0'),
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//------------------------------------------------------------------------- testParseDateWildcard
@@ -396,7 +396,7 @@ class Parser_Test extends Test
 				Func::notNull()
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//--------------------------------------------------------------------- testParseDateWithFormulas
@@ -416,7 +416,7 @@ class Parser_Test extends Test
 				new Func\Range('2013-08-08 00:00:00', '2013-08-08 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//--------------------------------------------------------------------- testParseDateWithWildcard
@@ -435,7 +435,7 @@ class Parser_Test extends Test
 				Func::like('2015-__-__ __:__:__')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//----------------------------------------------------------------------------- testParseDateZero
@@ -451,7 +451,7 @@ class Parser_Test extends Test
 				Func::isNull(), Func::isNull(), Func::isNull(), Func::isNull(), Func::isNull()
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//----------------------------------------------------------------------------- testParseDayMonth
@@ -470,7 +470,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-03-05 00:00:00', '2016-03-05 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//------------------------------------------------------------------------------ testParseDayOnly
@@ -487,7 +487,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-06-05 00:00:00', '2016-06-05 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//----------------------------------------------------------------------------- testParseDayWords
@@ -506,7 +506,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-06-14 00:00:00', '2016-06-14 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//--------------------------------------------------------------------------- testParseEmptyWords
@@ -521,7 +521,7 @@ class Parser_Test extends Test
 		$assume = [
 			'number' => Func::orOp(array_fill(0, 3, Func::orOp([Func::isNull(), Func::equal('')])))
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//------------------------------------------------------------------------------ testParseInRange
@@ -533,7 +533,7 @@ class Parser_Test extends Test
 		$this->parser->search = ['number' => 'xxx-yyy'];
 		$check                = $this->parser->parse();
 		$assume               = ['number' => new Func\Range('xxx', 'yyy')];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//------------------------------------------------------------------ testParseInRangeWithWildcard
@@ -545,7 +545,7 @@ class Parser_Test extends Test
 		$this->parser->search = ['number' => 'x*x-y?y'];
 		$check                = $this->parser->parse();
 		$assume               = ['number' => new Func\Range('x%x', 'y_y')];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//--------------------------------------------------------------------------- testParseMonthWords
@@ -562,7 +562,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-06-01 00:00:00', '2016-06-30 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//---------------------------------------------------------------------------- testParseMonthYear
@@ -581,7 +581,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-06-01 00:00:00', '2016-06-30 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//---------------------------------------------------------------- testParseMonthYearWithFormulas
@@ -595,7 +595,7 @@ class Parser_Test extends Test
 		$assume               = [
 			'date' => new Func\Range('2015-05-01 00:00:00', '2015-05-31 23:59:59')
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//------------------------------------------------------------------------------ testParseNotExpr
@@ -607,7 +607,7 @@ class Parser_Test extends Test
 		$this->parser->search = ['number' => '!xxx'];
 		$check                = $this->parser->parse();
 		$assume               = ['number' => Func::notEqual('xxx')];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//--------------------------------------------------------------------------- testParseNotInRange
@@ -619,7 +619,7 @@ class Parser_Test extends Test
 		$this->parser->search = ['number' => '!xxx-yyy'];
 		$check                = $this->parser->parse();
 		$assume               = ['number' => new Func\Range('xxx', 'yyy', true)];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//---------------------------------------------------------------------- testParseNotWithWildcard
@@ -631,7 +631,7 @@ class Parser_Test extends Test
 		$this->parser->search = ['number' => '!x*x'];
 		$check                = $this->parser->parse();
 		$assume               = ['number' => Func::notLike('x%x')];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//------------------------------------------------------------------------------- testParseOrExpr
@@ -643,7 +643,7 @@ class Parser_Test extends Test
 		$this->parser->search = ['number' => 'xxx,yyy'];
 		$check                = $this->parser->parse();
 		$assume               = ['number' => Func::orOp(['xxx', 'yyy'])];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//---------------------------------------------------------------------------- testParseOrWithAnd
@@ -661,7 +661,7 @@ class Parser_Test extends Test
 				'aaa'
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//--------------------------------------------------------------------- testParseOrWithAndWithNot
@@ -680,7 +680,7 @@ class Parser_Test extends Test
 				'bbb'
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//----------------------------------------------- testParseOrWithAndWithNotWithRangeWithWildcards
@@ -698,7 +698,7 @@ class Parser_Test extends Test
 				new Func\Range('g_g', 'h%_', true)
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//---------------------------------------------------------------------- testParseScalarFloatType
@@ -710,7 +710,7 @@ class Parser_Test extends Test
 		$this->parser->search = ['number' => '1.1'];
 		$check                = $this->parser->parse();
 		$assume               = ['number' => '1.1'];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//-------------------------------------------------------------------- testParseScalarIntegerType
@@ -722,7 +722,7 @@ class Parser_Test extends Test
 		$this->parser->search = ['number' => '1'];
 		$check                = $this->parser->parse();
 		$assume               = ['number' => '1'];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//--------------------------------------------------------------------- testParseScalarStringType
@@ -734,7 +734,7 @@ class Parser_Test extends Test
 		$this->parser->search = ['number' => 'xxx'];
 		$check                = $this->parser->parse();
 		$assume               = ['number' => 'xxx'];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//------------------------------------------------------------------ testParseScalarWithWildcards
@@ -746,7 +746,7 @@ class Parser_Test extends Test
 		$this->parser->search = ['number' => 'w?wx*y_yz%'];
 		$check                = $this->parser->parse();
 		$assume               = ['number' => Func::like('w_wx%y_yz%')];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//--------------------------------------------------------------------- testParseSingleDayFormula
@@ -765,7 +765,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-06-15 00:00:00', '2016-06-15 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//------------------------------------------------------------------- testParseSingleMonthFormula
@@ -784,7 +784,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-06-01 00:00:00', '2016-06-30 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//-------------------------------------------------------------------- testParseSingleYearFormula
@@ -803,7 +803,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-01-01 00:00:00', '2016-12-31 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//--------------------------------------------------------------------------------- testParseYear
@@ -820,7 +820,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-01-01 00:00:00', '2016-12-31 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//--------------------------------------------------------------------- testParseYearWithWildcard
@@ -839,7 +839,7 @@ class Parser_Test extends Test
 				Func::like('20_6-__-__ __:__:__')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 	//---------------------------------------------------------------------------- testParseYearWords
@@ -856,7 +856,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-01-01 00:00:00', '2016-12-31 23:59:59')
 			])
 		];
-		static::assertEquals($assume, $check);
+		self::assertEquals($assume, $check);
 	}
 
 }

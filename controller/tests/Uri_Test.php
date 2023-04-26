@@ -25,7 +25,7 @@ class Uri_Test extends Test
 			. Names::classToSet(Order::class) . SL . Feature::F_LIST . '/date/number',
 			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'controller_name' => Tab::class,
 				'feature_name'    => Feature::F_REMOVE,
@@ -44,7 +44,7 @@ class Uri_Test extends Test
 	public function testExplicitOutput() : void
 	{
 		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Order/1/' . Feature::F_OUTPUT, []);
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'controller_name' => Order::class,
 				'feature_name'    => Feature::F_OUTPUT,
@@ -61,7 +61,7 @@ class Uri_Test extends Test
 	public function testImplicitList() : void
 	{
 		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Orders', []);
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'controller_name' => 'ITRocks\Framework\Tests\Objects\Orders',
 				'feature_name'    => Feature::F_LIST,
@@ -78,7 +78,7 @@ class Uri_Test extends Test
 	public function testImplicitOutput() : void
 	{
 		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Order/1', []);
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'controller_name' => Order::class,
 				'feature_name'    => Feature::F_OUTPUT,
@@ -95,7 +95,7 @@ class Uri_Test extends Test
 	public function testListRemoveParameter() : void
 	{
 		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Orders/listRemove/date');
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'controller_name' => 'ITRocks\Framework\Tests\Objects\Orders',
 				'feature_name'    => 'listRemove',
@@ -112,7 +112,7 @@ class Uri_Test extends Test
 	public function testListRemoveParameters() : void
 	{
 		$controller_uri = new Uri('/ITRocks/Framework/Tests/Objects/Orders/listRemove/date/number');
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'controller_name' => 'ITRocks\Framework\Tests\Objects\Orders',
 				'feature_name'    => 'listRemove',
@@ -133,7 +133,7 @@ class Uri_Test extends Test
 			'/ITRocks/Framework/Tests/Objects/Orders/listRemove/date/number',
 			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'controller_name' => 'ITRocks\Framework\Tests\Objects\Orders',
 				'feature_name'    => 'listRemove',
@@ -154,7 +154,7 @@ class Uri_Test extends Test
 			'/ITRocks/Framework/Component/Trashcan/drop/Order/1/' . Feature::F_OUTPUT . '/date/number',
 			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'controller_name' => Trashcan::class,
 				'feature_name'    => 'drop',
@@ -175,7 +175,7 @@ class Uri_Test extends Test
 		$controller_uri = new Uri(
 			'/ITRocks/Framework/Component/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number'
 		);
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'controller_name' => Trashcan::class,
 				'feature_name'    => 'drop',
@@ -196,7 +196,7 @@ class Uri_Test extends Test
 			'/ITRocks/Framework/Component/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number',
 			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'controller_name' => Trashcan::class,
 				'feature_name'    => 'drop',

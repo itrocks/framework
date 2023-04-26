@@ -45,7 +45,7 @@ class Mandatory_Annotation_Test extends Test
 		$annotation = Mandatory::of($this->reflection_object->getProperty('filled_property'));
 		$actual     = $annotation->isEmpty($this);
 
-		static::assertFalse($actual);
+		self::assertFalse($actual);
 	}
 
 	//--------------------------------------------------------------------------------- testIsEmptyOk
@@ -56,7 +56,7 @@ class Mandatory_Annotation_Test extends Test
 		$annotation = Mandatory::of($this->reflection_object->getProperty('empty_property'));
 		$actual     = $annotation->isEmpty($this);
 
-		static::assertTrue($actual);
+		self::assertTrue($actual);
 	}
 
 }

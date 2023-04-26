@@ -31,7 +31,7 @@ class Priority_Test extends Test
 	/** @dataProvider providerValid */
 	public function testValid(bool $expected, string $value) : void
 	{
-		static::assertEquals($expected, Priority::valid($value));
+		self::assertEquals($expected, Priority::valid($value));
 	}
 
 }

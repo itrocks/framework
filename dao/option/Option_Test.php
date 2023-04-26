@@ -34,7 +34,7 @@ class Option_Test extends Test
 	{
 		$assume             = Dao::only([]);
 		$assume->properties = ['one', 'two', 'three', 'four'];
-		static::assertEquals($assume, $only);
+		self::assertEquals($assume, $only);
 	}
 
 }

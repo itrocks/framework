@@ -53,7 +53,7 @@ class Phone_Number_Test extends Test
 			->method('getValue')
 			->willReturn($phone_number);
 
-		$this->assertEquals(true, $phone->validateNumber($this->reflection_property));
+		self::assertTrue($phone->validateNumber($this->reflection_property));
 	}
 
 	//--------------------------------------------------------------------- testPhoneNumberIsNotValid
@@ -69,7 +69,7 @@ class Phone_Number_Test extends Test
 			->method('getValue')
 			->willReturn($phone_number);
 
-		$this->assertEquals(
+		self::assertEquals(
 			Loc::tr('This phone number is not correct'),
 			$phone->validateNumber($this->reflection_property)
 		);
@@ -92,7 +92,7 @@ class Phone_Number_Test extends Test
 			->method('getValue')
 			->willReturn($phone_number);
 
-		$this->assertTrue($phone->validateNumber($this->reflection_property));
+		self::assertTrue($phone->validateNumber($this->reflection_property));
 	}
 
 }

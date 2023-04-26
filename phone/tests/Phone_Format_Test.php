@@ -29,7 +29,7 @@ class Phone_Format_Test extends Test
 		$phone->country = new Country();
 		$phone->country->code = 'FR';
 
-		$this->assertEquals('FR', $phone_format->getCountryCode($phone));
+		self::assertEquals('FR', $phone_format->getCountryCode($phone));
 	}
 
 	//-------------------------------------------------------------- testGetCountryCodeWithReturnNull
@@ -40,7 +40,7 @@ class Phone_Format_Test extends Test
 		$phone = new Dummy();
 		$phone->country = new Country();
 
-		$this->assertEquals(null, $phone_format->getCountryCode($phone));
+		self::assertEquals(null, $phone_format->getCountryCode($phone));
 	}
 
 	//----------------------------------------------------------------------------------- testIsValid
@@ -55,7 +55,7 @@ class Phone_Format_Test extends Test
 	{
 		$phone_format = new Phone_Format();
 
-		$this->assertEquals($expected, $phone_format->isValid($phone_number, $country_code));
+		self::assertEquals($expected, $phone_format->isValid($phone_number, $country_code));
 	}
 
 }

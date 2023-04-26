@@ -61,7 +61,7 @@ class Database_Settings_Test extends Test
 		if ($errors) {
 			print_r($errors);
 		}
-		static::assertEquals([], $errors);
+		self::assertEquals([], $errors);
 	}
 
 	//------------------------------------------------------------------------------------------ test

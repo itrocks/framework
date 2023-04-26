@@ -103,7 +103,7 @@ class Annotation_Test extends Test
 	{
 		$class      = new Reflection_Class($class_name);
 		$annotation = $class->getAnnotation($annotation_name);
-		static::assertEquals(
+		self::assertEquals(
 			[Method_Annotation::class, $assumed_value],
 			[get_class($annotation), $annotation->value],
 			$class_name . AT . $annotation_name
@@ -134,7 +134,7 @@ class Annotation_Test extends Test
 		/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 		$property   = new Reflection_Property($class_name, $property_name);
 		$annotation = $property->getAnnotation($annotation_name);
-		static::assertEquals(
+		self::assertEquals(
 			[$assumed_class, $assumed_value],
 			[get_class($annotation), $annotation->value],
 			$class_name . AT . $annotation_name
@@ -165,7 +165,7 @@ class Annotation_Test extends Test
 		/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 		$property   = new Reflection_Property($class_name, $property_name);
 		$annotation = $property->getAnnotation($annotation_name);
-		static::assertEquals(
+		self::assertEquals(
 			[$assumed_class, $assumed_value],
 			[get_class($annotation), $annotation->value],
 			$class_name . AT . $annotation_name

@@ -25,7 +25,7 @@ abstract class Test extends Testable
 	{
 		$check  = $this->toArray($check);
 		$assume = $this->toArray($assume);
-		static::assertEquals($assume, $check, $test);
+		self::assertEquals($assume, $check, $test);
 	}
 
 	//----------------------------------------------------------------------------------------- setUp

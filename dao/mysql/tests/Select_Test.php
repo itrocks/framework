@@ -168,7 +168,7 @@ class Select_Test extends Test
 		array_pop($mysqli->contexts);
 
 		// Failure will be SQL Exception
-		static::assertTrue(true);
+		self::assertTrue(true);
 	}
 
 }

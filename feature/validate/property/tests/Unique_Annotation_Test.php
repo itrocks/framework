@@ -48,7 +48,7 @@ class Unique_Annotation_Test extends Test
 		$object->unique_property = null;
 		/** @noinspection PhpUnhandledExceptionInspection */
 		$property = new Reflection_Property($object, 'unique_property');
-		$this->assertTrue(Unique::of($property)->validate($object));
+		self::assertTrue(Unique::of($property)->validate($object));
 	}
 
 	//------------------------------------------------------------------------- testWithValidateFalse
@@ -59,7 +59,7 @@ class Unique_Annotation_Test extends Test
 		$object->unique_property = 'value';
 		/** @noinspection PhpUnhandledExceptionInspection */
 		$property = new Reflection_Property($object, 'unique_property');
-		$this->assertFalse(Unique::of($property)->validate($object));
+		self::assertFalse(Unique::of($property)->validate($object));
 	}
 
 	//-------------------------------------------------------------------------- testWithValidateTrue
@@ -70,7 +70,7 @@ class Unique_Annotation_Test extends Test
 		$object->unique_property = 'value';
 		/** @noinspection PhpUnhandledExceptionInspection */
 		$property = new Reflection_Property($object, 'unique_property');
-		$this->assertTrue(Unique::of($property)->validate($object));
+		self::assertTrue(Unique::of($property)->validate($object));
 	}
 
 }

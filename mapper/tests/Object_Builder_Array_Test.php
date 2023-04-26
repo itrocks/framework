@@ -62,7 +62,7 @@ class Object_Builder_Array_Test extends Test
 		// only the main object : Dao::write() will always write the #Composite property
 		$assume = [new Built_Object($composite)];
 
-		static::assertEquals($assume, $builder->getBuiltObjects());
+		self::assertEquals($assume, $builder->getBuiltObjects());
 
 		Dao::delete($composite);
 	}
@@ -94,7 +94,7 @@ class Object_Builder_Array_Test extends Test
 		// (the default write controller will not write them even if data has changed)
 		$assume = [new Built_Object(Dao::searchOne($object))];
 
-		static::assertEquals($assume, $builder->getBuiltObjects());
+		self::assertEquals($assume, $builder->getBuiltObjects());
 
 		Dao::delete($object);
 		Dao::delete($object->mandatory_object);
@@ -131,7 +131,7 @@ class Object_Builder_Array_Test extends Test
 
 		// we have explicitly changed data from sub-objects, so they are explicitly built object
 		// (the default write controller will write them before the object that use them)
-		static::assertEquals($assume, $builder->getBuiltObjects());
+		self::assertEquals($assume, $builder->getBuiltObjects());
 
 		Dao::delete($object);
 		Dao::delete($object->mandatory_object);
@@ -163,7 +163,7 @@ class Object_Builder_Array_Test extends Test
 		// if Dao::write() is called, the new sub-objects will be written because they are new
 		$assume = [new Built_Object($object)];
 
-		static::assertEquals($assume, $builder->getBuiltObjects());
+		self::assertEquals($assume, $builder->getBuiltObjects());
 	}
 
 	//-------------------------------------------------------------------------- testNewSubObjectData
@@ -194,7 +194,7 @@ class Object_Builder_Array_Test extends Test
 			new Built_Object($object)
 		];
 
-		static::assertEquals($assume, $builder->getBuiltObjects());
+		self::assertEquals($assume, $builder->getBuiltObjects());
 	}
 
 	//------------------------------------------------------------------------------------ testSimple
@@ -213,7 +213,7 @@ class Object_Builder_Array_Test extends Test
 
 		$assume = [new Built_Object($salesman)];
 
-		static::assertEquals($assume, $builder->getBuiltObjects());
+		self::assertEquals($assume, $builder->getBuiltObjects());
 	}
 
 }

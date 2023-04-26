@@ -19,13 +19,13 @@ class Replaces_Test extends Test
 		$append              = ['', ''];
 		$object->replaced    = 'to_replaced';
 		$object->replacement = 'to_replacement';
-		static::assertEquals(
+		self::assertEquals(
 			['replaced' => 'to_replacement' . $append[0], 'replacement' => 'to_replacement' . $append[1]],
 			$this->values($object), $method . DOT . 'set_replacement'
 		);
 
 		$object->replaced = 'to_replaced';
-		static::assertEquals(
+		self::assertEquals(
 			['replaced' => 'to_replaced' . $append[0], 'replacement' => 'to_replaced' . $append[1]],
 			$this->values($object), $method . DOT . 'set_replaced'
 		);
@@ -36,17 +36,17 @@ class Replaces_Test extends Test
 	{
 		$object = new Child_Method();
 		$object->replaced_string = 'value';
-		static::assertEquals(
+		self::assertEquals(
 			'to_replacement', $object->getReplacedObject()->replaced, __METHOD__ . DOT . 'object.direct'
 		);
-		static::assertEquals(
+		self::assertEquals(
 			'to_replacement', $object->replaced_object->replaced, __METHOD__ . DOT . 'object.replaced'
 		);
-		static::assertEquals(
+		self::assertEquals(
 			'to_replacement', $object->replacement_object->replacement,
 			__METHOD__ . DOT . 'object.replacement'
 		);
-		static::assertEquals('value.get', $object->getReplacedString(), __METHOD__ . DOT . 'string.direct');
+		self::assertEquals('value.get', $object->getReplacedString(), __METHOD__ . DOT . 'string.direct');
 		// TODO HIGH Make this work (getters are not called)
 		//$this->assume(__METHOD__ . DOT . 'string.replaced', $object->replaced_string, 'value.get');
 		//$this->assume(__METHOD__ . DOT . 'string.replacement', $object->replacement_string, 'value.get');

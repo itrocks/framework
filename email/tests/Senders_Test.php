@@ -21,15 +21,15 @@ final class Senders_Test extends Test
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid */
 		$senders = new Senders($this->foo_configuration);
-		$this->assertNotEmpty($senders->senders);
-		$this->assertCount(2, $senders->senders);
+		self::assertNotEmpty($senders->senders);
+		self::assertCount(2, $senders->senders);
 	}
 
 	//--------------------------------------------------------- testConstructorWithEmptyConfiguration
 	public function testConstructorWithEmptyConfiguration() : void
 	{
 		$senders = new Senders();
-		$this->assertEmpty($senders->senders);
+		self::assertEmpty($senders->senders);
 	}
 
 	//-------------------------------------------------------------------- testRetrieveExistingSender
@@ -38,7 +38,7 @@ final class Senders_Test extends Test
 		/** @noinspection PhpUnhandledExceptionInspection valid */
 		$senders = new Senders($this->foo_configuration);
 		$res = $senders->sender('foo');
-		$this->assertNotNull($res);
+		self::assertNotNull($res);
 	}
 
 	//----------------------------------------------------------------- testRetrieveNonExistingSender
@@ -47,7 +47,7 @@ final class Senders_Test extends Test
 		/** @noinspection PhpUnhandledExceptionInspection valid */
 		$senders = new Senders($this->foo_configuration);
 		$res = $senders->sender('unknown');
-		$this->assertNull($res);
+		self::assertNull($res);
 	}
 
 }

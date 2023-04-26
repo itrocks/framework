@@ -80,7 +80,7 @@ class String_Functions_Test extends Test
 	//----------------------------------------------------------------------- testBase64EncodeUrlSafe
 	public function testBase64EncodeUrlSafe() : void
 	{
-		static::assertEquals(
+		self::assertEquals(
 			'VGVzdCBlbmNvZGFnZSBhdmVjIGRlcyArLCAvIGV0ID0.',
 			base64_encode_url_safe('Test encodage avec des +, / et =')
 		);
@@ -96,7 +96,7 @@ class String_Functions_Test extends Test
 	 */
 	public function testRemoveAccents(string $string, string $expected) : void
 	{
-		static::assertEquals($expected, removeAccents($string));
+		self::assertEquals($expected, removeAccents($string));
 	}
 
 	//-------------------------------------------------------------------------------- testStrReplace
@@ -111,7 +111,7 @@ class String_Functions_Test extends Test
 			'ed'   => 'ED'
 		];
 		$result = 'These are some texts where some things wanna be searchED and replacED';
-		static::assertEquals($result, strReplace($replace, $subject));
+		self::assertEquals($result, strReplace($replace, $subject));
 	}
 
 }

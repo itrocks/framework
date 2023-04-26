@@ -89,19 +89,19 @@ class Translator_Test extends Test
 			]
 		]);
 		$locale_value = $local->toLocale($value, $type);
-		$this->assertEquals($expected, $locale_value);
+		self::assertEquals($expected, $locale_value);
 	}
 
 	//--------------------------------------------------------------------------------- testTranslate
 	public function testTranslate() : void
 	{
 		// first test : for a non-existing translation
-		static::assertEquals(self::TEST, $this->translator->translate(self::TEST, static::class));
-		static::assertEquals(self::TEST, $this->translator->translate(self::TEST));
+		self::assertEquals(self::TEST, $this->translator->translate(self::TEST, static::class));
+		self::assertEquals(self::TEST, $this->translator->translate(self::TEST));
 
 		// second test : with translations in database
-		static::assertEquals(self::TEST, $this->translator->translate(self::TEST, static::class));
-		static::assertEquals(self::TEST, $this->translator->translate(self::TEST));
+		self::assertEquals(self::TEST, $this->translator->translate(self::TEST, static::class));
+		self::assertEquals(self::TEST, $this->translator->translate(self::TEST));
 	}
 
 	//----------------------------------------------------------------------- testTranslateWithPlural
@@ -128,7 +128,7 @@ class Translator_Test extends Test
 			]
 		);
 		// test
-		static::assertEquals($expected, $this->translator->translate($text, $context));
+		self::assertEquals($expected, $this->translator->translate($text, $context));
 	}
 
 	//------------------------------------------------------------------------------- toLocalProvider

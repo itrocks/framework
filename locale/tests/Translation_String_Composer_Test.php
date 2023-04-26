@@ -95,7 +95,7 @@ class Translation_String_Composer_Test extends Test
 	 */
 	public function testTranslate(string $expected, string $source) : void
 	{
-		static::assertEquals($expected, $this->translator->translate($source));
+		self::assertEquals($expected, $this->translator->translate($source));
 	}
 
 }

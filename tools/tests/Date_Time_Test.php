@@ -35,14 +35,14 @@ class Date_Time_Test extends Test
 	public function testAdd(Date_Time $expected, array $args) : void
 	{
 		$base = new Date_Time('2016-09-23T11:04:02');
-		static::assertEquals($expected, $base->add(...$args));
+		self::assertEquals($expected, $base->add(...$args));
 	}
 
 	//--------------------------------------------------------------------------------- testConstruct
 	public function testConstruct() : void
 	{
 		$date = new Date_Time('2016-11-05T19:46:32.56');
-		static::assertEquals('2016-11-05 19:46:32', $date->format('Y-m-d H:i:s'));
+		self::assertEquals('2016-11-05 19:46:32', $date->format('Y-m-d H:i:s'));
 	}
 
 	//-------------------------------------------------------------------------------------- testDiff
@@ -53,23 +53,23 @@ class Date_Time_Test extends Test
 
 		// Chronological
 		$actual = $yesterday->diff($tomorrow);
-		static::assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
-		static::assertEquals(0, $actual->invert);
+		self::assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
+		self::assertEquals(0, $actual->invert);
 
 		// Chronological absolute
 		$actual = $yesterday->diff($tomorrow, true);
-		static::assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
-		static::assertEquals(0, $actual->invert);
+		self::assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
+		self::assertEquals(0, $actual->invert);
 
 		// Reverse
 		$actual = $tomorrow->diff($yesterday);
-		static::assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
-		static::assertEquals(1, $actual->invert);
+		self::assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
+		self::assertEquals(1, $actual->invert);
 
 		// Reverse absolute
 		$actual = $tomorrow->diff($yesterday, true);
-		static::assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
-		static::assertEquals(0, $actual->invert);
+		self::assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
+		self::assertEquals(0, $actual->invert);
 	}
 
 	//---------------------------------------------------------------------------------- testEarliest
@@ -78,13 +78,13 @@ class Date_Time_Test extends Test
 		$earlier = new Date_Time('2006-01-01 13:29:18');
 		$now     = new Date_Time('2016-10-24 10:48:12');
 		$later   = new Date_Time('2034-05-12 10:00:00');
-		 static::assertEquals($earlier, $earlier->earliest($later),       'one argument');
-		 static::assertEquals($earlier, $earlier->earliest($later, $now), 'two arguments');
-		 static::assertEquals($earlier, $earlier->earliest($now, $later), 'reverse arguments');
-		 static::assertEquals($earlier, $now->earliest($earlier, $later), 'another reverse');
-		 static::assertEquals($earlier, $now->earliest($later, $earlier), 'another 2');
-		 static::assertEquals($earlier, $later->earliest($earlier, $now), 'another 3');
-		 static::assertEquals($earlier, $later->earliest($now, $earlier), 'another 4');
+		 self::assertEquals($earlier, $earlier->earliest($later),       'one argument');
+		 self::assertEquals($earlier, $earlier->earliest($later, $now), 'two arguments');
+		 self::assertEquals($earlier, $earlier->earliest($now, $later), 'reverse arguments');
+		 self::assertEquals($earlier, $now->earliest($earlier, $later), 'another reverse');
+		 self::assertEquals($earlier, $now->earliest($later, $earlier), 'another 2');
+		 self::assertEquals($earlier, $later->earliest($earlier, $now), 'another 3');
+		 self::assertEquals($earlier, $later->earliest($now, $earlier), 'another 4');
 	}
 
 	//---------------------------------------------------------------------------------------- testIs
@@ -99,34 +99,34 @@ class Date_Time_Test extends Test
 		$today_date      = new Date_Time($today_string);
 		$min_date        = Date_Time::min();
 		$max_date        = Date_Time::max();
-		static::assertTrue ($empty_date->is($empty_string),    'emptyIsEmptyString');
-		static::assertFalse($empty_date->is($today_string),    'emptyIsTodayString');
-		static::assertFalse($empty_date->is($tomorrow_string), 'emptyIsTomorrow');
-		static::assertTrue ($empty_date->is($empty_date),      'emptyIsEmptyDate');
-		static::assertFalse($empty_date->is($today_date),      'emptyIsTodayDate');
-		static::assertTrue ($empty_date->is($min_date),        'emptyIsMinDate');
-		static::assertFalse($empty_date->is($max_date),        'emptyIsMaxDate');
-		static::assertFalse($today_date->is($empty_string),    'todayIsEmptyString');
-		static::assertTrue ($today_date->is($today_string),    'todayIsTodayString');
-		static::assertFalse($today_date->is($tomorrow_string), 'todayIsTomorrowString');
-		static::assertFalse($today_date->is($empty_date),      'todayIsEmptyDate');
-		static::assertFalse($today_date->is($min_date),        'todayIsMinDate');
-		static::assertTrue ($today_date->is($today_date),      'todayIsTodayDate');
-		static::assertFalse($today_date->is($max_date),        'todayIsMaxDate');
-		static::assertTrue (  $min_date->is($empty_string),    'minIsEmptyString');
-		static::assertFalse(  $min_date->is($today_string),    'minIsTodayString');
-		static::assertFalse(  $min_date->is($tomorrow_string), 'minIsTomorrowString');
-		static::assertTrue (  $min_date->is($empty_date),      'minIsEmptyDate');
-		static::assertFalse(  $min_date->is($today_date),      'minIsTodayDate');
-		static::assertTrue (  $min_date->is($min_date),        'minIsMinDate');
-		static::assertFalse(  $min_date->is($max_date),        'minIsMaxDate');
-		static::assertFalse(  $max_date->is($empty_string),    'maxIsEmptyString');
-		static::assertFalse(  $max_date->is($today_string),    'maxIsTodayString');
-		static::assertFalse(  $max_date->is($tomorrow_string), 'maxIsTomorrowString');
-		static::assertFalse(  $max_date->is($empty_date),      'maxIsEmptyDate');
-		static::assertFalse(  $max_date->is($today_date),      'maxIsTodayDate');
-		static::assertFalse(  $max_date->is($min_date),        'minIsMinDate');
-		static::assertTrue (  $max_date->is($max_date),        'maxIsMaxDate');
+		self::assertTrue ($empty_date->is($empty_string),    'emptyIsEmptyString');
+		self::assertFalse($empty_date->is($today_string),    'emptyIsTodayString');
+		self::assertFalse($empty_date->is($tomorrow_string), 'emptyIsTomorrow');
+		self::assertTrue ($empty_date->is($empty_date),      'emptyIsEmptyDate');
+		self::assertFalse($empty_date->is($today_date),      'emptyIsTodayDate');
+		self::assertTrue ($empty_date->is($min_date),        'emptyIsMinDate');
+		self::assertFalse($empty_date->is($max_date),        'emptyIsMaxDate');
+		self::assertFalse($today_date->is($empty_string),    'todayIsEmptyString');
+		self::assertTrue ($today_date->is($today_string),    'todayIsTodayString');
+		self::assertFalse($today_date->is($tomorrow_string), 'todayIsTomorrowString');
+		self::assertFalse($today_date->is($empty_date),      'todayIsEmptyDate');
+		self::assertFalse($today_date->is($min_date),        'todayIsMinDate');
+		self::assertTrue ($today_date->is($today_date),      'todayIsTodayDate');
+		self::assertFalse($today_date->is($max_date),        'todayIsMaxDate');
+		self::assertTrue (  $min_date->is($empty_string),    'minIsEmptyString');
+		self::assertFalse(  $min_date->is($today_string),    'minIsTodayString');
+		self::assertFalse(  $min_date->is($tomorrow_string), 'minIsTomorrowString');
+		self::assertTrue (  $min_date->is($empty_date),      'minIsEmptyDate');
+		self::assertFalse(  $min_date->is($today_date),      'minIsTodayDate');
+		self::assertTrue (  $min_date->is($min_date),        'minIsMinDate');
+		self::assertFalse(  $min_date->is($max_date),        'minIsMaxDate');
+		self::assertFalse(  $max_date->is($empty_string),    'maxIsEmptyString');
+		self::assertFalse(  $max_date->is($today_string),    'maxIsTodayString');
+		self::assertFalse(  $max_date->is($tomorrow_string), 'maxIsTomorrowString');
+		self::assertFalse(  $max_date->is($empty_date),      'maxIsEmptyDate');
+		self::assertFalse(  $max_date->is($today_date),      'maxIsTodayDate');
+		self::assertFalse(  $max_date->is($min_date),        'minIsMinDate');
+		self::assertTrue (  $max_date->is($max_date),        'maxIsMaxDate');
 	}
 
 	//----------------------------------------------------------------------------------- testIsAfter
@@ -141,34 +141,34 @@ class Date_Time_Test extends Test
 		$today_date      = new Date_Time($today_string);
 		$min_date        = Date_Time::min();
 		$max_date        = Date_Time::max();
-		static::assertFalse($empty_date->isAfter($empty_string),    'emptyAfterEmptyString');
-		static::assertFalse($empty_date->isAfter($today_string),    'emptyAfterTodayString');
-		static::assertFalse($empty_date->isAfter($tomorrow_string), 'emptyAfterTomorrow');
-		static::assertFalse($empty_date->isAfter($empty_date),      'emptyAfterEmptyDate');
-		static::assertFalse($empty_date->isAfter($today_date),      'emptyAfterTodayDate');
-		static::assertFalse($empty_date->isAfter($min_date),        'emptyAfterMinDate');
-		static::assertFalse($empty_date->isAfter($max_date),        'emptyAfterMaxDate');
-		static::assertTrue ($today_date->isAfter($empty_string),    'todayAfterEmptyString');
-		static::assertFalse($today_date->isAfter($today_string),    'todayAfterTodayString');
-		static::assertFalse($today_date->isAfter($tomorrow_string), 'todayAfterTomorrowString');
-		static::assertTrue ($today_date->isAfter($empty_date),      'todayAfterEmptyDate');
-		static::assertTrue ($today_date->isAfter($min_date),        'todayAfterMinDate');
-		static::assertFalse($today_date->isAfter($today_date),      'todayAfterTodayDate');
-		static::assertFalse($today_date->isAfter($max_date),        'todayAfterMaxDate');
-		static::assertFalse(  $min_date->isAfter($empty_string),    'minAfterEmptyString');
-		static::assertFalse(  $min_date->isAfter($today_string),    'minAfterTodayString');
-		static::assertFalse(  $min_date->isAfter($tomorrow_string), 'minAfterTomorrowString');
-		static::assertFalse(  $min_date->isAfter($empty_date),      'minAfterEmptyDate');
-		static::assertFalse(  $min_date->isAfter($today_date),      'minAfterTodayDate');
-		static::assertFalse(  $min_date->isAfter($min_date),        'minAfterMinDate');
-		static::assertFalse(  $min_date->isAfter($max_date),        'minAfterMaxDate');
-		static::assertTrue (  $max_date->isAfter($empty_string),    'maxAfterEmptyString');
-		static::assertTrue (  $max_date->isAfter($today_string),    'maxAfterTodayString');
-		static::assertTrue (  $max_date->isAfter($tomorrow_string), 'maxAfterTomorrowString');
-		static::assertTrue (  $max_date->isAfter($empty_date),      'maxAfterEmptyDate');
-		static::assertTrue (  $max_date->isAfter($today_date),      'maxAfterTodayDate');
-		static::assertTrue (  $max_date->isAfter($min_date),        'minAfterMinDate');
-		static::assertFalse(  $max_date->isAfter($max_date),        'maxAfterMaxDate');
+		self::assertFalse($empty_date->isAfter($empty_string),    'emptyAfterEmptyString');
+		self::assertFalse($empty_date->isAfter($today_string),    'emptyAfterTodayString');
+		self::assertFalse($empty_date->isAfter($tomorrow_string), 'emptyAfterTomorrow');
+		self::assertFalse($empty_date->isAfter($empty_date),      'emptyAfterEmptyDate');
+		self::assertFalse($empty_date->isAfter($today_date),      'emptyAfterTodayDate');
+		self::assertFalse($empty_date->isAfter($min_date),        'emptyAfterMinDate');
+		self::assertFalse($empty_date->isAfter($max_date),        'emptyAfterMaxDate');
+		self::assertTrue ($today_date->isAfter($empty_string),    'todayAfterEmptyString');
+		self::assertFalse($today_date->isAfter($today_string),    'todayAfterTodayString');
+		self::assertFalse($today_date->isAfter($tomorrow_string), 'todayAfterTomorrowString');
+		self::assertTrue ($today_date->isAfter($empty_date),      'todayAfterEmptyDate');
+		self::assertTrue ($today_date->isAfter($min_date),        'todayAfterMinDate');
+		self::assertFalse($today_date->isAfter($today_date),      'todayAfterTodayDate');
+		self::assertFalse($today_date->isAfter($max_date),        'todayAfterMaxDate');
+		self::assertFalse(  $min_date->isAfter($empty_string),    'minAfterEmptyString');
+		self::assertFalse(  $min_date->isAfter($today_string),    'minAfterTodayString');
+		self::assertFalse(  $min_date->isAfter($tomorrow_string), 'minAfterTomorrowString');
+		self::assertFalse(  $min_date->isAfter($empty_date),      'minAfterEmptyDate');
+		self::assertFalse(  $min_date->isAfter($today_date),      'minAfterTodayDate');
+		self::assertFalse(  $min_date->isAfter($min_date),        'minAfterMinDate');
+		self::assertFalse(  $min_date->isAfter($max_date),        'minAfterMaxDate');
+		self::assertTrue (  $max_date->isAfter($empty_string),    'maxAfterEmptyString');
+		self::assertTrue (  $max_date->isAfter($today_string),    'maxAfterTodayString');
+		self::assertTrue (  $max_date->isAfter($tomorrow_string), 'maxAfterTomorrowString');
+		self::assertTrue (  $max_date->isAfter($empty_date),      'maxAfterEmptyDate');
+		self::assertTrue (  $max_date->isAfter($today_date),      'maxAfterTodayDate');
+		self::assertTrue (  $max_date->isAfter($min_date),        'minAfterMinDate');
+		self::assertFalse(  $max_date->isAfter($max_date),        'maxAfterMaxDate');
 	}
 
 	//---------------------------------------------------------------------------- testIsAfterOrEqual
@@ -183,34 +183,34 @@ class Date_Time_Test extends Test
 		$today_date      = new Date_Time($today_string);
 		$min_date        = Date_Time::min();
 		$max_date        = Date_Time::max();
-		static::assertTrue ($empty_date->isAfterOrEqual($empty_string),    'emptyAfterEmptyString');
-		static::assertFalse($empty_date->isAfterOrEqual($today_string),    'emptyAfterTodayString');
-		static::assertFalse($empty_date->isAfterOrEqual($tomorrow_string), 'emptyAfterTomorrow');
-		static::assertTrue ($empty_date->isAfterOrEqual($empty_date),      'emptyAfterEmptyDate');
-		static::assertFalse($empty_date->isAfterOrEqual($today_date),      'emptyAfterTodayDate');
-		static::assertTrue ($empty_date->isAfterOrEqual($min_date),        'emptyAfterMinDate');
-		static::assertFalse($empty_date->isAfterOrEqual($max_date),        'emptyAfterMaxDate');
-		static::assertTrue ($today_date->isAfterOrEqual($empty_string),    'todayAfterEmptyString');
-		static::assertTrue ($today_date->isAfterOrEqual($today_string),    'todayAfterTodayString');
-		static::assertFalse($today_date->isAfterOrEqual($tomorrow_string), 'todayAfterTomorrowString');
-		static::assertTrue ($today_date->isAfterOrEqual($empty_date),      'todayAfterEmptyDate');
-		static::assertTrue ($today_date->isAfterOrEqual($min_date),        'todayAfterMinDate');
-		static::assertTrue ($today_date->isAfterOrEqual($today_date),      'todayAfterTodayDate');
-		static::assertFalse($today_date->isAfterOrEqual($max_date),        'todayAfterMaxDate');
-		static::assertTrue (  $min_date->isAfterOrEqual($empty_string),    'minAfterEmptyString');
-		static::assertFalse(  $min_date->isAfterOrEqual($today_string),    'minAfterTodayString');
-		static::assertFalse(  $min_date->isAfterOrEqual($tomorrow_string), 'minAfterTomorrowString');
-		static::assertTrue (  $min_date->isAfterOrEqual($empty_date),      'minAfterEmptyDate');
-		static::assertFalse(  $min_date->isAfterOrEqual($today_date),      'minAfterTodayDate');
-		static::assertTrue (  $min_date->isAfterOrEqual($min_date),        'minAfterMinDate');
-		static::assertFalse(  $min_date->isAfterOrEqual($max_date),        'minAfterMaxDate');
-		static::assertTrue (  $max_date->isAfterOrEqual($empty_string),    'maxAfterEmptyString');
-		static::assertTrue (  $max_date->isAfterOrEqual($today_string),    'maxAfterTodayString');
-		static::assertTrue (  $max_date->isAfterOrEqual($tomorrow_string), 'maxAfterTomorrowString');
-		static::assertTrue (  $max_date->isAfterOrEqual($empty_date),      'maxAfterEmptyDate');
-		static::assertTrue (  $max_date->isAfterOrEqual($today_date),      'maxAfterTodayDate');
-		static::assertTrue (  $max_date->isAfterOrEqual($min_date),        'minAfterMinDate');
-		static::assertTrue (  $max_date->isAfterOrEqual($max_date),        'maxAfterMaxDate');
+		self::assertTrue ($empty_date->isAfterOrEqual($empty_string),    'emptyAfterEmptyString');
+		self::assertFalse($empty_date->isAfterOrEqual($today_string),    'emptyAfterTodayString');
+		self::assertFalse($empty_date->isAfterOrEqual($tomorrow_string), 'emptyAfterTomorrow');
+		self::assertTrue ($empty_date->isAfterOrEqual($empty_date),      'emptyAfterEmptyDate');
+		self::assertFalse($empty_date->isAfterOrEqual($today_date),      'emptyAfterTodayDate');
+		self::assertTrue ($empty_date->isAfterOrEqual($min_date),        'emptyAfterMinDate');
+		self::assertFalse($empty_date->isAfterOrEqual($max_date),        'emptyAfterMaxDate');
+		self::assertTrue ($today_date->isAfterOrEqual($empty_string),    'todayAfterEmptyString');
+		self::assertTrue ($today_date->isAfterOrEqual($today_string),    'todayAfterTodayString');
+		self::assertFalse($today_date->isAfterOrEqual($tomorrow_string), 'todayAfterTomorrowString');
+		self::assertTrue ($today_date->isAfterOrEqual($empty_date),      'todayAfterEmptyDate');
+		self::assertTrue ($today_date->isAfterOrEqual($min_date),        'todayAfterMinDate');
+		self::assertTrue ($today_date->isAfterOrEqual($today_date),      'todayAfterTodayDate');
+		self::assertFalse($today_date->isAfterOrEqual($max_date),        'todayAfterMaxDate');
+		self::assertTrue (  $min_date->isAfterOrEqual($empty_string),    'minAfterEmptyString');
+		self::assertFalse(  $min_date->isAfterOrEqual($today_string),    'minAfterTodayString');
+		self::assertFalse(  $min_date->isAfterOrEqual($tomorrow_string), 'minAfterTomorrowString');
+		self::assertTrue (  $min_date->isAfterOrEqual($empty_date),      'minAfterEmptyDate');
+		self::assertFalse(  $min_date->isAfterOrEqual($today_date),      'minAfterTodayDate');
+		self::assertTrue (  $min_date->isAfterOrEqual($min_date),        'minAfterMinDate');
+		self::assertFalse(  $min_date->isAfterOrEqual($max_date),        'minAfterMaxDate');
+		self::assertTrue (  $max_date->isAfterOrEqual($empty_string),    'maxAfterEmptyString');
+		self::assertTrue (  $max_date->isAfterOrEqual($today_string),    'maxAfterTodayString');
+		self::assertTrue (  $max_date->isAfterOrEqual($tomorrow_string), 'maxAfterTomorrowString');
+		self::assertTrue (  $max_date->isAfterOrEqual($empty_date),      'maxAfterEmptyDate');
+		self::assertTrue (  $max_date->isAfterOrEqual($today_date),      'maxAfterTodayDate');
+		self::assertTrue (  $max_date->isAfterOrEqual($min_date),        'minAfterMinDate');
+		self::assertTrue (  $max_date->isAfterOrEqual($max_date),        'maxAfterMaxDate');
 	}
 
 	//---------------------------------------------------------------------------------- testIsBefore
@@ -225,34 +225,34 @@ class Date_Time_Test extends Test
 		$today_date      = new Date_Time($today_string);
 		$min_date        = Date_Time::min();
 		$max_date        = Date_Time::max();
-		static::assertFalse($empty_date->isBefore($empty_string),    'emptyBeforeEmptyString');
-		static::assertTrue ($empty_date->isBefore($today_string),    'emptyBeforeTodayString');
-		static::assertTrue ($empty_date->isBefore($tomorrow_string), 'emptyBeforeTomorrow');
-		static::assertFalse($empty_date->isBefore($empty_date),      'emptyBeforeEmptyDate');
-		static::assertTrue ($empty_date->isBefore($today_date),      'emptyBeforeTodayDate');
-		static::assertFalse($empty_date->isBefore($min_date),        'emptyBeforeMinDate');
-		static::assertTrue ($empty_date->isBefore($max_date),        'emptyBeforeMaxDate');
-		static::assertFalse($today_date->isBefore($empty_string),    'todayBeforeEmptyString');
-		static::assertFalse($today_date->isBefore($today_string),    'todayBeforeTodayString');
-		static::assertTrue ($today_date->isBefore($tomorrow_string), 'todayBeforeTomorrowString');
-		static::assertFalse($today_date->isBefore($empty_date),      'todayBeforeEmptyDate');
-		static::assertFalse($today_date->isBefore($min_date),        'todayBeforeMinDate');
-		static::assertFalse($today_date->isBefore($today_date),      'todayBeforeTodayDate');
-		static::assertTrue ($today_date->isBefore($max_date),        'todayBeforeMaxDate');
-		static::assertFalse(  $min_date->isBefore($empty_string),    'minBeforeEmptyString');
-		static::assertTrue (  $min_date->isBefore($today_string),    'minBeforeTodayString');
-		static::assertTrue (  $min_date->isBefore($tomorrow_string), 'minBeforeTomorrowString');
-		static::assertFalse(  $min_date->isBefore($empty_date),      'minBeforeEmptyDate');
-		static::assertTrue (  $min_date->isBefore($today_date),      'minBeforeTodayDate');
-		static::assertFalse(  $min_date->isBefore($min_date),        'minBeforeMinDate');
-		static::assertTrue (  $min_date->isBefore($max_date),        'minBeforeMaxDate');
-		static::assertFalse(  $max_date->isBefore($empty_string),    'maxBeforeEmptyString');
-		static::assertFalse(  $max_date->isBefore($today_string),    'maxBeforeTodayString');
-		static::assertFalse(  $max_date->isBefore($tomorrow_string), 'maxBeforeTomorrowString');
-		static::assertFalse(  $max_date->isBefore($empty_date),      'maxBeforeEmptyDate');
-		static::assertFalse(  $max_date->isBefore($today_date),      'maxBeforeTodayDate');
-		static::assertFalse(  $max_date->isBefore($min_date),        'minBeforeMinDate');
-		static::assertFalse(  $max_date->isBefore($max_date),        'maxBeforeMaxDate');
+		self::assertFalse($empty_date->isBefore($empty_string),    'emptyBeforeEmptyString');
+		self::assertTrue ($empty_date->isBefore($today_string),    'emptyBeforeTodayString');
+		self::assertTrue ($empty_date->isBefore($tomorrow_string), 'emptyBeforeTomorrow');
+		self::assertFalse($empty_date->isBefore($empty_date),      'emptyBeforeEmptyDate');
+		self::assertTrue ($empty_date->isBefore($today_date),      'emptyBeforeTodayDate');
+		self::assertFalse($empty_date->isBefore($min_date),        'emptyBeforeMinDate');
+		self::assertTrue ($empty_date->isBefore($max_date),        'emptyBeforeMaxDate');
+		self::assertFalse($today_date->isBefore($empty_string),    'todayBeforeEmptyString');
+		self::assertFalse($today_date->isBefore($today_string),    'todayBeforeTodayString');
+		self::assertTrue ($today_date->isBefore($tomorrow_string), 'todayBeforeTomorrowString');
+		self::assertFalse($today_date->isBefore($empty_date),      'todayBeforeEmptyDate');
+		self::assertFalse($today_date->isBefore($min_date),        'todayBeforeMinDate');
+		self::assertFalse($today_date->isBefore($today_date),      'todayBeforeTodayDate');
+		self::assertTrue ($today_date->isBefore($max_date),        'todayBeforeMaxDate');
+		self::assertFalse(  $min_date->isBefore($empty_string),    'minBeforeEmptyString');
+		self::assertTrue (  $min_date->isBefore($today_string),    'minBeforeTodayString');
+		self::assertTrue (  $min_date->isBefore($tomorrow_string), 'minBeforeTomorrowString');
+		self::assertFalse(  $min_date->isBefore($empty_date),      'minBeforeEmptyDate');
+		self::assertTrue (  $min_date->isBefore($today_date),      'minBeforeTodayDate');
+		self::assertFalse(  $min_date->isBefore($min_date),        'minBeforeMinDate');
+		self::assertTrue (  $min_date->isBefore($max_date),        'minBeforeMaxDate');
+		self::assertFalse(  $max_date->isBefore($empty_string),    'maxBeforeEmptyString');
+		self::assertFalse(  $max_date->isBefore($today_string),    'maxBeforeTodayString');
+		self::assertFalse(  $max_date->isBefore($tomorrow_string), 'maxBeforeTomorrowString');
+		self::assertFalse(  $max_date->isBefore($empty_date),      'maxBeforeEmptyDate');
+		self::assertFalse(  $max_date->isBefore($today_date),      'maxBeforeTodayDate');
+		self::assertFalse(  $max_date->isBefore($min_date),        'minBeforeMinDate');
+		self::assertFalse(  $max_date->isBefore($max_date),        'maxBeforeMaxDate');
 	}
 
 	//--------------------------------------------------------------------------- testIsBeforeOrEqual
@@ -267,34 +267,34 @@ class Date_Time_Test extends Test
 		$today_date      = new Date_Time($today_string);
 		$min_date        = Date_Time::min();
 		$max_date        = Date_Time::max();
-		static::assertTrue ($empty_date->isBeforeOrEqual($empty_string),    'emptyBeforeEmptyString');
-		static::assertTrue ($empty_date->isBeforeOrEqual($today_string),    'emptyBeforeTodayString');
-		static::assertTrue ($empty_date->isBeforeOrEqual($tomorrow_string), 'emptyBeforeTomorrow');
-		static::assertTrue ($empty_date->isBeforeOrEqual($empty_date),      'emptyBeforeEmptyDate');
-		static::assertTrue ($empty_date->isBeforeOrEqual($today_date),      'emptyBeforeTodayDate');
-		static::assertTrue ($empty_date->isBeforeOrEqual($min_date),        'emptyBeforeMinDate');
-		static::assertTrue ($empty_date->isBeforeOrEqual($max_date),        'emptyBeforeMaxDate');
-		static::assertFalse($today_date->isBeforeOrEqual($empty_string),    'todayBeforeEmptyString');
-		static::assertTrue ($today_date->isBeforeOrEqual($today_string),    'todayBeforeTodayString');
-		static::assertTrue ($today_date->isBeforeOrEqual($tomorrow_string), 'todayBeforeTomorrowString');
-		static::assertFalse($today_date->isBeforeOrEqual($empty_date),      'todayBeforeEmptyDate');
-		static::assertFalse($today_date->isBeforeOrEqual($min_date),        'todayBeforeMinDate');
-		static::assertTrue ($today_date->isBeforeOrEqual($today_date),      'todayBeforeTodayDate');
-		static::assertTrue ($today_date->isBeforeOrEqual($max_date),        'todayBeforeMaxDate');
-		static::assertTrue (  $min_date->isBeforeOrEqual($empty_string),    'minBeforeEmptyString');
-		static::assertTrue (  $min_date->isBeforeOrEqual($today_string),    'minBeforeTodayString');
-		static::assertTrue (  $min_date->isBeforeOrEqual($tomorrow_string), 'minBeforeTomorrowString');
-		static::assertTrue (  $min_date->isBeforeOrEqual($empty_date),      'minBeforeEmptyDate');
-		static::assertTrue (  $min_date->isBeforeOrEqual($today_date),      'minBeforeTodayDate');
-		static::assertTrue (  $min_date->isBeforeOrEqual($min_date),        'minBeforeMinDate');
-		static::assertTrue (  $min_date->isBeforeOrEqual($max_date),        'minBeforeMaxDate');
-		static::assertFalse(  $max_date->isBeforeOrEqual($empty_string),    'maxBeforeEmptyString');
-		static::assertFalse(  $max_date->isBeforeOrEqual($today_string),    'maxBeforeTodayString');
-		static::assertFalse(  $max_date->isBeforeOrEqual($tomorrow_string), 'maxBeforeTomorrowString');
-		static::assertFalse(  $max_date->isBeforeOrEqual($empty_date),      'maxBeforeEmptyDate');
-		static::assertFalse(  $max_date->isBeforeOrEqual($today_date),      'maxBeforeTodayDate');
-		static::assertFalse(  $max_date->isBeforeOrEqual($min_date),        'minBeforeMinDate');
-		static::assertTrue (  $max_date->isBeforeOrEqual($max_date),        'maxBeforeMaxDate');
+		self::assertTrue ($empty_date->isBeforeOrEqual($empty_string),    'emptyBeforeEmptyString');
+		self::assertTrue ($empty_date->isBeforeOrEqual($today_string),    'emptyBeforeTodayString');
+		self::assertTrue ($empty_date->isBeforeOrEqual($tomorrow_string), 'emptyBeforeTomorrow');
+		self::assertTrue ($empty_date->isBeforeOrEqual($empty_date),      'emptyBeforeEmptyDate');
+		self::assertTrue ($empty_date->isBeforeOrEqual($today_date),      'emptyBeforeTodayDate');
+		self::assertTrue ($empty_date->isBeforeOrEqual($min_date),        'emptyBeforeMinDate');
+		self::assertTrue ($empty_date->isBeforeOrEqual($max_date),        'emptyBeforeMaxDate');
+		self::assertFalse($today_date->isBeforeOrEqual($empty_string),    'todayBeforeEmptyString');
+		self::assertTrue ($today_date->isBeforeOrEqual($today_string),    'todayBeforeTodayString');
+		self::assertTrue ($today_date->isBeforeOrEqual($tomorrow_string), 'todayBeforeTomorrowString');
+		self::assertFalse($today_date->isBeforeOrEqual($empty_date),      'todayBeforeEmptyDate');
+		self::assertFalse($today_date->isBeforeOrEqual($min_date),        'todayBeforeMinDate');
+		self::assertTrue ($today_date->isBeforeOrEqual($today_date),      'todayBeforeTodayDate');
+		self::assertTrue ($today_date->isBeforeOrEqual($max_date),        'todayBeforeMaxDate');
+		self::assertTrue (  $min_date->isBeforeOrEqual($empty_string),    'minBeforeEmptyString');
+		self::assertTrue (  $min_date->isBeforeOrEqual($today_string),    'minBeforeTodayString');
+		self::assertTrue (  $min_date->isBeforeOrEqual($tomorrow_string), 'minBeforeTomorrowString');
+		self::assertTrue (  $min_date->isBeforeOrEqual($empty_date),      'minBeforeEmptyDate');
+		self::assertTrue (  $min_date->isBeforeOrEqual($today_date),      'minBeforeTodayDate');
+		self::assertTrue (  $min_date->isBeforeOrEqual($min_date),        'minBeforeMinDate');
+		self::assertTrue (  $min_date->isBeforeOrEqual($max_date),        'minBeforeMaxDate');
+		self::assertFalse(  $max_date->isBeforeOrEqual($empty_string),    'maxBeforeEmptyString');
+		self::assertFalse(  $max_date->isBeforeOrEqual($today_string),    'maxBeforeTodayString');
+		self::assertFalse(  $max_date->isBeforeOrEqual($tomorrow_string), 'maxBeforeTomorrowString');
+		self::assertFalse(  $max_date->isBeforeOrEqual($empty_date),      'maxBeforeEmptyDate');
+		self::assertFalse(  $max_date->isBeforeOrEqual($today_date),      'maxBeforeTodayDate');
+		self::assertFalse(  $max_date->isBeforeOrEqual($min_date),        'minBeforeMinDate');
+		self::assertTrue (  $max_date->isBeforeOrEqual($max_date),        'maxBeforeMaxDate');
 	}
 
 	//----------------------------------------------------------------------------------- testIsEmpty
@@ -306,10 +306,10 @@ class Date_Time_Test extends Test
 		$today_date = new Date_Time('2016-07-13 09:47:05');
 		$min_date   = Date_Time::min();
 		$max_date   = Date_Time::max();
-		static::assertTrue ($empty_date->isEmpty(), 'empty');
-		static::assertFalse($today_date->isEmpty(), 'today');
-		static::assertTrue (  $min_date->isEmpty(), 'min');
-		static::assertTrue (  $max_date->isEmpty(), 'max');
+		self::assertTrue ($empty_date->isEmpty(), 'empty');
+		self::assertFalse($today_date->isEmpty(), 'today');
+		self::assertTrue (  $min_date->isEmpty(), 'min');
+		self::assertTrue (  $max_date->isEmpty(), 'max');
 	}
 
 	//------------------------------------------------------------------------------------- testIsMax
@@ -321,10 +321,10 @@ class Date_Time_Test extends Test
 		$today_date = new Date_Time('2016-07-13 09:47:05');
 		$min_date   = Date_Time::min();
 		$max_date   = Date_Time::max();
-		static::assertFalse($empty_date->isMax(), 'empty');
-		static::assertFalse($today_date->isMax(), 'today');
-		static::assertFalse(  $min_date->isMax(), 'min');
-		static::assertTrue (  $max_date->isMax(), 'max');
+		self::assertFalse($empty_date->isMax(), 'empty');
+		self::assertFalse($today_date->isMax(), 'today');
+		self::assertFalse(  $min_date->isMax(), 'min');
+		self::assertTrue (  $max_date->isMax(), 'max');
 	}
 
 	//------------------------------------------------------------------------------------- testIsMin
@@ -334,10 +334,10 @@ class Date_Time_Test extends Test
 		$today_date = new Date_Time('2016-07-13 09:47:05');
 		$min_date   = Date_Time::min();
 		$max_date   = Date_Time::max();
-		static::assertTrue ($empty_date->isMin(), 'empty');
-		static::assertFalse($today_date->isMin(), 'today');
-		static::assertTrue (  $min_date->isMin(), 'min');
-		static::assertFalse(  $max_date->isMin(), 'max');
+		self::assertTrue ($empty_date->isMin(), 'empty');
+		self::assertFalse($today_date->isMin(), 'today');
+		self::assertTrue (  $min_date->isMin(), 'min');
+		self::assertFalse(  $max_date->isMin(), 'max');
 	}
 
 	//------------------------------------------------------------------------------------ testLatest
@@ -346,13 +346,13 @@ class Date_Time_Test extends Test
 		$earlier = new Date_Time('2006-01-01 13:29:18');
 		$now     = new Date_Time('2016-10-24 10:48:12');
 		$later   = new Date_Time('2034-05-12 10:00:00');
-		 static::assertEquals($later, $earlier->latest($later),       'one argument');
-		 static::assertEquals($later, $earlier->latest($later, $now), 'two arguments');
-		 static::assertEquals($later, $earlier->latest($now, $later), 'reverse arguments');
-		 static::assertEquals($later, $now->latest($earlier, $later), 'another reverse');
-		 static::assertEquals($later, $now->latest($later, $earlier), 'another 2');
-		 static::assertEquals($later, $later->latest($earlier, $now), 'another 3');
-		 static::assertEquals($later, $later->latest($now, $earlier), 'another 4');
+		 self::assertEquals($later, $earlier->latest($later),       'one argument');
+		 self::assertEquals($later, $earlier->latest($later, $now), 'two arguments');
+		 self::assertEquals($later, $earlier->latest($now, $later), 'reverse arguments');
+		 self::assertEquals($later, $now->latest($earlier, $later), 'another reverse');
+		 self::assertEquals($later, $now->latest($later, $earlier), 'another 2');
+		 self::assertEquals($later, $later->latest($earlier, $now), 'another 3');
+		 self::assertEquals($later, $later->latest($now, $earlier), 'another 4');
 	}
 
 	//----------------------------------------------------------------------------------- testToMonth
@@ -361,7 +361,7 @@ class Date_Time_Test extends Test
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$month = (new Date_Time('2016-06-04 12:35:00'))
 			->toBeginOf(Date_Time::MONTH)->format('Y-m-d H:i:s');
-		static::assertEquals('2016-06-01 00:00:00', $month);
+		self::assertEquals('2016-06-01 00:00:00', $month);
 	}
 
 	//---------------------------------------------------------------------------------- testTomorrow
@@ -373,7 +373,7 @@ class Date_Time_Test extends Test
 
 		$expected = '1 day 0 hour 0 minute 0 second';
 
-		static::assertEquals($expected, $actual->format('%r%d day %h hour %i minute %s second'));
+		self::assertEquals($expected, $actual->format('%r%d day %h hour %i minute %s second'));
 	}
 
 	//--------------------------------------------------------------------------------- testYesterday
@@ -388,7 +388,7 @@ class Date_Time_Test extends Test
 
 		$expected = '-1 day 0 hour 0 minute 0 second';
 
-		static::assertEquals($expected, $actual->format('%r%d day %h hour %i minute %s second'));
+		self::assertEquals($expected, $actual->format('%r%d day %h hour %i minute %s second'));
 	}
 
 }

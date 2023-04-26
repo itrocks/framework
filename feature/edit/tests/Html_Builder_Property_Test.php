@@ -55,7 +55,7 @@ class Html_Builder_Property_Test extends Test
 			'simple_collection[code][2]',
 			'simple_collection[name][2]',
 		];
-		static::assertEquals($assume, $this->norm($builder->build()));
+		self::assertEquals($assume, $this->norm($builder->build()));
 	}
 
 	//---------------------------------------------------------------------------------- testBuildMap
@@ -75,7 +75,7 @@ class Html_Builder_Property_Test extends Test
 			'simple_map[1]',
 			'simple_map[2]',
 		];
-		static::assertEquals($assume, $this->norm($builder->build()));
+		self::assertEquals($assume, $this->norm($builder->build()));
 	}
 
 	//-------------------------------------------------------------------- testBuildMapIntoCollection
@@ -109,7 +109,7 @@ class Html_Builder_Property_Test extends Test
 			'collection_has_map[simple_map][2][0]',
 			'collection_has_map[code][2]',
 		];
-		static::assertEquals($assume, $this->norm($builder->build()));
+		self::assertEquals($assume, $this->norm($builder->build()));
 	}
 
 }

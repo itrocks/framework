@@ -55,7 +55,7 @@ class Reflection_Class_Test extends Test
 				$check[$property_name] = self::INACCESSIBLE;
 			}
 		}
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'date'            => self::INACCESSIBLE,
 				'delivery_client' => self::INACCESSIBLE,
@@ -92,7 +92,7 @@ class Reflection_Class_Test extends Test
 		$number = new Reflection_Property(Document::class, 'number');
 
 		$date->final_class = $number->final_class = Order::class;
-		static::assertEquals(
+		self::assertEquals(
 			$this->properties($date, $number),
 			$properties = $class->getProperties(),
 			__METHOD__ . '2 (accessProperties)'
@@ -108,7 +108,7 @@ class Reflection_Class_Test extends Test
 				$check[$property->name] = 'inaccessible';
 			}
 		}
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'date'            => $today,
 				'delivery_client' => null,
@@ -153,7 +153,7 @@ class Reflection_Class_Test extends Test
 
 		$date->final_class = $number->final_class = Order::class;
 		// use array_map as assertEquals gives private property values for actual, not for expected.
-		static::assertEquals(
+		self::assertEquals(
 			array_map(
 				function(object $object) : array { return get_object_vars($object); },
 				$this->properties($date, $number)

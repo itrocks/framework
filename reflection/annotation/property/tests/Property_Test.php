@@ -74,7 +74,7 @@ class Property_Test extends Test
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constants */
 		$property = new Reflection_Property(Test_Object::class, 'property');
-		static::assertEquals('default value for property', $property->getDefaultValue());
+		self::assertEquals('default value for property', $property->getDefaultValue());
 	}
 
 	//----------------------------------------------------------------------------- testDefaultSimple
@@ -82,37 +82,37 @@ class Property_Test extends Test
 	public function testDefaultSimple() : void
 	{
 		$robert = new Default_Simple();
-		static::assertEquals(18, $robert->age,      '#Default.override');
-		static::assertEquals(43, $robert->null_age, '#Default.override_null');
+		self::assertEquals(18, $robert->age,      '#Default.override');
+		self::assertEquals(43, $robert->null_age, '#Default.override_null');
 		/** @noinspection PhpTypedPropertyMightBeUninitializedInspection #Default */
-		static::assertEquals('Robert',  $robert->name,    '#Default.simple');
-		static::assertEquals('Mitchum', $robert->surname, '#Default.very_simple');
+		self::assertEquals('Robert',  $robert->name,    '#Default.simple');
+		self::assertEquals('Mitchum', $robert->surname, '#Default.very_simple');
 		/** @noinspection PhpUnhandledExceptionInspection constants */
-		static::assertEquals(
+		self::assertEquals(
 			43,
 			(new Reflection_Property(Default_Simple::class, 'age'))->getDefaultValue(),
 			'#Default.reflection.override'
 		);
 		/** @noinspection PhpUnhandledExceptionInspection constants */
-		static::assertEquals(
+		self::assertEquals(
 			43,
 			(new Reflection_Property(Default_Simple::class, 'null_age'))->getDefaultValue(),
 			'#Default.reflection.override_null'
 		);
 		/** @noinspection PhpUnhandledExceptionInspection constants */
-		static::assertEquals(
+		self::assertEquals(
 			'Robert',
 			(new Reflection_Property(Default_Simple::class, 'name'))->getDefaultValue(),
 			'#Default.reflection.simple'
 		);
 		/** @noinspection PhpUnhandledExceptionInspection constants */
-		static::assertEquals(
+		self::assertEquals(
 			'Mitchum',
 			(new Reflection_Property(Default_Simple::class, 'surname'))->getDefaultValue(),
 			'#Default.reflection.very_simple'
 		);
 		/** @noinspection PhpUnhandledExceptionInspection constants */
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'age'         => 43,
 				'alive_until' => Date_Time::max(),
@@ -130,10 +130,10 @@ class Property_Test extends Test
 	public function testGetterAnnotationCases() : void
 	{
 		$this->subject->getter_simple = 'a value for simple';
-		static::assertEquals('a value for simple with getter simple', $this->subject->getter_simple);
+		self::assertEquals('a value for simple with getter simple', $this->subject->getter_simple);
 
 		$this->subject->getter_static = 'a value for static';
-		static::assertEquals('a value for static with getter static', $this->subject->getter_static);
+		self::assertEquals('a value for static with getter static', $this->subject->getter_static);
 	}
 
 	//----------------------------------------------------------------------- testGetterAnnotationSet
@@ -150,7 +150,7 @@ class Property_Test extends Test
 		// #Getter methodName
 		$getter = new Getter('testGetterAnnotation');
 		$getter->setFinal($property);
-		static::assertEquals(
+		self::assertEquals(
 			get_class($this->subject) . '::testGetterAnnotation',
 			$getter->callable,
 			'methodName'
@@ -158,7 +158,7 @@ class Property_Test extends Test
 		// #Getter Local_Class_Name::methodName
 		$getter = new Getter([User::class, 'has']);
 		$getter->setFinal($property);
-		static::assertEquals(
+		self::assertEquals(
 			User::class . '::has',
 			$getter->callable,
 			'Local_Class_Name::methodName'
@@ -166,13 +166,13 @@ class Property_Test extends Test
 		// #Getter Distant\Class\Full\Path::methodName
 		$getter = new Getter([Annoted::class, 'has']);
 		$getter->setFinal($property);
-		static::assertEquals(
+		self::assertEquals(
 			Annoted::class . '::has',
 			$getter->callable,
 			'Distant\Class\Full\Path\Class_Name::methodName'
 		);
 		// default value for getter when there is a @link annotation
-		static::assertEquals(
+		self::assertEquals(
 			Mapper\Getter::class . '::getCollection',
 			Getter::of($property)->callable,
 			'default value when @link'
@@ -191,8 +191,8 @@ class Property_Test extends Test
 	) : void
 	{
 		$integrated = new Integrated_Annotation($init);
-		static::assertEquals($expected_value, $integrated->value);
-		static::assertEquals($expected_properties, $integrated->properties);
+		self::assertEquals($expected_value, $integrated->value);
+		self::assertEquals($expected_properties, $integrated->properties);
 	}
 
 	//--------------------------------------------------------------------- testSetterAnnotationCases
@@ -200,10 +200,10 @@ class Property_Test extends Test
 	public function testSetterAnnotationCases() : void
 	{
 		$this->subject->setter_simple = 'a value for simple';
-		static::assertEquals('a value for simple with setter simple', $this->subject->setter_simple);
+		self::assertEquals('a value for simple with setter simple', $this->subject->setter_simple);
 
 		$this->subject->setter_static = 'a value for static';
-		static::assertEquals('a value for static with setter static', $this->subject->setter_static);
+		self::assertEquals('a value for static with setter static', $this->subject->setter_static);
 	}
 
 	//-------------------------------------------------------------------------------- testWithValues
@@ -212,7 +212,7 @@ class Property_Test extends Test
 	{
 		$this->subject->with_values = 'a_value';
 		/** @noinspection PhpUnhandledExceptionInspection valid object and constant property */
-		static::assertEquals(
+		self::assertEquals(
 			['a_value', 'another_value', 'third_value', 'fourth_value'],
 			Values::of(new Reflection_Property($this->subject, 'with_values'))?->values
 		);

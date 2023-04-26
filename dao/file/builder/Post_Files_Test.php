@@ -47,7 +47,7 @@ class Post_Files_Test extends Test
 		$expected = ['pages' => ['background' => [
 			'U' => ['name' => 'filename.pdf', 'temporary_file_name' => '/tmp/phpXXXX']
 		]]];
-		static::assertEquals($expected, $result);
+		self::assertEquals($expected, $result);
 	}
 
 	//------------------------------------------------------------------------ testSomeKeysNonNumeric
@@ -69,7 +69,7 @@ class Post_Files_Test extends Test
 			'-1' => ['name' => 'filename2.pdf', 'temporary_file_name' => '/tmp/phpYYYY']
 		]]];
 
-		static::assertEquals($expected, $result);
+		self::assertEquals($expected, $result);
 	}
 
 }

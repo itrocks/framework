@@ -24,7 +24,7 @@ class Join_Test extends Test
 		);
 		$assume->foreign_property = new Reflection_Property(Order_Line::class, 'order');
 
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'date'           => null,
 				'number'         => null,
@@ -47,7 +47,7 @@ class Join_Test extends Test
 		);
 		$assume2->master_property = new Reflection_Property(Client::class, 'client');
 
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'number'               => null,
 				'client'               => $assume1,
@@ -71,7 +71,7 @@ class Join_Test extends Test
 		);
 		$assume->master_property = new Reflection_Property(Order_Line::class, 'order');
 
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'order'        => $assume,
 				'order.date'   => null,
@@ -97,7 +97,7 @@ class Join_Test extends Test
 		);
 		$assume->master_property = new Reflection_Property(Order::class, 'salesmen');
 
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'date'          => null,
 				'number'        => null,
@@ -123,7 +123,7 @@ class Join_Test extends Test
 		);
 		$assume->master_property = new Reflection_Property(Order_Line::class, 'order');
 
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'number'   => null,
 				'quantity' => null,
@@ -144,7 +144,7 @@ class Join_Test extends Test
 		);
 		$assume->foreign_property = new Reflection_Property(Order_Line::class, 'order');
 
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'date'                       => null,
 				'number'                     => null,
@@ -168,7 +168,7 @@ class Join_Test extends Test
 		);
 		$assume_order->master_property = new Reflection_Property(Order_Line::class, 'order');
 
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'number'                   => null,
 				'name'                     => null,
@@ -189,7 +189,7 @@ class Join_Test extends Test
 		);
 		$assume->master_property = new Reflection_Property(Order::class, 'salesmen');
 
-		static::assertEquals(
+		self::assertEquals(
 			[
 				'Order(salesmen)-link' => Join::newInstance(
 					Join::LEFT, 't0', 'id', 't1', 'test_orders_salesmen', 'id_salesman'
@@ -208,7 +208,7 @@ class Join_Test extends Test
 	//------------------------------------------------------------------------------------ testSimple
 	public function testSimple() : void
 	{
-		static::assertEquals(
+		self::assertEquals(
 			['date' => null, 'number' => null],
 			Joins::newInstance(Order::class)
 				->addMultiple(['date', 'number'])

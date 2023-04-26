@@ -13,10 +13,7 @@ class Sort_Test extends Test
 	use Has_Dao_Mock;
 
 	//----------------------------------------------------------------------------- getColumnProvider
-	/**
-	 * @return array
-	 */
-	public function getColumnProvider() : array
+	public static function getColumnProvider() : array
 	{
 		// Datetime is a special case, see getColumn implementation
 		return [
@@ -32,18 +29,14 @@ class Sort_Test extends Test
 	}
 
 	//--------------------------------------------------------------------------------- testGetColumn
-	/**
-	 * @dataProvider getColumnProvider
-	 * @param $construct_parameter string|array|null
-	 * @param $method_parameter string|null
-	 * @param $expected array
-	 */
+	/** @dataProvider getColumnProvider */
 	public function testGetColumn(
 		array|string|null $construct_parameter, string|null $method_parameter, array $expected
-	) : void {
+	) : void
+	{
 		$sort    = new Sort($construct_parameter);
 		$columns = $sort->getColumns($method_parameter);
-		$this->assertEquals($expected, $columns);
+		self::assertEquals($expected, $columns);
 	}
 
 	//------------------------------------------------------------------- testSortConstructColumnName
@@ -53,10 +46,10 @@ class Sort_Test extends Test
 		$sort_property   = new Sort('id');
 		$sort_properties = new Sort(['id', 'name']);
 		$sort_null       = new Sort(null);
-		$this->assertNotNull($sort_class_name);
-		$this->assertNotNull($sort_property);
-		$this->assertNotNull($sort_properties);
-		$this->assertNotNull($sort_null);
+		self::assertNotNull($sort_class_name);
+		self::assertNotNull($sort_property);
+		self::assertNotNull($sort_properties);
+		self::assertNotNull($sort_null);
 	}
 
 }

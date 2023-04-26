@@ -76,7 +76,7 @@ lines[enum][2]
 lines[enum_conditioned_1][2]
 lines[enum_conditioned_2][2]
 EOT;
-		static::assertEquals(explode(LF, $assume), $this->norm($builder->build()));
+		self::assertEquals(explode(LF, $assume), $this->norm($builder->build()));
 	}
 
 }

@@ -44,7 +44,7 @@ class Max_Length_Annotation_Test extends Test
 		$annotation = Max_Length::of($this->reflection_object->getProperty('fail_property'));
 		$actual     = $annotation->validate($this);
 
-		static::assertFalse($actual);
+		self::assertFalse($actual);
 	}
 
 	//--------------------------------------------------------------------------- testValidateSuccess
@@ -55,7 +55,7 @@ class Max_Length_Annotation_Test extends Test
 		$annotation = Max_Length::of($this->reflection_object->getProperty('success_property'));
 		$actual     = $annotation->validate($this);
 
-		static::assertTrue($actual);
+		self::assertTrue($actual);
 	}
 
 }

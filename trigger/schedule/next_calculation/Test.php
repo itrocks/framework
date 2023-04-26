@@ -24,7 +24,7 @@ class Test extends Tests\Test
 		$calculation = new Next_Calculation();
 		foreach ($values as $source => $expected) {
 			/** @noinspection PhpUnhandledExceptionInspection $source must be valid */
-			static::assertEquals(
+			self::assertEquals(
 				$expected,
 				$calculation->next($schedule, new Date_Time($source))->format('Y-m-d H:i:s'),
 				'For source ' . $source

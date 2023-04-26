@@ -17,9 +17,9 @@ class Annotated_Test extends Test
 	{
 		$property1 = new Reflection_Property(Framework\User::class, 'login');
 		User::of($property1)->add(User::INVISIBLE);
-		static::assertTrue(User::of($property1)->has(User::INVISIBLE), 'modifiedProperty');
+		self::assertTrue(User::of($property1)->has(User::INVISIBLE), 'modifiedProperty');
 		$property2 = new Reflection_Property(Framework\User::class, 'login');
-		static::assertFalse(User::of($property2)->has(User::INVISIBLE), 'newProperty');
+		self::assertFalse(User::of($property2)->has(User::INVISIBLE), 'newProperty');
 	}
 
 }
