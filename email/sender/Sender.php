@@ -17,27 +17,36 @@ abstract class Sender implements Configurable, Sender_Interface
 	use Has_Get;
 
 	//----------------------------------------------------------------------- Configuration constants
-	const BCC  = 'bcc';
-	const FROM = 'from';
-	const TO   = 'to';
+	const BCC      = 'bcc';
+	const FROM     = 'from';
+	const REPLY_TO = 'reply_to';
+	const TO       = 'to';
 
 	//------------------------------------------------------------------------------------------ $bcc
 	/**
 	 * Configuration of blind-carbon-copy email address enable to send every email sent by this
 	 * feature to a given addresses list.
 	 *
-	 * @var string|string[]
+	 * @var ?string[]
 	 */
-	public array|string $bcc;
+	public ?array $bcc = null;
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
 	 * Use this to force sender to this one, whatever is the sending address mail coming from the
 	 * application.
 	 *
-	 * @var string|string[]
+	 * @var ?string[]
 	 */
-	public array|string $from;
+	public ?array $from = null;
+
+	//------------------------------------------------------------------------------------- $reply_to
+	/**
+	 * If set, all sent emails will embed a reply-to header to send responses a given recipient
+	 *
+	 * @var ?string[]
+	 */
+	public ?array $reply_to = null;
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
@@ -45,22 +54,23 @@ abstract class Sender implements Configurable, Sender_Interface
 	 * Configuration of this property is recommended in development environment to avoid sending
 	 * emails to production recipients when you test your application.
 	 *
-	 * @var string|string[]
+	 * @var ?string[]
 	 */
-	public array|string $to;
+	public ?array $to = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * The constructor of the Sender plugin stores the configuration into the object properties.
 	 *
-	 * @param $configuration string[]
+	 * @param $configuration string[][]
 	 */
 	public function __construct(mixed $configuration = [])
 	{
 		if ($configuration) {
-			if (isset($configuration[self::BCC]))  $this->bcc  = $configuration[self::BCC];
-			if (isset($configuration[self::FROM])) $this->from = $configuration[self::FROM];
-			if (isset($configuration[self::TO]))   $this->to   = $configuration[self::TO];
+			if (isset($configuration[self::BCC]))      $this->bcc      = $configuration[self::BCC];
+			if (isset($configuration[self::FROM]))     $this->from     = $configuration[self::FROM];
+			if (isset($configuration[self::REPLY_TO])) $this->reply_to = $configuration[self::REPLY_TO];
+			if (isset($configuration[self::TO]))       $this->to       = $configuration[self::TO];
 		}
 	}
 
@@ -102,23 +112,29 @@ abstract class Sender implements Configurable, Sender_Interface
 	 */
 	protected function sendConfiguration(Email $email) : void
 	{
+		// bcc is useful in production too
+		if (isset($this->bcc)) {
+			foreach ($this->bcc as $bcc) {
+				$email->blind_copy_to[] = new Recipient($bcc);
+			}
+		}
 		// force sender : all mails coming from the application will use this sender (from)
 		if (isset($this->from)) {
-			if (!is_array($this->from)) {
-				$this->from = [$this->from];
-			}
 			foreach ($this->from as $from_name => $from_email) {
 				$email->from = new Recipient($from_email, is_numeric($from_name) ? null : $from_name);
 			}
 		}
+		// default reply to (if set in configuration)
+		if ($this->reply_to && !$email->reply_to) {
+			foreach ($this->reply_to as $reply_to_name => $reply_to_email) {
+				$email->reply_to = new Recipient($reply_to_email, is_numeric($reply_to_name) ? null : $reply_to_name);
+			}
+		}
 		// development / test parameters to override 'To' and/or 'Bcc' headers
-		if (isset($this->to)) {
+		if ($this->to !== '') {
 			$email->blind_copy_to = [];
 			$email->copy_to       = [];
 			$email->to            = [];
-			if (!is_array($this->to)) {
-				$this->to = [$this->to];
-			}
 			foreach ($this->to as $to_name => $to_email) {
 				$email->to[] = new Recipient($to_email, is_numeric($to_name) ? null : $to_name);
 			}
