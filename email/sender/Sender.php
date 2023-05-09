@@ -27,26 +27,26 @@ abstract class Sender implements Configurable, Sender_Interface
 	 * Configuration of blind-carbon-copy email address enable to send every email sent by this
 	 * feature to a given addresses list.
 	 *
-	 * @var ?string[]
+	 * @var string[]
 	 */
-	public ?array $bcc = null;
+	public array $bcc = [];
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
 	 * Use this to force sender to this one, whatever is the sending address mail coming from the
 	 * application.
 	 *
-	 * @var ?string[]
+	 * @var string[]
 	 */
-	public ?array $from = null;
+	public array $from = [];
 
 	//------------------------------------------------------------------------------------- $reply_to
 	/**
 	 * If set, all sent emails will embed a reply-to header to send responses a given recipient
 	 *
-	 * @var ?string[]
+	 * @var string[]
 	 */
-	public ?array $reply_to = null;
+	public array $reply_to = [];
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
@@ -54,9 +54,9 @@ abstract class Sender implements Configurable, Sender_Interface
 	 * Configuration of this property is recommended in development environment to avoid sending
 	 * emails to production recipients when you test your application.
 	 *
-	 * @var ?string[]
+	 * @var string[]
 	 */
-	public ?array $to = null;
+	public array $to = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -113,39 +113,26 @@ abstract class Sender implements Configurable, Sender_Interface
 	protected function sendConfiguration(Email $email) : void
 	{
 		// bcc is useful in production too
-		if (isset($this->bcc)) {
-			foreach ($this->bcc as $bcc) {
-				$email->blind_copy_to[] = new Recipient($bcc);
-			}
+		foreach ($this->bcc as $bcc) {
+			$email->blind_copy_to[] = new Recipient($bcc);
 		}
 		// force sender : all mails coming from the application will use this sender (from)
-		if (isset($this->from)) {
-			foreach ($this->from as $from_name => $from_email) {
-				$email->from = new Recipient($from_email, is_numeric($from_name) ? null : $from_name);
-			}
+		foreach ($this->from as $from_name => $from_email) {
+			$email->from = new Recipient($from_email, is_numeric($from_name) ? null : $from_name);
 		}
 		// default reply to (if set in configuration)
-		if ($this->reply_to && !$email->reply_to) {
+		if (($this->reply_to !== []) && !$email->reply_to) {
 			foreach ($this->reply_to as $reply_to_name => $reply_to_email) {
 				$email->reply_to = new Recipient($reply_to_email, is_numeric($reply_to_name) ? null : $reply_to_name);
 			}
 		}
 		// development / test parameters to override 'To' and/or 'Bcc' headers
-		if ($this->to !== '') {
+		if ($this->to !== []) {
 			$email->blind_copy_to = [];
 			$email->copy_to       = [];
 			$email->to            = [];
 			foreach ($this->to as $to_name => $to_email) {
 				$email->to[] = new Recipient($to_email, is_numeric($to_name) ? null : $to_name);
-			}
-		}
-		// bcc is useful in production too
-		if (isset($this->bcc)) {
-			if (!is_array($this->bcc)) {
-				$this->bcc = [$this->bcc];
-			}
-			foreach ($this->bcc as $bcc) {
-				$email->blind_copy_to[] = new Recipient($bcc);
 			}
 		}
 	}
