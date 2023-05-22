@@ -93,7 +93,9 @@ $(document).ready(function()
 			quill.setContents(JSON.parse($this.text()))
 		}
 		else if ($this.text().trimStart().startsWith('<')) {
-			$quill.find('.ql-editor').html($this.text().repl(LF, '').repl(TAB, '').repl(BR, LF)).keyup()
+			$quill.find('.ql-editor').html(
+				$this.text().repl(LF, '').repl(TAB, '').repl(BR, LF).repl("<p>\n</p>", '<p><br></p>')
+			).keyup()
 		}
 		else {
 			$quill.find('.ql-editor').html($this.text().repl(LF, BR)).keyup()
