@@ -793,6 +793,9 @@ class Functions
 				}
 				else {
 					$property_name = reset($template->var_names);
+					if (str_contains($property_name, '(')) {
+						$property_name = lParse($property_name, '(');
+					}
 					if (method_exists($object, $property_name)) {
 						/** @noinspection PhpUnhandledExceptionInspection method_exists */
 						$method = new Reflection_Method($object, $property_name);
