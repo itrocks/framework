@@ -107,7 +107,7 @@ class Session
 	 */
 	public static function cloneSessionId() : string
 	{
-		$new_id = session_id() . uniqid('-');
+		$new_id = lParse(session_id(), '-') . uniqid('-');
 		file_put_contents(session_save_path() . SL . 'sess_' . $new_id, session_encode());
 		return $new_id;
 	}
