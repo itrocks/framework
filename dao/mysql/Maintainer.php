@@ -927,8 +927,11 @@ class Maintainer implements Configurable, Registerable
 			$mysql_foreign_keys = $mysql_table->getForeignKeys();
 
 			$result = $mysqli->query("SHOW CREATE TABLE `$table_name`");
-			$row    = $result->fetch_row();
+			$row    = $result->fetch_assoc();
 			$result->free();
+			if (array_key_first($row) === 'View') {
+				return false;
+			}
 			$create_table = end($row);
 			if (!str_contains($create_table, 'DEFAULT CHARSET=' . Database::CHARACTER_SET)) {
 				$builder->setCharacterSet(Database::CHARACTER_SET, Database::COLLATE);
