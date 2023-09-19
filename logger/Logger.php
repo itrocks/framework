@@ -2,10 +2,12 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Logger\Entry;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 
 /**
  * A very simple logger plugin that logs start and stop dates, PIDs and duration of main calls
@@ -19,6 +21,10 @@ class Logger implements Registerable
 	 * @var integer
 	 */
 	private int $anti_loop = 0;
+
+	//----------------------------------------------------------------------------------------- $link
+	#[Store(false)]
+	protected Data_Link $link;
 
 	//------------------------------------------------------------------------------------ $log_entry
 	/**
@@ -60,7 +66,7 @@ class Logger implements Registerable
 			return;
 		}
 		$this->log_entry->resume();
-		Dao::write($this->log_entry, Dao::only('duration', 'error_code', 'stop'));
+		$this->link->write($this->log_entry, Dao::only('duration', 'error_code', 'stop'));
 	}
 
 	//----------------------------------------------------------------------------------------- start
@@ -77,8 +83,9 @@ class Logger implements Registerable
 		if ($this->anti_loop) {
 			return;
 		}
+		$this->link      = Dao::current();
 		$this->log_entry = new Entry($uri, $get, $post, $files);
-		Dao::write($this->log_entry);
+		$this->link->write($this->log_entry);
 		$this->anti_loop ++;
 	}
 
@@ -93,7 +100,7 @@ class Logger implements Registerable
 			return;
 		}
 		$this->log_entry->stop();
-		Dao::write($this->log_entry, Dao::only('duration', 'memory_usage', 'stop'));
+		$this->link->write($this->log_entry, Dao::only('duration', 'memory_usage', 'stop'));
 	}
 
 }
