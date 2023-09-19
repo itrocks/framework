@@ -102,7 +102,6 @@ class Engine implements Configurable, Framework\View\Engine
 	) : string
 	{
 		// class name : not Built, not Set
-		/** @noinspection PhpDeprecatedStdLibCallInspection inspector bug */
 		$class_names = is_object($object)
 			? get_class($object)
 			: (is_array($object) ? reset($object) : $object);
@@ -203,10 +202,11 @@ class Engine implements Configurable, Framework\View\Engine
 		if (!is_array($options)) {
 			$options = [$options];
 		}
+		$target = $options[Framework\View::TARGET] ?? false;
 		if (
 			isset($_GET['as_widget'])
 			&& !str_contains($link, 'as_widget')
-			&& !in_array(($options[Framework\View::TARGET][0] ?? false), ['', '_'], true)
+			&& (($target === false) || !in_array(substr($target, 0, 1), ['', '_'], true))
 		) {
 			$link .= (!str_contains($link, '?') ? '?' : '&') . 'as_widget';
 		}
