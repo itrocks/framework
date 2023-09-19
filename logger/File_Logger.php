@@ -27,33 +27,20 @@ class File_Logger implements Configurable
 	const PATH = 'path';
 
 	//----------------------------------------------------------------------------------------- $file
-	/**
-	 * @var ?resource
-	 */
+	/** @var ?resource */
 	protected mixed $file = null;
 
 	//------------------------------------------------------------------------------------ $file_name
-	/**
-	 * @var ?string
-	 */
 	protected ?string $file_name = null;
 
 	//----------------------------------------------------------------------------------------- $path
-	/**
-	 * @var string
-	 */
-	protected string $path;
+	public string $path;
 
 	//--------------------------------------------------------------------------------------- $prefix
-	/**
-	 * @var string
-	 */
 	protected string $prefix = '# ';
 
 	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $configuration array [path]
-	 */
+	/** @param $configuration array [path] */
 	public function __construct(mixed $configuration = [])
 	{
 		$this->path = $configuration[self::PATH] ?? '/tmp';
@@ -69,9 +56,7 @@ class File_Logger implements Configurable
 	}
 
 	//----------------------------------------------------------------------------------------- close
-	/**
-	 * Close the file and clean
-	 */
+	/** Close the file and clean */
 	protected function close() : void
 	{
 		if (!empty($this->file)) {
@@ -82,9 +67,7 @@ class File_Logger implements Configurable
 	}
 
 	//------------------------------------------------------------------------------------------ file
-	/**
-	 * @return resource
-	 */
+	/** @return resource */
 	protected function file() : mixed
 	{
 		if (empty($this->file) && ($filename = $this->fileName())) {
@@ -108,7 +91,6 @@ class File_Logger implements Configurable
 	 * Caching only when there is no $identifier
 	 *
 	 * @param $entry Entry|null if set, forces the file name to match to an existing entry
-	 * @return ?string
 	 */
 	protected function fileName(Entry $entry = null) : ?string
 	{
@@ -135,12 +117,7 @@ class File_Logger implements Configurable
 	}
 
 	//------------------------------------------------------------------------------- readFileContent
-	/**
-	 * Read file content for a given entry
-	 *
-	 * @param $entry Entry
-	 * @return string
-	 */
+	/** Read file content for a given entry */
 	public function readFileContent(Entry $entry) : string
 	{
 		$filename = $this->fileName($entry);

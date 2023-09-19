@@ -25,12 +25,8 @@ class Link extends Identifier_Map
 	const PATH = 'path';
 
 	//----------------------------------------------------------------------------------------- $path
-	/**
-	 * The local storage path. Always has a trailing / set by __construct().
-	 *
-	 * @var string
-	 */
-	private string $path;
+	/** The local storage path. Always has a trailing / set by __construct() */
+	public string $path;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -59,7 +55,6 @@ class Link extends Identifier_Map
 	 * @param $what       array|object|string source object, class name or properties for filter
 	 * @param $class_name string|null must be set if $what is a filter array instead of an object
 	 * @param $options    Option|Option[] array some options for advanced search
-	 * @return integer
 	 */
 	public function count(
 		array|object|string $what, string $class_name = null, array|Option $options = []
@@ -73,7 +68,6 @@ class Link extends Identifier_Map
 	/**
 	 * Create a storage space for $class_name objects
 	 *
-	 * @param $class_name string
 	 * @return boolean true if storage was created or updated, false if it was already up-to-date
 	 */
 	public function createStorage(string $class_name) : bool
@@ -99,9 +93,6 @@ class Link extends Identifier_Map
 	}
 
 	//--------------------------------------------------------------------------------------- getPath
-	/**
-	 * @return string
-	 */
 	public function getPath() : string
 	{
 		return $this->path;
@@ -115,7 +106,6 @@ class Link extends Identifier_Map
 	 * official properties of $class, but they storage object is a Sql\Column and not a
 	 * Reflection_Property.
 	 *
-	 * @param $class Reflection_Class
 	 * @return Reflection_Property[]|Column[]
 	 */
 	public function getStoredProperties(Reflection_Class $class) : array
@@ -128,7 +118,6 @@ class Link extends Identifier_Map
 	/**
 	 * @param $object        object object from which to get the value of the property
 	 * @param $property_name string the name of the property
-	 * @return string
 	 */
 	public function propertyFileName(object $object, string $property_name) : string
 	{
@@ -252,12 +241,7 @@ class Link extends Identifier_Map
 	}
 
 	//-------------------------------------------------------------------------------------- truncate
-	/**
-	 * Truncates the data-set storing $class_name objects
-	 * All data is deleted
-	 *
-	 * @param $class_name string
-	 */
+	/** Truncates the data-set storing $class_name objects. All data is deleted */
 	public function truncate(string $class_name) : void
 	{
 		// TODO: Implement truncate() method
