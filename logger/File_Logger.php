@@ -100,8 +100,8 @@ class File_Logger implements Configurable
 		if (empty($this->file_name) || !empty($identifier)) {
 			if (empty($identifier)) {
 				/** @var $logger Logger */
-				$logger     = Session::current()->plugins->get(Logger::class);
-				$identifier = $logger->getIdentifier();
+				$logger     = Session::current()?->plugins?->get(Logger::class);
+				$identifier = $logger?->getIdentifier();
 			}
 			if ($identifier) {
 				$file_path = $this->path . SL
