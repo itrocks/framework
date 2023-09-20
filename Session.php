@@ -162,6 +162,9 @@ class Session
 	 */
 	public function get(string $class_name, bool|callable $create_default = false) : mixed
 	{
+		if (!isset($this->current[$class_name])) {
+			$class_name = Builder::current()->sourceClassName($class_name);
+		}
 		if (isset($this->current[$class_name])) {
 			$current = $this->current[$class_name];
 			if (is_array($current) && class_exists($class_name)) {

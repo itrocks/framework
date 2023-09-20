@@ -56,9 +56,7 @@ trait Current
 		if ($set_current && !is_a($set_current, Reflection_Property::class)) {
 			static::$current = $set_current;
 			if (!is_a($called_class, Plugin::class, true)) {
-				Session::current()->set(
-					$set_current, Builder::current()->sourceClassName($called_class)
-				);
+				Session::current()->set($set_current, $called_class);
 			}
 		}
 
@@ -71,9 +69,7 @@ trait Current
 					static::$current = new Builder();
 				}
 				else {
-					$plugin = Session::current()?->plugins->get(
-						Builder::current()->sourceClassName($called_class)
-					);
+					$plugin = Session::current()?->plugins->get($called_class);
 					if (!isset(static::$current)) {
 						static::$current = $plugin;
 					}

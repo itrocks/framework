@@ -16,12 +16,7 @@ class Disconnect_Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------- run
-	/**
-	 * @param $parameters Parameters
-	 * @param $form       array
-	 * @param $files      array[]
-	 * @return string
-	 */
+	/** @param $files array[] */
 	public function run(Parameters $parameters, array $form, array $files) : string
 	{
 		Authentication::disconnect();
