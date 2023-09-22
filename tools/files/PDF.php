@@ -33,7 +33,7 @@ class PDF
 	 * Convert PDF file to PNG
 	 *
 	 * @param $resolution integer
-	 * @requires apt install imagetools
+	 * @requires apt install poppler-utils
 	 * @return string[] png files names (one per converted page)
 	 */
 	public function toPng(int $resolution = 300) : array
