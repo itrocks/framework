@@ -90,6 +90,9 @@ class Loc implements Registerable
 			return;
 		}
 		if (empty($value) || !is_array($value)) {
+			if (($value === '') && $property->getType()->isNumeric()) {
+				$value = null;
+			}
 			$value = self::propertyToIso($property, $value);
 			return;
 		}
