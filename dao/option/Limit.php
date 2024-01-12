@@ -30,7 +30,7 @@ class Limit implements Option
 	 * @min_value 1
 	 * @var integer
 	 */
-	public int $from;
+	public int $from = 1;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
