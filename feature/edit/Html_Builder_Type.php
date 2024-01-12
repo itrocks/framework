@@ -72,14 +72,6 @@ class Html_Builder_Type
 	 */
 	public bool $is_abstract = false;
 
-	//--------------------------------------------------------------------------------------- $is_new
-	/**
-	 * Is it a form for a new object (true), or a modification form (false) ?
-	 *
-	 * @var boolean
-	 */
-	public bool $is_new = false;
-
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string
@@ -689,7 +681,7 @@ class Html_Builder_Type
 	public function setInputAsReadOnly(Element $input) : void
 	{
 		if ($this->readonly) {
-			if ($input->getAttribute('name') && !$this->is_new) {
+			if ($input->getAttribute('name')) {
 				$input->setData('name', $input->getAttribute('name')->value);
 				$input->removeAttribute('name');
 			}
