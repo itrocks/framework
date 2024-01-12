@@ -140,7 +140,7 @@ class Select
 			elseif ($option instanceof Option\Limit) {
 				// todo this works only with Mysql so beware, this should be into Mysql or something
 				$options[30] = LF . 'LIMIT '
-					. (isset($option->from) ? ($option->from - 1) . ', ' : '')
+					. (($option->from > 1) ? ($option->from - 1) . ', ' : '')
 					. $option->count;
 			}
 			elseif ($option instanceof Option\Sort) {

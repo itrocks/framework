@@ -29,7 +29,7 @@ class Limit implements Option
 	 * Will return 10 read users objects, starting with the second read user
 	 * @min_value 1
 	 */
-	public int $from;
+	public int $from = 1;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
