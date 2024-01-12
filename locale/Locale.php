@@ -140,7 +140,7 @@ class Locale implements Configurable, Registerable, Updatable
 		}
 		return (is_null($value) && Null_Annotation::of($property)->value)
 			? $value
-			: $this->toIso($value, $type);
+			: $this->toIso(strval($value), $type);
 	}
 
 	//------------------------------------------------------------------------------ propertyToLocale
