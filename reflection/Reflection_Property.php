@@ -626,6 +626,15 @@ class Reflection_Property extends ReflectionProperty
 		return ($object1 === $object2);
 	}
 
+	//--------------------------------------------------------------------------------- isInitialized
+	public function isInitialized(object $object = null) : bool
+	{
+		if (isset($object->_[$this->name])) {
+			return property_exists($object, $this->name . '_');
+		}
+		return parent::isInitialized($object);
+	}
+
 	//----------------------------------------------------------------------------------- isMandatory
 	public function isMandatory() : string
 	{
