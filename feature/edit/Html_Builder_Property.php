@@ -59,8 +59,6 @@ class Html_Builder_Property extends Html_Builder_Type
 		if ($customized = $property->getAnnotation('customized')->value) {
 			$this->classes[] = $customized;
 		}
-		$this->is_new = ($property instanceof Reflection_Property_Value)
-			&& !Dao::getObjectIdentifier($property->getObject());
 		$this->null     = $property->getAnnotation('null')->value;
 		$this->property = $property;
 
