@@ -283,7 +283,7 @@ class Object_Builder_Array
 		)) {
 			unset($object->$real_property_name);
 		}
-		if ($property->getType()->isAbstractClass() && str_contains($value, ':')) {
+		if ($property->getType()->isAbstractClass() && is_string($value) && str_contains($value, ':')) {
 			$class_property_name = $property_name . '_class';
 			[$object->$class_property_name, $value] = explode(':', $value);
 		}
