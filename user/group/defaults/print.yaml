@@ -2,3 +2,4 @@ features:
   - print
   - ITRocks/Framework/Layout/Print_Model/output
 includes: output
+name:     $class print

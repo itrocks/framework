@@ -7,3 +7,4 @@ features:
   - ITRocks/Framework/Property/remove
   - ITRocks/Framework/Property/search
   - ITRocks/Framework/Property/select
+name: $class output

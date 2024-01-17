@@ -1,2 +1,3 @@
 features: import
 includes: output
+name:     $class import

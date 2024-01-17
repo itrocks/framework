@@ -1,2 +1,3 @@
 features: export
 includes: output
+name:     $class export
