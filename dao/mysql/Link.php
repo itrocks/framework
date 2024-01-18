@@ -264,14 +264,15 @@ class Link extends Dao\Sql\Link
 	 * - if $what contain 'or' searches (numeric keys), they are ignored
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $what       object|array source object for filter, or filter array (need class_name)
-	 *                    only set properties will be used for search
+	 * @param $what       object|array|null source object for filter, or filter
+	 *                    array (need class_name) only set properties will be used for search
 	 * @param $class_name string must be set if $what is a filter array and not an object
 	 * @param $options    Option[] some options, one can be Create_If_No_Result
 	 * @return ?object
 	 */
-	protected function createObjectIfOption(array|object $what, string $class_name, array $options)
-		: ?object
+	protected function createObjectIfOption(
+		array|object|null $what, string $class_name, array $options
+	) : ?object
 	{
 		foreach ($options as $option) {
 			if ($option instanceof Create_If_No_Result) {
@@ -280,7 +281,7 @@ class Link extends Dao\Sql\Link
 				}
 				/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 				$object = Builder::create($class_name);
-				$values = is_array($what) ? $what : get_object_vars($what);
+				$values = is_array($what) ? $what : (isset($what) ? get_object_vars($what) : []);
 				foreach ($values as $property_name => $value) {
 					/** @noinspection PhpUnhandledExceptionInspection class name and property must be valid */
 					if (!(
