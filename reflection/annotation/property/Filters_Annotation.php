@@ -40,6 +40,7 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 		$filters        = [];
 		$filters_values = $this->values();
 		if ($filters_values) {
+			$optional   = false;
 			$property   = $this->property;
 			$class_name = $property->getFinalClassName();
 			foreach ($filters_values as $filter) {
@@ -52,9 +53,17 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 					) {
 						$filter = substr($filter, 0, -2) . substr($filter, -1);
 					}
+					if (str_ends_with($filter, '?')) {
+						$optional = true;
+						$filter   = substr($filter, 0, -1);
+					}
 					$filter_value_name = trim($filter_value_name);
 				}
 				else {
+					if (str_ends_with($filter, '?') || str_starts_with($filter, '?')) {
+						$optional = true;
+						$filter   = trim($filter, '?');
+					}
 					$filter_value_name = $filter;
 				}
 				if (
@@ -81,6 +90,9 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 					trigger_error(
 						'Not a method or property ' . $class_name . '::' . $filter_value_name, E_USER_ERROR
 					);
+				}
+				if ($optional) {
+					$filters[$filter] = $filters[$filter] . '?';
 				}
 			}
 		}

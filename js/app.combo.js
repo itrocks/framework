@@ -61,6 +61,10 @@ $(document).ready(function()
 			filters = filters.split(',')
 			for (let filter of filters) {
 				filter = filter.split('=')
+				const optional = filter[1].endsWith('?')
+				if (optional) {
+					filter[1] = filter[1].substring(0, filter[1].length - 1)
+				}
 				const is_string_constant = (filter[1].startsWith(DQ) || filter[1].startsWith(Q))
 					&& (filter[1].endsWith(filter[1][0]))
 				const is_constant = is_string_constant
@@ -82,7 +86,9 @@ $(document).ready(function()
 					? $container.find('[name=' + DQ + filter[1] + DQ + ']')
 					: { length: 0 }
 				if ($filter_element.length) {
-					request['filters[' + filter[0] + ']'] = $filter_element.val()
+					if (!optional || $filter_element.val()) {
+						request['filters[' + filter[0] + ']'] = $filter_element.val()
+					}
 				}
 				else {
 					request['filters[' + filter[0] + ']']
