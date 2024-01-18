@@ -83,6 +83,9 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 					$property = new Reflection\Reflection_Property($class_name, $filter_value_name);
 					$filters[$filter] = $property->pathAsField(true);
 				}
+				elseif ($filter_value_name === 'this') {
+					$filters[$filter] = 'this';
+				}
 				elseif (method_exists($class_name, $filter_value_name)) {
 					$filters[$filter] = Q . $final_object->$filter_value_name() . Q;
 				}

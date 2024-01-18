@@ -90,6 +90,9 @@ $(document).ready(function()
 						request['filters[' + filter[0] + ']'] = $filter_element.val()
 					}
 				}
+				else if ((filter[1] === 'this') && $container?.closest('article.form').data('id')) {
+					request['filters[' + filter[0] + ']'] = $container?.closest('article.form').data('id')
+				}
 				else {
 					request['filters[' + filter[0] + ']']
 						= is_string_constant ? filter[1].substring(1, filter[1].length - 1) : filter[1]
