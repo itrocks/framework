@@ -428,8 +428,14 @@ class Template
 	}
 
 	//---------------------------------------------------------------------------------- getParameter
-	/** Gets parameter value */
-	public function getParameter(string $parameter) : array|string|null
+	/**
+	 * Gets parameter value
+	 *
+	 * @param $parameter class-string<T>
+	 * @return array|T|string|null
+	 * @template T
+	 */
+	public function getParameter(string $parameter) : array|object|string|null
 	{
 		return $this->parameters[$parameter] ?? null;
 	}
@@ -1482,7 +1488,6 @@ class Template
 				&& ($builder = Widget::of($object)?->class_name)
 				&& is_a($builder, Html\Builder\Property::class, true)
 			) {
-				/** @noinspection PhpParamsInspection Inspector bug : $builder is a string */
 				/** @noinspection PhpUnhandledExceptionInspection widget builder must be valid */
 				/** @var $builder Html\Builder\Property */
 				$builder = Builder::create(
