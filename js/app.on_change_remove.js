@@ -99,7 +99,12 @@ $(document).ready(() =>
 	 */
 	const setFieldValue = ($form, field_name, value) =>
 	{
+		let information
 		let only_if_empty = false
+		if (field_name.startsWith('-')) {
+			information = field_name[1]
+			field_name  = field_name.substring(2)
+		}
 		if (field_name.startsWith('?')) {
 			if ((typeof value) === 'string') {
 				field_name    = field_name.substring(1)
@@ -154,6 +159,28 @@ $(document).ready(() =>
 		}
 		// not found
 		if (!$input.length) {
+			return
+		}
+
+		// information
+		if (information && value.length) {
+			const $li  = $input.closest('li')
+			let   $div = (information === 'V')
+				? $li.next('li.information')
+				: $li.find('div.information')
+			//console.log(field_name, 'information', information, $input, value, $li)
+			if (!$div.length) {
+				if (information === 'V') {
+					$div = $('<li class="information"><div></div><div class="information"></div></li>')
+					$div.insertAfter($li)
+					$div = $div.find('div.information')
+				}
+				else {
+					$div = $('<div class="information"></div>')
+					$li.append($div)
+				}
+			}
+			$div.text(value)
 			return
 		}
 
