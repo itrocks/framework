@@ -409,25 +409,27 @@ class Search_Parameters_Parser
 	 */
 	public function parse() : array
 	{
-		$search   = $this->search;
-		$to_unset = [];
-		$this->parseArray($search, $to_unset);
-		foreach ($to_unset as $property_path) {
-			unset($search[$property_path]);
-		}
+		$search = $this->search;
+		$this->parseArray($search);
 		return $search;
 	}
 
 	//------------------------------------------------------------------------------------ parseArray
 	/**
-	 * @param $search_values array An array of search values
-	 * @param $to_unset      string[] property paths for which values must be unset
+	 * @noinspection PhpDocMissingThrowsInspection Don't care
+	 * @param $search_values    array An array of search values
+	 * @param $ignore_exception bool
 	 */
-	public function parseArray(array &$search_values, array &$to_unset) : void
+	public function parseArray(array &$search_values, bool $ignore_exception = false) : void
 	{
 		foreach ($search_values as $property_path => &$search_value) {
 			if ($search_value instanceof Func\Logical) {
-				$this->parseArray($search_value->arguments, $to_unset);
+				$this->parseArray($search_value->arguments, $ignore_exception || $search_value->isOr());
+				foreach ($search_value->arguments as $sub_value) {
+					if ($sub_value instanceof Exception) {
+						$search_value = $sub_value;
+					}
+				}
 				continue;
 			}
 			// property path can be an Expressions::MARKER or 'representative' view field name
@@ -441,14 +443,18 @@ class Search_Parameters_Parser
 				return;
 			}
 			$this->parseField($search_value, $property);
+			if ($ignore_exception && ($search_value instanceof Exception)) {
+				$search_value = '';
+			}
 			// if search has been transformed to empty string, we cancel search for this column
 			if ($search_value === '') {
-				$to_unset[] = $property_path;
+				unset($search_values[$property_path]);
 			}
 		}
 	}
 
 	//------------------------------------------------------------------------------------ parseField
+
 	/**
 	 * @param $search_value string
 	 * @param $property ?Reflection_Property
