@@ -233,7 +233,11 @@ class Html_Builder_Type
 				$result->setAttribute('title', $this->tooltip);
 			}
 		}
-		return $result ?? $this->value;
+		if ($result) {
+			$this->removeSearchAttributes($result);
+			return $result;
+		}
+		return $this->value;
 	}
 
 	//---------------------------------------------------------------------------------- buildBoolean
@@ -661,16 +665,29 @@ class Html_Builder_Type
 	}
 
 	//------------------------------------------------------------------------------ patchSearchTypes
-	/**
-	 * Patch search type : e.g. dates should be typed as string
-	 */
-	private function patchSearchTypes() : void
+	/** Patch search type : e.g. dates should be typed as string */
+	protected function patchSearchTypes() : void
 	{
 		if (str_starts_with($this->name, 'search[') && $this->type->isDateTime()) {
 			$this->type = new Type(Type::STRING);
 			if ($this->value) {
 				$this->value = Loc::dateToLocale($this->value);
 			}
+		}
+	}
+
+	//------------------------------------------------------------------------------ patchSearchTypes
+	protected function removeSearchAttributes(Element $element) : void
+	{
+		if (str_starts_with($this->name, 'search[')) {
+			$element->removeData('combo-class');
+			$element->removeData('combo-set-class');
+			$element->removeData('combo-filters');
+			$element->removeData('conditions');
+			$element->removeData('on-change');
+			$element->removeData('ordered');
+			$element->removeData('realtime-change');
+			$element->removeData('required');
 		}
 	}
 
