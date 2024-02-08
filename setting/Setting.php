@@ -23,7 +23,7 @@ class Setting implements Validate\Except
 	/**
 	 * @var string
 	 */
-	public string $code;
+	public string $code = '';
 
 	//---------------------------------------------------------------------------------------- $value
 	/**

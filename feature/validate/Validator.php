@@ -191,7 +191,7 @@ class Validator implements Registerable
 	 * @param $property Reflection_Property
 	 * @return Component
 	 */
-	private function createSubObject(object $object, Reflection_Property $property) : Component
+	private function createSubObject(object $object, Reflection_Property $property) : object
 	{
 		/** @noinspection PhpUnhandledExceptionInspection var annotation values must be valid */
 		$link_class = new Reflection\Reflection_Class($property->getType()->getElementTypeAsString());
