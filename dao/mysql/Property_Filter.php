@@ -10,6 +10,17 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 trait Property_Filter
 {
 
+	//--------------------------------------------------------------------------------- STRING_OBJECT
+	/**
+	 * @var string[]
+	 */
+	protected static array $STRING_OBJECT = [
+		Store_Annotation::GZ,
+		Store_Annotation::JSON,
+		Store_Annotation::SERIALIZE,
+		Store_Annotation::STRING
+	];
+
 	//-------------------------------------------------------------------------- $excluded_properties
 	/**
 	 * Excluded properties names
@@ -34,20 +45,12 @@ trait Property_Filter
 			&& (
 				$type->isMultipleString()
 				|| !$type->isMultiple()
-				|| in_array(
-					Store_Annotation::of($property)->value,
-					[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING],
-					true
-				)
+				|| in_array(Store_Annotation::of($property)->value, static::$STRING_OBJECT, true)
 			)
 			&& !$property->isStatic()
 			&& (
 				!$property->getAnnotation('component')->value
-				|| in_array(
-					Store_Annotation::of($property)->value,
-					[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING],
-					true
-				)
+				|| in_array(Store_Annotation::of($property)->value, static::$STRING_OBJECT, true)
 			)
 			&& !Store_Annotation::of($property)->isFalse();
 	}

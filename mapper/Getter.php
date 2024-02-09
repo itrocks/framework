@@ -384,6 +384,9 @@ abstract class Getter
 						$stored = json_decode($stored, true);
 						$stored = static::schemaDecode($stored, $property);
 						break;
+					case Store_Annotation::SERIALIZE:
+						$stored = unserialize($stored);
+						break;
 					default:
 						// TODO QUESTION $class_name and $property_class_name... Isn't it the same ?
 						// TODO QUESTION Is Builder::className($property_class_name) missing ?
