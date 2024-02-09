@@ -186,7 +186,8 @@ class Object_To_Write_Array
 				&& !($this->json_encoding && Composite::of($property)?->value)
 			) {
 				$property_name = $property->name;
-				if (Getter::of($property)->callable) {
+				$getter        = Getter::of($property);
+				if ($getter->callable && !is_a($getter->callable[0], Getter::class, true)) {
 					// call #Getter (not really : only isset is called. Real #Getter call may cause problems)
 					// TODO isset now calls getter in order to get a real data isset result. Problems ?
 					$is_property_set = isset($this->object->$property_name);

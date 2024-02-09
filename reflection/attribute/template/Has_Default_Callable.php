@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection\Attribute\Template;
 
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tools\Names;
 use ReflectionException;
 
@@ -63,6 +64,13 @@ trait Has_Default_Callable
 		throw new ReflectionException(
 			"Missing $class_name::\$$property_name $prefix $class_name::$method_name()"
 		);
+	}
+
+	//--------------------------------------------------------------------------- getReflectionMethod
+	public function getReflectionMethod() : ?Reflection_Method
+	{
+		/** @noinspection PhpUnhandledExceptionInspection Must be valid */
+		return $this->callable ? new Reflection_Method($this->callable[0], $this->callable[1]) : null;
 	}
 
 }
