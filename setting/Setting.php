@@ -14,6 +14,8 @@ use ITRocks\Framework\Tools\Names;
  * @before_delete unlinkUserSettings
  * @before_write invalidateValueSetting
  * @feature admin
+ * @representative code
+ * @sort code
  */
 #[Store]
 class Setting implements Validate\Except
@@ -29,10 +31,10 @@ class Setting implements Validate\Except
 	/**
 	 * @getter
 	 * @max_length 1000000000
-	 * @notice string must come first, because it is stored as this
-	 * @var string|Custom\Set|null string if serialized (for storage)
+	 * @store serialize
+	 * @var Custom\Set|string|null string if serialized (for storage)
 	 */
-	public string|Custom\Set|null $value = null;
+	public Custom\Set|string|null $value = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Setting\Custom;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Setting\Selected;
@@ -13,6 +12,8 @@ use ITRocks\Framework\User;
 
 /**
  * Custom settings objects can be loaded and saved from user configuration
+ *
+ * @override name @mandatory false
  */
 abstract class Set
 {
