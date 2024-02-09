@@ -168,12 +168,9 @@ class Html_Builder_Type
 			if ($this->tooltip) {
 				$result->setAttribute('title', $this->tooltip);
 			}
-		}
-		if ($result) {
 			$this->removeSearchAttributes($result);
-			return $result;
 		}
-		return $this->value;
+		return $result ?? $this->value;
 	}
 
 	//---------------------------------------------------------------------------------- buildBoolean
