@@ -384,15 +384,20 @@ class Object_To_Write_Array
 	protected function propertyStoreString(Reflection_Property $property, mixed $value) : string
 	{
 		$store = Store::of($property);
-		if ($store->isJson()) {
+		if ($store->isJson() || $store->isSerialize()) {
 			if (is_object($value) && ($write = (new Call_Stack)->getObject(Write::class))) {
 				$write->beforeWrite($value, $this->options, Write::BEFORE_WRITE);
 				$write->beforeWriteComponents($value, $this->options, Write::BEFORE_WRITE);
 			}
-			$value = $this->valueToWriteArray($value, $this->options);
-			if (isset($value) && !is_string($value)) {
-				/** @noinspection PhpUnhandledExceptionInspection */
-				$value = jsonEncode($value);
+			if (isset($value) && $store->isSerialize()) {
+				$value = serialize($value);
+			}
+			else {
+				$value = $this->valueToWriteArray($value, $this->options);
+				if (isset($value) && !is_string($value)) {
+					/** @noinspection PhpUnhandledExceptionInspection */
+					$value = jsonEncode($value);
+				}
 			}
 		}
 		else {
@@ -418,14 +423,13 @@ class Object_To_Write_Array
 	 */
 	protected function propertyTableColumnName(Reflection_Property $property, mixed $value) : array
 	{
-		$class_name             = null;
-		$element_type           = $property->getType()->getElementType();
-		$storage_name           = Store_Name_Annotation::of($property)->value;
-		$store_attribute        = Store::of($property);
-		$value_is_json_encoding = $store_attribute->isJson();
-		$write_property         = null;
+		$class_name      = null;
+		$element_type    = $property->getType()->getElementType();
+		$storage_name    = Store_Name_Annotation::of($property)->value;
+		$store_attribute = Store::of($property);
+		$write_property  = null;
 		// write basic but test store as json too
-		if ($element_type->isBasic(false) && !$value_is_json_encoding) {
+		if ($element_type->isBasic(false) && !$store_attribute->isJson()) {
 			$write_value = $this->propertyBasic($property, $value);
 		}
 		// write array or object into a #Store(GZ|Hex|String)

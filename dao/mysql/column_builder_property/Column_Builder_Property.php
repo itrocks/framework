@@ -165,8 +165,8 @@ trait Column_Builder_Property
 					return static::sqlTextColumn($max_length);
 				}
 			}
-			elseif ($store_annotation->isJson()) {
-				return static::sqlTextColumn(Max_Length::of($property)?->value ?: 65535);
+			elseif ($store_annotation->isJson() || $store_annotation->isSerialize()) {
+				return static::sqlTextColumn($property->getAnnotation('max_length')->value ?: 65535);
 			}
 			switch ($property_type->asString()) {
 				case Type::_ARRAY:

@@ -27,12 +27,13 @@ class Store implements Has_Set_Final
 	use Common;
 
 	//-------------------------------------------------------------------- Store value flag constants
-	public const FALSE  = 0;
-	public const GZ     = 8;
-	public const HEX    = 16;
-	public const JSON   = 4;
-	public const STORE  = 1;
-	public const STRING = 2;
+	public const FALSE     = 0;
+	public const GZ        = 8;
+	public const HEX       = 16;
+	public const JSON      = 4;
+	public const SERIALIZE = 32;
+	public const STORE     = 1;
+	public const STRING    = 2;
 
 	//------------------------------------------------------------------------------------ JSON_CLASS
 	/**
@@ -99,13 +100,22 @@ class Store implements Has_Set_Final
 		return $this->value & self::JSON;
 	}
 
+	//----------------------------------------------------------------------------------- isSerialize
+	/**
+	 * @return boolean
+	 */
+	public function isSerialize() : bool
+	{
+		return $this->value === self::SERIALIZE;
+	}
+
 	//-------------------------------------------------------------------------------------- isString
 	/**
 	 * Returns true if #Store value allows to store a string representation of the property value
 	 */
 	public function isString() : bool
 	{
-		return $this->value & (self::GZ | self::HEX | self::JSON | self::STRING);
+		return $this->value & (self::GZ | self::HEX | self::JSON | self::SERIALIZE | self::STRING);
 	}
 
 	//-------------------------------------------------------------------------------------- setFinal
