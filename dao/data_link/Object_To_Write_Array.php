@@ -183,8 +183,12 @@ class Object_To_Write_Array
 				&& !Store_Annotation::of($property)->isFalse()
 				&& !($this->json_encoding && $property->getAnnotation('composite')->value)
 			) {
-				$property_name = $property->name;
-				if (Getter_Annotation::of($property)->value) {
+				$property_name     = $property->name;
+				$getter_annotation = Getter_Annotation::of($property);
+				if (
+					$getter_annotation->value
+					&& !is_a($getter_annotation->getReflectionMethod()->class, Getter::class, true)
+				) {
 					// call @getter (not really : only isset is called. Real @getter call may cause problems)
 					// TODO isset now calls getter in order to get a real data isset result. Problems ?
 					$is_property_set = isset($this->object->$property_name);
