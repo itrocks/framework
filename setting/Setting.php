@@ -4,7 +4,8 @@ namespace ITRocks\Framework;
 use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Class_;
+use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Getter;
 use ITRocks\Framework\Setting\Custom;
 use ITRocks\Framework\Tools\Names;
@@ -15,8 +16,10 @@ use ITRocks\Framework\Tools\Names;
  * @before_delete unlinkUserSettings
  * @before_write invalidateValueSetting
  * @feature admin
+ * @representative code
+ * @sort code
  */
-#[Store]
+#[Class_\Store]
 class Setting implements Validate\Except
 {
 
@@ -24,12 +27,8 @@ class Setting implements Validate\Except
 	public string $code = '';
 
 	//---------------------------------------------------------------------------------------- $value
-	/**
-	 * @notice string must come first, because it is stored as this
-	 * @var string|Custom\Set|null Must force type here : php real type does not take care of ordering
-	 */
-	#[Getter('getValue'), Max_Length(1000000000)]
-	public string|Custom\Set|null $value = null;
+	#[Getter, Max_Length(1000000000), Store(Store::SERIALIZE)]
+	public Custom\Set|string|null $value = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct(string $code = null, Custom\Set|string $value = null)

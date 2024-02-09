@@ -4,6 +4,8 @@ namespace ITRocks\Framework\Setting\Custom;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Reflection\Attribute\Class_\Override;
+use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Setting;
@@ -14,6 +16,7 @@ use ITRocks\Framework\User;
 /**
  * Custom settings objects can be loaded and saved from user configuration
  */
+#[Override('name', new Mandatory(false))]
 abstract class Set
 {
 	use Has_Name;
