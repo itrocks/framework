@@ -49,8 +49,14 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	 */
 	const JSON_CONSTRUCT = '__construct';
 
+	//------------------------------------------------------------------------------------- SERIALIZE
+	const SERIALIZE = 'serialize';
+
 	//---------------------------------------------------------------------------------------- STRING
 	const STRING = 'string';
+
+	//------------------------------------------------------------------------------------ STRINGABLE
+	const STRINGABLE = [self::GZ, self::HEX, self::JSON, self::SERIALIZE, self::STRING];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -106,6 +112,15 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 		return $this->value === self::JSON;
 	}
 
+	//----------------------------------------------------------------------------------- isSerialize
+	/**
+	 * @return boolean
+	 */
+	public function isSerialize() : bool
+	{
+		return $this->value === self::SERIALIZE;
+	}
+
 	//-------------------------------------------------------------------------------------- isString
 	/**
 	 * Returns true if @store's value allows to store a string representation of the property value
@@ -114,7 +129,7 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	 */
 	public function isString() : bool
 	{
-		return in_array($this->value, [self::GZ, self::HEX, self::JSON, self::STRING], true);
+		return in_array($this->value, self::STRINGABLE, true);
 	}
 
 	//-------------------------------------------------------------------------- storedPropertiesOnly
