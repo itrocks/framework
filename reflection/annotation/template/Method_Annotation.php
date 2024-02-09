@@ -194,6 +194,12 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 		else {
 			if ($value === true) {
 				$value = Names::propertyToMethod($annotation_name);
+				if ($class_property instanceof Reflection_Property) {
+					if (static::PREFIX ?? null) {
+						$value = static::PREFIX;
+					}
+					$value = $value . ucfirst($class_property->getName());
+				}
 			}
 			$value = (substr($value, 0, 1) === SL)
 				? substr($value, 1)
