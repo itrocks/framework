@@ -19,17 +19,14 @@ class Getter_Annotation extends Method_Annotation
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'getter';
 
-	//---------------------------------------------------------------------------------------- PREFIX
-	const PREFIX = 'get';
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value           bool|null|string
+	 * @param $value           ?string
 	 * @param $property        Reflection|Reflection_Property
 	 * @param $annotation_name string
 	 */
 	public function __construct(
-		bool|null|string $value, Reflection|Reflection_Property $property,
+		string|null $value, Reflection|Reflection_Property $property,
 		string $annotation_name = self::ANNOTATION
 	) {
 		parent::__construct($value, $property, self::ANNOTATION);

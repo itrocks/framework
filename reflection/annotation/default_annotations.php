@@ -552,6 +552,14 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@set_store_name' => Annotation::class,
 
 	/**
+	 * @setter [[[\Vendor\Module\]Class_Name::]methodName]
+	 * This is a Multiple_Annotation
+	 * Tells a method name that is the setter for that property.
+	 * The setter will be called each time the program changes the value of the property.
+	 */
+	Parser::T_PROPERTY . '@setter' => Method_Annotation::class,
+
+	/**
 	 * @show_seconds
 	 * Tells that for a Date_Time we must show seconds to the user.
 	 * If not (default), seconds are always hidden by Loc::dateToLocale()
