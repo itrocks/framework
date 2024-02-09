@@ -2,8 +2,8 @@
 namespace ITRocks\Framework\Feature\Validate\Property;
 
 use Error;
+use ITRocks\Framework\Feature\History\Has_History;
 use ITRocks\Framework\Feature\Validate\Result;
-use ITRocks\Framework\History\Has_History;
 use ITRocks\Framework\Reflection\Annotation\Property;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Reflection_Property;
