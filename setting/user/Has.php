@@ -19,6 +19,7 @@ trait Has
 	/**
 	 * @link Collection
 	 * @override
+	 * @store false
 	 * @user invisible
 	 * @var Setting\User[]
 	 */
