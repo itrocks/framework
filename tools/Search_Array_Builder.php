@@ -21,9 +21,6 @@ class Search_Array_Builder
 {
 
 	//---------------------------------------------------------------------------------------- $class
-	/**
-	 * @var Reflection_Class
-	 */
 	protected Reflection_Class $class;
 
 	//------------------------------------------------------------------------------------------ $and
@@ -35,9 +32,7 @@ class Search_Array_Builder
 	public string $or = ',';
 
 	//------------------------------------------------------------------------------- $property_types
-	/**
-	 * @var Type[] Key is string
-	 */
+	/** @var Type[] Key is string */
 	protected array $property_types;
 
 	//----------------------------------------------------------------------------------------- build
