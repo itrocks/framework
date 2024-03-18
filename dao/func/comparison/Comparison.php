@@ -46,7 +46,7 @@ class Comparison implements Negate, Where
 
 	//----------------------------------------------------------------------------------------- $sign
 	#[Values(self::SIGNS)]
-	public string $sign = self::EQUAL;
+	public string $sign;
 
 	//----------------------------------------------------------------------------------- $than_value
 	public mixed $than_value = null;
