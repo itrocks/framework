@@ -12,12 +12,19 @@ use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Property\Values;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
 
 /**
  * The search array builder builds search arrays from properties paths and search phrases
  */
 class Search_Array_Builder
 {
+
+	//---------------------------------------------------------------------------------------- $class
+	/**
+	 * @var Reflection_Class
+	 */
+	protected Reflection_Class $class;
 
 	//------------------------------------------------------------------------------------------ $and
 	/** And separator */
@@ -26,6 +33,12 @@ class Search_Array_Builder
 	//------------------------------------------------------------------------------------------- $or
 	/** Or separator */
 	public string $or = ',';
+
+	//------------------------------------------------------------------------------- $property_types
+	/**
+	 * @var Type[] Key is string
+	 */
+	protected array $property_types;
 
 	//----------------------------------------------------------------------------------------- build
 	public function build(
@@ -70,6 +83,7 @@ class Search_Array_Builder
 
 	//--------------------------------------------------------------------------------- buildMultiple
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property_names_or_class string[]|Reflection_Class
 	 * @param $search_phrase           string
 	 * @param $prepend                 string
@@ -83,17 +97,27 @@ class Search_Array_Builder
 	) : array|Logical
 	{
 		$search_phrase  = str_replace(['*', '?'], ['%', '_'], $search_phrase);
-		$property_names = ($property_names_or_class instanceof Reflection_Class)
-			? $this->classRepresentativeProperties($property_names_or_class)
-			: $property_names_or_class;
-		$translated = ($property_names_or_class instanceof Reflection_Class)
-			? $this->buildWithReverseTranslation($property_names_or_class, $search_phrase)
-			: $translated;
+		if ($property_names_or_class instanceof Reflection_Class) {
+			$this->class    = $property_names_or_class;
+			$property_names = $this->classRepresentativeProperties($property_names_or_class);
+			$translated = $this->buildWithReverseTranslation($property_names_or_class, $search_phrase);
+			foreach ($property_names as $property_name) {
+				/** @noinspection PhpUnhandledExceptionInspection known */
+				$this->property_types[$property_name] = $this->class->getProperty($property_name)
+					->getType();
+			}
+		}
+		else {
+			$property_names = $property_names_or_class;
+		}
 		// search phrase contains OR
 		if (str_contains($search_phrase, $this->or)) {
 			$or = [];
 			foreach ($property_names as $property_name) {
-				$or[$property_name] = $this->build('', $search_phrase, $prepend, $append);
+				$search = ($this->property_types[$property_name]->isDateTime())
+					? Loc::dateToIso($search_phrase)
+					: $search_phrase;
+				$or[$property_name] = $this->build('', $search, $prepend, $append);
 			}
 			$result = Func::orOp($or);
 		}
@@ -110,7 +134,10 @@ class Search_Array_Builder
 		else {
 			$or = [];
 			foreach ($property_names as $property_name) {
-				$or[$property_name] = $prepend . $search_phrase . $append;
+				$search = ($this->property_types[$property_name]->isDateTime())
+					? Loc::dateToIso($search_phrase)
+					: $search_phrase;
+				$or[$property_name] = $prepend . $search . $append;
 				if (isset($translated[$property_name])) {
 					$or[$property_name] = Func::orOp([
 						$or[$property_name], Func::in($translated[$property_name])
