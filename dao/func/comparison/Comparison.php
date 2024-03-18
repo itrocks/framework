@@ -43,7 +43,7 @@ class Comparison implements Negate, Where
 	 * @values =, >, >=, <, <=, LIKE, <>, NOT LIKE
 	 * @var string
 	 */
-	public string $sign = self::EQUAL;
+	public string $sign;
 
 	//----------------------------------------------------------------------------------- $than_value
 	/**
