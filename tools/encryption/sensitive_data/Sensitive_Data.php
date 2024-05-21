@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Tools\Encryption;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Encryption\Sensitive_Data\Cache;
@@ -165,15 +166,19 @@ class Sensitive_Data
 
 		// create default key for class access when no user had any access
 		if (!$key && !$user) {
-			unset($search['class_name']);
-			unset($search['property_name']);
-			if (!Dao::searchOne($search, Key::class)) {
-				$key       = new Key();
-				$key->user = User::current();
-				/** @noinspection PhpUnhandledExceptionInspection valid call */
-				$key->setSecret(random_bytes(static::SECRET_SIZE));
-				Dao::write($key);
+			$not_user = Func::notEqual($search['user']);
+			if (
+				Dao::searchOne(['class_name' => '', 'property_name' => '', 'user' => $not_user], Key::class)
+				|| Dao::searchOne(['class_name' => $class_name, 'property_name' => '', 'user' => $not_user], Key::class)
+				|| Dao::searchOne(['class_name' => $class_name, 'property_name' => $property->name, 'user' => $not_user], Key::class)
+			) {
+				return null;
 			}
+			$key       = new Key();
+			$key->user = User::current();
+			/** @noinspection PhpUnhandledExceptionInspection valid call */
+			$key->setSecret(random_bytes(static::SECRET_SIZE));
+			Dao::write($key);
 		}
 		return $key;
 	}
