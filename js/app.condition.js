@@ -9,15 +9,17 @@ $(document).ready(function()
 		const will_change = {}
 
 		$.each(conditions.split(';'), (condition_key, condition) => {
-			let index
 			let operator = '='
-			if ((index = condition.indexOf('>')) > -1) {
-				operator = ((condition[index + 1] === '=') ? '>=' : '>')
-			}
-			else if ((index = condition.indexOf('<')) > -1) {
-				operator = ((condition[index + 1] === '=') ? '<=' : '<')
-			}
+			if      (condition.indexOf('<=') > -1) operator = '<='
+			else if (condition.indexOf('>=') > -1) operator = '>='
+			else if (condition.indexOf('<>') > -1) operator = '<>'
+			else if (condition.indexOf('!=') > -1) operator = '!='
+			else if (condition.indexOf('<')  > -1) operator = '<'
+			else if (condition.indexOf('>')  > -1) operator = '>'
 			condition = condition.split(operator).map(condition => condition.trim())
+			if (condition.length === 1) {
+				condition.push('@set')
+			}
 			let $condition
 			if (will_change.hasOwnProperty(condition[0])) {
 				$condition = will_change[condition[0]]
@@ -30,10 +32,7 @@ $(document).ready(function()
 					: $form.find('[name=' + DQ + condition[0] + DQ + ']')
 				will_change[condition[0]] = $condition
 			}
-			let condition_name = $condition.attr('name')
-			if (!condition_name) {
-				condition_name = $condition.prev().attr('name')
-			}
+			let condition_name = $condition.attr('name') ?? $condition.prev().attr('name')
 			if ((typeof $this.data('conditions')) === 'string') {
 				$this.data('conditions', {})
 			}
@@ -46,10 +45,7 @@ $(document).ready(function()
 				}
 				$this.data('conditions')[condition_name].values[value] = value
 			})
-			let this_name = $this.attr('name')
-			if (!this_name) {
-				this_name = $this.prev().attr('name')
-			}
+			let this_name = $this.attr('name') ?? $this.prev().attr('name')
 			if ($condition.data('condition-of')) {
 				$condition.data('condition-of')[this_name] = $this
 			}
@@ -66,7 +62,7 @@ $(document).ready(function()
 				return
 			}
 			$condition.data('condition-change', true)
-			$condition.change(function()
+			const changeFunction = function()
 			{
 				const $this = $(this)
 				$.each($this.data('condition-of'), (element_name, $element) => {
@@ -87,6 +83,9 @@ $(document).ready(function()
 							else if (value === '@set') {
 								found = element_value.length
 							}
+							else if (value.startsWith('<>') || value.startsWith('!=')) {
+								found = (element_value !== value.substring(2))
+							}
 							else if (value.startsWith('>')) {
 								found = value.startsWith('>=')
 									? (parseInt(element_value) >= parseInt(value.substring(2)))
@@ -105,26 +104,14 @@ $(document).ready(function()
 						return (show = found)
 					})
 					let name = $element.attr('name')
-					if (!name) {
-						name = $element.data('name')
-					}
-					if (!name) {
-						name = $element.prev().attr('name')
-					}
-					if (!name && $element.is('label')) {
-						name = $element.closest('[id]').attr('id')
-					}
-					if (name.startsWith('id_')) {
-						name = name.substring(3)
-					}
-					name = name.repl('[', '.').repl(']', '').repl('id_', '')
+					if (!name) name = $element.data('name')
+					if (!name) name = $element.prev().attr('name')
+					if (!name && $element.is('label')) name = $element.closest('[id]').attr('id')
+					if (name.startsWith('id_')) name = name.substring(3)
+					name = name.replaceAll('[', '.').replaceAll(']', '').replaceAll('id_', '')
 					let $field = $element.closest('[id="' + name + '"]')
-					if (!$field.length) {
-						$field = $element.closest('[data-name="' + name + '"]')
-					}
-					if (!$field.length) {
-						$field = $element.parent().children()
-					}
+					if (!$field.length) $field = $element.closest('[data-name="' + name + '"]')
+					if (!$field.length) $field = $element.parent().children()
 					const $input_parent = $field.is('input, select, textarea') ? $field.parent() : $field
 					if (show) {
 						// when shown, get the locally saved value back (undo restores last typed value)
@@ -155,7 +142,9 @@ $(document).ready(function()
 						})
 					}
 				})
-			})
+				$condition.change(changeFunction)
+				$condition.keyup(changeFunction)
+			}
 			$condition.change()
 		})
 	})
