@@ -9,6 +9,7 @@ use ITRocks\Framework\Property\Path;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Class_\Override_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
+use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
@@ -29,6 +30,7 @@ use ITRocks\Framework\Tools\Can_Be_Empty;
 use ITRocks\Framework\Tools\Date_Interval;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Date_Time_Error;
+use ITRocks\Framework\Tools\Encryption;
 use ITRocks\Framework\Tools\Field;
 use ITRocks\Framework\Tools\Names;
 use ReflectionException;
@@ -636,15 +638,24 @@ class Reflection_Property extends ReflectionProperty
 	}
 
 	//----------------------------------------------------------------------------------- isMandatory
+	/** @noinspection PhpUnused properties.html */
 	public function isMandatory() : string
 	{
 		return Mandatory::of($this)->value ? 'mandatory' : '';
 	}
 
 	//----------------------------------------------------------------------------------- isMultiline
+	/** @noinspection PhpUnused properties.html */
 	public function isMultiline() : string
 	{
 		return Multiline::of($this)->value ? 'multiline' : '';
+	}
+
+	//----------------------------------------------------------------------------------- isSensitive
+	/** @noinspection PhpUnused properties.html */
+	public function isSensitive()
+	{
+		return (Encrypt_Annotation::of($this)->value === Encryption::SENSITIVE_DATA) ? 'sensitive' : '';
 	}
 
 	//---------------------------------------------------------------------------------- isValueEmpty

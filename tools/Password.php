@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 use InvalidArgumentException;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * Used for common 'password-like' data encryption
@@ -34,15 +35,25 @@ class Password
 	 */
 	private string $password;
 
+	//------------------------------------------------------------------------------------- $property
+	/**
+	 * @var Reflection_Property|null
+	 */
+	private $property;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $password             string|null
 	 * @param $encryption_algorithm string|null
 	 */
-	public function __construct(string $password = null, string $encryption_algorithm = null)
-	{
+	public function __construct(
+		string $password = null,
+		string $encryption_algorithm = null,
+		Reflection_Property $property = null
+	) {
 		if (isset($password))             $this->password             = $password;
 		if (isset($encryption_algorithm)) $this->encryption_algorithm = $encryption_algorithm;
+		if (isset($property))             $this->property             = $property;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -65,7 +76,7 @@ class Password
 	 */
 	public function encrypted() : string
 	{
-		return Encryption::encrypt($this->password, $this->encryption_algorithm);
+		return Encryption::encrypt($this->password, $this->encryption_algorithm, $this->property);
 	}
 
 	//-------------------------------------------------------------------------------------- generate

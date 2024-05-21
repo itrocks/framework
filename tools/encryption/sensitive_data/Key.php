@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 use ITRocks\Framework\Feature\Validate\Property\Max_Length;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 use ITRocks\Framework\User;
 
 /**
@@ -17,37 +18,43 @@ class Key
 	const IV_SIZE = 16;
 
 	//---------------------------------------------------------------------------------------- METHOD
-	const METHOD = 'AES256';
+	const METHOD = 'aes256';
 
 	//----------------------------------------------------------------------------------- $class_name
 	#[Mandatory]
-	public string $class_name;
+	public string $class_name = '';
 
 	//-------------------------------------------------------------------------------- $property_name
 	/**
 	 * If null, all sensitive data into the class will be accessible or not for one user
 	 * If set, each property can be associated to different users
 	 */
-	public ?string $property_name;
+	public ?string $property_name = null;
 
 	//--------------------------------------------------------------------------------------- $secret
 	#[Max_Length(10000)]
-	public string $secret;
+	public string $secret = '';
 
 	//----------------------------------------------------------------------------------------- $user
 	public User $user;
 
+	public function __toString() : string
+	{
+		return $this->user->login
+			. ($this->class_name ? (':' . $this->class_name . '.' . $this->property_name) : '');
+	}
+
 	//------------------------------------------------------------------------------------- getSecret
 	public function getSecret() : ?string
 	{
-		if (!isset($_POST['password'])) {
+		if (!Sensitive_Data::password()) {
 			return null;
 		}
-		$iv = hex2bin(substr($this->secret, static::IV_SIZE * 2));
+		$iv = hex2bin(substr($this->secret, 0, static::IV_SIZE * 2));
 		return openssl_decrypt(
 			substr($this->secret, static::IV_SIZE * 2),
 			static::METHOD,
-			$_POST['password'],
+			Sensitive_Data::password(),
 			0,
 			$iv
 		);
@@ -56,18 +63,14 @@ class Key
 	//------------------------------------------------------------------------------------- setSecret
 	public function setSecret(string $secret) : void
 	{
-		if (!isset($_POST['password'])) {
+		if (!Sensitive_Data::password()) {
 			return;
 		}
 		// TODO must get the previous secret key and update all data that use this key in database
 		/** @noinspection PhpUnhandledExceptionInspection valid call */
 		$iv           = random_bytes(static::IV_SIZE);
 		$this->secret = bin2hex($iv) . openssl_encrypt(
-			$secret,
-			static::METHOD,
-			$_POST['password'],
-			0,
-			$iv
+			$secret, static::METHOD, Sensitive_Data::password(), 0, $iv
 		);
 	}
 

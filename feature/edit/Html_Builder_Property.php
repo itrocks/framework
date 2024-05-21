@@ -27,6 +27,7 @@ use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\View\Html\Dom\Element;
 use ITRocks\Framework\View\Html\Dom\Select;
+use ITRocks\Framework\View\Html\Dom\Textarea;
 
 /**
  * Builds a standard form input matching a given property and value
@@ -337,11 +338,25 @@ class Html_Builder_Property extends Html_Builder_Type
 			|| Password_Annotation::of($this->property)->value
 		) {
 			if (Encrypt_Annotation::of($this->property)->value === Encryption::SENSITIVE_DATA) {
-				if ($value = (new Sensitive_Data)->decrypt($this->value, $this->property)) {
-					$element->setAttribute('value', $value);
+				if ($value = (new Sensitive_Data)->decrypt(strval($this->value), $this->property)) {
+					if ($element instanceof Textarea) {
+						$element->setContent($value);
+					}
+					else {
+						$element->setAttribute('value', $value);
+					}
 					return $element;
 				}
+				elseif (($element instanceof Textarea) && strlen($this->value)) {
+					$element->setContent('********');
+				}
+				elseif (($element->getAttribute('type') !== 'password') && strlen($this->value)) {
+					$element->setAttribute('value', '********');
+				}
 				$element->setData('sensitive');
+				if (!Sensitive_Data::password()) {
+					$element->setAttribute('readonly');
+				}
 			}
 			$length = strlen(strval($this->value));
 			if ($length || Password_Annotation::of($this->property)->value) {

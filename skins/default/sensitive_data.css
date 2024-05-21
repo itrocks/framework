@@ -1,0 +1,15 @@
+li.action.sensitive_data > a,
+li.actions > ul > li.sensitive_data > a,
+ul.actions > li.sensitive_data > a {
+  background-image: url("img/sensitive-24.svg"); }
+li.action.sensitive_data > form + a, li.action.sensitive_data > input + a,
+li.actions > ul > li.sensitive_data > form + a,
+li.actions > ul > li.sensitive_data > input + a,
+ul.actions > li.sensitive_data > form + a,
+ul.actions > li.sensitive_data > input + a {
+  display: none; }
+li.action.sensitive_data input,
+li.actions > ul > li.sensitive_data input,
+ul.actions > li.sensitive_data input {
+  height: 26px !important;
+  padding: 0 10px !important; }

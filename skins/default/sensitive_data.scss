@@ -1,0 +1,20 @@
+li.action,
+li.actions > ul > li,
+ul.actions > li {
+
+	&.sensitive_data {
+
+		> a {
+			background-image: url('img/sensitive-24.svg');
+		}
+
+		> form + a, > input + a {
+			display: none;
+		}
+
+		input {
+			height: 26px !important;
+			padding: 0 10px !important;
+		}
+	}
+}

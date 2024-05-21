@@ -66,6 +66,12 @@ class Data implements Validate\Except
 			if (isset($form['password2'])) {
 				$form['password2'] = 'XXXX';
 			}
+			if (isset($form['sensitive_data'])) {
+				$form['sensitive_data'] = 'XXXX';
+			}
+			if (isset($form['sensitive_password'])) {
+				$form['sensitive_password'] = 'XXXX';
+			}
 			if (isset($form['user_password'])) {
 				$form['user_password'] = 'XXXX';
 			}

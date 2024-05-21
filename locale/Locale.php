@@ -24,6 +24,8 @@ use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Encryption;
+use ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\Updater\Updatable;
@@ -131,7 +133,16 @@ class Locale implements Configurable, Registerable, Updatable
 		}
 		$type = $property->getUserType();
 		if (Encrypt_Annotation::of($property)->value || Password_Annotation::of($property)->value) {
-			$value = strlen($value) ? str_repeat('*', strlen(Password::UNCHANGED)) : '';
+			$value_length = strlen($value);
+			if (Encrypt_Annotation::of($property)->value === Encryption::SENSITIVE_DATA) {
+				$value = (new Sensitive_Data)->decrypt(strval($value), $property);
+				if (!$value) {
+					$value = $value_length ? str_repeat('*', strlen(Password::UNCHANGED)) : '';
+				}
+			}
+			else {
+				$value = strlen($value) ? str_repeat('*', strlen(Password::UNCHANGED)) : '';
+			}
 		}
 		elseif ($type->isDateTime() && (($value instanceof Date_Time) || !$called_user_getter)) {
 			$this->date_format->show_seconds = Show_Seconds::of($property)->value ?? false;

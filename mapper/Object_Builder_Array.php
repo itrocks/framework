@@ -432,7 +432,6 @@ class Object_Builder_Array
 			&& ($builder = Widget::of($property)?->class_name)
 			&& is_a($builder, Property::class, true)
 		) {
-			/** @noinspection PhpParamsInspection Inspector bug : $builder is a string */
 			/** @noinspection PhpUnhandledExceptionInspection widget builder class name must be valid */
 			/** @var $builder Property */
 			$builder             = Builder::create($builder, [$property, $value]);
@@ -452,7 +451,7 @@ class Object_Builder_Array
 					if ($value === Password::UNCHANGED) {
 						return true;
 					}
-					$value = (new Password($value, $encryption))->encrypted();
+					$value = (new Password($value, $encryption, $property))->encrypted();
 					if ($value === Password::UNCHANGED) {
 						return true;
 					}
@@ -573,7 +572,7 @@ class Object_Builder_Array
 			if (is_null($this->ignore_unknown_properties)) {
 				$build->object->$property_name = $value;
 			}
-			elseif (!$this->ignore_unknown_properties) {
+			elseif (!$this->ignore_unknown_properties && ($property_name !== 'sensitive_password')) {
 				trigger_error(
 					'Unknown property ' . $this->class->name . '::$' . $property_name, E_USER_ERROR
 				);
