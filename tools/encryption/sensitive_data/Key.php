@@ -51,13 +51,18 @@ class Key
 			return null;
 		}
 		$iv = hex2bin(substr($this->secret, 0, static::IV_SIZE * 2));
-		return openssl_decrypt(
+		$secret = openssl_decrypt(
 			substr($this->secret, static::IV_SIZE * 2),
 			static::METHOD,
 			Sensitive_Data::password(),
 			0,
 			$iv
 		);
+		if ($secret === false) {
+			$_POST['sensitive_password'] = '';
+			Sensitive_Data::password();
+		}
+		return $secret;
 	}
 
 	//------------------------------------------------------------------------------------- setSecret
