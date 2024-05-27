@@ -20,6 +20,11 @@ class Save_Controller extends Controller
 	//------------------------------------------------------------------------------------------- run
 	public function run(Parameters $parameters, array $form, array $files, $class_name) : string
 	{
+		if (isset($form['token']) && $form['token'] && !isset($form['sensitive_password'])) {
+			$_POST['sensitive_password'] = $form['token'];
+			$form['sensitive_password']  = $form['token'];
+			unset($form['token']);
+		}
 		if (!Sensitive_Data::isPasswordGlobalAndValid() && Dao::count(Key::class)) {
 			$error = 'Bad cipher key';
 		}
@@ -40,17 +45,19 @@ class Save_Controller extends Controller
 				$key->setSecret(random_bytes(Sensitive_Data::SECRET_SIZE));
 				Dao::write($key);
 			}
-			$secret = $key->getSecret();
-			$_POST['sensitive_password'] = $form['new_cipher_key'];
-			$key->setSecret($secret);
-			Dao::write($key, Dao::only('secret'));
-			$_POST['sensitive_password'] = '';
-			Sensitive_Data::password();
+			else {
+				$secret = $key->getSecret();
+				$_POST['sensitive_password'] = $form['new_cipher_key'];
+				$key->setSecret($secret);
+				Dao::write($key, Dao::only('secret'));
+			}
 			$error = '';
 			Main::$current->redirect(
 				'/ITRocks/Framework/Tools/Encryption/Sensitive_Data/Cipher_Key', Target::MAIN
 			);
 		}
+		$_POST['sensitive_password'] = '';
+		Sensitive_Data::password();
 		return $error
 			? Message::display(new Cipher_Key, Loc::tr('Error'), Loc::tr($error))
 			: Message::display(new Cipher_Key, Loc::tr('New cipher key saved'));

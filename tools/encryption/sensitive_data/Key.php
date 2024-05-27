@@ -2,15 +2,16 @@
 namespace ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 
 use ITRocks\Framework\Feature\Validate\Property\Max_Length;
+use ITRocks\Framework\Reflection\Attribute\Class_\Sort;
 use ITRocks\Framework\Reflection\Attribute\Class_\Store;
+use ITRocks\Framework\Reflection\Attribute\Property\Default_;
 use ITRocks\Framework\Reflection\Attribute\Property\Mandatory;
+use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 use ITRocks\Framework\User;
 
-/**
- * Sensitive data encryption keys
- */
-#[Store('sensitive_data_keys')]
+/** Sensitive data encryption keys */
+#[Sort('user'), Store('sensitive_data_keys')]
 class Key
 {
 
@@ -38,6 +39,11 @@ class Key
 	//----------------------------------------------------------------------------------------- $user
 	public User $user;
 
+	//---------------------------------------------------------------------------------- $valid_until
+	#[Default_([Date_Time::class, 'max'])]
+	public Date_Time|string $valid_until;
+
+	//------------------------------------------------------------------------------------ __toString
 	public function __toString() : string
 	{
 		return $this->user->login
