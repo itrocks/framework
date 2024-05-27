@@ -31,7 +31,15 @@ class Save_Controller extends Controller
 		}
 		else {
 			/** @var $key Key */
-			$key    = Dao::searchOne(['user' => User::current()], Key::class);
+			$key = Dao::searchOne(['user' => User::current()], Key::class);
+			if (!isset($form['sensitive_password']) && !$key) {
+				$_POST['sensitive_password'] = $form['new_cipher_key'];
+				$key       = new Key();
+				$key->user = User::current();
+				/** @noinspection PhpUnhandledExceptionInspection valid call */
+				$key->setSecret(random_bytes(Sensitive_Data::SECRET_SIZE));
+				Dao::write($key);
+			}
 			$secret = $key->getSecret();
 			$_POST['sensitive_password'] = $form['new_cipher_key'];
 			$key->setSecret($secret);
