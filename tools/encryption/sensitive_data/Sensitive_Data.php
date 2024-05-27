@@ -98,13 +98,19 @@ class Sensitive_Data
 		return (new static)->decrypt($value, $property);
 	}
 
+	//---------------------------------------------------------------------- isPasswordGlobalAndValid
+	public static function isPasswordGlobalAndValid() : bool
+	{
+		if (!static::password()) {
+			return false;
+		}
+		$key = Dao::searchOne(['user' => User::current()], Key::class);
+		return $key && $key->getSecret();
+	}
+
 	//-------------------------------------------------------------------------------------- password
-	/**
-	 * @return string
-	 */
 	public static function password() : string
 	{
-
 		if (isset($_POST['sensitive_password']) && ($_POST['sensitive_password'] !== 'XXXXXX')) {
 			static::$sensitive_password = $_POST['sensitive_password'];
 			unset($_POST['sensitive_password']);

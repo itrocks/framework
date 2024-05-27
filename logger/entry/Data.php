@@ -60,6 +60,12 @@ class Data implements Validate\Except
 			$this->files = $this->serialize($files);
 		}
 		if (isset($form) && ($this->form === '')) {
+			if (isset($form['confirm_cipher_key'])) {
+				$form['confirm_cipher_key'] = 'XXXX';
+			}
+			if (isset($form['new_cipher_key'])) {
+				$form['new_cipher_key'] = 'XXXX';
+			}
 			if (isset($form['password'])) {
 				$form['password'] = 'XXXX';
 			}
