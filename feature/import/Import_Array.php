@@ -20,7 +20,9 @@ use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\Tools\Stringable;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
@@ -684,15 +686,28 @@ class Import_Array
 		// tested for optimization reason : avoid getObjectVars if nothing to do with it
 		if ($class->write_properties) {
 			$before          = Reflection_Class::getObjectVars($object);
+			$confirm_write   = true;
 			$only_properties = [];
 			foreach (array_keys($class->write_properties) as $property_name) {
 				$value = $row[$class_properties_column[$property_name]];
 				if (isset($class->properties[$property_name])) {
-					$value = $this->propertyToISo($class->properties[$property_name], $value);
+					$value = $this->propertyToIso($class->properties[$property_name], $value);
+					if (strlen($value) && isset($class->sensitive_properties[$property_name])) {
+						$value = (new Sensitive_Data)->encrypt($value, $class->properties[$property_name]);
+						if (($value === '') || ($value === Password::UNCHANGED)) {
+							$confirm_write = false;
+							$value         = '';
+						}
+					}
 				}
 				if (!$this->sameElement($object->$property_name, $value)) {
-					$object->$property_name = $value;
-					$only_properties[]      = $property_name;
+					if ($confirm_write) {
+						$object->$property_name = $value;
+						$only_properties[]      = $property_name;
+					}
+					else {
+						$confirm_write = true;
+					}
 					unset($before[$property_name]);
 				}
 			}

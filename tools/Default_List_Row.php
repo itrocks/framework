@@ -215,6 +215,15 @@ class Default_List_Row implements List_Row
 		return null;
 	}
 
+	//----------------------------------------------------------------------------------- removeValue
+	/**
+	 * @param $property string
+	 */
+	public function removeValue(string $property) : void
+	{
+		unset($this->values[$property]);
+	}
+
 	//-------------------------------------------------------------------------------------- setValue
 	/**
 	 * @param $property string the path of the property

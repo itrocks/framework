@@ -102,4 +102,10 @@ interface List_Data extends Iterator
 	 */
 	public function newRow(string $class_name, object $object, array $values) : List_Row;
 
+	//-------------------------------------------------------------------------------- removeProperty
+	/**
+	 * @param $property string
+	 */
+	public function removeProperty(string $property) : void;
+
 }

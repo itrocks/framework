@@ -63,6 +63,12 @@ interface List_Row
 	 */
 	public function id() : mixed;
 
+	//----------------------------------------------------------------------------------- removeValue
+	/**
+	 * @param $property string
+	 */
+	public function removeValue(string $property) : void;
+
 	//-------------------------------------------------------------------------------------- setValue
 	/**
 	 * @param $property string the path of the property

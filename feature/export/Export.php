@@ -7,6 +7,7 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\Option\Translate;
 use ITRocks\Framework\Feature\List_\Selection;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Property\Store;
 use ITRocks\Framework\Reflection\Attribute\Property\User;
@@ -16,6 +17,8 @@ use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Encryption;
+use ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 use ITRocks\Framework\Tools\Files;
 use ITRocks\Framework\Tools\Names;
 
@@ -113,6 +116,31 @@ class Export
 		$csv_file_name = tempnam($tmp, $short_class . '_') . '.csv';
 		$file          = fopen($csv_file_name, 'w');
 
+		// format columns
+		$bool_val = [0 => Loc::tr('no'), 1 => Loc::tr('yes')];
+		foreach ($properties as $property_path => $property) {
+			if ($property instanceof Reflection_Property) {
+				if ($property->getType()->isBoolean()) {
+					$booleans[$property_path] = true;
+				}
+				if ($property->getType()->isDateTime()) {
+					$date_times[$property_path] = true;
+				}
+				if ($property->getListAnnotation('values')->values()) {
+					$translate[$property_path] = true;
+				}
+				if (Encrypt_Annotation::of($property)->value === Encryption::SENSITIVE_DATA) {
+					if (Sensitive_Data::isPasswordGlobalAndValid()) {
+						$sensitive_data[$property_path] = true;
+					}
+					else {
+						unset($properties[$property_path]);
+						$data->removeProperty($property_path);
+					}
+				}
+			}
+		}
+
 		// write first line (properties path)
 		$row = [];
 		if ($selection_properties) {
@@ -168,6 +196,9 @@ class Export
 				}
 				elseif (isset($translate[$property_path])) {
 					$value = Loc::tr($value);
+				}
+				if (isset($sensitive_data[$property_path])) {
+					$value = (new Sensitive_Data)->decrypt(strval($value), $properties[$property_path]);
 				}
 				$write[] = str_replace(DQ, Q . Q, strval($value));
 			}

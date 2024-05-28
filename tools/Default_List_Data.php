@@ -145,4 +145,16 @@ class Default_List_Data extends Set implements List_Data
 		return new Default_List_Row($class_name, $object, $values, $this);
 	}
 
+	//-------------------------------------------------------------------------------- removeProperty
+	/**
+	 * @param $property string
+	 */
+	public function removeProperty(string $property) : void
+	{
+		unset($this->properties[$property]);
+		foreach ($this->elements as $element) {
+			$element->removeValue($property);
+		}
+	}
+
 }

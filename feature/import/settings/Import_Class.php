@@ -48,6 +48,12 @@ class Import_Class
 	/** @var string[] key is the name of the property */
 	public array $property_path;
 
+	//------------------------------------------------------------------------- $sensitive_properties
+	/**
+	 * @var boolean[] key is the property path
+	 */
+	public $sensitive_properties = [];
+
 	//--------------------------------------------------------------------------- $unknown_properties
 	/** @var Import_Property[] key is the name of the property */
 	public array $unknown_properties = [];

@@ -2,11 +2,13 @@
 namespace ITRocks\Framework\Feature\Import\Settings;
 
 use ITRocks\Framework\Feature\Import\Import_Array;
+use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Attribute\Class_\Representative;
 use ITRocks\Framework\Reflection\Attribute\Class_\Unique;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Encryption;
 use ReflectionException;
 
 /**
@@ -107,6 +109,15 @@ abstract class Import_Settings_Builder
 					else {
 						$class->properties[$property_name]       = $property;
 						$class->write_properties[$property_name] = $import_property;
+						if (Encrypt_Annotation::of($property)->value === Encryption::SENSITIVE_DATA) {
+							$class->sensitive_properties[$property_name] = true;
+							if (!Encryption\Sensitive_Data::isPasswordGlobalAndValid()) {
+								$class->unknown_properties[$property_name] = $import_property;
+								unset($class->identify_properties[$property_name]);
+								unset($class->properties[$property_name]);
+								unset($class->write_properties[$property_name]);
+							}
+						}
 					}
 					$sub_class = $property->getType()->getElementTypeAsString();
 				}
@@ -197,8 +208,11 @@ abstract class Import_Settings_Builder
 				$import_property = new Import_Property($class_name, $property_name);
 				$import_class->write_properties[$property_name] = $import_property;
 				try {
-					$import_class->properties[$property_name]
-						= new Reflection_Property($class_name, $property_name);
+					$property = new Reflection_Property($class_name, $property_name);
+					$import_class->properties[$property_name] = $property;
+					if (Encrypt_Annotation::of($property)->value === Encryption::SENSITIVE_DATA) {
+						$import_class->sensitive_properties[$property_name] = true;
+					}
 				}
 				catch (ReflectionException) {
 					$import_class->unknown_properties[$property_name] = $import_property;
