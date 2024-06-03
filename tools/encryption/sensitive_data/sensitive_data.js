@@ -19,13 +19,16 @@ $(document).ready(function()
 			event.stopImmediatePropagation()
 			const $parent = $anchor.parent()
 			let   $input  = $parent.find('input')
-			if (!$input.length) {
+			const found   = $input.length
+			if (!found) {
 				$input = $parent.closest('form').length
 					? $('<input data-action="' + $anchor.attr('href') + '" data-target="' + $anchor.attr('target') + '" name="sensitive_password" placeholder="' + tr('cipher key') + '" type="password">')
 					: $('<form action="' + $anchor.attr('href') + '" method="post" target="' + $anchor.attr('target') + '"><input name="sensitive_password" placeholder="' + tr('cipher key') + '" type="password"></form>')
 			}
 			$parent.prepend($input)
-			$input.build()
+			if (!found) {
+				$input.build()
+			}
 			$input.focus()
 
 			const submit = function($input)
@@ -59,8 +62,12 @@ $(document).ready(function()
 		})
 	})
 
-	$body.build('dblclick', 'article li.sensitive > div', function()
+	$body.build('dblclick', 'article li.sensitive > div', function(event)
 	{
+		const target = event.target
+		if ((['input', 'textarea'].includes(target.type)) && !target.readOnly) {
+			return
+		}
 		$(this).closest('article').find('ul.general.actions > .sensitive_data > a').click()
 	})
 
