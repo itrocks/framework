@@ -84,6 +84,9 @@ class Sensitive_Data
 	//--------------------------------------------------------------------------------------- encrypt
 	public function encrypt(string $data, Reflection_Property $property) : string
 	{
+		if ($data === '') {
+			return '';
+		}
 		if (($key = $this->propertyKey($property)) && ($secret = $key->getSecret())) {
 			/** @noinspection PhpUnhandledExceptionInspection valid call */
 			$iv = random_bytes(static::IV_SIZE);
