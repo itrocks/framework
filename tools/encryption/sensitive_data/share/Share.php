@@ -10,7 +10,7 @@ use ITRocks\Framework\Reflection\Attribute\Property\User;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework;
 
-/** @feature add, save */
+/** @feature edit */
 #[Display_Order('sensitive_password, user, already_shared_with')]
 class Share
 {
