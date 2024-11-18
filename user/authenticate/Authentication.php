@@ -27,26 +27,6 @@ use ITRocks\Framework\User\Group\Low_Level_Features_Cache;
 abstract class Authentication
 {
 
-	//----------------------------------------------------------------------------------- arrayToUser
-	/**
-	 * List properties to write in user object for the register
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $array array The form content
-	 * @return User A list of properties as 'property' => 'value'
-	 */
-	public static function arrayToUser(array $array) : User
-	{
-		$user = Search_Object::create(User::class);
-		/** @noinspection PhpUnhandledExceptionInspection valid constant property for object */
-		$property       = new Reflection_Property($user, 'password');
-		$user->email    = $array['email'] ?? '';
-		$user->login    = $array['login'] ?? '';
-		$user->password = (new Password($array['password'], Password_Annotation::of($property)->value))
-			->encrypted();
-		return $user;
-	}
-
 	//---------------------------------------------------------------------------------- authenticate
 	/**
 	 * Sets user as current for script and session
@@ -146,6 +126,7 @@ abstract class Authentication
 	 * Returns logged user if success
 	 * To set logger user as current for environment, you must call authenticate()
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $login    string
 	 * @param $password string
 	 * @return ?User
@@ -155,7 +136,14 @@ abstract class Authentication
 		if (!($login && $password)) {
 			return null;
 		}
-		$match = static::arrayToUser(['email' => $login, 'login' => $login, 'password' => $password]);
+		$match = Search_Object::create(User::class);
+		/** @noinspection PhpUnhandledExceptionInspection valid constant property for object */
+		$property        = new Reflection_Property($match, 'password');
+		$match->email    = $login;
+		$match->login    = $login;
+		$match->password = (new Password($password, Password_Annotation::of($property)->value))
+			->encrypted();
+
 		/** @var $users User[] */
 		$users = Dao::search(Func::orOp(['email' => $login, 'login' => $login]), User::class);
 		foreach ($users as $user) {
@@ -174,12 +162,20 @@ abstract class Authentication
 	/**
 	 * Register with current environment using login and password
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $form array The content of the form
 	 * @return User
 	 */
 	public static function register(array $form) : User
 	{
-		$user = static::arrayToUser($form);
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$user = Builder::create(User::class);
+		/** @noinspection PhpUnhandledExceptionInspection valid constant property for object */
+		$property       = new Reflection_Property($user, 'password');
+		$user->email    = $form['email'] ?? '';
+		$user->login    = $form['login'] ?? '';
+		$user->password = (new Password($form['password'], Password_Annotation::of($property)->value))
+			->encrypted();
 		// TODO LOW should be into a has_groups plugin
 		if (isA(Builder::className(Group::class), Has_Default::class) && isA($user, Has_Groups::class)) {
 			/** @var $user User|Has_Groups */
