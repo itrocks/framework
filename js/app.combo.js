@@ -189,14 +189,10 @@ $(document).ready(function()
 			source: function(request, response)
 			{
 				const $element = this.element
-				window.running_combo = true
 				// set data to lower case for /MAJ combo in term
 				const data = $.param(comboRequest($element, request)).toLocaleLowerCase()
 				$.getJSON(comboUri($element), data)
 					.done(response)
-					.always(function() {
-						window.running_combo = undefined
-					})
 			},
 
 			select: function(event, ui)
