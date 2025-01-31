@@ -290,7 +290,7 @@ class Access_Control implements Configurable, Registerable
 				View::link(Application::class, Controller\Feature::F_BLANK), $uri, $get, $post, $files
 			);
 		}
-		elseif (!pregMatchArray($this->exceptions, $uri)) {
+		elseif (!pregMatchArray($this->exceptions, lParse($uri, '?'))) {
 			$this->setUri(
 				View::link(User::class, Controller\Feature::F_LOGIN), $uri, $get, $post, $files
 			);
