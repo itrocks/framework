@@ -37,7 +37,7 @@
 		"jquery/jquery-mousewheel":              "^3.1",
 		"jquery-form/form":                      "^4.3",
 		"kensnyder/quill-image-resize-module":   "^1.0",
-		"netcarver/textile":                     "^3.7",
+		"netcarver/textile":                     "^4.1",
 		"oomphinc/composer-installers-extender": "^2.0",
 		"php":                                   "^8.2",
 		"phpunit/phpunit":                       "^10.1",
